@@ -1,0 +1,32 @@
+{extend name="public/layout"}
+{block name="title"}首页{/block}
+
+  {block name="container"}
+
+    <div class="bloglist f_l">
+
+    </div>
+  {/block}
+
+  {block name="javascript"}
+  <script>
+    $(function(){
+        $.post(
+            "{:url('index/login/register')}",
+            {'email':'312850397@qq.com',
+                'nickname':'horizon222',
+                'password':'123456',
+                'token':123456},
+            function(data){
+                if(data){
+                    console.log(data);
+                }
+            },
+            "json"
+        );
+    })
+  </script>
+  {/block}
+
+
+
