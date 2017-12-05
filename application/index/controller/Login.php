@@ -16,7 +16,7 @@ class Login extends Home
     }
 
     /**
-     * 注册
+     * 注册(git拉取测试)
      */
     public function register(){
         //verified token
