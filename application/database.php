@@ -13,15 +13,15 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => '127.0.0.1',
+    'hostname'        => '66.112.221.116',
     // 数据库名
     'database'        => 'edutrain',
     // 用户名
-    'username'        => 'root',
+    'username'        => 'ygsuser',
     // 密码
-    'password'        => '',
+    'password'        => 'ygsuser123',
     // 端口
-    'hostport'        => '',
+    'hostport'        => '3306',
     // 连接dsn
     'dsn'             => '',
     // 数据库连接参数
