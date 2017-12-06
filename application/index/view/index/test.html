@@ -1,21 +1,27 @@
 {extend name="public/layout"}
 {block name="title"}首页{/block}
 
-  {block name="container"}
+{block name="container"}
 
-    <div class="bloglist f_l">
+<div class="bloglist f_l">
+  <form action="{:url('index/user/chheadicon')}" enctype="multipart/form-data" method="post">
+    <input type="file" name="head_icon" /> <br>
+    <input type="submit" value="上传" />
+  </form>
+</div>
+{/block}
 
-    </div>
-  {/block}
-
-  {block name="javascript"}
-  <script>
+{block name="javascript"}
+<script>
     $(function(){
         $.post(
-            "{:url('index/login/register')}",
-            {'email':'312850397@qq.com',
-                'nickname':'horizon222',
-                'password':'123456',
+            "{:url('index/user/chprofile')}",
+            {'userid':3,
+                'idcard':'370303199401220589',
+                'city':'淄博市张店区',
+                'mobile':'13864402321',
+                'birthday':'2017-12-06 11:42:58',
+                'signature':'chennn',
                 'token':123456},
             function(data){
                 if(data){
@@ -25,8 +31,8 @@
             "json"
         );
     })
-  </script>
-  {/block}
+</script>
+{/block}
 
 
 

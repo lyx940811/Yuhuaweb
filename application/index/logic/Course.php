@@ -2,17 +2,16 @@
 
 namespace app\index\logic;
 
-use app\index\model\Course;
+use app\index\model\Course as CourseModel;
 
 use think\Loader;
 use think\Config;
 use think\Validate;
-class CourseLogic
+class Course extends Base
 {
-    protected $codeMessage;
     public function __construct()
     {
-        $this->codeMessage = Config::get('apicode_message');
+        parent::__construct();
     }
 
 

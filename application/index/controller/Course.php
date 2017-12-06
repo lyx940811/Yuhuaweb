@@ -13,7 +13,7 @@ class Course extends Home
     {
         parent::__construct();
         //controller from app/index/logic/login.php
-        $this->LogicLogin = Loader::controller('CourseLogic','logic');
+        $this->LogicLogin = Loader::controller('Course','logic');
 
 
     }

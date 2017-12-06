@@ -5,14 +5,12 @@ namespace app\index\logic;
 use app\index\model\User;
 
 use think\Loader;
-use think\Config;
 use think\Validate;
-class Login
+class Login extends Base
 {
-    protected $codeMessage;
     public function __construct()
     {
-        $this->codeMessage = Config::get('apicode_message');
+        parent::__construct();
     }
 
     public function userAdd($data){
@@ -62,12 +60,12 @@ class Login
         }
     }
 
-    public function sendChEmail($email){
-        if(User::get(['email'=>$email])){
+    public function sendChEmail($data){
+        if(User::get(['email'=>$data['email']])){
             //send email
             $title = '密码重置';
             $content = '您的密码重置地址为：http://www.baidu.com';
-            if(send_email($email,$title,$content)){
+            if(send_email($data['email'],$title,$content)){
                 return json_data(0,$this->codeMessage[0],'');
             }
             else{
@@ -84,10 +82,10 @@ class Login
             'email'      => 'require|email',
             'password'   => 'require|length:1,100',
         ]);
-        $data = [
-            'email'     => $data['email'],
-            'password'  => $data['password'],
-        ];
+
+        if(!$user = User::get([ 'email' => $data['email'] ])){
+            return json_data(110,$this->codeMessage[110],'');
+        }
 
         if(!$validate->check($data)){
             // 验证失败 输出错误信息

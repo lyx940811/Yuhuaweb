@@ -15,6 +15,15 @@ class Index extends Controller
         return $this->fetch();
     }
 
+    public function rrr()
+    {
+        //connect redis
+        $redis = new \Redis();
+        $re = $redis->connect('127.0.0.1', 6379);
+        var_dump($re);
+//        phpinfo();
+    }
+
     /**
      *
      */
