@@ -17,6 +17,10 @@ class Login extends Controller{
 
     //登陆首页
     public function index(){
+//        import('Captcha','captcha.Captcha');
+
+//        $aa = new Captcha((array)Config::get('captcha'));
+
 
         if(Request::instance()->isPost()){
 
@@ -59,25 +63,7 @@ class Login extends Controller{
     }
 
     public function captcha(){
-        $config = [
-            // 验证码字体大小(px)
-            'fontSize' => 25,
-            // 验证码图片高度
-            'imageH'   => 0,
-            // 验证码图片宽度
-            'imageW'   => 0,
-            // 验证码位数
-            'length'   => 4,
-            // 背景颜色
-            'bg'       => [243, 251, 254],
-        ];
-
-        $defaultCaptchaConfig = config('captcha');
-        if($defaultCaptchaConfig && is_array($defaultCaptchaConfig)){
-            $config = array_merge($defaultCaptchaConfig, $config);
-        }
-
-        $captcha = new Captcha($config);
-        return $captcha->entry();
+        $aa = new Captcha();
     }
+
 }

@@ -38,8 +38,7 @@
                 <input type="password" class="form-control" placeholder="密码" required="" name="password">
             </div>
             <button type="submit" class="btn btn-primary block full-width m-b">登 录</button>
-            <img src="{:url('Manage/Login/captcha')}" onclick="this.src='{:url(\'Manage/Login/captcha\')}?'+Math.random();" title="换一张" style="cursor: pointer;position:absolute;right:1px;top:1px;"/>
-
+            <div>{:captcha_img()}</div>
             <input type="hidden" name="__token__" value="{$Request.token}" />
             <p class="text-muted text-center"> <a href="login.html#"><small>忘记密码了？</small></a>
             </p>
