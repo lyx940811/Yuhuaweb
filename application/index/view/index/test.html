@@ -9,6 +9,7 @@
     <input type="submit" value="上传" />
   </form>
 </div>
+<div>{:captcha_img()}</div>
 {/block}
 
 {block name="javascript"}
@@ -16,7 +17,7 @@
     $(function(){
         $.post(
             "{:url('index/user/chprofile')}",
-            {'userid':3,
+            {'userid':4,
                 'idcard':'370303199401220589',
                 'city':'淄博市张店区',
                 'mobile':'13864402321',

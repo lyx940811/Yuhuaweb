@@ -10,6 +10,8 @@ class Home extends Controller
     protected $token;
     protected $data;
     protected $codeMessage;
+    protected $LogicLogin;
+    protected $LogicUser;
 
     public function __construct()
     {

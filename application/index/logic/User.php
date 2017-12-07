@@ -3,6 +3,7 @@
 namespace app\index\logic;
 
 use app\index\model\UserProfile as UserProfileModel;
+use app\index\model\User as UserModel;
 use think\Loader;
 use think\Validate;
 class User extends Base
@@ -54,6 +55,20 @@ class User extends Base
                 return json_data(0,$this->codeMessage[0],'');
             }
 
+        }
+    }
+
+    /**
+     * 修改用户名
+     */
+    public function chUsername($data){
+        if($user = UserModel::get([ 'id' => $data['userid'] ])){
+            $user->nickname = $data['nickname'];
+            $user->save();
+            return json_data(0,$this->codeMessage[0],'');
+        }
+        else{
+            return json_data(110,$this->codeMessage[110],'');
         }
     }
 
