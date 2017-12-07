@@ -17,14 +17,29 @@ use think\Model as ThinkModel;
  * 用户模型
  * @package app\cms\model
  */
-class UserProfile extends ThinkModel
+class Friend extends ThinkModel
 {
     // 自动写入时间戳
 //    protected $autoWriteTimestamp = true;
-
-    public function user()
+    public function star()
     {
-        return $this->belongsTo('User','userid','id');
+        return $this->hasOne('User','id','toId');
     }
+
+    public function starProfile()
+    {
+        return $this->hasOne('UserProfile','userid','toId');
+    }
+
+    public function fan()
+    {
+        return $this->hasOne('User','id','fromId');
+    }
+
+    public function fanProfile()
+    {
+        return $this->hasOne('UserProfile','userid','fromId');
+    }
+
 
 }
