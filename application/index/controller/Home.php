@@ -26,9 +26,9 @@ class Home extends Controller
 
         //controller from dir logic
         $this->LogicLogin = Loader::controller('Login','logic');
-        $this->LogicUser = Loader::controller('User','logic');
+        $this->LogicUser  = Loader::controller('User','logic');
 
-
+        //unset the token which in the post data
         if($this->request->param()){
             $this->data = $this->request->param();
             unset($this->data['token']);
