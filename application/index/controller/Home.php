@@ -22,6 +22,7 @@ class Home extends Controller
 
         //define token
         $this->token = $this->request->param('token');
+        $this->verifyToken();
 
         //controller from dir logic
         $this->LogicLogin = Loader::controller('Login','logic');
@@ -36,11 +37,7 @@ class Home extends Controller
 
     public function verifyToken(){
         if($this->access_token!=$this->token){
-            return false;
-            //return json_data(900,$this->codeMessage[900],'');
-        }
-        else{
-            return true;
+            exit(json_encode(json_data(900,$this->codeMessage[900],'')));
         }
     }
 

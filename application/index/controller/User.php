@@ -19,6 +19,7 @@ class User extends Home
     public function __construct()
     {
         parent::__construct();
+
     }
 
     /**
@@ -55,78 +56,52 @@ class User extends Home
     }
 
     /**
-     * 获得个人主页内容（type传入不同的选项来获得不同的内容）
+     * 获得个人主页内容（type传入不同的选项来获得下方不同的内容）
      */
     public function getuserpage(){
         $data['type'] = 'following';
-        $data['userid'] = 3;
-        $contain = '';
-        switch ($data['type']){
+        $data['userid'] = 3;//登陆的uid
+        $data['touserid'] = 2;//查看用户的uid
 
-            case 'userpage':
-                //取得个人介绍
-                $contain = UserProfile::where( [ 'userid' => $data[ 'userid' ] ] )->value('about');
-                break;
-            case 'following':
-                //取得关注列表
-                $contain = FriendModel::all( [ 'fromId' => $data['userid'] = 3 ] );
-                $star = [];
-                foreach ($contain as $item){
-                    $star[] = [
-                        'userid'    =>  $item->star->id,
-                        'nickname'  =>  $item->star->nickname,
-                        'about'     =>  $item->starProfile->about,
-                    ];
-                }
-                $contain = $star;
-                break;
-            case 'follower':
-                //取得粉丝列表
-                $contain = FriendModel::all( [ 'toId' => $data['userid'] = 3 ] );
-                $star = [];
-                foreach ($contain as $item){
-                    $star[] = [
-                        'userid'    =>  $item->fan->id,
-                        'nickname'  =>  $item->fan->nickname,
-                        'about'     =>  $item->fanProfile->about,
-                    ];
-                }
-                $contain = $star;
-                break;
+        $base_profile   =   $this->LogicUser->getBaseUserinfo($data);
+        $contain        =   $this->LogicUser->getUserTypeInfo($data);
+        $is_follow      =   $this->LogicUser->isFollow($data);
 
-
-        }
-
-        $base_profile = $this->getBaseUserinfo($data);
         $user_profile = [
             'base_profile'  =>  $base_profile,
+            'is_follow'     =>  $is_follow,
             'contain'       =>  $contain
         ];
-        var_dump($user_profile);
 
+        var_dump($user_profile);
+//        return $user_profile;
 
     }
 
     /**
-     * 获得个人介绍
+     * 关注某个用户
      */
-    public function getBaseUserinfo($data){
-        $data['userid'] = 3;
-        $user = UserProfile::get( [ 'userid' => $data[ 'userid' ] ] );
+    public function followuser(){
+        $data['userid'] = 2;//登陆的uid
+        $data['touserid'] = 3;//查看用户的uid
 
-        $follower   = Db::name('friend')->where('toId', $data['userid'] )->count();
-        $following      = Db::name('friend')->where('fromId', $data['userid'] )->count();
+        $res = $this->LogicUser->followUser($data);
 
-        $base_profile = [
-            'username'  =>  $user->user->nickname,
-            'signature' =>  $user['signature'],
-            'following' =>  $following,
-            'follower'  =>  $follower,
-        ];
-
-        return $base_profile;
-
+        return $res;
     }
+    /**
+     * 取消关注
+     */
+    public function disfollowuser(){
+        $data['userid'] = 2;//登陆的uid
+        $data['touserid'] = 3;//查看用户的uid
+
+        $res = $this->LogicUser->disFollowUser($data);
+
+        return $res;
+    }
+
+
 
 
 
