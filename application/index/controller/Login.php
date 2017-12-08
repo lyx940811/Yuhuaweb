@@ -13,9 +13,6 @@ use app\index\model\User;
 
 class Login extends Home
 {
-    protected $LogicLogin;
-    protected $data;
-
     public function __construct()
     {
         parent::__construct();
