@@ -1,9 +1,7 @@
 <?php
 namespace app\manage\controller;
 use app\manage\model\User;
-use think\captcha\Captcha;
 use think\Controller;
-use think\Request;
 use think\Validate;
 
 /**
@@ -15,55 +13,53 @@ use think\Validate;
 //登陆类
 class Login extends Controller{
 
+    protected $rule =   [
+        'nickname'  => 'require|length:2,50|token', //我这里的token 是令牌验证
+        'password'   => 'require',
+    ];
+
     //登陆首页
     public function index(){
-//        import('Captcha','captcha.Captcha');
 
-//        $aa = new Captcha((array)Config::get('captcha'));
+        return view('index');
 
+    }
 
-        if(Request::instance()->isPost()){
+    public function login($nickname,$password,$captcha){
 
-            $info = input('post.');//接收值
-//            $user->nickname = input('post.username','','htmlspecialchars');
-//            $user->password = input('post.pwd');
+        echo password_hash('123456');
+        $info = input('post.');//接收值
 
-            $name = $this->request->post("username");
+        if(!captcha_check($captcha)){
+            //验证码错误
+            $this->error('验证码错误');
+        }
+        //错误信息提示
+        $msg  =   [
+            'nickname.require' => '登录账号不能为空',
+            'password.require' => '密码不能为空',
+        ];
+        $validate = new Validate($this->rule,$msg);
+        $validate->check($info);
+        $error = $validate->getError();//打印错误规则
 
-            $rule =   [
-                'nickname'  => 'require|length:1,50|token', //我这里的token 是令牌验证
-                'password'   => 'require',
-            ];
-            //错误信息提示
-            $msg  =   [
-                'nickname.require' => '登录账号不能为空',
-                'password.require' => '密码不能为空',
-            ];
-            $validate = new Validate($rule,$msg);
-            $validate->check($info);
-            $error = $validate->getError();//打印错误规则
+        if(!empty($error)){
+            $this->error($error);
+        }
 
-            if (strpos($name, "@") > 0) {//邮箱登陆
-                $where['nickname'] = $name;
-            } else {
-                $where['password'] = $name;
-            }
+        $user = User::get(['nickname'=>$nickname,'password'=>$password]);//取出的数据
 
-//            $password = User::get(['password'=>input('post.password','','htmlspecialchars')]);//原始密码
-//            $hash_password = password_hash(Db::query,PASSWORD_BCRYPT);//使用BCRYPT算法加密密码
-//            if (password_verify($password , $hash_password)){
-//                echo "密码匹配";
-//            }else{
-//                echo "密码错误";
-//            }
+        if(!$user){
+            $this->error('请输入正确的用户和密码');
         }else{
-            return view('index');
+            //success
+            $where['nickname'] = $nickname;
+            $where['password'] = $password;
+            $result = Db::name('user')->where($where)->find();
+            print_r($result);
         }
 
     }
 
-    public function captcha(){
-        $aa = new Captcha();
-    }
 
 }

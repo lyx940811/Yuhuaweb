@@ -30,16 +30,19 @@
 
         </div>
 
-        <form class="m-t" role="form" action="{:url('Manage/login/index')}" method="post">
+        <form class="m-t" role="form" action="{:url('Manage/login/login')}" method="post">
             <div class="form-group">
                 <input type="input" class="form-control" placeholder="用户名" required="" name="nickname">
             </div>
             <div class="form-group">
-                <input type="password" class="form-control" placeholder="密码" required="" name="password">
+                <input type="password" class="form-control" placeholder="密码"  title="密码" name="password">
             </div>
-            <button type="submit" class="btn btn-primary block full-width m-b">登 录</button>
-            <div>{:captcha_img()}</div>
+            <div class="form-group">
+                <input type="text" name="captcha" placeholder="验证码" class="form-control captcha col-lg-4" style="width: 150px">
+                <img src="{:captcha_src()}" onclick="this.src='{:captcha_src()}?'+Math.random();" title="换一张" style="cursor: pointer;width:120px"/>
+            </div>
             <input type="hidden" name="__token__" value="{$Request.token}" />
+            <button type="submit" class="btn btn-primary block full-width m-b">登 录</button>
             <p class="text-muted text-center"> <a href="login.html#"><small>忘记密码了？</small></a>
             </p>
 

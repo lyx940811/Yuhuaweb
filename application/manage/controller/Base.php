@@ -11,7 +11,7 @@ use think\Validate;
  */
 class Base extends Controller{
 
-    protected $access_token = ACCESS_TOKEN;
+   // protected $access_token = ACCESS_TOKEN;
     public function _initialize(){
         //判断登陆没登陆
         echo '请先登陆.<br/>';
