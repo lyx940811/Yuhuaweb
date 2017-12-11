@@ -10,5 +10,6 @@ use think\Model;
  */
 
 class User extends Model{
+    protected $field = ['nickname','password'];
 
 }

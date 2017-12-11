@@ -1,5 +1,6 @@
 <?php
 namespace app\manage\controller;
+
 /**
  * Created by phpstorm.
  * User: m's
@@ -11,10 +12,9 @@ namespace app\manage\controller;
 class Manage extends Base{
 
     public function index(){
+
         return view('index');
     }
 
-    public function test(){
-        echo 12;
-    }
+
 }

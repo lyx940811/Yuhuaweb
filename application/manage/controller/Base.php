@@ -14,7 +14,10 @@ class Base extends Controller{
    // protected $access_token = ACCESS_TOKEN;
     public function _initialize(){
         //判断登陆没登陆
-        echo '请先登陆.<br/>';
+        $uid = session('admin_uid');
+        if(!$uid){
+            $this->error('请先登陆',url('Manage/login/index'));
+        }
 
     }
 
