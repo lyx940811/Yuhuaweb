@@ -16,13 +16,9 @@
 <script>
     $(function(){
         $.post(
-            "{:url('index/user/chprofile')}",
-            {'userid':4,
-                'idcard':'370303199401220589',
-                'city':'淄博市张店区',
-                'mobile':'13864402321',
-                'birthday':'2017-12-06 11:42:58',
-                'signature':'chennn',
+            "{:url('index/course/createcourse')}",
+            {'title':'中1文1调用测试',
+                'userid':3,
                 'token':123456},
             function(data){
                 if(data){

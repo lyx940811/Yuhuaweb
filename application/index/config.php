@@ -21,6 +21,12 @@ return[// 视图输出字符串内容替换
         120     =>  'user has already exist',
         130     =>  '验证模型错误',
         140     =>  'wrong password',
+
+        //关于课程Course相关的
+        200     =>  'not find the course',
+        210     =>  'wrong request course type',
+
+
         //邮件发送部分
         800     =>  'email send error',
 

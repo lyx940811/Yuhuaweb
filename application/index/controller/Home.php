@@ -10,8 +10,10 @@ class Home extends Controller
     protected $token;
     protected $data;
     protected $codeMessage;
+
     protected $LogicLogin;
     protected $LogicUser;
+    protected $LogicCourse;
 
     public function __construct()
     {
@@ -22,11 +24,12 @@ class Home extends Controller
 
         //define token
         $this->token = $this->request->param('token');
-        $this->verifyToken();
+//        $this->verifyToken();
 
         //controller from dir logic
-        $this->LogicLogin = Loader::controller('Login','logic');
-        $this->LogicUser  = Loader::controller('User','logic');
+        $this->LogicLogin  = Loader::controller('Login','logic');
+        $this->LogicUser   = Loader::controller('User','logic');
+        $this->LogicCourse = Loader::controller('Course','logic');
 
         //unset the token which in the post data
         if($this->request->param()){

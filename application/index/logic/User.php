@@ -87,7 +87,6 @@ class User extends Base
                 //取得个人介绍
                 $contain = UserProfileModel::where( [ 'userid' => $data[ 'userid' ] ] )->value('about');
                 break;
-
             case 'following':
                 //取得关注列表
                 $contain = FriendModel::all( [ 'fromId' => $data['userid'] ] );
@@ -101,7 +100,6 @@ class User extends Base
                 }
                 $contain = $star;
                 break;
-
             case 'follower':
                 //取得粉丝列表
                 $contain = FriendModel::all( [ 'toId' => $data['userid'] ] );

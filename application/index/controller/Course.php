@@ -3,58 +3,70 @@ namespace app\index\controller;
 
 use think\Loader;
 use think\Config;
-use app\index\model\User;
+use app\index\model\Course as CourseModel;
+use app\index\model\User as UserModel;
 use think\Db;
+use think\Validate;
+
+/**
+ * Class Course 在教师角色下的我的教学-在教课程-课程管理中的一些功能
+ * @package app\index\controller
+ */
 class Course extends Home
 {
-    protected $LogicLogin;
+
 
     public function __construct()
     {
         parent::__construct();
-        //controller from app/index/logic/login.php
-        $this->LogicLogin = Loader::controller('Course','logic');
-
-
     }
 
     /**
      * 添加课程（教师）
      */
-    public function addcourse(){
-        //verified token
-        $token = 123456;//$this->request->param('token');
-        if($token==ACCESS_TOKEN){
-            //if token passed
-            $data['email']  = '123';
-            $data['nickname'] = '222';
-            $data['password']       =   password_hash(123456,PASSWORD_DEFAULT);
-            $data['title']          =   123;
-            $data['type']           =   1;
-            $data['createdTime']    =   date('Y-m-d H:i:s');
-            $result = User::create($data);
-        }
-        else{
-            //token verified error
-            return json_data(900,$this->codeMessage[900],'');
-        }
+    public function createcourse(){
+        $title  = $this->data['title'];
+        $userid = $this->data['userid'];
+        $res    = $this->LogicCourse->createCourse($title,$userid);
+        return $res;
     }
 
+    /**
+     * 教师在我的教学-课程中获得课程信息
+     * 现有type对应：
+     * base（基本信息）
+     * detail（详细信息）
+     * cover（封面图片）
+     * 课程文件
+     * 试卷管理
+     * 题目管理
+     * 计划任务
+     * 计划设置
+     * 营销设置
+     * teachers(教师设置)
+     * 学员管理
+     * 试卷批阅
+     * 作业批阅
+     * 学习数据
+     * 订单查询
+     * 教学计划管理
+     */
+    public function getcourse(){
+        $data['courseid'] = 5;
+        $data['type'] = 'detail';
+        $res = $this->LogicCourse->getCourseInfo($data);
+        return $res;
+    }
 
     /**
-     * 添加课程（教师）
+     * 改变课程发布的状态
+     * @return mixed
      */
-    public function addcourse2(){
-        //verified token
-        $token = 123456;//$this->request->param('token');
-        if($token==ACCESS_TOKEN){
-            //if token passed
+    public function chcoursestatu(){
+        $courseid = $this->data['courseid'];
+        $status   = $this->data['status'];
 
-        }
-        else{
-            //token verified error
-            return json_data(900,$this->codeMessage[900],'');
-        }
+        return $this->LogicCourse->chCourseStatus($courseid,$status);
     }
 
 
