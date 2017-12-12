@@ -3,7 +3,10 @@
 namespace app\index\logic;
 
 use app\index\model\Course as CourseModel;
+use app\index\model\Question;
+use app\index\model\Testpaper;
 use app\index\model\User   as UserModel;
+use app\index\model\CourseFile   as CourseFileModel;
 use think\Loader;
 use think\Config;
 use think\Validate;
@@ -15,6 +18,7 @@ class Course extends Base
     }
 
     /**
+     * 创建课程
      * @param $title    课程标题
      * @param $userid   创建课程的教师id
      * @return array
@@ -54,48 +58,116 @@ class Course extends Base
      */
     public function getCourseInfo($data){
         //顶部基础课程信息的key
-        $base_key = ['id'=>'','title'=>'','status'=>'','smallPicture'=>''];
-        $course = CourseModel::get([ 'id' => $data['courseid'] ])->toArray();
+        $base_key = [
+            'id'    =>  '',
+            'title' =>  '',
+            'status'=>  '',
+            'smallPicture'  =>    ''
+        ];
+        $course = CourseModel::get([ 'id' => $data['courseid'] ]);
 
         if($course){
+            $course = $course->toArray();
             switch ($data['type']){
                 case 'base':
                     //基本信息
-                    $key = ['title'=>'','subtitle'=>'','tags'=>'','categoryId'=>''];
+                    $key = ['title'=>'','subtitle'=>'','tags'=>'','categoryId'=>'','status'=>''];
+                    return $this->getCourseDetailByKey($course,$base_key,$key,$data['type']);
                     break;
                 case 'detail':
                     //详细信息
                     $key = ['about'=>'','goals'=>'','audiences'=>''];
+                    return $this->getCourseDetailByKey($course,$base_key,$key,$data['type']);
                     break;
                 case 'cover':
                     //封面图片
                     $key = ['middlePicture'=>'','largePicture'=>''];
+                    return $this->getCourseDetailByKey($course,$base_key,$key,$data['type']);
                     break;
                 case 'teachers':
-                    //封面图片
+                    //教师设置
                     $key = ['teacherIds'=>''];
+                    return $this->getCourseDetailByKey($course,$base_key,$key,$data['type']);
+                    break;
+                case 'files':
+                    //课程文件
+                    return $this->getCourseFiles($course,$base_key,$data['courseid']);
+                    break;
+                case 'testpaper':
+                    //得到课程下所有试卷
+                    return $this->getCourseTestpaper($course,$base_key,$data['courseid']);
+                    break;
+                case 'question':
+                    //得到课程下所有题目
+                    return $this->getCourseQuestion($course,$base_key,$data['courseid']);
                     break;
                 default:
                     break;
             }
-
-            if(!isset($key)){
-                return json_data(210,$this->codeMessage[210],'');
-            }
-            //取交集
-            $key         = array_merge($base_key,$key);
-            $course_info = array_intersect_key($course,$key);
-
-            if($data['type']=='teachers'){
-                $teacher_list                = $this->getCourseTeacherList($course_info);
-                $course_info['teacher_list'] = $teacher_list;
-            }
-
-            return json_data(0,$this->codeMessage[0],$course_info);
         }
         else{
             return json_data(200,$this->codeMessage[200],'');
         }
+    }
+
+
+    public function getCourseDetailByKey($course,$base_key,$key,$type=''){
+        if(!isset($key)){
+            return json_data(210,$this->codeMessage[210],'');
+        }
+        //取交集
+        $key         = array_merge($base_key,$key);
+        $course_info = array_intersect_key($course,$key);
+
+        if( $type == 'teachers'){
+            $teacher_list                = $this->getCourseTeacherList($course_info);
+            $course_info['teacher_list'] = $teacher_list;
+        }
+        return json_data(0,$this->codeMessage[0],$course_info);
+    }
+
+    public function getCourseFiles($course,$base_key,$courseid){
+        $files = CourseFileModel::all([ 'courseid ' => $courseid ]);
+
+        $course_info = array_intersect_key($course,$base_key);
+        $course_info['files'] = $files;
+        return json_data(0,$this->codeMessage[0],$course_info);
+    }
+
+    public function getCourseTestpaper($course,$base_key,$courseid){
+        $testpaper = Testpaper::where('courseId',$courseid)->column('id,name,score,itemCount,createTime');
+
+        $course_info = array_intersect_key($course,$base_key);
+        $course_info['testpaper'] = $testpaper;
+        return json_data(0,$this->codeMessage[0],$course_info);
+    }
+
+    public function getCourseQuestion($course,$base_key,$courseid){
+        $question = Question::where('courseId',$courseid)->column('id,type,stem,createdTime');
+
+        $course_info = array_intersect_key($course,$base_key);
+        $course_info['question'] = $question;
+        return json_data(0,$this->codeMessage[0],$course_info);
+    }
+
+
+    public function setCourseInfo($courseid,$type,$data){
+
+    }
+
+    /**
+     * 更新课程对应部分的内容
+     * @param $courseid 课程id
+     * @param $data     待更新数据
+     * @return array
+     */
+    public function updateCourseInfo($courseid,$data){
+        if(!$findcourse = CourseModel::get($courseid)){
+            json_data(200,$this->codeMessage[200],'');
+        }
+        $course = new CourseModel;
+        $course->save( $data ,[ 'id' => $courseid ]);
+        return json_data(0,$this->codeMessage[0],'');
     }
 
     /**

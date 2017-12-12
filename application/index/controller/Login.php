@@ -23,9 +23,9 @@ class Login extends Home
      * 注册
      */
     public function register(){
-        //if token passed
-        $this->data['createdIp'] = $this->request->ip();
-        $result = $this->LogicLogin->userAdd($this->data);
+        $data = $this->data;
+        $data['createdIp'] = $this->request->ip();
+        $result = $this->LogicLogin->userAdd($data);
         return $result;
     }
 
@@ -42,8 +42,9 @@ class Login extends Home
      * 输入邮箱，发送重置密码页面邮件
      */
     public function sendchemail(){
-        //if token passed
-        $result = $this->LogicLogin->sendChEmail($this->data);
+
+        $email = $this->data['email'];
+        $result = $this->LogicLogin->sendChEmail($email);
         return $result;
     }
 
@@ -51,10 +52,15 @@ class Login extends Home
      * 重置密码
      */
     public function chpassword(){
+        $data = $this->data;
+        if($data['password']!=$data['repassword']){
+            return json_data(130,'两次输入密码不一致！','');
+        }
 
-        $result = $this->LogicLogin->ChUserPassword($this->data);
+        $email    = base64_decode($data['email']);
+        $password = $data['password'];
+        $result = $this->LogicLogin->ChUserPassword($email,$password);
         return $result;
-
     }
 
 

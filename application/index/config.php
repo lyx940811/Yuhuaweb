@@ -25,6 +25,7 @@ return[// 视图输出字符串内容替换
         //关于课程Course相关的
         200     =>  'not find the course',
         210     =>  'wrong request course type',
+        220     =>  'not find any course files',
 
 
         //邮件发送部分

@@ -9,23 +9,17 @@
 // | 开源协议 ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
 
-namespace app\index\validate;
+namespace app\index\model;
 
-use think\Validate;
+use think\Model as ThinkModel;
 
 /**
- * 用户验证器
+ * 用户模型
+ * @package app\cms\model
  */
-class User extends Validate
+class Question extends ThinkModel
 {
-    // 定义验证规则
-    protected $rule = [
-//        'title|标题' => 'require|length:1,30',
-//        'cover|图片' => 'require',
-//        'url|链接'   => 'require|url',
-        'email'      => 'require|email',
-        'nickname'   => 'require|length:1,50|chsDash',
-        'password'   => 'require'
-    ];
+    // 自动写入时间戳
+//    protected $autoWriteTimestamp = true;
 
 }

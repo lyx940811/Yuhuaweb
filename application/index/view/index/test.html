@@ -4,8 +4,9 @@
 {block name="container"}
 
 <div class="bloglist f_l">
-  <form action="{:url('index/user/chheadicon')}" enctype="multipart/form-data" method="post">
+  <form action="{:url('index/course/setcourse')}" enctype="multipart/form-data" method="post">
     <input type="file" name="head_icon" /> <br>
+    <input type="file" name="back_head_icon" /> <br>
     <input type="submit" value="上传" />
   </form>
 </div>
@@ -16,9 +17,10 @@
 <script>
     $(function(){
         $.post(
-            "{:url('index/course/createcourse')}",
-            {'title':'中1文1调用测试',
-                'userid':3,
+            "{:url('index/login/sendchemail')}",
+            {
+                'email':'312850391@qq.com',
+
                 'token':123456},
             function(data){
                 if(data){

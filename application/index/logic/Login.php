@@ -15,8 +15,8 @@ class Login extends Base
 
     public function userAdd($data){
         $data['password']       =   password_hash($data['password'],PASSWORD_DEFAULT);
-        $data['title']          =   123;
-        $data['type']           =   1;
+        $data['title']          =   'G:\wamp64\www\tp5yuhuaweb\public\static\index\images\avatar.png';
+        $data['type']           =   3;
         $data['createdTime']    =   date('Y-m-d H:i:s');
         //is user exist?
         if(User::get(['email'=>$data['email']])){
@@ -46,7 +46,7 @@ class Login extends Base
         if($user){
             if(password_verify($data['password'],$user['password'])){
                 //需要对返回数据进行整理
-                //strcmp($user['password'],md5($data['password']))==0
+
 
 
                 return json_data(0,$this->codeMessage[0],$user);
@@ -60,12 +60,12 @@ class Login extends Base
         }
     }
 
-    public function sendChEmail($data){
-        if(User::get(['email'=>$data['email']])){
+    public function sendChEmail($email){
+        if($user = User::get(['email'=> $email ])){
             //send email
-            $title = '密码重置';
-            $content = '您的密码重置地址为：http://www.baidu.com';
-            if(send_email($data['email'],$title,$content)){
+            $title   = '【豫化在线】找回您的帐户密码';
+            $content = '亲爱的用户 '.$user['nickname'].'：您好！您的密码重置地址为：http://www.baidu.com?email='.base64_encode($email);
+            if(send_email($email,$title,$content)){
                 return json_data(0,$this->codeMessage[0],'');
             }
             else{
@@ -77,15 +77,18 @@ class Login extends Base
         }
     }
 
-    public function ChUserPassword($data){
+    public function ChUserPassword($email,$password){
+        if(!$user = User::get([ 'email' => $email ])){
+            return json_data(110,$this->codeMessage[110],'');
+        }
         $validate = new Validate([
             'email'      => 'require|email',
             'password'   => 'require|length:1,100',
         ]);
-
-        if(!$user = User::get([ 'email' => $data['email'] ])){
-            return json_data(110,$this->codeMessage[110],'');
-        }
+        $data = [
+            'email'     =>  $email,
+            'password'  =>  $password
+        ];
 
         if(!$validate->check($data)){
             // 验证失败 输出错误信息
@@ -94,7 +97,9 @@ class Login extends Base
         else{
             //update password
             $user = new User();
-            $user->save(['password'=>md5($data['password'])],['email'=>$data['email']]);
+            $user->save(
+                ['password'=>password_hash($data['password'],PASSWORD_DEFAULT)],
+                ['email'=>$email]);
             return json_data(0,$this->codeMessage[0],'');
         }
     }
