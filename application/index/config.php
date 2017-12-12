@@ -28,6 +28,8 @@ return[// 视图输出字符串内容替换
         220     =>  'not find any course files',
 
 
+        //文件上传部分
+        700     =>  'wrong file type',//文件格式不符合上传要求
         //邮件发送部分
         800     =>  'email send error',
 

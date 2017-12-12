@@ -4,6 +4,12 @@ namespace app\index\controller;
 use think\Controller;
 use think\Config;
 use think\Loader;
+// 指定允许其他域名访问
+header('Access-Control-Allow-Origin:*');
+// 响应类型
+header('Access-Control-Allow-Methods:POST');
+// 响应头设置
+header('Access-Control-Allow-Headers:x-requested-with,content-type');
 class Home extends Controller
 {
     protected $access_token = ACCESS_TOKEN;
@@ -24,7 +30,10 @@ class Home extends Controller
 
         //define token
         $this->token = $this->request->param('token');
-        $this->verifyToken();
+
+        if($this->request->isAjax()){
+            $this->verifyToken();
+        }
 
         //controller from dir logic
         $this->LogicLogin  = Loader::controller('Login','logic');
