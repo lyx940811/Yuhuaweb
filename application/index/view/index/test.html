@@ -4,7 +4,7 @@
 {block name="container"}
 
 <div class="bloglist f_l">
-  <form action="{:url('index/index/pic')}" enctype="multipart/form-data" method="post">
+  <form action="{:url('index/course/setcourse')}" enctype="multipart/form-data" method="post">
     <input type="file" name="head_icon" /> <br>
     <input type="file" name="back_head_icon" /> <br>
     <input type="submit" value="上传" />
@@ -17,8 +17,11 @@
 <script>
     $(function(){
         $.post(
-            "{:url('index/login/sendchemail')}",
-            {'':'312850391@qq.com',
+            "http://66.112.221.116/index/login/chpassword",
+            {
+                'email':'MzEyODUwMzkxQHFxLmNvbQ==',
+                'password':'123456',
+                'repassword':'123456',
                 'token':123456},
             function(data){
                 if(data){

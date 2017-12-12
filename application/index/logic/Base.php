@@ -25,13 +25,13 @@ class Base
             }
             $name        = $files[$key]['name'];
             $tmp_name    = $files[$key]['tmp_name'];
-            $uploads_dir = ROOT_PATH."public".DS."uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
+            $uploads_dir = "uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
             if(!file_exists($uploads_dir)){
                 mkdir($uploads_dir,0775,true);
             }
-            $uploads_dir = $uploads_dir.DS.$name;
-            move_uploaded_file($tmp_name, iconv("utf-8","gb2312",$uploads_dir));
-            $save_path[$key] = $uploads_dir;
+            $file_dir = ROOT_PATH."public".DS.$uploads_dir.DS.$name;
+            move_uploaded_file($tmp_name, iconv("utf-8","gb2312",$file_dir));
+            $save_path[$key] = $uploads_dir.DS.$name;
         }
         return $save_path;
     }
@@ -53,15 +53,19 @@ class Base
                 return json_data(700,$this->codeMessage[700],'');
                 break;
             }
+            if(filesize($files[$key]['tmp_name'])>2097152){
+                return json_data(710,$this->codeMessage[710],'');
+                break;
+            }
             $name        = $files[$key]['name'];
             $tmp_name    = $files[$key]['tmp_name'];
-            $uploads_dir = ROOT_PATH."public".DS."uploads".DS."pictures".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
+            $uploads_dir = "uploads".DS."pictures".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
             if(!file_exists($uploads_dir)){
                 mkdir($uploads_dir,0775,true);
             }
-            $uploads_dir = $uploads_dir.DS.$name;
-            move_uploaded_file($tmp_name, iconv("utf-8","gb2312",$uploads_dir));
-            $save_path[$key] = $uploads_dir;
+            $file_dir = ROOT_PATH."public".DS.$uploads_dir.DS.$name;
+            move_uploaded_file($tmp_name, iconv("utf-8","gb2312",$file_dir));
+            $save_path[$key] = $uploads_dir.DS.$name;
         }
         return $save_path;
     }

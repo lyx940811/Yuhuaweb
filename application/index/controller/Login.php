@@ -60,7 +60,7 @@ class Login extends Home
         $email    = base64_decode($data['email']);
         $password = $data['password'];
         $result = $this->LogicLogin->ChUserPassword($email,$password);
-        return $result;
+        return json_encode($result);
     }
 
 

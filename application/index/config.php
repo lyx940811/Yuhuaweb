@@ -30,6 +30,7 @@ return[// 视图输出字符串内容替换
 
         //文件上传部分
         700     =>  'wrong file type',//文件格式不符合上传要求
+        710     =>  'file is over size',
         //邮件发送部分
         800     =>  'email send error',
 

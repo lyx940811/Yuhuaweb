@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 
+use Couchbase\Document;
 use think\Controller;
 use think\Db;
 class Index extends Home
@@ -15,7 +16,10 @@ class Index extends Home
     {
         return $this->fetch();
     }
-
+    public function file2()
+    {
+        return $this->fetch();
+    }
     public function rrr()
     {
         //connect redis
@@ -28,7 +32,15 @@ class Index extends Home
     public function pic(){
         $file = $_FILES;
         $res = $this->LogicLogin->uploadPic($file);
-        var_dump($res);
+
+        if($this->request->isAjax()){
+            return json_encode('ajax');
+        }
+        else{
+            return json_encode('not ajax');
+        }
+//        return json_encode(json_data(0,$this->codeMessage[0],$res));
+//        return $res;
     }
     /**
      *
