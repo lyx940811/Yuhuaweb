@@ -92,12 +92,14 @@ class Login extends Base
                 if($redis->exists($redis_key)){
                     $num = $redis->get($redis_key);
                     $num = $num+1;
-                    $redis->setex($redis_key, 86400, $num);
                     if($num == 3){
                         //locked
                         $user->locked = 1;
                         $user->save();
                         $redis->delete($redis_key);
+                    }
+                    else{
+                        $redis->setex($redis_key, 86400, $num);
                     }
                 }
                 else{
