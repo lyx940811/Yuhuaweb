@@ -64,10 +64,10 @@ class Login extends Base
         }
         if($user = User::get([ $key => $data['username'] ])){
             if(!in_array($user['type'],$allow_type)){
-                return json_data(150,$this->codeMessage[150],$user);
+                return json_data(150,$this->codeMessage[150],'');
             }
             if($user['locked']==1){
-                return json_data(160,$this->codeMessage[160],$user);
+                return json_data(160,$this->codeMessage[160],'');
             }
 
             if(password_verify($data['password'],$user['password'])){
