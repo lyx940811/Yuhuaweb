@@ -31,9 +31,7 @@ class Home extends Controller
         //define token
         $this->token = $this->request->param('token');
 
-//        if($this->request->isAjax()){
-//            $this->verifyToken();
-//        }
+//        $this->verifyToken();
 
         //controller from dir logic
         $this->LogicLogin  = Loader::controller('Login','logic');

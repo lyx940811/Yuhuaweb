@@ -2,7 +2,7 @@
 
 
     /**
-     * 发送邮件方法
+     * 封装将要返回的json数据
      * @param int $code 返回代码
      * @param string $data 返回数据
      */
@@ -128,7 +128,7 @@
 
 
     /**
-     * 压缩图片函数，目的压缩到2m以下
+     * 压缩图片函数，目的压缩到2m以下(未完成)
      * @param $source_path
      * @return bool
      */
@@ -158,3 +158,81 @@
         $target_path = $imgArr[0] . '_new.' . $imgArr[1];
         imagejpeg($source_image, $target_path, 80);
     }
+
+    /**
+     * 图片上传（多图）
+     * 限制了大小，限制了上传格式（2m）
+     * @param $files    图片信息
+     * @param $userid   如果有userid的话把userid作为图片文件名的一部分，生成格式为：年月日 + userid + uniqid（）
+     * @return array|mixed  以数组的方式对应返回路径,键名为上传时定义的name，键值是路径
+     */
+    function uploadPic($files,$userid='',$limitSize=2097152){
+        $save_path = array();
+        $type = ['image/gif','image/jpeg','image/png'];
+        foreach ($files as $key=>$value){
+            if(!file_exists($files[$key]['tmp_name'])){
+                continue;
+            }
+            if(!in_array($files[$key]['type'],$type)){
+                return $data= [
+                    'code'  =>  700,
+                    'path'  =>  '',
+                ];
+                break;
+            }
+            if(filesize($files[$key]['tmp_name'])>$limitSize){
+                return $data= [
+                    'code'  =>  710,
+                    'path'  =>  '',
+                ];
+                break;
+            }
+            $name        = $files[$key]['name'];
+            $tmp_name    = $files[$key]['tmp_name'];
+            $uploads_dir = "uploads".DS."pictures".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
+            $date_dir    = ROOT_PATH."public".DS.$uploads_dir;
+            if(!file_exists($date_dir)){
+                mkdir($date_dir,0775,true);
+            }
+            //rename file
+            $name = explode('.',$name);
+            $name[0] = date('Ymd',time()).$userid.uniqid();
+            $name = implode('.',$name);
+
+            $file_dir = ROOT_PATH."public".DS.$uploads_dir.DS.$name;
+            move_uploaded_file($tmp_name, iconv("utf-8","gb2312",$file_dir));
+            $save_path[$key] = $uploads_dir.DS.$name;
+        }
+        return $data= [
+            'code'  =>  0,
+            'path'  =>  $save_path,
+        ];
+    }
+
+
+
+    /**
+     * 文件上传（多文件）
+     * @param $files    文件信息
+     * @return array|mixed  以数组的方式对应返回路径,键名为上传时定义的name，键值是路径
+     */
+    function uploadFile($files){
+        $save_path = array();
+        foreach ($files as $key=>$value){
+            if(!file_exists($files[$key]['tmp_name'])){
+                continue;
+            }
+            $name        = $files[$key]['name'];
+            $tmp_name    = $files[$key]['tmp_name'];
+            $uploads_dir = "uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
+            $date_dir    = ROOT_PATH."public".DS.$uploads_dir;
+            if(!file_exists($date_dir)){
+                mkdir($date_dir,0775,true);
+            }
+            $file_dir = ROOT_PATH."public".DS.$uploads_dir.DS.$name;
+            move_uploaded_file($tmp_name, iconv("utf-8","gb2312",$file_dir));
+            $save_path[$key] = $uploads_dir.DS.$name;
+        }
+        return $save_path;
+    }
+

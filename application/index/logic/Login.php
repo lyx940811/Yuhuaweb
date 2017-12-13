@@ -13,9 +13,14 @@ class Login extends Base
         parent::__construct();
     }
 
+    /**
+     * 创建用户
+     * @param $data
+     * @return array
+     */
     public function userAdd($data){
         $data['password']       =   password_hash($data['password'],PASSWORD_DEFAULT);
-        $data['title']          =   'G:\wamp64\www\tp5yuhuaweb\public\static\index\images\avatar.png';
+        $data['title']          =   'static\index\images\avatar.png';
         $data['type']           =   3;
         $data['createdTime']    =   date('Y-m-d H:i:s');
         //is user exist?
@@ -41,17 +46,64 @@ class Login extends Base
         }
     }
 
+    /**
+     * 用户登录
+     * @param $data
+     * @return array
+     */
     public function userLogin($data){
-        $user = User::get(['email'=>$data['email']]);
-        if($user){
+        $allow_type = [2,3];
+        if(preg_match('/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/',$data['username'])){
+            $key = 'email';
+        }
+        elseif(preg_match('/^[1][3,4,5,7,8][0-9]{9}$/',$data['username'])){
+            $key = 'mobile';
+        }
+        else{
+            $key = 'username';
+        }
+        if($user = User::get([ $key => $data['username'] ])){
+            if(!in_array($user['type'],$allow_type)){
+                return json_data(150,$this->codeMessage[150],$user);
+            }
+            if($user['locked']==1){
+                return json_data(160,$this->codeMessage[160],$user);
+            }
+
             if(password_verify($data['password'],$user['password'])){
                 //需要对返回数据进行整理
-
-
-
+                $key = [
+                    'id'=>'',
+                    'nickname'=>'',
+                    'mobile'=>'',
+                    'username'=>'',
+                    'password'=>'',
+                    'title'=>'',
+                    'type'=>'',
+                ];
+                $user = array_intersect_key($user,$key);
                 return json_data(0,$this->codeMessage[0],$user);
             }
             else{
+                //密码错误，次数+1，到达3的时候锁定
+                $redis_key = 'wrongpwd'.$user['id'];
+                $redis = new \Redis();
+                $redis->connect('127.0.0.1', 6379);
+                if($redis->exists($redis_key)){
+                    $num = $redis->get($redis_key);
+                    $num = $num+1;
+                    $redis->setex($redis_key, 86400, $num);
+                    if($num == 3){
+                        //locked
+                        $user->locked = 1;
+                        $user->save();
+                        $redis->delete($redis_key);
+                    }
+                }
+                else{
+                    $redis->setex($redis_key, 86400, 1);
+                }
+
                 return json_data(140,$this->codeMessage[140],'');
             }
         }
@@ -60,6 +112,11 @@ class Login extends Base
         }
     }
 
+    /**
+     * 发送重置密码的邮件
+     * @param $email
+     * @return array
+     */
     public function sendChEmail($email){
         if($user = User::get(['email'=> $email ])){
             //send email
@@ -77,6 +134,12 @@ class Login extends Base
         }
     }
 
+    /**
+     * 通过邮件跳转的重置密码页面进行重置密码
+     * @param $email
+     * @param $password
+     * @return array
+     */
     public function ChUserPassword($email,$password){
         if(!$user = User::get([ 'email' => $email ])){
             return json_data(110,$this->codeMessage[110],'');

@@ -30,22 +30,62 @@ class User extends Home
         return $result;
     }
 
+    /**
+     * 上传图片
+     */
+    public function uploadimg(){
+        $file = $_FILES;
+        $res = uploadPic($file);
+        if($res['code']!=0){
+            return json_data($res['code'],$this->codeMessage[$res['code']],$res['path']);
+        }
+        return json_data($res['code'],$this->codeMessage[$res['code']],$res['path']);
+    }
 
     /**
      * 修改头像
      */
     public function chheadicon(){
-        $file = $_FILES;//request()->file('head_icon');
-//        $type = array(".gif",".jpg",".png",".bmp");
-//        $fileType = strrchr($_FILES['img']['name'],".");
-        var_dump($file);
-        var_dump(preg_match('/^image\//i', $file['head_icon']['type']));
-//        if (!in_array($fileType,$type)){
-//            echo "不是允许的图片类型";
-//        }
-//
-//        var_dump($file);
+        $file = $_FILES;
+        $res  = $this->LogicUser->upUserHeadImg($file,$this->data);
+        return $res;
     }
+    /**
+     * 实名认证
+     */
+    public function attestation(){
+        $file = $_FILES;
+        $data = $this->data;
+
+        $res = $this->LogicUser->userAttestation($file,$data);
+        return $res;
+    }
+
+    /**
+     * 修改密码
+     */
+    public function chpwd(){
+        $data = $this->data;
+        $userid = $data['userid'];
+        if($data['newpwd']!=$data['renewpwd']){
+            return json_data(130,'两次输入密码不一致！','');
+        }
+
+        if( $user = UserModel::get($userid) ){
+            if(password_verify($data['pwd'],$user->password)){
+                $user->password = password_hash($data['newpwd'],PASSWORD_DEFAULT);
+                $user->save();
+                return json_data(0,$this->codeMessage[0],'');
+            }
+            else{
+                return json_data(130,'原密码输入错误！','');
+            }
+        }
+        else{
+            return json_data(110,$this->codeMessage[110],'');
+        }
+    }
+
 
     /**
      * 修改用户名
@@ -54,6 +94,34 @@ class User extends Home
         $result = $this->LogicUser->chUsername($this->data);
         return $result;
     }
+
+    /**
+     * 获得个人设置内信息（type传入不同的选项来获得下方不同的内容）
+     */
+    public function getuserinfo(){
+        $data = $this->data;
+        if(!UserModel::get($data['userid'])){
+            return json_data(110,$this->codeMessage[110],'');
+        }
+        switch ($data['type']){
+            case 'base':
+                $user_profile = $this->LogicUser->getUserInfo($data['userid']);
+                return json_data(0,$this->codeMessage[0],$user_profile);
+                break;
+            case 'avatar':
+                $user_profile = $this->LogicUser->getUserAvatar($data['userid']);
+                return json_data(0,$this->codeMessage[0],$user_profile);
+                break;
+            case 'attestation':
+                $user_profile = $this->LogicUser->getUserAttestation($data['userid']);
+                return json_data(0,$this->codeMessage[0],$user_profile);
+                break;
+            default:
+                return json_data(1000,$this->codeMessage[1000],'');
+                break;
+        }
+    }
+
 
     /**
      * 获得个人主页内容（type传入不同的选项来获得下方不同的内容）

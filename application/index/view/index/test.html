@@ -4,9 +4,13 @@
 {block name="container"}
 
 <div class="bloglist f_l">
-  <form action="{:url('index/course/setcourse')}" enctype="multipart/form-data" method="post">
-    <input type="file" name="head_icon" /> <br>
-    <input type="file" name="back_head_icon" /> <br>
+  <form action="{:url('index/user/attestation')}" enctype="multipart/form-data" method="post">
+    <input type="hidden" name="userid" value="1" /> <br>
+    <input type="text" name="realname" /> <br>
+    <input type="text" name="idcard" /> <br>
+    <input type="file" name="front_pic" /> <br>
+    <input type="file" name="behind_pic" /> <br>
+    <!--<input type="file" name="back_head_icon" /> <br>-->
     <input type="submit" value="上传" />
   </form>
 </div>
@@ -17,12 +21,12 @@
 <script>
     $(function(){
         $.post(
-            "http://66.112.221.116/index/login/chpassword",
+            "http://localhost/index/login/login",
             {
-                'email':'MzEyODUwMzkxQHFxLmNvbQ==',
-                'password':'123456',
-                'repassword':'123456',
-                'token':123456},
+                'email':'312850391@qq.com',
+                'password':'456789',
+                'token':123456
+            },
             function(data){
                 if(data){
                     console.log(data);
