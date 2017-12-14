@@ -5,7 +5,7 @@
 
 <div class="bloglist f_l">
   <form action="{:url('index/user/attestation')}" enctype="multipart/form-data" method="post">
-    <input type="hidden" name="userid" value="1" /> <br>
+    <input type="hidden" name="userid" value="2" /> <br>
     <input type="text" name="realname" /> <br>
     <input type="text" name="idcard" /> <br>
     <input type="file" name="front_pic" /> <br>
@@ -21,9 +21,10 @@
 <script>
     $(function(){
         $.post(
-            "http://localhost/index/login/login",
+            "http://localhost/index/login/register",
             {
                 'email':'312850391@qq.com',
+                'username':'nick',
                 'password':'456789',
                 'token':123456
             },

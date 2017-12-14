@@ -21,15 +21,18 @@ class Index extends Home
     {
         return $this->fetch();
     }
+    public function inde(){
+        echo base64_encode('312850391@qq.com');
+    }
     public function rrr()
     {
         //connect redis
-        $redis = new \Redis();
-        $re = $redis->connect('127.0.0.1', 6379);
-        $redis->set('wrong1',1);
-        $re = $redis->get('wrong1');
-        $redis->setex('key', 3600, 'value');
-        var_dump($re);
+//        $redis = new \Redis();
+//        $re = $redis->connect('127.0.0.1', 6379);
+//        $redis->set('wrong1',1);
+//        $re = $redis->get('wrong1');
+//        $redis->setex('key', 3600, 'value');
+//        var_dump($re);
 //        phpinfo();
     }
 

@@ -48,11 +48,12 @@
             var data = new FormData();
             //为FormData对象添加数据
             //
+            data.append('userid', 2);
             $.each($('#inputfile')[0].files, function (i, file) {
-                data.append('upload_file', file);
+                data.append('head_icon', file);
             });
             $.ajax({
-                url: 'http://66.112.221.116/index/index/pic',
+                url: 'http://localhost/index/user/chheadicon',
                 type: 'post',
                 data: data,
                 dataType:"json",
@@ -65,6 +66,21 @@
             });
 
         });
+
+        $.post(
+            "http://localhost/index/user/getuserinfo",
+            {
+                'userid':'1',
+                'type':'base',
+                'token':123456
+            },
+            function(data){
+                if(data){
+                    console.log(data);
+                }
+            },
+            "json"
+        );
     });
 </script>
 </body>

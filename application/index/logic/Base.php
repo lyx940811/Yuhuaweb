@@ -11,13 +11,10 @@ class Base
     public function __construct()
     {
         $this->codeMessage = Config::get('apicode_message');
-        $this->setRedis();
+
     }
 
-    public function setRedis(){
-        $this->redis = new \Redis();
-        $this->redis->connect('127.0.0.1', 6379);
-    }
+
 
 }
 ?>

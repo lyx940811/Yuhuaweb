@@ -20,6 +20,7 @@ class UserProfile extends Validate
 {
     // 定义验证规则
     protected $rule = [
+        'userid|用户id'           => 'require',
         'mobile|电话'             => 'length:1,20',
         'idcard|身份证号码'       => 'length:1,20',
         'city|身份证号码'         => 'length:1,20',

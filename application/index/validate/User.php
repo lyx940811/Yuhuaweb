@@ -24,7 +24,7 @@ class User extends Validate
 //        'cover|图片' => 'require',
 //        'url|链接'   => 'require|url',
         'email'      => 'require|email',
-        'nickname'   => 'require|length:1,50|chsDash',
+        'username'   => 'require|length:1,50|chsDash',
         'password'   => 'require'
     ];
 

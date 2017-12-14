@@ -26,6 +26,7 @@ class User extends Home
      * 新增/修改资料
      */
     public function chprofile(){
+
         $result = $this->LogicUser->chUserProfile($this->data);
         return $result;
     }
@@ -56,7 +57,9 @@ class User extends Home
     public function attestation(){
         $file = $_FILES;
         $data = $this->data;
-
+        if(!UserModel::get($data['userid'])){
+            return json_data(110,$this->codeMessage[110],'');
+        }
         $res = $this->LogicUser->userAttestation($file,$data);
         return $res;
     }

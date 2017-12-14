@@ -27,6 +27,9 @@ class Login extends Base
         if(User::get(['email'=>$data['email']])){
             return json_data(120,$this->codeMessage[120],'');
         }
+        if(User::get(['username'=>$data['username']])){
+            return json_data(120,$this->codeMessage[120],'');
+        }
         else{
             //verified data
             $validate = Loader::validate('User');
@@ -72,6 +75,7 @@ class Login extends Base
 
             if(password_verify($data['password'],$user['password'])){
                 //需要对返回数据进行整理
+
                 $key = [
                     'id'=>'',
                     'nickname'=>'',
@@ -81,6 +85,7 @@ class Login extends Base
                     'title'=>'',
                     'type'=>'',
                 ];
+                $user = $user->toArray();
                 $user = array_intersect_key($user,$key);
                 return json_data(0,$this->codeMessage[0],$user);
             }
@@ -146,6 +151,7 @@ class Login extends Base
         if(!$user = User::get([ 'email' => $email ])){
             return json_data(110,$this->codeMessage[110],'');
         }
+
         $validate = new Validate([
             'email'      => 'require|email',
             'password'   => 'require|length:1,100',
@@ -165,7 +171,20 @@ class Login extends Base
             $user->save(
                 ['password'=>password_hash($data['password'],PASSWORD_DEFAULT)],
                 ['email'=>$email]);
-            return json_data(0,$this->codeMessage[0],'');
+
+            $newuser = User::get(['email'=>$data['email']]);
+            $key = [
+                'id'=>'',
+                'nickname'=>'',
+                'mobile'=>'',
+                'username'=>'',
+                'password'=>'',
+                'title'=>'',
+                'type'=>'',
+            ];
+            $newuser = $newuser->toArray();
+            $newuser = array_intersect_key($newuser,$key);
+            return json_data(0,$this->codeMessage[0],$newuser);
         }
     }
 

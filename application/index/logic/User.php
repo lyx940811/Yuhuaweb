@@ -19,51 +19,39 @@ class User extends Base
      * 新增/修改资料
      */
     public function chUserProfile($data){
+        //verify data
+        $key = ['username','nickname'=>''];
+        $profile_data = array_diff_key($data,$key);
+
+        $validate = Loader::validate('UserProfile');
+        if(!$validate->check($profile_data)){
+            return json_data(130,$validate->getError(),'');
+        }
+
         if($user_profile = UserProfileModel::get(['userid' => $data['userid']])){
-            //verify data
-            $validate = Loader::validate('UserProfile');
-
-            if(!$validate->check($data)){
-                return json_data(130,$validate->getError(),'');
-            }
-            else{
-                //update data
-                $user_profile->data($data)
-                    ->isUpdate(true)
-                    ->save(['userid' => $data['userid']]);
-
-                return json_data(0,$this->codeMessage[0],'');
-            }
-
+            //update data
+            $user_profile->data($profile_data)
+                ->isUpdate(true)
+                ->save(['userid' => $data['userid']]);
+            //update user data
+            $user = UserModel::get($data['userid']);
+            $user->nickname=$data['nickname'];
+            $user->save();
+            return json_data(0,$this->codeMessage[0],'');
         }
         else{
             $data['createdTime'] = date('Y-m-d H:i:s',time());
-            //verify data
-            $validate = new Validate([
-                'userid'                  => 'require',
-                'mobile|电话'             => 'require|length:1,20',
-                'idcard|身份证号码'       => 'require|length:1,20',
-                'city|城市'               => 'require',
-                'createdTime|创建时间'    => 'require',
-            ]);
-
-            if(!$validate->check($data)){
-                return json_data(130,$validate->getError(),'');
-            }
-            else{
-                //add data
-                $new_profile = new UserProfileModel;
-                $new_profile->data($data)->isUpdate(false)->save();
-                return json_data(0,$this->codeMessage[0],'');
-            }
-
+            //add data
+            $new_profile = new UserProfileModel;
+            $new_profile->data($profile_data)->isUpdate(false)->save();
+            return json_data(0,$this->codeMessage[0],'');
         }
     }
 
     /**
      * 修改用户名
      */
-    public function chUsername($data){
+    /*public function chUsername($data){
         if($user = UserModel::get([ 'id' => $data['userid'] ])){
             $user->nickname = $data['nickname'];
             $user->save();
@@ -72,9 +60,7 @@ class User extends Base
         else{
             return json_data(110,$this->codeMessage[110],'');
         }
-    }
-
-
+    }*/
 
     /**
      * 根据type不同来获得不同的内容
@@ -140,6 +126,131 @@ class User extends Base
     }
 
     /**
+     * 上传并更新用户头像
+     * @param $file 图片信息
+     * @param $data 从里面获取用户id
+     * @return string
+     */
+    public function upUserHeadImg($file,$data){
+        $userid = $data['userid'];
+        $res = uploadPic($file,$userid);
+        if($res['code']!=0){
+            return json_data($res['code'],$this->codeMessage[$res['code']],$res['path']);
+        }
+
+        if( $user = UserModel::get($userid) ){
+            $user->title = $res['path']['head_icon'];
+            $user->save();
+            return json_data(0,$this->codeMessage[0],$res['path']);
+        }
+        else{
+            return json_data(110,$this->codeMessage[110],'');
+        }
+    }
+
+    /**
+     * 实名认证
+     * @param $file 身份证文件
+     * @param $data 个人信息
+     * @return string
+     */
+    public function userAttestation($file,$data){
+        $userid = $data['userid'];
+        $res  = uploadPic($file);
+        if($res['code']!=0){
+            return json_data($res['code'],$this->codeMessage[$res['code']],'');
+        }
+        $data['cardpic'] = serialize($res['path']);
+
+        $validate = new Validate([
+            'realname' => 'require',
+            'idcard'   => 'require|length:1,18',
+            'cardpic'  => 'require'
+        ]);
+        if(!$validate->check($data)){
+            return json_data(130,$validate->getError(),'');
+        }
+
+        //如果已经生成user_profile的话，就更新，没有的话则生成对应的userprofile
+        if($user = UserProfileModel::get([ 'userid' => $userid ])){
+            $user->realname =   $data['realname'];
+            $user->idcard   =   $data['idcard'];
+            $user->cardpic  =   $data['cardpic'];
+            $user->save();
+            return json_data(0,$this->codeMessage[0],$res['path']);
+        }
+        else{
+            $new_profile = new UserProfileModel;
+            $new_profile->data($data)->isUpdate(false)->save();
+            return json_data(0,$this->codeMessage[0],'');
+        }
+    }
+
+    /**
+     * 得到用户基本信息
+     */
+    public function getUserInfo($userid){
+        $key = [
+            'sex'=>'',
+            'mobile'=>'',
+            'company'=>'',
+            'job'=>'',
+            'signature'=>'',
+            'about'=>'',
+            'site'=>'',
+            'weibo'=>'',
+            'weixin'=>'',
+            'qq'=>'',
+            'isQQPublic'=>'',
+            'isWeixinPublic'=>'',
+            'isWeiboPublic'=>'',
+            ];
+        $user_profile = UserProfileModel::get([ 'userid' => $userid])->toArray();
+        $user_profile = array_intersect_key($user_profile,$key);
+
+        $user = UserModel::get($userid);
+        $user_profile['username'] = $user['username'];
+        $user_profile['nickname'] = $user['nickname'];
+
+        return $user_profile;
+    }
+
+    /**
+     * 得到用户头像
+     * @param $userid
+     * @return array
+     */
+    public function getUserAvatar($userid){
+        $key = [
+            'title'=>'',
+        ];
+        $user_profile = UserModel::get($userid)->toArray();
+        $user_profile = array_intersect_key($user_profile,$key);
+        return $user_profile;
+    }
+
+    /**
+     * 得到用户实名认证的信息
+     * @param $userid
+     * @return array
+     */
+    public function getUserAttestation($userid){
+        $key = [
+            'realname'=>'',
+            'idcard'=>'',
+            'cardpic'=>'',
+        ];
+        $user_profile = UserProfileModel::get([ 'userid' => $userid])->toArray();
+        $user_profile = array_intersect_key($user_profile,$key);
+        $cardpic = unserialize($user_profile['cardpic']);
+        $user_profile['front_pic'] = $cardpic['front_pic'];
+        $user_profile['behind_pic'] = $cardpic['behind_pic'];
+        unset($user_profile['cardpic']);
+        return $user_profile;
+    }
+
+
+    /**
      * 判断登陆的用户与访问页面的用户是否关注
      */
     public function isFollow($data){
@@ -187,130 +298,6 @@ class User extends Base
         else{
             return json_data(110,$this->codeMessage[110],'');
         }
-    }
-
-    /**
-     * 上传并更新用户头像
-     * @param $file 图片信息
-     * @param $data 从里面获取用户id
-     * @return string
-     */
-    public function upUserHeadImg($file,$data){
-        $userid = $data['userid'];
-        $res = uploadPic($file,$userid);
-        if($res['code']!=0){
-            return json_data($res['code'],$this->codeMessage[$res['code']],$res['path']);
-        }
-
-        if( $user = UserModel::get($userid) ){
-            $user->title = $res['path']['head_icon'];
-            $user->save();
-            return json_data(0,$this->codeMessage[0],$res['path']);
-        }
-        else{
-            return json_data(110,$this->codeMessage[110],'');
-        }
-    }
-
-
-    /**
-     * 实名认证
-     * @param $file 身份证文件
-     * @param $data 个人信息
-     * @return string
-     */
-    public function userAttestation($file,$data){
-        $userid = $data['userid'];
-
-        if($user = UserProfileModel::get([ 'userid' => $userid ])){
-
-            $res  = uploadPic($file);
-            if($res['code']!=0){
-                return json_data($res['code'],$this->codeMessage[$res['code']],'');
-            }
-            $data['cardpic'] = serialize($res['path']);
-
-            $validate = new Validate([
-                'realname' => 'require',
-                'idcard'   => 'require|length:1,18',
-                'cardpic'  => 'require'
-            ]);
-            if(!$validate->check($data)){
-                return json_data(130,$validate->getError(),'');
-            }
-
-            $user->realname =   $data['realname'];
-            $user->idcard   =   $data['idcard'];
-            $user->cardpic  =   $data['cardpic'];
-            $user->save();
-            return json_data(0,$this->codeMessage[0],$res['path']);
-        }
-        else{
-            return json_data(110,$this->codeMessage[110],'');
-        }
-    }
-
-    /**
-     * 得到用户基本信息
-     */
-    public function getUserInfo($userid){
-        $key = [
-            'realname'=>'',
-            'sex'=>'',
-            'mobile'=>'',
-            'company'=>'',
-            'job'=>'',
-            'signature'=>'',
-            'about'=>'',
-            'site'=>'',
-            'weibo'=>'',
-            'weixin'=>'',
-            'qq'=>'',
-            'isQQPublic'=>'',
-            'isWeixinPublic'=>'',
-            'isWeiboPublic'=>'',
-            ];
-        $user_profile = UserProfileModel::get([ 'userid' => $userid])->toArray();
-        $user_profile = array_intersect_key($user_profile,$key);
-
-        $user = UserModel::get($userid);
-        $user_profile['username'] = $user['username'];
-
-        return $user_profile;
-    }
-
-    /**
-     * 得到用户头像
-     * @param $userid
-     * @return array
-     */
-    public function getUserAvatar($userid){
-        $key = [
-            'title'=>'',
-        ];
-        $user_profile = UserModel::get($userid)->toArray();
-        $user_profile = array_intersect_key($user_profile,$key);
-        return $user_profile;
-    }
-
-    /**
-     * 得到用户实名认证的信息
-     * @param $userid
-     * @return array
-     */
-    public function getUserAttestation($userid){
-        $key = [
-            'realname'=>'',
-            'idcard'=>'',
-            'cardpic'=>'',
-        ];
-        $user_profile = UserProfileModel::get([ 'userid' => $userid])->toArray();
-        $user_profile = array_intersect_key($user_profile,$key);
-        $cardpic = unserialize($user_profile['cardpic']);
-        $user_profile['front_pic'] = $cardpic['front_pic'];
-        $user_profile['behind_pic'] = $cardpic['behind_pic'];
-        unset($user_profile['cardpic']);
-        return $user_profile;
     }
 
 
