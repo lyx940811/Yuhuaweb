@@ -14,11 +14,11 @@ use think\Validate;
  */
 class Course extends Home
 {
-
-
+    protected $LogicCourse;
     public function __construct()
     {
         parent::__construct();
+        $this->LogicCourse = Loader::controller('Course','logic');
     }
 
     /**

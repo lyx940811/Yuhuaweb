@@ -16,10 +16,11 @@ use think\Validate;
  */
 class User extends Home
 {
+    protected $LogicUser;
     public function __construct()
     {
         parent::__construct();
-
+        $this->LogicUser   = Loader::controller('User','logic');
     }
 
     /**
@@ -77,6 +78,8 @@ class User extends Home
             if(password_verify($data['pwd'],$user->password)){
                 $user->password = password_hash($data['newpwd'],PASSWORD_DEFAULT);
                 $user->save();
+                //add log
+                $this->LogicLog->createLog($userid,2,'update','更新密码',serialize($data),0);
                 return json_data(0,$this->codeMessage[0],'');
             }
             else{

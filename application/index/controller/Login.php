@@ -13,10 +13,11 @@ use app\index\model\User;
 
 class Login extends Home
 {
+    protected $LogicLogin;
     public function __construct()
     {
         parent::__construct();
-
+        $this->LogicLogin  = Loader::controller('Login','logic');
     }
 
     /**

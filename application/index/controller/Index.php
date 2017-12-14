@@ -22,7 +22,8 @@ class Index extends Home
         return $this->fetch();
     }
     public function inde(){
-        echo base64_encode('312850391@qq.com');
+        print gethostbyaddr('182.92.64.65');
+        print gethostbyname('www.wangdoukeji.com');
     }
     public function rrr()
     {
@@ -35,6 +36,23 @@ class Index extends Home
 //        var_dump($re);
 //        phpinfo();
     }
+    public function getnav(){
+        $role = [60000,70000];
+        $nav = Db::name('function')->where('code','in',$role)->field('id,name,code,parentcode')->select();
+
+        $nav = $this->getnac($nav);
+        var_dump($nav[0]['son']);
+    }
+    public function getnac($nav){
+        foreach ($nav as &$n){
+            if(Db::name('function')->where('parentcode',$n['code'])->field('id,name,code,parentcode')->select()){
+                $n['son'] = Db::name('function')->where('parentcode',$n['code'])->field('id,name,code,parentcode')->select();
+                $n['son'] = self::getnac($n['son']);
+            }
+        }
+        return $nav;
+    }
+
 
 
 

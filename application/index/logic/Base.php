@@ -7,7 +7,6 @@ use think\Validate;
 class Base
 {
     protected $codeMessage;
-    protected $redis;
     public function __construct()
     {
         $this->codeMessage = Config::get('apicode_message');
