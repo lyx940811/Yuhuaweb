@@ -38,7 +38,7 @@ class User extends Home
         $file = $_FILES;
         $res = uploadPic($file);
         if($res['code']!=0){
-            return json_data($res['code'],$this->codeMessage[$res['code']],$res['path']);
+            return json_data($res['code'],$this->codeMessage[$res['code']],'');
         }
         return json_data($res['code'],$this->codeMessage[$res['code']],$res['path']);
     }
@@ -73,7 +73,6 @@ class User extends Home
         if($data['newpwd']!=$data['renewpwd']){
             return json_data(130,'两次输入密码不一致！','');
         }
-
         if( $user = UserModel::get($userid) ){
             if(password_verify($data['pwd'],$user->password)){
                 $user->password = password_hash($data['newpwd'],PASSWORD_DEFAULT);
@@ -93,10 +92,10 @@ class User extends Home
     /**
      * 修改用户名
      */
-    public function chusername(){
+/*    public function chusername(){
         $result = $this->LogicUser->chUsername($this->data);
         return $result;
-    }
+    }*/
 
     /**
      * 获得个人设置内信息（type传入不同的选项来获得下方不同的内容）
