@@ -26,7 +26,7 @@ class Home extends Controller
         $this->codeMessage = Config::get('apicode_message');
 
         //define token
-        $this->token = $this->request->param('token');
+//        $this->token = $this->request->param('token');
 
 //        $this->verifyToken();
 

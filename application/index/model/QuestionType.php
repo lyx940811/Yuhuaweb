@@ -17,12 +17,9 @@ use think\Model as ThinkModel;
  * 用户模型
  * @package app\cms\model
  */
-class Question extends ThinkModel
+class QuestionType extends ThinkModel
 {
     // 自动写入时间戳
 //    protected $autoWriteTimestamp = true;
-    public function qsttype()
-    {
-        return $this->hasOne('question_type','code','type')->bind('name');
-    }
+
 }

@@ -32,6 +32,8 @@ return[
         200     =>  'not find the course',
         210     =>  'wrong request course type',
         220     =>  'not find any course files',
+        //题目相关的
+        300     =>  'not find the question',
 
 
         //文件上传部分

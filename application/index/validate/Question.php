@@ -9,20 +9,26 @@
 // | 开源协议 ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
 
-namespace app\index\model;
+namespace app\index\validate;
 
-use think\Model as ThinkModel;
+use think\Validate;
 
 /**
- * 用户模型
- * @package app\cms\model
+ * 题目验证器
  */
-class Question extends ThinkModel
+class Question extends Validate
 {
-    // 自动写入时间戳
-//    protected $autoWriteTimestamp = true;
-    public function qsttype()
-    {
-        return $this->hasOne('question_type','code','type')->bind('name');
-    }
+    // 定义验证规则
+    protected $rule = [
+        'type|题目类型'         =>  'require',
+        'stem|题干'             =>  'require',
+        'createUserid|创建者'   =>  'require',
+        'analysis|分析'         =>  'require',
+        'score|分数'            =>  'require|float',
+        'answer|答案'           =>  'require',
+        'metas|题目元信息'      =>  'require',
+        'difficulty|难易程度'   =>  'require',
+        'courseId|课程id'       =>  'require',
+    ];
+
 }

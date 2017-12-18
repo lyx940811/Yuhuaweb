@@ -3,6 +3,7 @@
 namespace app\index\logic;
 
 use app\index\model\Log as LogModel;
+use think\Exception;
 
 class Log
 {
@@ -23,6 +24,10 @@ class Log
             'createdTime'    =>  date('Y-m-d H:i:s',time()),
         ];
         LogModel::create($data);
+    }
+
+    public function exception(){
+        throw new Exception('LogException',700);
     }
 
 

@@ -4,6 +4,8 @@ namespace app\index\controller;
 use Couchbase\Document;
 use think\Controller;
 use think\Db;
+use think\Exception;
+
 class Index extends Home
 {
 
@@ -21,9 +23,22 @@ class Index extends Home
     {
         return $this->fetch();
     }
+    public function excepTion(){
+        $res = json_encode(["0"]);
+        var_dump(json_decode('{"mode":"rand","ranges":{"courseId":"0","lessonId":"0"},"counts":{"single_choice":"2","essay":"1","determine":"0","fill":"1"},"scores":{"single_choice":"2","choice":"2","essay":"2","uncertain_choice":"2","determine":"2","fill":"2","material":"2"},"missScores":{"choice":"0","uncertain_choice":"0"},"percentages":{"simple":"","normal":"","difficulty":""}}'));
+//        var_dump(json_decode('{"choices":["<p>\u5355\u9009\u9898-\u9009\u9879A<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879B<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879C<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879D<\/p>\r\n"]}'));
+    }
     public function inde(){
-        print gethostbyaddr('182.92.64.65');
-        print gethostbyname('www.wangdoukeji.com');
+        var_dump(method_exists($this,'exception'));
+        $u = new \app\index\logic\User();
+//        try{
+//            echo 1;
+//            $this->LogicLog->exception();
+//            echo 2;
+//        }
+//        catch (Exception $e){
+//            echo $e->getMessage();
+//        }
     }
     public function rrr()
     {
