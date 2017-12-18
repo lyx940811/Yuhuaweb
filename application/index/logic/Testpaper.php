@@ -53,24 +53,24 @@ class Testpaper extends Base
     }
 
 
-    public function searchQuestion($type,$courseid,$keywords){
-        //要加分页
-//        $sql = "select * from question where 1=1";
-//        if(!empty($type)){
-//            $sql .= " and type = $type ";
-//        }
-//        if(!empty($courseid)){
-//            $sql .= " and courseId = $courseid ";
-//        }
-//        if(!empty($keywords)){
-//            $sql .= " and stem like '%".$keywords."%'";
-//        }
-//        $res = Db::name('question')->query($sql);
+    public function searchQuestion($type,$courseid,$keywords,$page){
+        if(!empty($type)){
+            $map['type'] = $type;
+        }
+        if(!empty($courseid)){
+            $map['courseid'] = $courseid;
+        }
+        if(!empty($keywords)){
+            $map['stem'] = ['like','%'.$keywords.'%'];
+        }
+        if(empty($page)){
+            $page = 1;
+        }
 
         $res = Db::name('question')
-            ->where(['type'=>'001'])
-            ->where('courseId','')
-            ->where('stem','like','')
+            ->where($map)
+            ->limit(10)
+            ->page($page)
             ->select();
         return $res;
     }

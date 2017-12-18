@@ -53,6 +53,10 @@ class Testpaper extends Home
         try{
             $id = $this->data['id'];
             $question = $this->LogicTestpaper->getQuestionDetail($id);
+            /**
+             * 有坑，要把meta反序列化或者json解码
+             * */
+
             return json_data(0,$this->codeMessage[0],$question);
         }
         catch ( Exception $e ){
@@ -102,9 +106,7 @@ class Testpaper extends Home
             else{
                 echo $e->getMessage();
             }
-
         }
-
     }
 
     /**
@@ -130,11 +132,11 @@ class Testpaper extends Home
      */
     public function searchqst(){
         try{
-            $type       = '';//$this->data['type'];
-            $courseid   = '';//$this->data['courseid'];
-            $keywords   = '';//$this->data['keywords'];
-            $res = $this->LogicTestpaper->searchQuestion($type,$courseid,$keywords);
-            var_dump($res);die;
+            $type       = $this->data['type'];
+            $courseid   = $this->data['courseid'];
+            $keywords   = $this->data['keywords'];
+            $page       = $this->data['page'];
+            $res = $this->LogicTestpaper->searchQuestion($type,$courseid,$keywords,$page);
             return json_data(0,$this->codeMessage[0],$res);
         }
         catch ( Exception $e ){
