@@ -69,6 +69,42 @@ class Index extends Home
     }
 
 
+    public function getrole(){
+        $role = Db::name('role')->field('id,name,code,parentcode')->select();
+        $range_role = array();
+        $role = $this->dealrole($role);
+
+        var_dump($role);
+    }
+    public function dealrole($role,$range_role = array()){
+        if(empty($range_role)){
+            foreach ($role as $key=>$value){
+                if($value['parentcode']==0){
+                    $range_role[] = $value;
+                    unset($role[$key]);
+                }
+            }
+            if(empty($role)){
+                return $range_role;
+            }
+            else{
+                return self::dealrole($role,$range_role);
+            }
+        }
+        else{
+            foreach ($range_role as &$r){
+                foreach ($role as $k=>$v){
+                    if($v['parentcode']==$r['code']){
+                        $r['son'] = $role[$k];
+                        unset($role[$k]);
+                    }
+                }
+            }
+            return $range_role;
+        }
+    }
+
+
 
 
     public function dir(){
