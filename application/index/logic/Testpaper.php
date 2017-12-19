@@ -63,31 +63,50 @@ class Testpaper extends Base
         if(!empty($keywords)){
             $map['stem'] = ['like','%'.$keywords.'%'];
         }
+        if(!$course = CourseModel::get($courseid)){
+            throw  new Exception("course dont exist",200);
+        }
         if(empty($page)){
-            $page = 1;
+            throw new Exception("page cannot be null",310);
         }
 
         $res = Db::name('question')
             ->where($map)
             ->limit(10)
             ->page($page)
+            ->field('id,type,stem,createdTime,createUserid')
             ->select();
+        if($res){
+            foreach ($res as &$r){
+                $r['typename'] = Db::name('question_type')->where('id',$r['type'])->value('name');
+                $r['username'] = Db::name('user')->where('id',$r['createUserid'])->value('username');
+                unset($r['type'],$r['createUserid']);
+            }
+        }
         return $res;
     }
 
     public function getQuestionList($courseid,$page){
+        if(!$course = CourseModel::get($courseid)){
+            throw  new Exception("course dont exist",200);
+        }
         if(empty($page)){
-            $page=1;
+            throw new Exception("page cannot be null",310);
         }
         $res = Db::name('question')
             ->where('courseId',$courseid)
             ->limit(10)
             ->page($page)
-            ->field('id,type,stem,createdTime')
+            ->field('id,type,stem,createdTime,createUserid')
             ->select();
-        foreach ($res as &$r){
-            $r['typename'] = Db::name('question_type')->where('id',$r['type'])->value('name');
+        if($res){
+            foreach ($res as &$r){
+                $r['typename'] = Db::name('question_type')->where('id',$r['type'])->value('name');
+                $r['username'] = Db::name('user')->where('id',$r['createUserid'])->value('username');
+                unset($r['type'],$r['createUserid']);
+            }
         }
+
         return $res;
     }
 

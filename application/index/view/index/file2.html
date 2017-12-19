@@ -66,7 +66,18 @@
             });
 
         });
-
+        $.post(
+            "http://66.112.221.116/index/testpaper/delqst",
+            {
+                'id':44,
+                'token':123456},
+            function(data){
+                if(data){
+                    console.log(data);
+                }
+            },
+            "json"
+        );
         $.post(
             "http://localhost/index/user/getuserinfo",
             {
@@ -74,6 +85,17 @@
                 'type':'base',
                 'token':123456
             },
+            function(data){
+                if(data){
+                    console.log(data);
+                }
+            },
+            "json"
+        );
+        $.post(
+            "http://66.112.221.116/index/testpaper/getqsttype",
+            {
+                'token':123456},
             function(data){
                 if(data){
                     console.log(data);

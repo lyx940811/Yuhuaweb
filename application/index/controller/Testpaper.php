@@ -16,7 +16,8 @@ class Testpaper extends Home
     }
 
     /**
-     * 得到所有题目类型
+     * 得到所有题目类型（选择题、判断题、问答题）
+     * 已经写入文档
      * @return array
      */
     public function getqsttype(){
@@ -31,17 +32,22 @@ class Testpaper extends Home
 
     /**
      * 得到本课程下的所有题目
+     * 已写入文档
      * @return array
      */
     public function getqstlist(){
         try{
             $page     = $this->data['page'];
             $courseid = $this->data['courseid'];
+
             $qstList  = $this->LogicTestpaper->getQuestionList($courseid,$page);
             return json_data(0,$this->codeMessage[0],$qstList);
         }
-        catch ( Exception $e ){
+        catch ( \ErrorException $e ){
             return json_data($e->getCode(),$e->getMessage(),'');
+        }
+        catch ( Exception $e ){
+            return json_data($e->getCode(),$this->codeMessage[$e->getCode()],'');
         }
     }
 
@@ -111,10 +117,11 @@ class Testpaper extends Home
 
     /**
      * 删除题目
+     * 已写入文档
      */
-    public function delque(){
+    public function delqst(){
         try{
-            $id = $this->data['id'];//id可以为1，也可以为[1,2,3]
+            $id = 4;//$this->data['id'];//id可以为1，也可以为[1,2,3]
             $this->LogicTestpaper->delQuestion($id);
             return json_data(0,$this->codeMessage[0],'');
         }
@@ -126,6 +133,7 @@ class Testpaper extends Home
 
     /**
      * 搜索题目
+     * 已写入文档
      * $type        题目类型      没有的话传空
      * $courseid    课程id        没有的话传空
      * $keywords    关键词        没有的话传空

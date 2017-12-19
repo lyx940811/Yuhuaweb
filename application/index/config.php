@@ -7,7 +7,7 @@
  */
 return[
     // 默认输出类型
-    'default_return_type'    => 'json',
+//    'default_return_type'    => 'json',
     // 视图输出字符串内容替换
     'view_replace_str'       => [
         '__CSS__' => '/static/index/css/',
@@ -34,6 +34,7 @@ return[
         220     =>  'not find any course files',
         //题目相关的
         300     =>  'not find the question',
+        310     =>  'page cannot be null',
 
 
         //文件上传部分

@@ -12,7 +12,8 @@ class Index extends Home
     public $redis;
     public function index()
     {
-        return '<style type="text/css">*{ padding: 0; margin: 0; } .think_default_text{ padding: 4px 48px;} a{color:#2E5CD5;cursor: pointer;text-decoration: none} a:hover{text-decoration:underline; } body{ background: #fff; font-family: "Century Gothic","Microsoft yahei"; color: #333;font-size:18px} h1{ font-size: 100px; font-weight: normal; margin-bottom: 12px; } p{ line-height: 1.6em; font-size: 42px }</style><div style="padding: 24px 48px;"> <h1>:)</h1><p> ThinkPHP V5<br/><span style="font-size:30px">十年磨一剑 - 为API开发设计的高性能框架</span></p><span style="font-size:22px;">[ V5.0 版本由 <a href="http://www.qiniu.com" target="qiniu">七牛云</a> 独家赞助发布 ]</span></div><script type="text/javascript" src="http://tajs.qq.com/stats?sId=9347272" charset="UTF-8"></script><script type="text/javascript" src="http://ad.topthink.com/Public/static/client.js"></script><thinkad id="ad_bd568ce7058a1091"></thinkad>';
+        phpinfo();
+//        return '<style type="text/css">*{ padding: 0; margin: 0; } .think_default_text{ padding: 4px 48px;} a{color:#2E5CD5;cursor: pointer;text-decoration: none} a:hover{text-decoration:underline; } body{ background: #fff; font-family: "Century Gothic","Microsoft yahei"; color: #333;font-size:18px} h1{ font-size: 100px; font-weight: normal; margin-bottom: 12px; } p{ line-height: 1.6em; font-size: 42px }</style><div style="padding: 24px 48px;"> <h1>:)</h1><p> ThinkPHP V5<br/><span style="font-size:30px">十年磨一剑 - 为API开发设计的高性能框架</span></p><span style="font-size:22px;">[ V5.0 版本由 <a href="http://www.qiniu.com" target="qiniu">七牛云</a> 独家赞助发布 ]</span></div><script type="text/javascript" src="http://tajs.qq.com/stats?sId=9347272" charset="UTF-8"></script><script type="text/javascript" src="http://ad.topthink.com/Public/static/client.js"></script><thinkad id="ad_bd568ce7058a1091"></thinkad>';
     }
 
     public function test()
@@ -25,7 +26,7 @@ class Index extends Home
     }
     public function excepTion(){
         $res = json_encode(["0"]);
-        var_dump(json_decode('{"mode":"rand","ranges":{"courseId":"0","lessonId":"0"},"counts":{"single_choice":"2","essay":"1","determine":"0","fill":"1"},"scores":{"single_choice":"2","choice":"2","essay":"2","uncertain_choice":"2","determine":"2","fill":"2","material":"2"},"missScores":{"choice":"0","uncertain_choice":"0"},"percentages":{"simple":"","normal":"","difficulty":""}}'));
+        var_dump(json_decode('["<p>\u95ee\u7b54\u9898-\u7b54\u6848<\/p>\r\n"]'));
 //        var_dump(json_decode('{"choices":["<p>\u5355\u9009\u9898-\u9009\u9879A<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879B<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879C<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879D<\/p>\r\n"]}'));
     }
     public function inde(){
@@ -52,16 +53,15 @@ class Index extends Home
 //        phpinfo();
     }
     public function getnav(){
-        $role = [60000,70000];
-        $nav = Db::name('function')->where('code','in',$role)->field('id,name,code,parentcode')->select();
+        $nav = Db::name('role')->where('parentcode','0')->field('id,name,code,parentcode')->select();
 
         $nav = $this->getnac($nav);
-        var_dump($nav[0]['son']);
+        var_dump($nav);
     }
     public function getnac($nav){
         foreach ($nav as &$n){
-            if(Db::name('function')->where('parentcode',$n['code'])->field('id,name,code,parentcode')->select()){
-                $n['son'] = Db::name('function')->where('parentcode',$n['code'])->field('id,name,code,parentcode')->select();
+            if(Db::name('role')->where('parentcode',$n['code'])->field('id,name,code,parentcode')->select()){
+                $n['son'] = Db::name('role')->where('parentcode',$n['code'])->field('id,name,code,parentcode')->select();
                 $n['son'] = self::getnac($n['son']);
             }
         }

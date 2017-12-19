@@ -30,17 +30,34 @@ class Upload
         return $save_path;
     }
 
+    public function uploadFile($files){
+        $save_file = array();
+        foreach ($files as $key=>$value){
+            if(!file_exists($files[$key]['tmp_name'])){
+                continue;
+            }
+//            if(filesize($files[$key]['tmp_name'])>3145728){
+//                throw new Exception('file over size',710);
+//            }
+            $save_file[$key]['filename']      = $files[$key]['name'];
+            $save_file[$key]['type']          = $files[$key]['type'];
+            $save_file[$key]['filesize']      = $files[$key]['size'];
+            $save_file[$key]['filepath']      = $this->upload($files[$key]);
+        }
+        return $save_file;
+    }
+
     public function upload($file){
         $name        = $file['name'];
         $tmp_name    = $file['tmp_name'];
-        $uploads_dir = "uploads".DS."pictures".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
+        $uploads_dir = "uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
         $date_dir    = ROOT_PATH."public".DS.$uploads_dir;
         if(!file_exists($date_dir)){
             mkdir($date_dir,0775,true);
         }
         //rename file
         $name = explode('.',$name);
-        $name[0] = date('Ymd',time()).uniqid();
+        $name[0] = date('Ymd',time())."-".uniqid();
         $name = implode('.',$name);
 
         $file_dir = ROOT_PATH."public".DS.$uploads_dir.DS.$name;

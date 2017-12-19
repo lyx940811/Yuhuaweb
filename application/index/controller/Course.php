@@ -5,8 +5,10 @@ use think\Loader;
 use think\Config;
 use app\index\model\Course as CourseModel;
 use app\index\model\User as UserModel;
+use app\index\model\CourseFile;
 use think\Db;
 use think\Validate;
+
 
 /**
  * Class Course 在教师角色下的我的教学-在教课程-课程管理中的一些功能
@@ -15,10 +17,12 @@ use think\Validate;
 class Course extends Home
 {
     protected $LogicCourse;
+    protected $LogicUpload;
     public function __construct()
     {
         parent::__construct();
         $this->LogicCourse = Loader::controller('Course','logic');
+        $this->LogicUpload = Loader::controller('Upload','logic');
     }
 
     /**
@@ -136,19 +140,6 @@ class Course extends Home
         compresspic($path);
     }
 
-    public function captcha(){
-        return captcha();
-    }
-    public function vercaptcha(){
-        $data = [
-            'captcha'   =>  '7nmk',
-        ];
-        $res = $this->validate($data,[
-            'captcha|验证码'=>'require|captcha'
-        ]);
-        var_dump($res);
-    }
-
     /**
      * 改变课程发布的状态
      * @return mixed
@@ -159,6 +150,21 @@ class Course extends Home
 
         return $this->LogicCourse->chCourseStatus($courseid,$status);
     }
+
+    /**
+     * 教师页面上传课程文件
+     */
+    public function uploadfile(){
+//        $courseid = $this->data['courseid'];
+//        $lessonid = $this->data['lessonid'];
+        $files = $_FILES;
+        $res = $this->LogicUpload->uploadFile($files);
+        var_dump($res);
+//        $coursefile = new CourseFile();
+//        $save = $coursefile->saveAll($res);
+//        var_dump($save);
+    }
+
 
 
 }
