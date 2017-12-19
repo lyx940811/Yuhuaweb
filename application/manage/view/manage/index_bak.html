@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+{include file="manage/header" /}
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+<div id="wrapper">
+    <!--左侧导航开始-->
+    {include file="manage/left-sidebar"/}
+    <!--左侧导航结束-->
+    <!--右侧部分开始-->
+    <div class="view">
+        <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="{:url('Manage/manage/right')}" frameborder="0" data-id="{:url('Manage/manage/right')}" seamless></iframe>
+    </div>
+    <!--右侧部分结束-->
+
+</div>
+{include file="manage/bottom" /}
+</body>
+
+</html>

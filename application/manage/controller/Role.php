@@ -1,0 +1,182 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: jason
+ * Date: 2017/12/14
+ * Time: 15:18
+ */
+namespace app\manage\controller;
+
+use think\Config;
+use think\Db;
+use think\Request;
+use think\Validate;
+
+class Role extends Base{
+
+
+    public function index(){
+//        $lists = Db::name('role')->where('flag=1')->order('id desc')->paginate(4);
+
+        $lists = Db::name('role')->field('id,name,code,parentcode')->where('flag=1')->order('id asc')->select();
+
+
+        print_r(tree($lists));
+
+
+exit;
+
+        $this->assign('list',$lists);
+        $this->assign('page', $lists->render());
+        return $this->fetch('index');
+    }
+
+    //添加角色
+    public function add(){
+
+        $info = input('post.');
+
+        //错误信息提示
+        $msg  =   [
+            'name.require' => '角色名称不能为空',
+            'name.length' => '角色名称长度太短',
+            'code.require' => '代码不能为空',
+        ];
+
+        $validate = new Validate([
+            'name'  => 'require|length:2,20', //我这里的token是令牌验证
+            'code'   => 'require',
+        ],$msg);
+
+        $validate->check($info);
+
+        $error = $validate->getError();//打印错误规则
+
+        if(is_string($error)){
+            return ['error'=>$error,'code'=>'200'];
+        }
+
+        $role_table = Db::name('role');
+        $is_have = $role_table->where("code='{$info['code']}'")->find();
+
+        if($is_have){//如果这个code有
+            return ['error'=>'已经有此代码','code'=>'300'];
+        }
+
+        $data['name'] = $info['name'];
+        $data['code'] = $info['code'];
+        $data['data'] = $info['name'];
+        $data['createdUserId'] = session('admin_uid');
+        $data['createdTime'] = date('Y-m-d H:i:s',time());
+        $data['flag'] = 1;
+        $data['parentcode'] = empty($info['parentcode'])?0:$info['parentcode'];
+
+        $ok = $role_table->field('name,code,data,createdUserId,createdTime,flag,parentcode')->insert($data);
+
+        if($ok){
+            return ['info'=>'添加成功','code'=>'000'];
+        }else{
+            return ['error'=>'添加失败','code'=>'400'];
+        }
+
+
+    }
+
+    public function edit(){
+
+        //前台先获取资料
+        if(isset($_GET['do'])=='get'){
+            $id = $_GET['rid']+0;
+
+            $role_table = Db::name('role');
+            $have = $role_table->where("id='$id'")->find();
+
+            if(!$have){//如果这个code有
+                return ['error'=>'没有此角色','code'=>'300'];
+            }else{
+                return ['info'=>$have,'code'=>'000'];
+            }
+
+        }
+        //前台获取资料结束
+
+
+
+        $info = input('post.');
+
+        if($info['parentcode']){
+            
+            return ['error'=>'角色不能修改父类','code'=>'200'];
+        }
+
+        $msg  =   [
+            'rid.require' => '角色rid不能为空',
+            'name.require' => '角色名称不能为空',
+            'name.length' => '角色名称长度太短',
+            'code.require' => '代码不能为空',
+            'code.number' => '代码必须为数字',
+        ];
+
+        $validate = new Validate([
+            'rid'  => 'require',
+            'name'  => 'require|length:2,20',
+            'code'   => 'require|number',
+        ],$msg);
+
+        $validate->check($info);
+
+        $error = $validate->getError();//打印错误规则
+
+        if(is_string($error)){
+            return ['error'=>$error,'code'=>'200'];
+        }
+
+
+        $role_table = Db::name('role');
+
+        $id = $info['rid'];
+        $have = $role_table->field('id,code')->where("id='$id'")->find();
+
+        if(!$have){//如果没这个code
+            return ['error'=>'没有此角色','code'=>'300'];
+        }
+
+        if($have['code']==$info['code']){
+
+            $ok = $role_table->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name']]);
+        }else{
+
+            $where['id'] = ['neq',$id];
+            $where['code'] = $info['code'];
+
+            $have = $role_table->field('id,code')->where($where)->find();
+
+            if($have){
+                return ['error'=>'已经有此代码','code'=>'300'];
+            }
+
+            $ok = $role_table->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name'],'code'=>$info['code']]);
+        }
+
+
+        if($ok){
+            return ['info'=>'修改成功','code'=>'000'];
+        }else{
+            return ['error'=>'修改失败','code'=>'200'];
+        }
+    }
+
+    public function delete(){
+
+        $id = $_GET['rid']+0;
+
+        $ok = Db::name('role')->where("id='$id'")->delete();
+
+        if($ok){
+            return ['info'=>'删除成功','code'=>'000'];
+        }else{
+            return ['error'=>'删除失败','code'=>'200'];
+        }
+    }
+
+}

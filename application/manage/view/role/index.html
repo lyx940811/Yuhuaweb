@@ -37,7 +37,6 @@
             <td>
                 {php}
 
-                $arr = [];
                 foreach($access as $k=>$v){
 
                     if($v=='/manage/role/edit'){
@@ -60,7 +59,11 @@
     </table>
     <div class="view">
         {php}
-        echo check($uid,'/manage/role/add')?'<a  class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加角色</a>':'';
+        foreach($access as $k=>$v){
+            if($v=='/manage/role/add'){
+                echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加角色</a>';
+            }
+        }
         {/php}
 
     </div>
@@ -232,4 +235,3 @@
 </script>
 </body>
 </html>
-

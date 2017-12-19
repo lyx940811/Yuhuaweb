@@ -2,6 +2,7 @@
 namespace app\manage\controller;
 use app\manage\model\User;
 use think\Controller;
+use think\Url;
 use think\Validate;
 use think\Db;
 
@@ -21,24 +22,25 @@ class Login extends Controller{
 
     }
 
-    public function login($nickname,$password,$captcha){
+    public function login(){
 
-        if(!captcha_check($captcha)){
+        $info = input('post.');//接收值
+
+        if(!captcha_check($info['captcha'])){
             //验证码错误
             $this->error('验证码错误');
         }
         //错误信息提示
         $msg  =   [
-            'nickname.require' => '登录账号不能为空',
+            'username.require' => '登录账号不能为空',
             'password.require' => '密码不能为空',
         ];
 
         $validate = new Validate([
-            'nickname'  => 'require|length:2,50|token', //我这里的token是令牌验证
+            'username'  => 'require|length:2,50|token', //我这里的token是令牌验证
             'password'   => 'require',
         ],$msg);
 
-        $info = input('post.');//接收值
         $validate->check($info);
         $error = $validate->getError();//打印错误规则
 
@@ -46,15 +48,16 @@ class Login extends Controller{
             $this->error($error);
         }
 
-        $user = User::get(['nickname'=>$nickname]);//取出的数据
+        $user = User::get(['username'=>$info['username']]);//取出的数据
 
         if($user){
 
-            if(password_verify($password,$user->password)){
+            if(password_verify($info['password'],$user->password)){
                 //success
                 session('admin_uid',$user->id);
-                session('admin_name',$user->nickname);
-                print_r($_SESSION);
+                session('admin_name',$user->username);
+
+                $this->success('登陆成功',url('Manage/manage/index'));
 
             }else{
 
@@ -64,7 +67,6 @@ class Login extends Controller{
         }else{
             $this->error('请输入正确的用户名');
         }
-
 
 
     }
@@ -77,7 +79,7 @@ class Login extends Controller{
 
     }
 
-    public function findPwdDo($captcha){
+    public function findPwdDo($email,$captcha){
 
         if(!captcha_check($captcha)){
             //验证码错误
@@ -85,13 +87,11 @@ class Login extends Controller{
         }
         //错误信息提示
         $msg  =   [
-            'nickname.require' => '登录账号不能为空',
             'email.require' => '邮箱不能为空',
         ];
 
         $validate = new Validate([
-            'nickname'  => 'require|token', //我这里的token是令牌验证
-            'email'   => 'require|email',
+            'email'   => 'require|email|token',
         ],$msg);
 
         $info = input('post.');
@@ -102,21 +102,113 @@ class Login extends Controller{
             $this->error($error);
         }
 
-        $result = Db::table('user')->where('id',2)->find();
+        $result = Db::table('user')->where('email',$email)->field('id,username,password,email')->find();
 
-        $content = 'http://www.baidu.com';
-        $ok = send_email($result['email'],'测试发邮件',$content);
-        if($ok){
+        if($result){
 
+//            $code = md5($result['username']+$result['password']+'ygs');
+            $code = md5code($result['username'],$result['password']);
+            $expire = strtotime('+1 hour');
 
-            $data = ['' => 'bar', 'bar' => 'foo'];
-            Db::table('think_user')->insert($data);
-            $this->success('发送邮件成功，请注意查收');
+            $data = ['uid' => $result['id'],'email'=>$result['email'],'code'=>$code,'time'=>time(),'expire'=>$expire];
+
+            $insert_data = Db::table('mail_log')->insert($data);
+
+            if($insert_data){
+
+                $content = '<a href="'.url('Manage/login/resetPwd?e='.$result['email'].'&p='.$code,'','html',true).'">验证链接</a>';
+
+                $ok = send_email($result['email'],'测试发邮件',$content);
+                if($ok){
+
+                    $this->success('发送邮件成功，请注意查收');
+                }else{
+
+                    $this->error('发送邮件失败',url('Manage/login/index'));
+                }
+            }
+
         }else{
-            $this->error('发送邮件失败');
+
+            $this->error('没有此用户');
+        }
+
+
+    }
+
+    public function resetPwd($e,$p){
+
+        $expire = Db::table('mail_log')->where('email',$e)->field('expire')->order('expire desc')->find();
+
+        if(!$expire){
+            $this->error('没有此用户',url('Manage/login/index'));
+        }
+
+        if( $expire['expire']<time()){
+            $this->error('验证码过期',url('Manage/login/index'));
+        }
+
+        $result = Db::table('user')->where('email',$e)->field('username,password')->find();
+        $old = md5code($result['username'],$result['password']);
+
+        if($p == $old){
+            return view('resetPwd');
+        }else{
+            $this->error('验证码过期',url('Manage/login/index'));
         }
 
     }
 
+    /*
+     * 重置密码
+     */
+    public function resetPwdDo($password,$newpassword,$email){
+        $msg  =   [
+            'password.require' => '密码不能为空',
+            'newpassword.require' => '确认密码不能为空',
+        ];
+
+        $validate = new Validate([
+            'password'   => 'require',
+            'newpassword'   => 'require',
+        ],$msg);
+
+        $info = input('post.');
+        $validate->check($info);
+        $error = $validate->getError();//打印错误规则
+
+        if(!empty($error)){
+            $this->error($error);
+        }
+
+        if($password!=$newpassword){
+            $this->error('密码不一样');
+        }
+
+        $result = Db::table('user')->where('email',$email)->field('id')->find();
+
+        if(!$result){
+            $this->error('没有此用户');
+        }else{
+
+            $pwd_hash = password_hash($password, PASSWORD_DEFAULT);
+            $ok = Db::table('user')->where('id',$result['id'])->update(['password'=>$pwd_hash]);
+
+            if($ok){
+                $this->success('修改成功',url('Manage/login/index'));
+            }else{
+                $this->error('修改失败');
+            }
+        }
+
+    }
+
+
+
+    public function logout(){
+        session('admin_uid',NULL);
+        session('admin_user',NULL);
+        $this->success('退出成功',url('Manage/login/index'));
+    }
 
 }

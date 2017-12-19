@@ -11,14 +11,23 @@ use think\Validate;
  */
 class Base extends Controller{
 
-   // protected $access_token = ACCESS_TOKEN;
+    public $uid;
+
     public function _initialize(){
         //判断登陆没登陆
-        $uid = session('admin_uid');
-        if(!$uid){
+        $this->uid = session('admin_uid');
+        if(!$this->uid){
             $this->error('请先登陆',url('Manage/login/index'));
         }
 
+        $role = check($this->uid);
+
+        if(!$role){
+            $this->error('您没权限查看',url('Manage/login/index'));
+        }
+
+
     }
+
 
 }

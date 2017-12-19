@@ -115,3 +115,36 @@ function getUserinfo($uid){
     return $user['nickname'];
 
 }
+
+function tree($arr,$pcode=0,$flag=0,$newArr=[]){
+
+    $flag++;
+    foreach ($arr as $k=>$v){
+
+        if($v['parentcode']==$pcode){
+
+            $newArr[$k] = $v;
+            $newArr[$k]['flag'] = $flag;
+            tree($arr,$v['code'],$flag);
+            echo $v['code'].'-'.$v['parentcode'].'-'.$v['name'].$flag.'级';
+//            echo $flag.'级2';
+            echo "<hr/>";
+            /*
+             * 40000-0-顶级角色1级
+             * 20001-20000-其他管理员2级
+             * 20000-0-顶级最高1级
+             * 30000-0-顶级学员1级
+             * 10020-10002-添加子类管理员下3级
+             * 10002-10000-教师2级
+             * 10000-0-管理员1级
+             */
+
+        }
+        else{
+            echo $v['code'].'--'.$v['parentcode'].'--'.$v['name'].$flag.'级';
+//            echo $flag.'级';
+            echo "<hr/>";
+        }
+    }
+//    return $newArr;
+}
