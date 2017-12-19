@@ -27,6 +27,17 @@ class Testpaper extends Base
         Question::create($data);
     }
 
+    public function updateQuestion($data,$id){
+        if(!Question::get($id)){
+            throw new Exception($this->codeMessage[300],300);
+        }
+        $validate = Loader::validate('Question');
+        if(!$validate->check($data)){
+            throw new Exception($validate->getError(),130);
+        }
+        Question::where('id',$id)->update($data);
+    }
+
     public function getQuestionDetail($id){
         $question = Question::get($id);
         if(!$question){

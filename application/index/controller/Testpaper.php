@@ -71,38 +71,43 @@ class Testpaper extends Home
     }
 
     /**
-     * 增加一个题目（未完成）
+     * 增加/更新一个题目（未完成，对于序列化的内容）
      * @return array
      */
     public function addqst(){
         try{
-//            $data = [
-//                'type'          =>  $this->data['type'],
-//                'stem'          =>  $this->data['stem'],
-//                'createUserid'  =>  $this->data['createUserid'],
-//                'analysis'      =>  $this->data['analysis'],
-//                'score'         =>  $this->data['score'],
-//                'answer'        =>  $this->data['answer'],
-//                'metas'         =>  $this->data['metas'],
-//                'difficulty'    =>  $this->data['difficulty'],
-//                'courseId'      =>  $this->data['courseId'],
-//                'createdTime'   =>  date('Y-m-d H:i:s',time()),
+//            $newdata = [
+//                'type'          =>  $this->data['type'],        //和question_type对应的code
+//                'stem'          =>  $this->data['stem'],        //题干，带html标签（富文本编辑器内的内容）
+//                'createUserid'  =>  $this->data['createUserid'],//创建人id
+//                'analysis'      =>  $this->data['analysis'],    //分析，带html标签（富文本编辑器内的内容）
+//                'score'         =>  $this->data['score'],       //分数，float
+//                'answer'        =>  $this->data['answer'],      //答案，json编码的数组，0键对应正确答案
+//                'metas'         =>  $this->data['metas'],       //题目元信息，json编码过，每一个键值对应每一个选项内容，answer的答案代表这里的键名
+//                'difficulty'    =>  $this->data['difficulty'],  //难易程度
+//                'courseId'      =>  $this->data['courseId'],    //课程id
+//                'createdTime'   =>  date('Y-m-d H:i:s',time()), //创建时间
 //            ];
+            $id = "";//5;//$this->data['id'];
             $newdata = [
-                'type'          =>  002,
-                'stem'          =>  '题干',
+                'type'          =>  "002",
+                'stem'          =>  '题222asd干',
                 'createUserid'  =>  3,
                 'analysis'      =>  '题目分析',
                 'score'         =>  5,
                 'answer'        =>  '0',
-                'metas'         =>  '{}',
+                'metas'         =>  '{}',//序列化的表单
                 'difficulty'    =>  'normal',
                 'courseId'      =>  3,
                 'createdTime'   =>  date('Y-m-d H:i:s',time()),
             ];
-            $this->LogicTestpaper->createQuestion($newdata);
+            if($id){
+                $this->LogicTestpaper->updateQuestion($newdata,$id);
+            }
+            else{
+                $this->LogicTestpaper->createQuestion($newdata);
+            }
             return json_data(0,$this->codeMessage[0],'');
-
         }
         catch( Exception $e ){
             $code = $e->getCode();
@@ -110,7 +115,7 @@ class Testpaper extends Home
                 return json_data($code,$e->getMessage(),'');
             }
             else{
-                echo $e->getMessage();
+                return json_data($code,$this->codeMessage[$code],'');
             }
         }
     }

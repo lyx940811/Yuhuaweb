@@ -26,8 +26,8 @@ class Index extends Home
     }
     public function excepTion(){
         $res = json_encode(["0"]);
-        var_dump(json_decode('["<p>\u95ee\u7b54\u9898-\u7b54\u6848<\/p>\r\n"]'));
-//        var_dump(json_decode('{"choices":["<p>\u5355\u9009\u9898-\u9009\u9879A<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879B<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879C<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879D<\/p>\r\n"]}'));
+//        var_dump(json_decode('["<p>\u95ee\u7b54\u9898-\u7b54\u6848<\/p>\r\n"]'));
+        var_dump(json_decode('{"choices":["<p>\u5355\u9009\u9898-\u9009\u9879A<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879B<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879C<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879D<\/p>\r\n"]}'));
     }
     public function inde(){
         var_dump(method_exists($this,'exception'));
