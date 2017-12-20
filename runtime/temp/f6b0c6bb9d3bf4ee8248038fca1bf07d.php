@@ -1,12 +1,29 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:74:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\role\index.html";i:1513757089;s:77:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\header.html";i:1513757089;s:77:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\bottom.html";i:1513757089;}*/ ?>
 <!DOCTYPE html>
 <html>
-{include file="manage/header" /}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <title>后台管理-<?php echo !empty($typename)?$typename:''; ?></title>
+
+    <!--[if lt IE 8]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="__MANAGE_CSS__bootstrap.min.css?v=3.3.5" rel="stylesheet">
+    <link href="__MANAGE_CSS__font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="__MANAGE_CSS__animate.min.css" rel="stylesheet">
+    <!--<link href="__CSS__style.min.css?v=4.0.0" rel="stylesheet">-->
+</head>
 <body>
 <div class="container-fluid">
-    {php}
+    <?php 
     $uid = session('admin_uid');
     $access = check($uid,['/manage/role/edit','/manage/role/delete','/manage/role/add']);
-    {/php}
+     ?>
     <table class="table table-striped table-hover">
         <thead>
         <tr>
@@ -20,24 +37,24 @@
         </thead>
         <tbody>
 
-        {volist name="list" id="vo"}
+        <?php if(is_array($list) || $list instanceof \think\Collection || $list instanceof \think\Paginator): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?>
 
         <tr>
-            <td>{$vo.id}</td>
+            <td><?php echo $vo['id']; ?></td>
             <td>
                 <strong>
-                    <a href="#" onclick="add_edit('edit',{$vo.id});"  data-toggle="modal" data-target="#myModal">{$vo.levelHtml}{$vo.name}</a>
+                    <a href="#" onclick="add_edit('edit',<?php echo $vo['id']; ?>);"  data-toggle="modal" data-target="#myModal"><?php echo $vo['levelHtml']; ?><?php echo $vo['name']; ?></a>
                 </strong>
             </td>
             <td>
                 <strong>
-                    <a href="#" onclick="add_edit('edit',{$vo.id});"  data-toggle="modal" data-target="#myModal">{$vo.code}</a>
+                    <a href="#" onclick="add_edit('edit',<?php echo $vo['id']; ?>);"  data-toggle="modal" data-target="#myModal"><?php echo $vo['code']; ?></a>
                 </strong>
             </td>
-            <td>{$vo.createdUserId|getUserinfo}</td>
-            <td>{$vo.createdTime}              </td>
+            <td><?php echo getUserinfo($vo['createdUserId']); ?></td>
+            <td><?php echo $vo['createdTime']; ?>              </td>
             <td>
-                {php}
+                <?php 
 
                 foreach($access as $k=>$v){
 
@@ -51,26 +68,26 @@
                         echo '<a href="#" onclick="add_edit(\'addSon\','.$vo['id'].','.$vo['code'].')" data-toggle="modal" data-target="#myModal">添加子角色</a>';
                     }
                 }
-                {/php}
+                 ?>
 
             </td>
         </tr>
-        {/volist}
+        <?php endforeach; endif; else: echo "" ;endif; ?>
         </tbody>
 
     </table>
     <div class="view">
-        {php}
+        <?php 
         foreach($access as $k=>$v){
             if($v=='/manage/role/add'){
                 echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加角色</a>';
             }
         }
-        {/php}
+         ?>
 
     </div>
     <ul class="pagination">
-        {$page}
+        <?php echo $page; ?>
     </ul>
 
     <!--添加角色-->
@@ -87,7 +104,7 @@
 
                 <!-- 模态框主体 -->
                 <div class="modal-body">
-                    <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('add')}">
+                    <form class="form-horizontal" role="form" id="form1" method="post" action="<?php echo url('add'); ?>">
                         <div class="form-group">
                             <label for="role_name" class="col-sm-2 control-label">角色名称</label>
                             <div class="col-sm-10">
@@ -104,7 +121,7 @@
                         </div>
                         <input type="hidden" name="parentcode" value="" id="parentcode"/>
                         <input type="hidden" name="rid" value="" id="selfcode"/>
-                        <!--<input type="hidden" name="__token__" value="{$Request.token}" />-->
+                        <!--<input type="hidden" name="__token__" value="<?php echo \think\Request::instance()->token(); ?>" />-->
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
                             <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>-->
@@ -145,7 +162,14 @@
     </div>
     <!--删除角色提示结束-->
 </div>
-{include file='manage/bottom'}
+<script src="__MANAGE_JS__jquery.min.js?v=2.1.4"></script>
+<script src="__MANAGE_JS__bootstrap.min.js?v=3.3.5"></script>
+<script src="__MANAGE_JS__plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="__MANAGE_JS__plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="__MANAGE_JS__plugins/layer/layer.min.js"></script>
+<script src="__MANAGE_JS__hplus.min.js?v=4.0.0"></script>
+<script src="__MANAGE_JS__contabs.min.js" type="text/javascript" ></script>
+<script src="__MANAGE_JS__plugins/pace/pace.min.js"></script>
 <script type="text/javascript">
 /*
 一共4种方法，添加新角色，添加子角色，修改角色，删除角色
@@ -176,7 +200,7 @@
                 $('#parentcode').val('')
                 $('#add_role').hide()
                 $('#edit_role').show()
-                $.get("{:url('edit')}?do=get&rid="+id,function (data) {
+                $.get("<?php echo url('edit'); ?>?do=get&rid="+id,function (data) {
                     $('#role_name').val(data.info.name)
                     $('#role_code').val(data.info.code)
                     $('#selfcode').val(data.info.id)
@@ -192,7 +216,7 @@
 
 
     function dopost($url) {
-        $url=='add'?"{:url('add')}":"{:url('edit')}";
+        $url=='add'?"<?php echo url('add'); ?>":"<?php echo url('edit'); ?>";
 
         $.ajax({
             url: $url+"?"+Math.random(),
@@ -221,7 +245,7 @@
     }
 
     function deleteRole(id) {
-        $.get("{:url('delete')}?rid="+id,function (data) {
+        $.get("<?php echo url('delete'); ?>?rid="+id,function (data) {
             if(data.code=='000'){
                 alert(data.info)
                 $('#myModal2').modal('hide')

@@ -1,3 +1,4 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:75:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\login\index.html";i:1513757089;}*/ ?>
 <!DOCTYPE html>
 <html>
 
@@ -30,7 +31,7 @@
 
         </div>
 
-        <form class="m-t" role="form" action="{:url('Manage/login/login')}" method="post">
+        <form class="m-t" role="form" action="<?php echo url('Manage/login/login'); ?>" method="post">
             <div class="form-group">
                 <input type="input" class="form-control" placeholder="用户名" required="" name="username">
             </div>
@@ -39,11 +40,11 @@
             </div>
             <div class="form-group">
                 <input type="text" name="captcha" placeholder="验证码" class="form-control captcha col-lg-4" style="width: 150px">
-                <img src="{:captcha_src()}" onclick="this.src='{:captcha_src()}?'+Math.random();" title="换一张" style="cursor: pointer;width:120px"/>
+                <img src="<?php echo captcha_src(); ?>" onclick="this.src='<?php echo captcha_src(); ?>?'+Math.random();" title="换一张" style="cursor: pointer;width:120px"/>
             </div>
-            <input type="hidden" name="__token__" value="{$Request.token}" />
+            <input type="hidden" name="__token__" value="<?php echo \think\Request::instance()->token(); ?>" />
             <button type="submit" class="btn btn-primary block full-width m-b">登 录</button>
-            <p class="text-muted text-center"> <a href="{:url('Manage/login/findPwd')}"><small>忘记密码了？</small></a>
+            <p class="text-muted text-center"> <a href="<?php echo url('Manage/login/findPwd'); ?>"><small>忘记密码了？</small></a>
             </p>
 
         </form>

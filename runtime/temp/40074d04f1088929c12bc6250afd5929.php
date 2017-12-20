@@ -1,3 +1,4 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:78:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\login\resetPwd.html";i:1512974536;}*/ ?>
 <!DOCTYPE html>
 <html>
 
@@ -10,10 +11,10 @@
     <title>后台登录-找回密码</title>
 
     <link rel="shortcut icon" href="favicon.ico"> <link href="__CSS__bootstrap.min.css?v=3.3.5" rel="stylesheet">
-    <link href="__MANAGE_CSS__font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="__CSS__font-awesome.min.css?v=4.4.0" rel="stylesheet">
 
-    <link href="__MANAGE_CSS__animate.min.css" rel="stylesheet">
-    <link href="__MANAGE_CSS__style.min.css?v=4.0.0" rel="stylesheet">
+    <link href="__CSS__animate.min.css" rel="stylesheet">
+    <link href="__CSS__style.min.css?v=4.0.0" rel="stylesheet">
     <!--[if lt IE 8]>
     <meta http-equiv="refresh" content="0;ie.html" />
     <![endif]-->
@@ -30,7 +31,7 @@
 
         </div>
 
-        <form class="m-t" role="form" action="{:url('Manage/login/resetPwdDo')}" method="post">
+        <form class="m-t" role="form" action="<?php echo url('Manage/login/resetPwdDo'); ?>" method="post">
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="新密码" required="" name="password">
             </div>
@@ -39,19 +40,19 @@
             </div>
             <div class="form-group">
                 <input type="text" name="captcha" placeholder="验证码" class="form-control captcha col-lg-4" style="width: 150px">
-                <img src="{:captcha_src()}" onclick="this.src='{:captcha_src()}?'+Math.random();" title="换一张" style="cursor: pointer;width:120px"/>
+                <img src="<?php echo captcha_src(); ?>" onclick="this.src='<?php echo captcha_src(); ?>?'+Math.random();" title="换一张" style="cursor: pointer;width:120px"/>
             </div>
-            <input type="hidden"   name="email" value="{$Request.param.e}">
-            <input type="hidden" name="__token__" value="{$Request.token}" />
+            <input type="hidden"   name="email" value="<?php echo \think\Request::instance()->param('e'); ?>">
+            <input type="hidden" name="__token__" value="<?php echo \think\Request::instance()->token(); ?>" />
             <button type="submit" class="btn btn-primary block full-width m-b">修改</button>
-            <p class="text-muted text-center"> <a href="{:url('Manage/login/index')}"><small>登陆</small></a>
+            <p class="text-muted text-center"> <a href="<?php echo url('Manage/login/index'); ?>"><small>登陆</small></a>
             </p>
 
         </form>
     </div>
 </div>
-<script src="__MANAGE_JS__jquery.min.js?v=2.1.4"></script>
-<script src="__MANAGE_JS__bootstrap.min.js?v=3.3.5"></script>
+<script src="__JS__jquery.min.js?v=2.1.4"></script>
+<script src="__JS__bootstrap.min.js?v=3.3.5"></script>
 </body>
 
 </html>

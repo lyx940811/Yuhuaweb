@@ -7,9 +7,9 @@
  */
 return[// 视图输出字符串内容替换
     'view_replace_str'       => [
-        '__CSS__' => '/static/manage/css/',
-        '__IMG__' => '/static/manage/img/',
-        '__JS__' => '/static/manage/js/',
+        '__MANAGE_CSS__' => '/static/manage/css/',
+        '__MANAGE_IMG__' => '/static/manage/img/',
+        '__MANAGE_JS__' => '/static/manage/js/',
        // '__JSS__' => '/static/index/jss/',
     ],
 

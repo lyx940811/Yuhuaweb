@@ -188,21 +188,5 @@ class Role extends Base{
         }
     }
 
-    public function roleFunction(){
-
-        $list = Db::name('role_function')->paginate(20);
-
-        $funlist = [];
-        foreach ($list as $k=>$v){
-
-            $funcode = trim($v['functioncode'],',');
-            $funlist[$k] = $v;
-            $funlist[$k]['groups'] = Db::name('function')->field('id,name,url,code')->where("id in ($funcode)")->order('id asc')->select();
-        }
-        $this->assign('list',$funlist);
-        $this->assign('page',$list->render());
-        return $this->fetch();
-
-    }
 
 }
