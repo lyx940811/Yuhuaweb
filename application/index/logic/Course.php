@@ -3,12 +3,15 @@
 namespace app\index\logic;
 
 use app\index\model\Course as CourseModel;
+use app\index\model\CourseFile;
 use app\index\model\Question;
 use app\index\model\Testpaper;
 use app\index\model\User   as UserModel;
 use app\index\model\CourseFile   as CourseFileModel;
+use think\Exception;
 use think\Loader;
 use think\Config;
+use think\Request;
 use think\Validate;
 class Course extends Base
 {
@@ -218,6 +221,20 @@ class Course extends Base
         else{
             return json_data(200,$this->codeMessage[200],'');
         }
+    }
+
+    public function getCourseFile($courseid){
+        if(!CourseModel::get($courseid)){
+            throw new Exception($this->codeMessage[200],200);
+        }
+        $request = Request::instance();
+        $fileList = CourseFile::all(['courseid'=>$courseid]);
+        foreach ($fileList as &$f){
+            $f['filesize'] = attrFilesize($f['filesize']);
+            $f['filepath'] = $request->domain().DS.$f['filepath'];
+            unset($f['source'],$f['lessonid']);
+        }
+        return $fileList;
     }
 
 

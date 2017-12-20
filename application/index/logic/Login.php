@@ -3,7 +3,7 @@
 namespace app\index\logic;
 
 use app\index\model\User;
-
+use think\Request;
 use think\Loader;
 use think\Validate;
 class Login extends Base

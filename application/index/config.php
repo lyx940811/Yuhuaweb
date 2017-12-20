@@ -7,7 +7,7 @@
  */
 return[
     // 默认输出类型
-//    'default_return_type'    => 'json',
+    'default_return_type'    => 'json',
     // 视图输出字符串内容替换
     'view_replace_str'       => [
         '__CSS__' => '/static/index/css/',
@@ -41,7 +41,7 @@ return[
         700     =>  'wrong file type',//文件格式不符合上传要求
         710     =>  'file is over size',//文件超过大小限制
         //邮件发送部分
-        800     =>  'email send error',
+        800     =>  'email send error,check your email address',
 
         //token验证
         900     =>  'token verified error',
