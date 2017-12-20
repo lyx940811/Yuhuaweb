@@ -153,16 +153,18 @@ class Course extends Home
 
     /**
      * 教师页面上传课程文件
+     * 记得修改php.ini中的上传选项
      */
     public function uploadfile(){
 //        $courseid = $this->data['courseid'];
 //        $lessonid = $this->data['lessonid'];
         $files = $_FILES;
+        var_dump($files);
         $res = $this->LogicUpload->uploadFile($files);
         var_dump($res);
-//        $coursefile = new CourseFile();
-//        $save = $coursefile->saveAll($res);
-//        var_dump($save);
+        $coursefile = new CourseFile();
+        $save = $coursefile->saveAll($res);
+        var_dump($save);
     }
 
 

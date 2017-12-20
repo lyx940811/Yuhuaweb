@@ -3,7 +3,7 @@
 namespace app\index\logic;
 
 use app\index\model\Course as CourseModel;
-use app\index\model\Question;
+use app\index\model\Question as QuestionModel;
 use app\index\model\Testpaper as TestpaperModel;
 use app\index\model\User   as UserModel;
 use app\index\model\CourseFile   as CourseFileModel;
@@ -11,7 +11,7 @@ use think\Loader;
 use think\Db;
 use think\Validate;
 use think\Exception;
-class Testpaper extends Base
+class Question extends Base
 {
     public function __construct()
     {
@@ -24,22 +24,22 @@ class Testpaper extends Base
         if(!$validate->check($data)){
             throw new Exception($validate->getError(),130);
         }
-        Question::create($data);
+        QuestionModel::create($data);
     }
 
     public function updateQuestion($data,$id){
-        if(!Question::get($id)){
+        if(!QuestionModel::get($id)){
             throw new Exception($this->codeMessage[300],300);
         }
         $validate = Loader::validate('Question');
         if(!$validate->check($data)){
             throw new Exception($validate->getError(),130);
         }
-        Question::where('id',$id)->update($data);
+        QuestionModel::where('id',$id)->update($data);
     }
 
     public function getQuestionDetail($id){
-        $question = Question::get($id);
+        $question = QuestionModel::get($id);
         if(!$question){
             throw new Exception('not find the question',300);
         }
@@ -51,16 +51,16 @@ class Testpaper extends Base
 
     public function delQuestion($id){
         if(!is_array($id)){
-            if(!Question::get($id)){
+            if(!QuestionModel::get($id)){
                 throw new Exception('not find the question',300);
             }
         }
         else{
-            if(!Question::all($id)){
+            if(!QuestionModel::all($id)){
                 throw new Exception('not find the question',300);
             }
         }
-        Question::destroy($id);
+        QuestionModel::destroy($id);
     }
 
 

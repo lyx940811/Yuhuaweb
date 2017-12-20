@@ -5,14 +5,13 @@ use Couchbase\Document;
 use think\Loader;
 use think\Db;
 use think\Exception;
-use app\index\model\Question;
 use app\index\model\QuestionType;
-class Testpaper extends Home
+class Question extends Home
 {
     public $LogicTestpaper;
     public function __construct(){
         parent::__construct();
-        $this->LogicTestpaper  = Loader::controller('Testpaper','logic');
+        $this->LogicTestpaper  = Loader::controller('Question','logic');
     }
 
     /**
@@ -22,6 +21,7 @@ class Testpaper extends Home
      */
     public function getqsttype(){
         try{
+
             $queType = QuestionType::where('flag',1)->field('name,code')->select();
             return json_data(0,$this->codeMessage[0],$queType);
         }

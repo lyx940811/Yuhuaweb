@@ -66,16 +66,17 @@ class Login extends Base
             $key = 'username';
         }
         if($user = User::get([ $key => $data['username'] ])){
+
             if(!in_array($user['type'],$allow_type)){
                 return json_data(150,$this->codeMessage[150],'');
             }
+
             if($user['locked']==1){
                 return json_data(160,$this->codeMessage[160],'');
             }
 
             if(password_verify($data['password'],$user['password'])){
                 //需要对返回数据进行整理
-
                 $key = [
                     'id'=>'',
                     'nickname'=>'',
@@ -86,6 +87,7 @@ class Login extends Base
                     'type'=>'',
                 ];
                 $user = $user->toArray();
+
                 $user = array_intersect_key($user,$key);
                 return json_data(0,$this->codeMessage[0],$user);
             }

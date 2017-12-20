@@ -65,6 +65,5 @@ class Upload
         return $uploads_dir.DS.$name;
     }
 
-
 }
 ?>
