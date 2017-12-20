@@ -107,6 +107,7 @@ function check($uid,$url='')
     }
 }
 
+//权限组用到，角色也用到
 function getUserinfo($uid){
 
     $uid = $uid+0;
@@ -116,35 +117,36 @@ function getUserinfo($uid){
 
 }
 
-function tree($arr,$pcode=0,$flag=0,$newArr=[]){
+/**
+ * 找子类
+ * @access public
+ * @param array $arr       要找子类的数组   必填
+ * @param mixed $pcode     父类的code      可选
+ * @return array
+ */
+function tree($arr,$pcode=0,$flag=0,&$newArr=[],$levelHtml='',$lnbsp=''){
 
-    $flag++;
+    $flag++;//层级
+    $levelHtml .='|--';
+    $lnbsp .='&nbsp;&nbsp;';
+
     foreach ($arr as $k=>$v){
-
         if($v['parentcode']==$pcode){
 
-            $newArr[$k] = $v;
-            $newArr[$k]['flag'] = $flag;
-            tree($arr,$v['code'],$flag);
-            echo $v['code'].'-'.$v['parentcode'].'-'.$v['name'].$flag.'级';
-//            echo $flag.'级2';
-            echo "<hr/>";
-            /*
-             * 40000-0-顶级角色1级
-             * 20001-20000-其他管理员2级
-             * 20000-0-顶级最高1级
-             * 30000-0-顶级学员1级
-             * 10020-10002-添加子类管理员下3级
-             * 10002-10000-教师2级
-             * 10000-0-管理员1级
-             */
+            $v['level'] = $flag;//把层级压进去
+            $v['levelHtml'] = $levelHtml.$lnbsp;//把层级压进去
+            array_push($newArr, $v);
+            tree($arr,$v['code'],$flag,$newArr,$levelHtml,$lnbsp);
 
+//            echo $v['code'].'-'.$v['parentcode'].'-'.$v['name'].$flag.'级';
+//            echo "<hr/>";
         }
-        else{
-            echo $v['code'].'--'.$v['parentcode'].'--'.$v['name'].$flag.'级';
-//            echo $flag.'级';
-            echo "<hr/>";
-        }
+
     }
-//    return $newArr;
+
+
+
+
+    return $newArr;
 }
+
