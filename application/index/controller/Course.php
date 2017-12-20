@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 
+use think\Exception;
 use think\Loader;
 use think\Config;
 use app\index\model\Course as CourseModel;
@@ -154,17 +155,67 @@ class Course extends Home
     /**
      * 教师页面上传课程文件
      * 记得修改php.ini中的上传选项
+     * 还没有上传type的限制，还没有大小的限制
      */
     public function uploadfile(){
-//        $courseid = $this->data['courseid'];
-//        $lessonid = $this->data['lessonid'];
-        $files = $_FILES;
-        var_dump($files);
-        $res = $this->LogicUpload->uploadFile($files);
-        var_dump($res);
-        $coursefile = new CourseFile();
-        $save = $coursefile->saveAll($res);
-        var_dump($save);
+        try{
+            $courseid = $this->data['courseid'];
+            $files = $_FILES;
+            $res = $this->LogicUpload->uploadFile($files);
+            foreach ($res as &$r){
+                $r['courseid']   = $courseid;
+                $r['createTime'] = date('Y-m-d H:i:s',time());
+                $name_type = explode('.',$r['filename']);
+                $type = null;
+                if($name_type[1]){
+                    $type = Db::name('course_file_type')
+                        ->where('ietype|firefoxtype',$r['type'])
+                        ->where('simpletype',$name_type[1])
+                        ->value('simpletype');
+                }
+                !empty($type)?$r['type'] = $type:$r['type'] = 'others';
+            }
+            $coursefile = new CourseFile();
+            $coursefile->saveAll($res);
+            return json_data(0,$this->codeMessage[0],'');
+        }
+        catch( Exception $e){
+            return json_data($e->getCode(),$e->getMessage(),'');
+        }
+    }
+
+    /**
+     * 获得某课程下的所有课程文件
+     */
+    public function getfilelist(){
+        $courseid = 3;//$this->data['courseid'];
+        $fileList = $this->LogicCourse->getCourseFile($courseid);
+        //类型转换为中文?现在是英文
+        var_dump($fileList);
+    }
+
+    /**
+     * 删除课程文件
+     */
+    public function delfile(){
+        try{
+            $id = $this->data['id'];
+            if(is_array($id)){
+                $fileList = CourseFile::all($id);
+            }
+            else{
+                $fileList = CourseFile::get($id);
+            }
+            if(!$fileList){
+                throw new Exception($this->codeMessage[220],220);
+            }
+            CourseFile::destroy($id);
+            return json_data(0,$this->codeMessage[0],'');
+        }
+        catch ( Exception $e ){
+            return json_data($e->getCode(),$e->getMessage(),'');
+        }
+
     }
 
 

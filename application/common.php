@@ -236,3 +236,22 @@
         return $save_path;
     }
 
+    /**
+     * 把文件大小换算成MB\KB\B输出
+     * @param $filesize
+     * @return string
+     */
+    function attrFilesize($filesize){
+        if($filesize>1048576){
+            //mb
+            return round($filesize/1048576,2)." MB";
+        }
+        elseif (1048576>$filesize&&$filesize>1024){
+            //kb
+            return round($filesize/1024,2)." KB";
+        }
+        else{
+            return ($filesize)." B";
+        }
+    }
+

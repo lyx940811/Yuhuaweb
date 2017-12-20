@@ -3,7 +3,7 @@
 namespace app\index\logic;
 
 use app\index\model\User;
-
+use think\Request;
 use think\Loader;
 use think\Validate;
 class Login extends Base
@@ -89,6 +89,8 @@ class Login extends Base
                 $user = $user->toArray();
 
                 $user = array_intersect_key($user,$key);
+                $request = Request::instance();
+                $user['title'] = $request->domain()."/".$user['title'];
                 return json_data(0,$this->codeMessage[0],$user);
             }
             else{

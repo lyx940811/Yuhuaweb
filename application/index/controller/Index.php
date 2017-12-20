@@ -33,16 +33,7 @@ class Index extends Home
 //        var_dump($res->choices);
     }
     public function inde(){
-        var_dump(method_exists($this,'exception'));
-        $u = new \app\index\logic\User();
-//        try{
-//            echo 1;
-//            $this->LogicLog->exception();
-//            echo 2;
-//        }
-//        catch (Exception $e){
-//            echo $e->getMessage();
-//        }
+        var_dump(explode('.',"readme"));
     }
     public function rrr()
     {
