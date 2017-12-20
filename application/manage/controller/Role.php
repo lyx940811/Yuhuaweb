@@ -1,33 +1,42 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: jason
+ * User: m's
  * Date: 2017/12/14
  * Time: 15:18
  */
 namespace app\manage\controller;
 
-use think\Config;
 use think\Db;
-use think\Request;
+use think\paginator\driver\Bootstrap;
 use think\Validate;
 
 class Role extends Base{
 
 
     public function index(){
-//        $lists = Db::name('role')->where('flag=1')->order('id desc')->paginate(4);
 
-        $lists = Db::name('role')->field('id,name,code,parentcode')->where('flag=1')->order('id asc')->select();
+        $lists = Db::name('role')->field('id,name,code,parentcode,createdUserId,createdTime')->where('flag=1')->order('id asc')->select();
 
+        $treeL = tree($lists);
 
-        print_r(tree($lists));
+        $curpage = input('page') ? input('page') : 1;//当前第x页，有效值为：1,2,3,4,5...
 
+        $listRow = 20;//每页2行记录
 
-exit;
+        $showdata = array_chunk($treeL, $listRow, true);
 
-        $this->assign('list',$lists);
-        $this->assign('page', $lists->render());
+        $p = Bootstrap::make($showdata, $listRow, $curpage, count($treeL), false, [
+            'var_page' => 'page',
+            'path'     => url(),//这里根据需要修改url
+            'query'    => [],
+            'fragment' => '',
+        ]);
+
+        $p->appends($_GET);
+
+        $this->assign('list', $p[$curpage-1]);
+        $this->assign('page', $p->render());
         return $this->fetch('index');
     }
 
@@ -177,6 +186,23 @@ exit;
         }else{
             return ['error'=>'删除失败','code'=>'200'];
         }
+    }
+
+    public function roleFunction(){
+
+        $list = Db::name('role_function')->paginate(20);
+
+        $funlist = [];
+        foreach ($list as $k=>$v){
+
+            $funcode = trim($v['functioncode'],',');
+            $funlist[$k] = $v;
+            $funlist[$k]['groups'] = Db::name('function')->field('id,name,url,code')->where("id in ($funcode)")->order('id asc')->select();
+        }
+        $this->assign('list',$funlist);
+        $this->assign('page',$list->render());
+        return $this->fetch();
+
     }
 
 }
