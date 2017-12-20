@@ -162,10 +162,12 @@ class Course extends Home
             $courseid = $this->data['courseid'];
             $files = $_FILES;
             $res = $this->LogicUpload->uploadFile($files);
+
             foreach ($res as &$r){
                 $r['courseid']   = $courseid;
                 $r['createTime'] = date('Y-m-d H:i:s',time());
                 $name_type = explode('.',$r['filename']);
+                //确定文件类型
                 $type = null;
                 if($name_type[1]){
                     $type = Db::name('course_file_type')
@@ -175,6 +177,7 @@ class Course extends Home
                 }
                 !empty($type)?$r['type'] = $type:$r['type'] = 'others';
             }
+
             $coursefile = new CourseFile();
             $coursefile->saveAll($res);
             return json_data(0,$this->codeMessage[0],'');
