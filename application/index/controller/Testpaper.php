@@ -173,7 +173,7 @@ class Testpaper extends Home
      * 得到某试卷下还未被添加的题目列表
      */
     public function getaddqst(){
-        $paperid = 1;//$this->data['paperid'];
+        $paperid  = 1;//$this->data['paperid'];
         $item_qst = array();
 
         if(!TestpaperModel::get($paperid)){
