@@ -23,7 +23,7 @@
         <thead>
         <tr>
             <th>用户ID</th>
-            <th>用户名</th>
+            <th>用户名/昵称</th>
             <th>用户头像</th>
             <th>手机号</th>
             <th>所属用户组</th>
@@ -39,9 +39,7 @@
         <tr>
             <td>{$vo.id}</td>
             <td>
-                <strong>
-                    <a href="#" onclick="add_edit('edit',{$vo.id});"  data-toggle="modal" data-target="#myModal">{$vo.username}</a>
-                </strong>
+                    <a href="#" onclick="add_edit('edit',{$vo.id});"  data-toggle="modal" data-target="#myModal">{$vo.username}</a>(<small>{$vo.nickname}</small>)
             </td>
             <td><img src="__ROOT__/{$vo.title}" title="用户头像" width="20px"/></td>
             <td>{$vo.mobile}</td>
@@ -97,20 +95,40 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="user_type" class="col-sm-2 control-label">用户类型</label>
+                            <label for="user_email" class="col-sm-2 control-label">用户邮箱</label>
                             <div class="col-sm-10">
-                                <h5 id="user_type_info" class=""></h5>
-                                <input type="hidden" id="user_type" name="user_type" >
+                                <input type="text" class="form-control" id="user_email" name="user_email"
+                                       placeholder="请输入用户邮箱">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="user_groups" class="col-sm-2 control-label">用户分组</label>
+                            <label for="user_type" class="col-sm-2 control-label">用户类型</label>
                             <div class="col-sm-8">
-                                    <select id="user_groups" class="form-control" name="user_roles">
+                                <select id="user_type" class="form-control" name="user_type">
+                                    {volist name='types' id='t'}
+                                        <option value="{$t.id}">{$t.name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="user_roles" class="col-sm-2 control-label">用户分组</label>
+                            <div class="col-sm-8">
+                                    <select id="user_roles" class="form-control" name="user_roles">
                                         {volist name='roles' id='v'}
                                         <option value="{$v.id}">{$v.name}</option>
                                         {/volist}
                                     </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="center-block" style="width: 200px">
+                                <label class="radio-inline">
+                                    <input type="radio" name="user_locked" id="userlocked" value="0" checked="checked"> 启用
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="user_locked" value="1"> 禁用
+                                </label>
                             </div>
                         </div>
                         <input type="hidden" name="rid" value="" id="selfcode"/>
@@ -178,22 +196,21 @@
                 $('#edit_user').show()
                 $.get("{:url('edit')}?do=get&rid="+id,function (data) {
                     $('#user_name').val(data.info.nickname)
-                    $('#user_type').val(data.info.type)
-                    // $('#user_roles').val(data.info.roles)
-                    if(data.info.type==3){
+                    $('#user_email').val(data.info.email)
 
-                        $('#user_type_info').text('学员')
-                    }else{
-                        $('#user_type_info').text('其他')
-                    }
                     $('#selfcode').val(data.info.id)
                     
-                    $.each($('#user_groups').children(),function (e,item) {
+                    $.each($('#user_roles').children(),function (e,item) {
                         if($(this).val()==data.info.roles){
                             $(this).prop('selected',true)
                         }
                     })
 
+                    $.each($('#user_type').children(),function (e,item) {
+                        if($(this).val()==data.info.type){
+                            $(this).prop('selected',true)
+                        }
+                    })
                 });
                 
                 break;
