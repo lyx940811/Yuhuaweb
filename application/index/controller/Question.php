@@ -31,14 +31,14 @@ class Question extends Home
     }
 
     /**
-     * 得到本课程下的所有题目
-     * 已写入文档(还没加总页码！！！)
+     * 课程管理-题目管理-得到本课程下的所有题目
+     * 已写入文档
      * @return array
      */
     public function getqstlist(){
         try{
-            $page     = $this->data['page'];
             $courseid = $this->data['courseid'];
+            !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
 
             $qstList  = $this->LogicTestpaper->getQuestionList($courseid,$page);
             return json_data(0,$this->codeMessage[0],$qstList);
@@ -82,7 +82,7 @@ class Question extends Home
 //                'createUserid'  =>  $this->data['createUserid'],//创建人id
 //                'analysis'      =>  $this->data['analysis'],    //分析，带html标签（富文本编辑器内的内容）
 //                'score'         =>  $this->data['score'],       //分数，float
-//                'answer'        =>  $this->data['answer'],      //答案，json编码的数组，0键对应正确答案
+//                'answer'        =>  $this->data['answer'],      //答案，json编码的数组，0键对应正确答案,多选题的时候有多个键值
 //                'metas'         =>  $this->data['metas'],       //题目元信息，json编码过，每一个键值对应每一个选项内容，answer的答案代表这里的键名
 //                'difficulty'    =>  $this->data['difficulty'],  //难易程度
 //                'courseId'      =>  $this->data['courseId'],    //课程id

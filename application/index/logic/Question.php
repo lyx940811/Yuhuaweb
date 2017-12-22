@@ -117,8 +117,17 @@ class Question extends Base
                 unset($r['type'],$r['createUserid']);
             }
         }
+        $total = Db::name('question')
+            ->where('courseId',$courseid)
+            ->count();
 
-        return $res;
+        $data = [
+            'qstList'   =>  $res,
+            'totalPage' =>  ceil($total/10),
+            'page'      =>  $page,
+        ];
+
+        return $data;
     }
 
 
