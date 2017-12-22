@@ -33,6 +33,7 @@ class Category extends Base{
         ]);
 
         $p->appends($_GET);
+        $this->assign('typename','栏目功能列表');
         $this->assign('list', $p[$curpage-1]);
         $this->assign('page', $p->render());
         return $this->fetch('index');

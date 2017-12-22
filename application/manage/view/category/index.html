@@ -7,6 +7,19 @@
     $uid = session('admin_uid');
     $access = check($uid,['/manage/category/edit','/manage/category/delete','/manage/category/add']);
     {/php}
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">列表</a></li>
+        <li role="presentation">
+            {php}
+            foreach($access as $k=>$v){
+            if($v=='/manage/category/add'){
+            echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加功能栏目</a>';
+            }
+            }
+            {/php}
+        </li>
+    </ul>
+
     <table class="table table-striped table-hover">
         <thead>
         <tr>
@@ -57,16 +70,6 @@
         </tbody>
 
     </table>
-    <div class="view">
-        {php}
-        foreach($access as $k=>$v){
-            if($v=='/manage/category/add'){
-                echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加功能栏目</a>';
-            }
-        }
-        {/php}
-
-    </div>
     <ul class="pagination">
         {$page}
     </ul>

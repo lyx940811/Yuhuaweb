@@ -7,7 +7,18 @@
     $uid = session('admin_uid');
     $access = check($uid,['/manage/user/edit','/manage/user/delete','/manage/user/add']);
     {/php}
-
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">列表</a></li>
+        <li role="presentation">
+            {php}
+            foreach($access as $k=>$v){
+            if($v=='/manage/user/add'){
+            echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加新用户</a>';
+            }
+            }
+            {/php}
+        </li>
+    </ul>
     <table class="table table-striped table-hover">
         <thead>
         <tr>
@@ -59,16 +70,6 @@
         </tbody>
 
     </table>
-    <div class="view">
-        {php}
-        foreach($access as $k=>$v){
-            if($v=='/manage/user/add'){
-                echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加新用户</a>';
-            }
-        }
-        {/php}
-
-    </div>
     <ul class="pagination">
         {$page}
     </ul>
@@ -90,7 +91,7 @@
                     <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('add')}">
                         <div class="form-group">
                             <label for="user_name" class="col-sm-2 control-label">用户名称</label>
-                            <div class="col-sm-5">
+                            <div class="col-sm-10">
                                 <input type="text" class="form-control" id="user_name" name="user_name"
                                        placeholder="请输入用户名称">
                             </div>
@@ -104,7 +105,7 @@
                         </div>
                         <div class="form-group">
                             <label for="user_groups" class="col-sm-2 control-label">用户分组</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-8">
                                     <select id="user_groups" class="form-control" name="user_roles">
                                         {volist name='roles' id='v'}
                                         <option value="{$v.id}">{$v.name}</option>
