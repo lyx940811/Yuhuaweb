@@ -80,6 +80,9 @@ class Ask extends Home
             'addtime'   =>  date('Y-m-d H:i:s',time()),
         ];
         if($id){
+            if(!Asklist::get($id)){
+                return json_data(500,$this->codeMessage[500],'');
+            }
             Asklist::where('id',$id)->update($data);
         }
         else{

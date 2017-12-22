@@ -34,8 +34,8 @@ class Index extends Home
         var_dump(json_decode('{"mode":"rand","ranges":{"courseId":"0","lessonId":"0"},"counts":{"single_choice":"2","choice":"1","essay":"0","uncertain_choice":"0","determine":"0","fill":"0","material":"0"},"scores":{"single_choice":"2","choice":"2","essay":"2","uncertain_choice":"2","determine":"2","fill":"2","material":"2"},"missScores":{"choice":"0","uncertain_choice":"0"},"percentages":{"simple":"","normal":"","difficulty":""}}'));
     }
     public function inde(){
-        var_dump(time_tran('2017-12-21 10:12:58'));
-//        var_dump(explode('.',"readme"));
+        $id = input('id');
+        Db::name('testpaper')->delete($id);
     }
     public function rrr()
     {
