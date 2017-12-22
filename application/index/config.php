@@ -35,6 +35,10 @@ return[
         //题目相关的
         300     =>  'not find the question',
         310     =>  'page cannot be null',
+        //试卷相关的
+        400     =>  'not find the testpaper',
+        //话题相关的
+        500     =>  'not find the ask',
 
 
         //文件上传部分

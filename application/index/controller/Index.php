@@ -25,15 +25,17 @@ class Index extends Home
         return $this->fetch();
     }
     public function excepTion(){
-        $res = json_encode(["0"]);
-        var_dump(json_decode('[["\u6674","\u9634","\u96e8"]]'));
+//        $res = json_encode(["0"]);
+//        var_dump(json_decode('[["\u6674","\u9634","\u96e8"]]'));
 //        var_dump(json_decode('["<p>\u95ee\u7b54\u9898-\u7b54\u6848<\/p>\r\n"]'));
 //        var_dump(json_decode('{"choices":["<p>\u5355\u9009\u9898-\u9009\u9879A<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879B<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879C<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879D<\/p>\r\n"]}'));
 //        $res = json_decode('{"choices":["<p>\u5355\u9009\u9898-\u9009\u9879A<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879B<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879C<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879D<\/p>\r\n"]}');
 //        var_dump($res->choices);
+        var_dump(json_decode('{"mode":"rand","ranges":{"courseId":"0","lessonId":"0"},"counts":{"single_choice":"2","choice":"1","essay":"0","uncertain_choice":"0","determine":"0","fill":"0","material":"0"},"scores":{"single_choice":"2","choice":"2","essay":"2","uncertain_choice":"2","determine":"2","fill":"2","material":"2"},"missScores":{"choice":"0","uncertain_choice":"0"},"percentages":{"simple":"","normal":"","difficulty":""}}'));
     }
     public function inde(){
-        var_dump(explode('.',"readme"));
+        var_dump(time_tran('2017-12-21 10:12:58'));
+//        var_dump(explode('.',"readme"));
     }
     public function rrr()
     {

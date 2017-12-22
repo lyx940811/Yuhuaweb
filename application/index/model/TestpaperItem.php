@@ -17,7 +17,7 @@ use think\Model as ThinkModel;
  * 用户模型
  * @package app\cms\model
  */
-class Testpaper extends ThinkModel
+class TestpaperItem extends ThinkModel
 {
     // 自动写入时间戳
 //    protected $autoWriteTimestamp = true;

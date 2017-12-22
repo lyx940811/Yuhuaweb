@@ -32,7 +32,7 @@ class Question extends Home
 
     /**
      * 得到本课程下的所有题目
-     * 已写入文档
+     * 已写入文档(还没加总页码！！！)
      * @return array
      */
     public function getqstlist(){
