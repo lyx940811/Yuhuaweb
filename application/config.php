@@ -281,6 +281,7 @@ return [
 
         //token验证
         900     =>  'token verified error',
+        910     =>  'token has expire',
         //关于请求的
         1000    =>  'wrong request type'
     ],
