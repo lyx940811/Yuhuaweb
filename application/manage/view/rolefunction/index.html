@@ -79,18 +79,18 @@
                     <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('add')}">
                         <div class="form-group">
                             <label for="role_code" class="col-sm-2 control-label">权限组名称</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-5">
                                 <input type="text" class="form-control" id="role_code" name="role_code"
-                                       placeholder="请输入角色名称">
+                                       placeholder="请输入权限组名称">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="function_code" class="col-sm-2 control-label">角色代码</label>
+                            <label for="function_code" class="col-sm-2 control-label">详细列表</label>
                             <div class="col-sm-10">
                                 <div class="checkbox">
                                     {volist name='allgroup' id='a'}
                                     <label class="checkbox-inline">
-                                        <input type="checkbox" class="function_code" value="{$a.id}" name="function_code[]"> {$a.name}
+                                        <input type="checkbox" class="function_code"  value="{$a.id}"  name="function_code[]"/>  {$a.name}
                                     </label>
                                     {/volist}
                                 </div>
@@ -143,7 +143,6 @@
 */
     /*添加*/
 
-
     function add_edit(type,id) {
 
         switch (type){
@@ -151,6 +150,7 @@
 
                 $(" input[ type='text' ] ").val('')
                 $(" input[ type='hidden' ] ").val('')
+                $(" input[ type='checkbox' ] ").prop('checked',false)
                 $('#add_role').show()
                 $('#edit_role').hide()
                 break;
@@ -160,14 +160,43 @@
                 $('#selfcode').val(id)//如果是修改,id是自己
                 $('#add_role').hide()
                 $('#edit_role').show()
-                $.get("{:url('edit')}?do=get&rid="+id,function (data) {
+
+                $.get("{:url('edit')}?"+Math.random()+"&do=get&rid="+id,function (data) {
 
                     $('#role_code').val(data.info.rolecode)
                     $('#selfcode').val(data.info.id)
-                    if ($('.function_code').each('checked')) {
-                        // do something
-                        alert($('.function_code').val())
-                    }
+
+
+
+
+                    var childInfo = data.info.children;
+
+                    /*
+                    *    [0]  19   权限修改
+                    *    [1]  20   角色列表
+                    */
+                    console.log(childInfo)
+
+
+                    var func_check = $('input[name="function_code[]"]');//所有多选框
+
+
+
+                    $(func_check).each(function (e,item) {
+
+                        for (var i in childInfo) {
+
+                            if($(this).val()==childInfo[i].id){
+                                $(this).prop('checked',true)
+                                break;
+                            }else{
+                                $(this).prop('checked',false)
+                            }
+                        }
+                    });
+
+
+
                 });
                 
                 break;
@@ -209,14 +238,17 @@
     }
 
     function deleteRole(id) {
-        $.get("{:url('delete')}?rid="+id,function (data) {
-            if(data.code=='000'){
-                alert(data.info)
-                $('#myModal2').modal('hide')
-            }else{
+        if(confirm('确定要删除吗')){
+            $.get("{:url('delete')}?rid="+id,function (data) {
+                if(data.code=='000'){
+                    alert(data.info)
+                    $('#myModal2').modal('hide')
+                }else{
 
-            }
-        });
+                }
+            });
+        }
+
     }
 
 

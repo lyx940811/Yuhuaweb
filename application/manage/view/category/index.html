@@ -107,8 +107,8 @@
                                        placeholder="请输入栏目url">
                             </div>
                         </div>
-                        <input type="text" name="parentcode" value="" id="parentcode"/>
-                        <input type="text" name="rid" value="" id="selfcode"/>
+                        <input type="hidden" name="parentcode" value="" id="parentcode"/>
+                        <input type="hidden" name="rid" value="" id="selfcode"/>
                         <!--<input type="hidden" name="__token__" value="{$Request.token}" />-->
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
@@ -227,14 +227,17 @@
     }
 
     function deleteCategory(id) {
-        $.get("{:url('delete')}?rid="+id,function (data) {
-            if(data.code=='000'){
-                alert(data.info)
-                $('#myModal2').modal('hide')
-            }else{
+        if(confirm('确定要删除吗')){
+            $.get("{:url('delete')}?rid="+id,function (data) {
+                if(data.code=='000'){
+                    alert(data.info)
+                    $('#myModal2').modal('hide')
+                }else{
 
-            }
-        });
+                }
+            });
+        }
+
     }
 
 

@@ -39,6 +39,7 @@ class Rolefunction extends Base{
         $this->assign('list',$funlist);
         $this->assign('allgroup',$allgroup);
         $this->assign('page',$list->render());
+        $this->assign('typename','权限组管理');
         return $this->fetch();
 
     }
