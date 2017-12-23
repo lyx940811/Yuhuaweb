@@ -11,10 +11,15 @@
         <li role="presentation" class="active"><a href="#">列表</a></li>
         <li role="presentation">
             {php}
-            foreach($access as $k=>$v){
-            if($v=='/manage/user/add'){
-            echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加新用户</a>';
+            if($access){
+
+
+
             }
+            foreach($access as $k=>$v){
+                if($v=='/manage/user/add'){
+                echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加新用户</a>';
+                }
             }
             {/php}
         </li>
@@ -124,7 +129,7 @@
                         <div class="form-group">
                             <div class="center-block" style="width: 200px">
                                 <label class="radio-inline">
-                                    <input type="radio" name="user_locked" id="userlocked" value="0" checked="checked"> 启用
+                                    <input type="radio" name="user_locked" value="0" checked="checked"> 启用
                                 </label>
                                 <label class="radio-inline">
                                     <input type="radio" name="user_locked" value="1"> 禁用
@@ -195,20 +200,29 @@
                 $('#add_user').hide()
                 $('#edit_user').show()
                 $.get("{:url('edit')}?do=get&rid="+id,function (data) {
-                    $('#user_name').val(data.info.nickname)
-                    $('#user_email').val(data.info.email)
 
-                    $('#selfcode').val(data.info.id)
-                    
+                    var detail = data.info;
+                    $('#user_name').val(detail.nickname)
+                    $('#user_email').val(detail.email)
+                    $('#selfcode').val(detail.id)
+
+
                     $.each($('#user_roles').children(),function (e,item) {
-                        if($(this).val()==data.info.roles){
+                        if($(this).val()==detail.roles){
                             $(this).prop('selected',true)
                         }
                     })
 
                     $.each($('#user_type').children(),function (e,item) {
-                        if($(this).val()==data.info.type){
+                        if($(this).val()==detail.type){
                             $(this).prop('selected',true)
+                        }
+                    })
+
+                    $.each($('input[name="user_locked"]'),function (e,item) {
+
+                        if($(this).val()==detail.locked){
+                            $(this).prop('checked',true)
                         }
                     })
                 });
