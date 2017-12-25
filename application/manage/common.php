@@ -127,25 +127,37 @@ function getUserinfo($uid){
 function tree($arr,$pcode=0,$flag=0,&$newArr=[],$levelHtml='',$lnbsp=''){
 
     $flag++;//层级
-    $levelHtml .='|--';
-    $lnbsp .='&nbsp;&nbsp;';
-
+    $lnbsp .='&nbsp;&nbsp;&nbsp;';
+    $levelHtml ='└ ';
     foreach ($arr as $k=>$v){
         if($v['parentcode']==$pcode){
 
             $v['level'] = $flag;//把层级压进去
-            $v['levelHtml'] = $levelHtml.$lnbsp;//把层级压进去
+            $v['levelHtml'] = $lnbsp.$levelHtml;//把层级压进去
             array_push($newArr, $v);
+
             tree($arr,$v['code'],$flag,$newArr,$levelHtml,$lnbsp);
 
-//            echo $v['code'].'-'.$v['parentcode'].'-'.$v['name'].$flag.'级';
-//            echo "<hr/>";
         }
 
     }
 
 
-
+//    $flag++;//层级
+//    $levelHtml .='|--';
+//    $lnbsp .='&nbsp;&nbsp;';
+//
+//    foreach ($arr as $k=>$v){
+//        if($v['parentcode']==$pcode){
+//
+//            $v['level'] = $flag;//把层级压进去
+//            $v['levelHtml'] = $levelHtml.$lnbsp;//把层级压进去
+//            array_push($newArr, $v);
+//            tree($arr,$v['code'],$flag,$newArr,$levelHtml,$lnbsp);
+//
+//        }
+//
+//    }
 
     return $newArr;
 }

@@ -11,11 +11,15 @@
         <li role="presentation" class="active"><a href="#">列表</a></li>
         <li role="presentation">
             {php}
-            foreach($access as $k=>$v){
-            if($v=='/manage/role/add'){
-            echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加角色</a>';
+            if($access){
+                foreach($access as $k=>$v){
+                    if($v=='/manage/role/add'){
+                        echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加角色</a>';
+                    }
+                }
+
             }
-            }
+
             {/php}
         </li>
     </ul>
@@ -29,6 +33,7 @@
             <th>角色代码</th>
             <th>创建人</th>
             <th>创建时间</th>
+            <th>是否启用</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -50,6 +55,7 @@
             </td>
             <td>{$vo.createdUserId|getUserinfo}</td>
             <td>{$vo.createdTime}              </td>
+            <td>{$vo.flag?'是':'否'}              </td>
             <td>
                 {php}
 

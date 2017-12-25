@@ -11,11 +11,14 @@
         <li role="presentation" class="active"><a href="#">列表</a></li>
         <li role="presentation">
             {php}
-            foreach($access as $k=>$v){
-            if($v=='/manage/category/add'){
-            echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加功能栏目</a>';
+            if($access){
+                foreach($access as $k=>$v){
+                    if($v=='/manage/category/add'){
+                        echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加功能栏目</a>';
+                    }
+                }
             }
-            }
+
             {/php}
         </li>
     </ul>
@@ -146,8 +149,6 @@
 
                 </div>
 
-
-
             </div>
         </div>
     </div>
@@ -177,17 +178,21 @@
                 $('#parentcode').val(parentcode)
                 $('#add_category').show()
                 $('#edit_category').hide()
+
                 break;
             case 'edit':
+
+                $(" input[ type='text' ] ").val('')
+                $(" input[ type='hidden' ] ").val('')
                 $('#selfcode').val(id)//如果是修改,id是自己
-                $('#parentcode').val('')
                 $('#add_category').hide()
                 $('#edit_category').show()
+
                 $.get("{:url('edit')}?do=get&rid="+id,function (data) {
                     $('#category_name').val(data.info.name)
                     $('#category_code').val(data.info.code)
+                    $('#category_url').val(data.info.url)
                     $('#selfcode').val(data.info.id)
-                    $('#category_url').val(data.info.code)
                 });
                 
                 break;

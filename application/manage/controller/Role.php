@@ -16,7 +16,7 @@ class Role extends Base{
 
     public function index(){
 
-        $lists = Db::name('role')->field('id,name,code,parentcode,createdUserId,createdTime')->where('flag=1')->order('id asc')->select();
+        $lists = Db::name('role')->field('id,name,code,parentcode,createdUserId,createdTime')->order('id asc')->select();
 
         $treeL = tree($lists);
 
