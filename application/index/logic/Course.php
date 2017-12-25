@@ -4,8 +4,8 @@ namespace app\index\logic;
 
 use app\index\model\Course as CourseModel;
 use app\index\model\CourseFile;
-use app\index\model\Question;
-use app\index\model\Testpaper;
+//use app\index\model\Question ;
+//use app\index\model\Testpaper;
 use app\index\model\User   as UserModel;
 use app\index\model\CourseFile   as CourseFileModel;
 use think\Exception;

@@ -3,7 +3,7 @@
 
 {block name="container"}
 
-<a class="bloglist f_l">
+<a class="bloglist f_l"><div>
   <form action="{:url('index/course/uploadfile')}" enctype="multipart/form-data" method="post">
     <input type="hidden" name="userid" value="2" /> <br>
     <input type="text" name="realname" /> <br>
@@ -13,21 +13,41 @@
     <!--<input type="file" name="back_head_icon" /> <br>-->
     <input type="submit" value="上传" />
   </form>
-  <a href="{:url('index/index/inde',array('id'=>2))}" <button>222222222</button></a>
-</div>
+  <a href="{:url('index/index/inde',array('id'=>2))}"><button>222222222</button></a>
+
+</div></a>
+<div><img src="http://localhost/index/index/captcha" alt="captcha" /></div>
+<input type="text" name="captcha" id="captcha"/>
+<button id="capbutton">captcha</button>
 <div>{:captcha_img()}</div>
 {/block}
 
 {block name="javascript"}
 <script>
     $(function(){
+        $('#capbutton').click(function(){
+            console.log($('#captcha').val());
+
+            $.post(
+                "http://localhost/index/index/verifycaptcha",
+                {
+                    'captcha':$('#captcha').val(),
+                },
+                function(data){
+                    if(data){
+                        console.log(data);
+                    }
+                },
+                "json"
+            );
+        });
         $.post(
-            "http://localhost/index/login/register",
+            "http://localhost/index/user/chpwd",
             {
-                'email':'312850391@qq.com',
-                'username':'nick',
-                'password':'456789',
-                'token':123456
+                'user_token':'dd73d0d20dddb7be3fe3b6858a1d24d9',
+                'pwd':'123456',
+                'newpwd':'123456',
+                'renewpwd':'123456',
             },
             function(data){
                 if(data){

@@ -2,7 +2,7 @@
 
 namespace app\index\logic;
 
-use app\index\model\User;
+use app\index\model\User as UserModel;
 use think\Request;
 use think\Loader;
 use think\Validate;
@@ -24,10 +24,10 @@ class Login extends Base
         $data['type']           =   3;
         $data['createdTime']    =   date('Y-m-d H:i:s');
         //is user exist?
-        if(User::get(['email'=>$data['email']])){
+        if(UserModel::get(['email'=>$data['email']])){
             return json_data(120,$this->codeMessage[120],'');
         }
-        if(User::get(['username'=>$data['username']])){
+        if(UserModel::get(['username'=>$data['username']])){
             return json_data(120,$this->codeMessage[120],'');
         }
         else{
@@ -38,7 +38,7 @@ class Login extends Base
             }
             else{
                 //add data
-                $result = User::create($data);
+                $result = UserModel::create($data);
                 if($result){
                     return json_data(0,$this->codeMessage[0],$result);
                 }
@@ -65,10 +65,14 @@ class Login extends Base
         else{
             $key = 'username';
         }
-        if($user = User::get([ $key => $data['username'] ])){
+        if($user = UserModel::get([ $key => $data['username'] ])){
 
             if(!in_array($user['type'],$allow_type)){
                 return json_data(150,$this->codeMessage[150],'');
+            }
+
+            if($user['status']==0){
+                return json_data(170,$this->codeMessage[170],'');
             }
 
             if($user['locked']==1){
@@ -76,7 +80,7 @@ class Login extends Base
             }
 
             if(password_verify($data['password'],$user['password'])){
-                //需要对返回数据进行整理
+                //需要对返回数据进行整理，这里需要改成只返回access_token
                 $key = [
                     'id'=>'',
                     'nickname'=>'',
@@ -127,7 +131,7 @@ class Login extends Base
      * @return array
      */
     public function sendChEmail($email){
-        if($user = User::get(['email'=> $email ])){
+        if($user = UserModel::get(['email'=> $email ])){
             //send email
             $title   = '【豫化在线】找回您的帐户密码';
             $content = '亲爱的用户 '.$user['nickname'].'：您好！您的密码重置地址为：http://www.baidu.com?email='.base64_encode($email);
@@ -150,7 +154,7 @@ class Login extends Base
      * @return array
      */
     public function ChUserPassword($email,$password){
-        if(!$user = User::get([ 'email' => $email ])){
+        if(!$user = UserModel::get([ 'email' => $email ])){
             return json_data(110,$this->codeMessage[110],'');
         }
 
@@ -169,12 +173,12 @@ class Login extends Base
         }
         else{
             //update password
-            $user = new User();
+            $user = new UserModel();
             $user->save(
                 ['password'=>password_hash($data['password'],PASSWORD_DEFAULT)],
                 ['email'=>$email]);
 
-            $newuser = User::get(['email'=>$data['email']]);
+            $newuser = UserModel::get(['email'=>$data['email']]);
             $key = [
                 'id'=>'',
                 'nickname'=>'',

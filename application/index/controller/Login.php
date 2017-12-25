@@ -4,11 +4,11 @@ namespace app\index\controller;
 use think\Loader;
 use think\Config;
 use app\index\model\User;
-
+use think\captcha\Captcha;
 /**
  * Class Login
  * @package app\index\controller
- * 用户登录注册模块
+ * 用户登录注册模块     迁移至User中
  */
 
 class Login extends Home
@@ -24,7 +24,17 @@ class Login extends Home
      * 注册
      */
     public function register(){
+
         $data = $this->data;
+
+        $code = $data['captcha'];
+        $id   = $data['captchaid'];
+        $captcha = new Captcha();
+        if(!$captcha->check($code,$id)){
+            return json_data(920,$this->codeMessage[920],'');
+        }
+        unset($data['captcha'],$data['captchaid']);
+
         $data['createdIp'] = $this->request->ip();
         $result = $this->LogicLogin->userAdd($data);
         return $result;

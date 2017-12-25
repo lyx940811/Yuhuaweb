@@ -16,19 +16,11 @@ use think\Validate;
 /**
  * 题目验证器
  */
-class Asklist extends Validate
+class AskAnswer extends Validate
 {
     // 定义验证规则
     protected $rule = [
         'content|内容'           =>  'length:1,1000',
-        'title|标题'             =>  'length:1,50',
-//        'createUserid|创建者'   =>  'require',
-//        'analysis|分析'         =>  'require',
-//        'score|分数'            =>  'require|float',
-//        'answer|答案'           =>  'require',
-//        'metas|题目元信息'      =>  'require',
-//        'difficulty|难易程度'   =>  'require',
-//        'courseId|课程id'       =>  'require',
     ];
 
 }
