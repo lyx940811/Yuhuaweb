@@ -27,7 +27,8 @@ return[
         150     =>  'wrong user type',
         160     =>  'user has been locked',
         170     =>  'user have not been checked',
-
+        180     =>  'wrong type',
+        181     =>  'delete like error',//取消点赞失败
         //关于课程Course相关的
         200     =>  'not find the course',
         210     =>  'wrong request course type',

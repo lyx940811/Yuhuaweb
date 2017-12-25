@@ -11,6 +11,7 @@ use app\index\model\Testpaper as TestpaperModel;
 use app\index\model\TestpaperItem;
 use app\index\model\CourseFile;
 use app\index\model\Course;
+use app\index\model\Like;
 class Student extends User
 {
     public $LogicTestpaper;
@@ -113,9 +114,51 @@ class Student extends User
     /**
      * 删除一条评论
      */
+    public function delcomment(){}
 
     /**
      * 【笔记部分】
      */
 
+
+
+
+
+    /**
+     * 【点赞部分】
+     */
+    /**
+     * 给某个问答、回答、评论点赞
+     */
+    public function like(){
+        $type = ['ask','answer','commment'];
+        $data = [
+            'userid'        =>  1,
+            'type'          =>  'ask',
+            'articleid'     =>  1,
+            'createTime'    =>  date('Y-m-d H:i:s'),
+        ];
+        if(!in_array($data['type'],$type)){
+            return json_data(180,$this->codeMessage[180],'');
+        }
+        Like::create($data);
+    }
+
+    /**
+     * 取消点赞
+     */
+    public function canclelike(){
+        $delete = Like::destroy([
+            'userid'    =>  1,
+            'type'      =>  'ask',
+            'articleid'   =>1,
+        ]);
+
+        if($delete){
+            return json_data(0,$this->codeMessage[0],'');
+        }
+        else{
+            return json_data(180,$this->codeMessage[180],'');
+        }
+    }
 }
