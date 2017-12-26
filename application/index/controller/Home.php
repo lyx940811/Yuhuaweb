@@ -25,28 +25,38 @@ class Home extends Controller
         //define ajax return message
         $this->codeMessage = Config::get('apicode_message');
 
-        //define token
-//        $this->token = $this->request->param('token');
-
-//        $this->verifyToken();
-
         //controller from dir logic
         $this->LogicLog  = Loader::controller('Log','logic');
-
-
-
+        //define data
+        $this->data = $this->request->param();
         //unset the token which in the post data
-        if($this->request->param()){
-            $this->data = $this->request->param();
+        if($this->request->param('token')){
+            //verify token
+
+
+
             unset($this->data['token']);
         }
     }
 
     //ajax token verifiy
-    public function verifyToken(){
+    protected function verifyToken(){
         if($this->access_token!=$this->token){
             exit(json_encode(json_data(900,$this->codeMessage[900],'')));
         }
+    }
+
+    public function getusertoken(){
+
+        $LogicUser   = Loader::controller('User','logic');
+        $data = [
+            'username'  =>  '312850391@qq.com',//$this->request->param('username'),
+            'password'  =>  123456,//$this->request->param('password'),
+        ];
+        $res = $LogicUser->getusertoken($data);
+
+        return $res;
+
     }
 
 

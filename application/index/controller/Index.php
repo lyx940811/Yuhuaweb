@@ -5,7 +5,7 @@ use Couchbase\Document;
 use think\Controller;
 use think\Db;
 use think\Exception;
-
+use think\captcha\Captcha;
 class Index extends Home
 {
 
@@ -20,6 +20,25 @@ class Index extends Home
     {
         return $this->fetch();
     }
+    public function captcha(){
+        $id = $this->request->param('id');
+        $captcha = new Captcha();
+        return $captcha->entry();
+    }
+    public function rr(){
+        session_start();
+        var_dump($_SESSION);
+    }
+    public function verifycaptcha(){
+        session_start();
+        $code = $this->request->param('captcha');
+        $id = $this->request->param('id');
+        $captcha = new Captcha();
+        return json_data(0,$this->codeMessage[0],$captcha->check($code));
+    }
+
+
+
     public function file2()
     {
         return $this->fetch();
