@@ -23,7 +23,7 @@ function check($uid,$url='')
     $user_groups = Db::view('user', 'id,username')
         ->view('role', 'name,code', "user.roles=role.id", 'LEFT')
         ->view('role_function', 'rolecode,functioncode', "role_function.rolecode=role.id", 'LEFT')
-        ->where("user.id='$uid' and role_function.flag='1'")
+        ->where("user.id='$uid' and role_function.Flag='1'")
         ->find();
 
     if(!$user_groups){
