@@ -1,24 +1,23 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: m's
- * Date: 2017/12/14
- * Time: 15:18
+ * User: jason
+ * Date: 2017/12/18
+ * Time: 11:31
  */
 namespace app\manage\controller;
-
 use think\Db;
 use think\paginator\driver\Bootstrap;
 use think\Validate;
 
-class Role extends Base{
-
+class Functions extends Base{
 
     public function index(){
 
-        $lists = Db::name('role')->field('id,name,code,parentcode,createdUserId,createdTime')->order('id asc')->select();
+        $lists = Db::name('function')->field('id,name,code,parentcode,url,Flag')->where('flag=1')->order('id asc')->select();
 
         $treeL = tree($lists);
+
 
         $curpage = input('page') ? input('page') : 1;//当前第x页，有效值为：1,2,3,4,5...
 
@@ -34,27 +33,30 @@ class Role extends Base{
         ]);
 
         $p->appends($_GET);
-
+        $this->assign('typename','栏目功能列表');
         $this->assign('list', $p[$curpage-1]);
         $this->assign('page', $p->render());
         return $this->fetch('index');
     }
 
-    //添加角色
+
+    //添加功能栏目和url
     public function add(){
 
         $info = input('post.');
 
         //错误信息提示
         $msg  =   [
-            'name.require' => '角色名称不能为空',
-            'name.length' => '角色名称长度太短',
+            'name.require' => '栏目名称不能为空',
+            'name.length' => '栏目名称长度太短',
             'code.require' => '代码不能为空',
+            'url.require' => '栏目url不能为空',
         ];
 
         $validate = new Validate([
             'name'  => 'require|length:2,20', //我这里的token是令牌验证
             'code'   => 'require',
+            'url'   => 'require',
         ],$msg);
 
         $validate->check($info);
@@ -65,8 +67,13 @@ class Role extends Base{
             return ['error'=>$error,'code'=>'200'];
         }
 
-        $role_table = Db::name('role');
-        $is_have = $role_table->where("code='{$info['code']}'")->find();
+        $role_table = Db::name('function');
+//
+        $is_have = $role_table->where([
+            'code'=>['eq',$info['code']]
+        ])->whereOr([
+            'url' =>['eq',$info['url']]
+        ])->find();
 
         if($is_have){//如果这个code有
             return ['error'=>'已经有此代码','code'=>'300'];
@@ -74,13 +81,12 @@ class Role extends Base{
 
         $data['name'] = $info['name'];
         $data['code'] = $info['code'];
-        $data['data'] = $info['name'];
-        $data['createdUserId'] = session('admin_uid');
-        $data['createdTime'] = date('Y-m-d H:i:s',time());
-        $data['flag'] = 1;
         $data['parentcode'] = empty($info['parentcode'])?0:$info['parentcode'];
+        $data['grade'] = 1;
+        $data['flag'] = 1;
+        $data['url'] = $info['url'];
 
-        $ok = $role_table->field('name,code,data,createdUserId,createdTime,flag,parentcode')->insert($data);
+        $ok = $role_table->field('name,code,flag,parentcode,grade,url')->insert($data);
 
         if($ok){
             return ['info'=>'添加成功','code'=>'000'];
@@ -97,8 +103,7 @@ class Role extends Base{
         if(isset($_GET['do'])=='get'){
             $id = $_GET['rid']+0;
 
-            $role_table = Db::name('role');
-            $have = $role_table->where("id='$id'")->find();
+            $have = Db::name('function')->where("id='$id'")->find();
 
             if(!$have){//如果这个code有
                 return ['error'=>'没有此角色','code'=>'300'];
@@ -114,22 +119,24 @@ class Role extends Base{
         $info = input('post.');
 
         if($info['parentcode']){
-            
-            return ['error'=>'角色不能修改父类','code'=>'200'];
+
+            return ['error'=>'功能栏目不能修改父类','code'=>'200'];
         }
 
         $msg  =   [
-            'rid.require' => '角色rid不能为空',
-            'name.require' => '角色名称不能为空',
-            'name.length' => '角色名称长度太短',
+            'rid.require' => '功能栏目rid不能为空',
+            'name.require' => '栏目名称不能为空',
+            'name.length' => '栏目名称长度太短',
             'code.require' => '代码不能为空',
             'code.number' => '代码必须为数字',
+            'url.require' => '栏目url必须填写',
         ];
 
         $validate = new Validate([
             'rid'  => 'require',
             'name'  => 'require|length:2,20',
             'code'   => 'require|number',
+            'url'   => 'require',
         ],$msg);
 
         $validate->check($info);
@@ -140,8 +147,7 @@ class Role extends Base{
             return ['error'=>$error,'code'=>'200'];
         }
 
-
-        $role_table = Db::name('role');
+        $role_table = Db::name('function');
 
         $id = $info['rid'];
         $have = $role_table->field('id,code')->where("id='$id'")->find();
@@ -150,23 +156,15 @@ class Role extends Base{
             return ['error'=>'没有此角色','code'=>'300'];
         }
 
-        if($have['code']==$info['code']){
+        $have = $role_table->field('id,code')
+            ->where("id <> $id AND code={$info['code']}")
+            ->whereOr("id <> $id AND url='{$info['url']}'")->find();
 
-            $ok = $role_table->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name']]);
-        }else{
-
-            $where['id'] = ['neq',$id];
-            $where['code'] = $info['code'];
-
-            $have = $role_table->field('id,code')->where($where)->find();
-
-            if($have){
-                return ['error'=>'已经有此代码','code'=>'300'];
-            }
-
-            $ok = $role_table->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name'],'code'=>$info['code']]);
+        if($have){
+            return ['error'=>'已经有此代码','code'=>'300'];
         }
 
+        $ok = $role_table->where('id',$id)->update(['name' => $info['name'],'code'=>$info['code'],'url'=>$info['url']]);
 
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];
@@ -174,12 +172,11 @@ class Role extends Base{
             return ['error'=>'修改失败','code'=>'200'];
         }
     }
-
     public function delete(){
 
         $id = $_GET['rid']+0;
 
-        $ok = Db::name('role')->where("id='$id'")->delete();
+        $ok = Db::name('function')->where("id='$id'")->delete();
 
         if($ok){
             return ['info'=>'删除成功','code'=>'000'];
@@ -187,6 +184,5 @@ class Role extends Base{
             return ['error'=>'删除失败','code'=>'200'];
         }
     }
-
 
 }

@@ -2,7 +2,6 @@
 namespace app\manage\controller;
 use app\manage\model\User;
 use think\Controller;
-use think\Url;
 use think\Validate;
 use think\Db;
 
@@ -28,7 +27,7 @@ class Login extends Controller{
 
         if(!captcha_check($info['captcha'])){
             //验证码错误
-            $this->error('验证码错误');
+            return ['error'=>'验证码错误','code'=>200];
         }
         //错误信息提示
         $msg  =   [
@@ -37,7 +36,7 @@ class Login extends Controller{
         ];
 
         $validate = new Validate([
-            'username'  => 'require|length:2,50|token', //我这里的token是令牌验证
+            'username'  => 'require|length:2,50', //我这里的token是令牌验证
             'password'   => 'require',
         ],$msg);
 
@@ -45,7 +44,7 @@ class Login extends Controller{
         $error = $validate->getError();//打印错误规则
 
         if(!empty($error)){
-            $this->error($error);
+            return ['error'=>$error,'code'=>300];
         }
 
         $user = User::get(['username'=>$info['username']]);//取出的数据
@@ -57,15 +56,15 @@ class Login extends Controller{
                 session('admin_uid',$user->id);
                 session('admin_name',$user->username);
 
-                $this->success('登陆成功',url('Manage/manage/index'));
+                return ['info'=>'登陆成功','code'=>'000','url'=>url('Manage/manage/index')];
 
             }else{
 
-                $this->error('密码错误');
+                return ['error'=>'密码错误','code'=>400];
 
             }
         }else{
-            $this->error('请输入正确的用户名');
+            return ['error'=>'请输入正确的用户名','code'=>500];
         }
 
 

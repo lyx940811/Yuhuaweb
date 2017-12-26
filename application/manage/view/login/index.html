@@ -6,7 +6,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
     <title>后台登录</title>
 
     <link rel="shortcut icon" href="favicon.ico">
@@ -29,7 +28,10 @@
             <h2>欢迎使用豫化系统</h2>
 
         </div>
-
+        <div class="alert alert-success" role="alert">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>Error!</strong>
+        </div>
         <form class="m-t" role="form" action="{:url('Manage/login/login')}" method="post">
             <div class="form-group">
                 <input type="input" class="form-control" placeholder="用户名" required="" name="username">
@@ -41,16 +43,51 @@
                 <input type="text" name="captcha" placeholder="验证码" class="form-control captcha col-lg-4" style="width: 150px">
                 <img src="{:captcha_src()}" onclick="this.src='{:captcha_src()}?'+Math.random();" title="换一张" style="cursor: pointer;width:120px"/>
             </div>
-            <input type="hidden" name="__token__" value="{$Request.token}" />
-            <button type="submit" class="btn btn-primary block full-width m-b">登 录</button>
-            <p class="text-muted text-center"> <a href="{:url('Manage/login/findPwd')}"><small>忘记密码了？</small></a>
-            </p>
+            <!--<input type="text" name="__token__" value="{$Request.token}" id="token"/>-->
+            <button type="button" class="btn btn-primary block full-width m-b">登 录</button>
+           <!-- <p class="text-muted text-center"> <a href=":url('Manage/login/findPwd')"><small>忘记密码了？</small></a>
+            </p>-->
 
         </form>
     </div>
 </div>
+
 <script src="__MANAGE_JS__jquery.min.js?v=2.1.4"></script>
 <script src="__MANAGE_JS__bootstrap.min.js?v=3.3.5"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.alert').hide()
+    })
+    $('.m-b').click(function () {
+        $.ajax({
+            url: "{:url('Manage/login/login')}",
+            data: $('.m-t').serialize(),
+            type: 'post',
+            success: function(data) {
+
+                // var token= xhr.getResponseHeader("token");
+                // $("#token").val(token);
+
+                if(data.code=='000'){
+                    $('.alert').show()
+                    $('.alert').find('strong').html('登陆成功，跳转中...')
+
+                    window.location.href=data.url;
+
+                }else{
+
+                    $('.alert').show()
+                    $('.alert').find('strong').html(data.error)
+                }
+            },
+            error:function () {
+                alert('error')
+            }
+        })
+    })
+
+
+</script>
 </body>
 
 </html>

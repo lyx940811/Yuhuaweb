@@ -11,10 +11,13 @@
         <li role="presentation" class="active"><a href="#">列表</a></li>
         <li role="presentation">
             {php}
-            foreach($access as $k=>$v){
-            if($v=='/manage/rolefunction/add'){
-            echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加权限组</a>';
-            }
+            if($access){
+                foreach($access as $k=>$v){
+                        if($v=='/manage/rolefunction/add'){
+                        echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加权限组</a>';
+                        }
+                }
+
             }
             {/php}
         </li>

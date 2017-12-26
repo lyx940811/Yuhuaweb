@@ -33,7 +33,7 @@ class Rolefunction extends Base{
 
         }
 
-        $allgroup = $db_func->field('id,code,name,url')->where('flag=1')->select();
+        $allgroup = $db_func->field('id,code,name,url')->where('Flag=1')->select();
 
 
         $this->assign('list',$funlist);
@@ -76,9 +76,9 @@ class Rolefunction extends Base{
 
         $data['rolecode'] = $info['role_code'];
         $data['functioncode'] = isset($info['function_code'])?implode(',',$info['function_code']):'';
-        $data['flag'] = 1;
+        $data['Flag'] = 1;
 
-        $ok = $role_table->field('rolecode,functioncode,flag')->insert($data);
+        $ok = $role_table->field('rolecode,functioncode,Flag')->insert($data);
 
         if($ok){
             return ['info'=>'添加成功','code'=>'000'];
