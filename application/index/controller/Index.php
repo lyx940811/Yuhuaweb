@@ -6,140 +6,79 @@ use think\Controller;
 use think\Db;
 use think\Exception;
 use think\captcha\Captcha;
+
+/** app首页相关的接口【1.还缺少得到轮播图的接口2.还需要对课程人数和评论进行计数】
+ * Class Index
+ * @package app\index\controller
+ */
 class Index extends Home
 {
-
-    public $redis;
-    public function index()
-    {
-        phpinfo();
-//        return '<style type="text/css">*{ padding: 0; margin: 0; } .think_default_text{ padding: 4px 48px;} a{color:#2E5CD5;cursor: pointer;text-decoration: none} a:hover{text-decoration:underline; } body{ background: #fff; font-family: "Century Gothic","Microsoft yahei"; color: #333;font-size:18px} h1{ font-size: 100px; font-weight: normal; margin-bottom: 12px; } p{ line-height: 1.6em; font-size: 42px }</style><div style="padding: 24px 48px;"> <h1>:)</h1><p> ThinkPHP V5<br/><span style="font-size:30px">十年磨一剑 - 为API开发设计的高性能框架</span></p><span style="font-size:22px;">[ V5.0 版本由 <a href="http://www.qiniu.com" target="qiniu">七牛云</a> 独家赞助发布 ]</span></div><script type="text/javascript" src="http://tajs.qq.com/stats?sId=9347272" charset="UTF-8"></script><script type="text/javascript" src="http://ad.topthink.com/Public/static/client.js"></script><thinkad id="ad_bd568ce7058a1091"></thinkad>';
-    }
-
     public function test()
     {
         return $this->fetch();
     }
-    public function captcha(){
-        $id = $this->request->param('id');
-        $captcha = new Captcha();
-        return $captcha->entry();
-    }
-    public function rr(){
-        session_start();
-        var_dump($_SESSION);
-    }
-    public function verifycaptcha(){
-        session_start();
-        $code = $this->request->param('captcha');
-        $id = $this->request->param('id');
-        $captcha = new Captcha();
-        return json_data(0,$this->codeMessage[0],$captcha->check($code));
-    }
 
-
-
-    public function file2()
-    {
-        return $this->fetch();
-    }
-    public function excepTion(){
-//        $res = json_encode(["0"]);
-//        var_dump(json_decode('[["\u6674","\u9634","\u96e8"]]'));
-//        var_dump(json_decode('["<p>\u95ee\u7b54\u9898-\u7b54\u6848<\/p>\r\n"]'));
-//        var_dump(json_decode('{"choices":["<p>\u5355\u9009\u9898-\u9009\u9879A<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879B<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879C<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879D<\/p>\r\n"]}'));
-//        $res = json_decode('{"choices":["<p>\u5355\u9009\u9898-\u9009\u9879A<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879B<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879C<\/p>\r\n","<p>\u5355\u9009\u9898-\u9009\u9879D<\/p>\r\n"]}');
-//        var_dump($res->choices);
-        var_dump(json_decode('{"mode":"rand","ranges":{"courseId":"0","lessonId":"0"},"counts":{"single_choice":"2","choice":"1","essay":"0","uncertain_choice":"0","determine":"0","fill":"0","material":"0"},"scores":{"single_choice":"2","choice":"2","essay":"2","uncertain_choice":"2","determine":"2","fill":"2","material":"2"},"missScores":{"choice":"0","uncertain_choice":"0"},"percentages":{"simple":"","normal":"","difficulty":""}}'));
-    }
-    public function inde(){
-        $id = input('id');
-        Db::name('testpaper')->delete($id);
-    }
-    public function rrr()
-    {
-        //connect redis
-//        $redis = new \Redis();
-//        $re = $redis->connect('127.0.0.1', 6379);
-//        $redis->set('wrong1',1);
-//        $re = $redis->get('wrong1');
-//        $redis->setex('key', 3600, 'value');
-//        var_dump($re);
-//        phpinfo();
-    }
-    public function getnav(){
-        $nav = Db::name('role')->where('parentcode','0')->field('id,name,code,parentcode')->select();
-
-        $nav = $this->getnac($nav);
-        var_dump($nav);
-    }
-    public function getnac($nav){
-        foreach ($nav as &$n){
-            if(Db::name('role')->where('parentcode',$n['code'])->field('id,name,code,parentcode')->select()){
-                $n['son'] = Db::name('role')->where('parentcode',$n['code'])->field('id,name,code,parentcode')->select();
-                $n['son'] = self::getnac($n['son']);
-            }
-        }
-        return $nav;
-    }
-
-
-    public function getrole(){
-        $role = Db::name('role')->field('id,name,code,parentcode')->select();
-        $range_role = array();
-        $role = $this->dealrole($role);
-
-        var_dump($role);
-    }
-    public function dealrole($role,$range_role = array()){
-        if(empty($range_role)){
-            foreach ($role as $key=>$value){
-                if($value['parentcode']==0){
-                    $range_role[] = $value;
-                    unset($role[$key]);
-                }
-            }
-            if(empty($role)){
-                return $range_role;
-            }
-            else{
-                return self::dealrole($role,$range_role);
-            }
-        }
-        else{
-            foreach ($range_role as &$r){
-                foreach ($role as $k=>$v){
-                    if($v['parentcode']==$r['code']){
-                        $r['son'] = $role[$k];
-                        unset($role[$k]);
-                    }
-                }
-            }
-            return $range_role;
-        }
-    }
-
-
-
-
-    public function dir(){
-        $uploads_dir = "uploads".DS."pictures".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
-        $date_dir    = ROOT_PATH."public".DS.$uploads_dir;
-        if(!file_exists($date_dir)){
-            echo 1;
-            mkdir($date_dir,0775,true);
-        }
-        var_dump($date_dir);
-    }
     /**
-     *
+     * 首页得到分类列表
+     * @return array
      */
-    public function pwd(){
-        $pwd = '123456';
-        echo md5($pwd);echo '<br>';
-        $hash = '$2y$10$Ngmkefwv7LnEh14SSDZnGuTigiCRI7oEkFdhp7jz5UU704RZiDFCa';
-        echo $hash;echo '<br>';
-        $string = password_verify('123456',$hash);
-        echo $string;echo '<br>';
+    public function getcategory(){
+        $category = Db::name('category')->where('grade',3)->where('Flag',1)->field('name,code')->select();
+        return json_data(0,$this->codeMessage[0],$category);
     }
+
+    /**
+     * 首页得到不同条件的课程
+     * @return array
+     */
+    public function getindexcourse(){
+        $type               = $this->data['type'];
+        $map['categoryId']  = $this->data['category'];
+
+        $type_array = ['hot','recommend','new'];
+        if(!in_array($type,$type_array)){
+            return json_data(1000,$this->codeMessage[1000],'');
+        }
+        if(empty($map['categoryId'])){
+            unset($map['categoryId']);
+        }
+
+        switch($type){
+            case 'hot':
+                $map['hot'] = 1;
+                break;
+            case 'recommend':
+                $map['recommended'] = 1;
+                break;
+            case 'new':
+                $map['is_new'] = 1;
+                break;
+        }
+
+        $course = Db::name('course')->where($map)->field('id,title,smallPicture')->select();
+        //需要对在学人数和评论进行计数
+
+
+
+        return json_data(0,$this->codeMessage[0],$course);
+    }
+
+    /**
+     * 得到轮播图
+     */
+    public function getscrollpic(){}
+
+    /**
+     * 搜索
+     */
+    public function searchcourse(){
+        $keywords = $this->data['keywords'];
+        $course = Db::name('course')
+            ->where('title','like','%'.$keywords.'%')
+            ->field('id,title,smallPicture')
+            ->select();
+
+        return json_data(0,$this->codeMessage[0],$course);
+    }
+
 }

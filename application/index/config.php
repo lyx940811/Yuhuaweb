@@ -52,7 +52,7 @@ return[
 
         //token验证
         900     =>  'token verified error',
-        910     =>  'user_token is invalid',
+        910     =>  'user_token is empty or invalid',
         920     =>  'code verify error',
         //关于请求的
         1000    =>  'wrong request type'

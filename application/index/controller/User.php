@@ -12,6 +12,13 @@ use app\index\model\Asklist;
 use think\Db;
 use think\Exception;
 use think\Validate;
+use app\index\model\Like;
+// 指定允许其他域名访问
+header('Access-Control-Allow-Origin:*');
+// 响应类型
+header('Access-Control-Allow-Methods:POST');
+// 响应头设置
+header('Access-Control-Allow-Headers:x-requested-with,content-type');
 /**
  * Class User
  * @package app\index\controller
@@ -48,6 +55,10 @@ class User extends Controller
 //        $this->verifyUserToken($user_token);
     }
 
+    /**
+     * 验证user，通过验证后赋值全局user信息
+     * @param $user_token
+     */
     protected function verifyUserToken($user_token){
         if(!$user_token){
             //没有token或token为空
@@ -70,6 +81,10 @@ class User extends Controller
     }
 
     /**
+     * 【用户相关的功能】
+     */
+
+    /**
      * 新增/修改资料
      */
     public function chprofile(){
@@ -83,8 +98,8 @@ class User extends Controller
      */
     public function chheadicon(){
         $file = $_FILES;
-        $this->data['userid'] = $this->user->id;
-        $res  = $this->LogicUser->upUserHeadImg($file,$this->data);
+//        $this->data['userid'] = $this->user->id;
+        $res  = $this->LogicUser->upUserHeadImg($file,$this->user->id);
         return $res;
     }
     /**
@@ -189,6 +204,10 @@ class User extends Controller
     }
 
     /**
+     * 【关注功能】
+     */
+
+    /**
      * 关注某个用户
      */
     public function followuser(){
@@ -215,6 +234,107 @@ class User extends Controller
 
         $res = $this->LogicReview->review(1);
         return $res;
+    }
+
+    /**
+     * 【部分APP功能】
+     */
+    /**
+     * APP-得到个人信息
+     */
+    public function getmyinfo(){
+        $data = [
+            'username'  =>  $this->user->username,
+            'avatar'    =>  $this->user->avatar,
+            'mobile'    =>  $this->user->mobile
+        ];
+        return json_data(0,$this->codeMessage[0],$data);
+    }
+
+    /**
+     * app内得到个人设置的内容
+     */
+    public function getuserprofile(){
+        $userprofile = UserProfileModel::get(['userid'=>$this->user->id]);
+        $data = [
+            'realname'      =>  $userprofile->realname,
+            'mobile'        =>  $this->user->mobile,
+            'email'         =>  $this->user->email,
+            'education'     =>  $userprofile->education,
+            'school'        =>  $userprofile->school,
+            'address'       =>  $userprofile->address,
+        ];
+        return json_data(0,$this->codeMessage[0],$data);
+    }
+
+    /**
+     * app内更新个人资料
+     */
+    public function saveprofile(){
+        $user_data = [
+            'mobile'    =>  $this->data['mobile'],
+            'email'     =>  $this->data['email']
+        ];
+
+        $userprofile_data = [
+            'realname'  =>  $this->data['mobile'],
+            'education' =>  $this->data['education'],
+            'school'    =>  $this->data['school'],
+            'address'   =>  $this->data['address'],
+        ];
+
+        Db::startTrans();
+        try{
+            Db::table('user')->where('id',$this->user->id)->update($user_data);
+            Db::table('user_profile')->where('userid',$this->user->id)->update($userprofile_data);
+            // 提交事务
+            Db::commit();
+            return json_data(0,$this->codeMessage[0],'');
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            return json_data($e->getCode(),$e->getMessage(),'');
+        }
+    }
+
+
+
+    /**
+     * 【点赞部分】
+     */
+    /**
+     * 给某个问答、回答、评论点赞
+     */
+    public function like(){
+        $type = ['ask','answer','commment'];
+        $data = [
+            'userid'        =>  1,
+            'type'          =>  'ask',
+            'articleid'     =>  1,
+            'createTime'    =>  date('Y-m-d H:i:s'),
+        ];
+        if(!in_array($data['type'],$type)){
+            return json_data(180,$this->codeMessage[180],'');
+        }
+        Like::create($data);
+    }
+
+    /**
+     * 取消点赞
+     */
+    public function canclelike(){
+        $delete = Like::destroy([
+            'userid'    =>  1,
+            'type'      =>  'ask',
+            'articleid'   =>1,
+        ]);
+
+        if($delete){
+            return json_data(0,$this->codeMessage[0],'');
+        }
+        else{
+            return json_data(180,$this->codeMessage[180],'');
+        }
     }
 
 

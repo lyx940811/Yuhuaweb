@@ -367,7 +367,7 @@ class Teacher extends User
      */
     public function uploadfile(){
         try{
-            $courseid = $this->data['courseid'];
+            $courseid = 2;//$this->data['courseid'];
             $files = $_FILES;
             $res = $this->LogicUpload->uploadFile($files);
 
@@ -388,7 +388,7 @@ class Teacher extends User
 
             $coursefile = new CourseFile();
             $coursefile->saveAll($res);
-            return json_data(0,$this->codeMessage[0],'');
+            return json_data(0,$this->codeMessage[0],$res);
         }
         catch( Exception $e){
             return json_data($e->getCode(),$e->getMessage(),'');

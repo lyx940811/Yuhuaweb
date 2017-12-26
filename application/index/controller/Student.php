@@ -10,8 +10,18 @@ use app\index\model\QuestionType;
 use app\index\model\Testpaper as TestpaperModel;
 use app\index\model\TestpaperItem;
 use app\index\model\CourseFile;
-use app\index\model\Course;
-use app\index\model\Like;
+use app\index\model\User;
+
+
+/** 学生类
+ * 功能：
+ *【问答部分】
+ *【评论部分】
+ *【笔记部分】
+ *【学习部分】
+ * Class Student
+ * @package app\index\controller
+ */
 class Student extends User
 {
     public $LogicTestpaper;
@@ -31,6 +41,33 @@ class Student extends User
     /**
      * 【问答部分】
      */
+
+    /**
+     * 得到【我的提问】列表
+     */
+    public function getmyask(){
+        $userid = 1;//$this->user->id;
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $askList = Db::name('asklist')->where('userID',$userid)->page($page,10)->select();
+        if($askList){
+            foreach ($askList as &$a){
+                $user = User::get($a['userID']);
+                $a['username'] = $user->name;
+                $a['avatar']   = $user->title;
+                $a['category'] = Db::name('category')->where('code',$a['category_id'])->value('name');
+            }
+        }
+        return json_data(0,$this->codeMessage[0],$askList);
+    }
+
+    /**
+     * 得到【我的回答】列表
+     */
+    public function getmyanswer(){
+        $userid = 1;//$this->user->id;
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $askList = Db::name('ask_answer')->where('answerUserID',$userid)->page($page,10)->select();
+    }
 
     /**
      * 发起一个问答
@@ -121,44 +158,16 @@ class Student extends User
      */
 
 
-
-
+    /**
+     * 【学习部分】
+     */
 
     /**
-     * 【点赞部分】
+     * 得到正在学习的课程
      */
+    public function learncourse(){}
     /**
-     * 给某个问答、回答、评论点赞
+     * 得到已经学完的课程
      */
-    public function like(){
-        $type = ['ask','answer','commment'];
-        $data = [
-            'userid'        =>  1,
-            'type'          =>  'ask',
-            'articleid'     =>  1,
-            'createTime'    =>  date('Y-m-d H:i:s'),
-        ];
-        if(!in_array($data['type'],$type)){
-            return json_data(180,$this->codeMessage[180],'');
-        }
-        Like::create($data);
-    }
-
-    /**
-     * 取消点赞
-     */
-    public function canclelike(){
-        $delete = Like::destroy([
-            'userid'    =>  1,
-            'type'      =>  'ask',
-            'articleid'   =>1,
-        ]);
-
-        if($delete){
-            return json_data(0,$this->codeMessage[0],'');
-        }
-        else{
-            return json_data(180,$this->codeMessage[180],'');
-        }
-    }
+    public function donecourse(){}
 }
