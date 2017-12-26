@@ -176,8 +176,8 @@ class User extends Base
      * @param $data 从里面获取用户id
      * @return string
      */
-    public function upUserHeadImg($file,$data){
-        $userid = $data['userid'];
+    public function upUserHeadImg($file,$userid){
+//        $userid = $data['userid'];
         $res = uploadPic($file,$userid);
         if($res['code']!=0){
             return json_data($res['code'],$this->codeMessage[$res['code']],$res['path']);
