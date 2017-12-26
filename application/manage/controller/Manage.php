@@ -24,11 +24,11 @@ class Manage extends Base{
         $this->assign('admin_info',$admin_info);
 
 
-        return view('index');
+        return $this->fetch('index');
     }
 
     public function right(){
-        return view('right');
+        return $this->fetch('right');
     }
 
 

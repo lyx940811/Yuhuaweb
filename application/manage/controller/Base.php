@@ -1,7 +1,7 @@
 <?php
 namespace app\manage\controller;
 use think\Controller;
-use think\Validate;
+use think\Db;
 
 /**
  * Created by phpstorm.
@@ -16,7 +16,10 @@ class Base extends Controller{
     public function _initialize(){
         //判断登陆没登陆
         $this->uid = session('admin_uid');
-        if(!$this->uid){
+
+        $info = Db::name('user')->field('id')->where('id','=',$this->uid)->find();
+
+        if(!$info){
             $this->error('请先登陆',url('Manage/login/index'));
         }
 
