@@ -1,8 +1,6 @@
 <?php
-namespace app\index\controller;
+namespace app\api\controller;
 
-use Couchbase\Document;
-use think\Controller;
 use think\Db;
 use think\Exception;
 use think\Loader;
@@ -44,7 +42,7 @@ class Apply extends Home
                 'education'  =>  '',
                 'admissionID'  =>  '',
                 'categoryID'  =>  '',
-                'phone'  =>  '',
+                'telephone'  =>  '',
                 'promotMan'  =>  '',
                 'school'  =>  '',
                 'address'  =>  '',
@@ -77,7 +75,7 @@ class Apply extends Home
             'cardsn|身份证号'  =>  'require|length:18',
             'admissionID|批次id'  =>  'require|integer',
             'categoryID|专业id'  =>  'require',
-            'phone|电话'  =>  'require|length:11',
+            'telephone|电话'  =>  'require|length:11',
             'promotMan|推荐人'  =>  'length:1,20',
             'school|毕业学校'  =>  'length:1,40',
             'address|家庭地址'  =>  'length:1,50',

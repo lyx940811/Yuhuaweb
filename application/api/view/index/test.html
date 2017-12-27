@@ -4,7 +4,7 @@
 {block name="container"}
 
 <a class="bloglist f_l"><div>
-  <form action="http://66.112.221.116/index/teacher/uploadfile" enctype="multipart/form-data" method="post">
+  <form action="http://66.112.221.116/api/teacher/uploadfile" enctype="multipart/form-data" method="post">
     <input type="hidden" name="userid" value="2" /> <br>
     <input type="text" name="realname" /> <br>
     <input type="text" name="idcard" /> <br>
@@ -28,26 +28,27 @@
         $('#capbutton').click(function(){
             console.log($('#captcha').val());
 
-            $.post(
-                "http://localhost/index/index/verifycaptcha",
-                {
-                    'captcha':$('#captcha').val(),
-                },
+            $.get(
+                "http://66.112.221.116/api/apply/getadmission",
                 function(data){
-                    if(data){
-                        console.log(data);
-                    }
+                    console.log(data);
                 },
                 "json"
             );
         });
         $.post(
-            "http://localhost/index/user/chpwd",
+            "http://66.112.221.116/api/apply/apply",
             {
-                'user_token':'dd73d0d20dddb7be3fe3b6858a1d24d9',
-                'pwd':'123456',
-                'newpwd':'123456',
-                'renewpwd':'123456',
+                'realname':'tianchen',
+                'cardsn':'370303199401220258',
+                'education':'初中',
+                'admissionID':'1',
+                'categoryID':'0021201',
+                'telephone':'13864402322',
+                'promotMan':'李老师',
+                'school':'山东一中',
+                'address':'家庭地址',
+
             },
             function(data){
                 if(data){
@@ -56,6 +57,7 @@
             },
             "json"
         );
+
     })
 </script>
 {/block}

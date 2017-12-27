@@ -1,9 +1,7 @@
 <?php
-namespace app\index\controller;
+namespace app\api\controller;
 
 use think\Loader;
-use think\Config;
-use app\index\model\User;
 use think\captcha\Captcha;
 /**
  * Class Login

@@ -1,0 +1,46 @@
+{extend name="public/userlayout"}
+{block name="container"}
+<div class="col-md-9">
+    <div class="panel panel-default panel-col">
+        <div class="panel-heading">邮箱设置</div>
+        <div class="panel-body">
+            <form id="setting-email-form" class="form-horizontal" method="post" novalidate="novalidate">
+                <div class="form-group">
+                    <div class="col-md-2 control-label"><label>当前登录邮箱</label></div>
+                    <div class="col-md-8 controls">
+                        <span class="form-control-static">18001139910@163.com<span class="color-success">(已验证)</span></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2 control-label" for="新登录邮箱"><label for="form_email" class="required" aria-required="true">新登录邮箱</label></div>
+                    <div class="col-md-8 controls">
+                        <input type="text" id="form_email" name="form[email]" required="required" class="form-control" aria-required="true" aria-invalid="false">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2 control-label"><label for="form_password" class="required" aria-required="true">网站登录密码</label></div>
+                    <div class="col-md-8 controls">
+                        <input type="password" id="form_password" name="form[password]" required="required" class="form-control" aria-required="true" aria-invalid="false">
+                        <p class="help-block">设置新的登录邮箱，需要校验当前的网站登录密码</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2 control-label"></div>
+                    <div class="col-md-8 controls">
+                        <input type="hidden" id="form__token" name="form[_token]" value="d3E_Wd6qsFXqsfmsqtesQz8xMDWHVC6qcBDRburr490">
+                        <button id="email-save-btn" data-submiting-text="正在提交" type="submit" class="btn btn-primary">提交</button>
+                    </div>
+                </div>
+                <input type="hidden" name="_csrf_token" value="lqPsFKCSLa3fO97r0lLtJ6hPJTMiPuBV0XX5CAcUhog">
+            </form>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+        $('.list-group-item').eq(4).addClass("active");
+    })
+</script>
+{/block}

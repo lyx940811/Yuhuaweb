@@ -1,5 +1,5 @@
 <?php
-namespace app\index\controller;
+namespace app\api\controller;
 
 use think\Exception;
 use think\Loader;
