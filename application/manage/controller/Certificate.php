@@ -118,20 +118,32 @@ class Certificate extends Base{
 
         $role_table = Db::name('certificate');
 
+        $id = $info['rid'];
+        $have = $role_table->field('id,pic')->where("id='$id'")->find();
+
+        if(!$have){//如果没这个code
+            return ['error'=>'没有此证书记录','code'=>'300'];
+        }
+
+        if(!empty($info['pic'])){
+            $pic =$info['pic'];
+        }else{
+            $pic = $have['pic'];
+        }
+
         $data = [
             'profileid' => $info['userprofile'],
             'certificateid' => $info['category'],
-            'pic' => $info['pic'],
+            'pic' => $pic,
             'createtime'=>date('Y-m-d H:i:s',time()),
-            'Flag'=>1,
         ];
 
-        $ok = $role_table->field('profileid,certificateid,pic,createtime,Flag')->insert($data);
+        $ok = $role_table->field('profileid,certificateid,pic,createtime')->where('id',$id)->update($data);
 
         if($ok){
-            return ['info'=>'添加成功','code'=>'000'];
+            return ['info'=>'修改成功','code'=>'000'];
         }else{
-            return ['error'=>'添加失败','code'=>'400'];
+            return ['error'=>'修改失败','code'=>'400'];
         }
     }
 
