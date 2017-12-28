@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+{include file="manage/header" /}
+<body>
+<div class="container-fluid">
+    {php}
+    $uid = session('admin_uid');
+    $access = check($uid,['/manage/category/edit','/manage/category/enable','/manage/category/add']);
+    {/php}
+
+    <div class="well clearfix">
+        <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
+            <div class="form-group">
+                <label>招生批次</label>
+                <select name="flag">
+                    <option value="0">一批</option>
+                    <option value="1" selected="selected">二批</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>专业</label>
+                <select name="category">
+                    {volist name='categorylist' id='c'}
+                    <option value="{$c.code}">{$c.name}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>报名日期</label>
+                <input type="text" class="form-control" placeholder="开始日期" name="name">-
+                <input type="text" class="form-control" placeholder="结束日期" name="name">
+            </div>
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </form>
+    </div>
+    <div class="pull-right">
+        {php}
+        if($access){
+        foreach($access as $k=>$v){
+        if($v=='/manage/category/add'){
+        echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">新增专业</a>';
+        }
+        }
+        }
+        {/php}
+
+    </div>
+    {include file="publiccategory/nav" /}
+
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>专业代码</th>
+            <th>名称</th>
+            <th>学制</th>
+            <th>学分</th>
+            <th>状态</th>
+            <th>更新日期</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {volist name="list" id="vo"}
+
+        <tr>
+            <td>{$vo.code}</td>
+            <td>{$vo.name}</td>
+            <td>{$vo.studyTimes}</td>
+            <td>{$vo.point}</td>
+            <td>{$vo.Flag?'启用':'禁用'}</td>
+            <td>{$vo.createtime}</td>
+            <td>
+                {php}
+
+                foreach($access as $k=>$v){
+
+                    if($v=='/manage/category/edit'){
+                        echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
+                        echo '<strong>/</strong>';
+                    }elseif($v=='/manage/category/enable'){
+                            $flag = $vo['Flag']?'禁用':'启用';
+                        echo '<a href="#" onclick="enable('.$vo['id'].');">'.$flag.'</a>';
+                    }
+                }
+                {/php}
+
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+
+    </table>
+    <ul class="pagination">
+        {$page}
+    </ul>
+
+    <!--新增专业-->
+    <!-- 模态框 -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">新增专业</h4>
+                </div>
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('add')}">
+                        <div class="form-group">
+                            <label for="role_code" class="col-sm-2 control-label">专业代码</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="role_code" name="code"
+                                       placeholder="请输入专业代码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="role_name" class="col-sm-2 control-label">专业名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="role_name" name="name"
+                                       placeholder="请输入专业名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="studyTimes" class="col-sm-2 control-label">学制</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="studyTimes" name="studyTimes"
+                                       placeholder="请输入学制">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="point" class="col-sm-2 control-label">总学分</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="point" name="point"
+                                       placeholder="请输入总学分">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="description" class="col-sm-2 control-label">专业简介</label>
+                            <div class="col-sm-10">
+                                <textarea cols="30" rows="10" class="form-control" name="description" id="description"></textarea>
+                            </div>
+                        </div>
+                        <input type="hidden" name="rid" value="" id="selfcode"/>
+                        <!-- 模态框底部 -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add');">添加</button>
+                            <button type="button" class="btn btn-default" id="edit_role" style="display:none;" onclick="dopost('edit')">修改</button>
+                        </div>
+                    </form>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    <!--添加专业结束-->
+    <!--删除专业提示-->
+    <div class="modal fade" id="myModal2">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">更改专业状态成功</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+
+                    更改专业状态成功！
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--删除专业提示结束-->
+</div>
+{include file='manage/bottom'}
+<script type="text/javascript">
+/*
+一共3种方法，添加新专业，修改专业，禁用专业
+*/
+    /*添加*/
+
+    function add_edit(type,id,parentcode) {
+
+        switch (type){
+            case 'add':
+
+                $(" input[ type='text' ] ").val('')
+                $(" input[ type='hidden' ] ").val('')
+                $('#add_role').show()
+                $('#edit_role').hide()
+
+                break;
+            case 'edit':
+                $('#selfcode').val(id)//如果是修改,id是自己
+                $('#add_role').hide()
+                $('#edit_role').show()
+                $.get("{:url('edit')}?do=get&rid="+id,function (data) {
+                    $('#role_name').val(data.info.name)
+                    $('#role_code').val(data.info.code)
+                    $('#selfcode').val(data.info.id)
+                    $('#studyTimes').val(data.info.studyTimes)
+                    $('#point').val(data.info.point)
+                    $('#description').val(data.info.description)
+                });
+                
+                break;
+            default:
+                alert('error')
+        }
+
+    }
+
+
+    function dopost($url) {
+        $url=='add'?"{:url('add')}":"{:url('edit')}";
+
+        $.ajax({
+            url: $url+"?"+Math.random(),
+            type:"post",
+            data:$("#form1").serialize(),
+            success:function(data){
+
+                console.log(data)
+                if(data.code=='000'){
+
+                    alert(data.info)
+
+                    $('#selfcode').val('')//必须清空
+
+                    $('#myModal').modal('hide')
+
+                }else{
+                    alert(data.error)
+                }
+
+            },
+            error:function(e){
+                alert("添加信息错误");
+            }
+        });
+    }
+
+    function enable(id) {
+        $.get("{:url('enable')}?rid="+id,function (data) {
+            if(data.code=='000'){
+                alert(data.info)
+                $('#myModal2').modal('hide')
+            }else{
+
+            }
+        });
+    }
+
+
+</script>
+</body>
+</html>

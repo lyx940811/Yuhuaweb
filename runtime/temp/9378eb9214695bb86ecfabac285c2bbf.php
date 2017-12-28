@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:76:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\index.html";i:1513758249;s:77:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\header.html";i:1513757089;s:83:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\left-sidebar.html";i:1513762263;s:77:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\bottom.html";i:1513757089;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:76:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\index.html";i:1513758249;s:77:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\header.html";i:1513928412;s:83:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\left-sidebar.html";i:1514275049;s:77:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\bottom.html";i:1513928377;}*/ ?>
 <!DOCTYPE html>
 <html>
 
@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <title>后台管理-<?php echo !empty($typename)?$typename:''; ?></title>
+    <title><?php echo !empty($typename)?$typename.'-':''; ?>后台管理</title>
 
     <!--[if lt IE 8]>
     <meta http-equiv="refresh" content="0;ie.html" />
@@ -83,7 +83,7 @@
                 </a>
                 <ul class="nav nav-second-level">
                     <li>
-                        <a class="J_menuItem" href="<?php echo url('Manage/category/index'); ?>" data-index="0"><i class="fa fa-angle-double-right"></i>栏目功能列表</a>
+                        <a class="J_menuItem" href="<?php echo url('Manage/functions/index'); ?>" data-index="0"><i class="fa fa-angle-double-right"></i>栏目功能列表</a>
                     </li>
 
                 </ul>
@@ -101,7 +101,24 @@
 
                 </ul>
             </li>
-
+            <li>
+                <a href="#">
+                    <i class="fa fa-leanpub"></i>
+                    <span class="nav-label">专业管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="<?php echo url('Manage/category/index'); ?>" data-index="0"><i class="fa fa-angle-double-right"></i>专业列表</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="<?php echo url('Manage/categorycourse/index'); ?>" data-index="0"><i class="fa fa-angle-double-right"></i>专业课程</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="<?php echo url('Manage/studentenroll/index'); ?>" data-index="0"><i class="fa fa-angle-double-right"></i>专业报名数据查询</a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </div>
 </nav>

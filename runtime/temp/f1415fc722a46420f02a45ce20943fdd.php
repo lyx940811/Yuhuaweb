@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:76:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\right.html";i:1513757089;s:77:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\header.html";i:1513757089;s:77:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\bottom.html";i:1513757089;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:76:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\right.html";i:1513925050;s:77:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\header.html";i:1513928412;s:77:"D:\wamp\www\tp5-yuhuaweb\public/../application/manage\view\manage\bottom.html";i:1513928377;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <title>后台管理-<?php echo !empty($typename)?$typename:''; ?></title>
+    <title><?php echo !empty($typename)?$typename.'-':''; ?>后台管理</title>
 
     <!--[if lt IE 8]>
     <meta http-equiv="refresh" content="0;ie.html" />
@@ -21,8 +21,8 @@
 <body>
 <div class="container-fluid">
 
-    <div class="col-md-offset-3 col-md-6">
-        <div class="panel panel-default">
+    <div class="col-sm-offset-1 col-sm-10">
+        <div class="panel panel-info">
 
             <div class="panel-heading"><h3 class="panel-title">系统参数</h3></div>
             <div class="panel-body home-info">
@@ -32,7 +32,12 @@
                 </div>
             </div>
         </div>
-
+        <div class="panel panel-info">
+            <div class="panel-heading">Panel heading without title</div>
+            <div class="panel-body">
+                Panel content
+            </div>
+        </div>
     </div>
 
 

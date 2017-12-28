@@ -1,0 +1,66 @@
+{extend name="public/layout"}
+{block name="title"}首页{/block}
+
+{block name="container"}
+
+<a class="bloglist f_l"><div>
+  <form action="http://66.112.221.116/api/teacher/uploadfile" enctype="multipart/form-data" method="post">
+    <input type="hidden" name="userid" value="2" /> <br>
+    <input type="text" name="realname" /> <br>
+    <input type="text" name="idcard" /> <br>
+    <input type="file" name="front_pic" /> <br>
+    <input type="file" name="behind_pic" /> <br>
+    <!--<input type="file" name="back_head_icon" /> <br>-->
+    <input type="submit" value="上传" />
+  </form>
+  <a href="{:url('index/index/inde',array('id'=>2))}"><button>222222222</button></a>
+
+</div></a>
+<div><img src="http://localhost/index/index/captcha" alt="captcha" /></div>
+<input type="text" name="captcha" id="captcha"/>
+<button id="capbutton">captcha</button>
+<div>{:captcha_img()}</div>
+{/block}
+
+{block name="javascript"}
+<script>
+    $(function(){
+        $('#capbutton').click(function(){
+            console.log($('#captcha').val());
+
+            $.get(
+                "http://66.112.221.116/api/apply/getadmission",
+                function(data){
+                    console.log(data);
+                },
+                "json"
+            );
+        });
+        $.post(
+            "http://66.112.221.116/api/apply/apply",
+            {
+                'realname':'tianchen',
+                'cardsn':'370303199401220258',
+                'education':'初中',
+                'admissionID':'1',
+                'categoryID':'0021201',
+                'telephone':'13864402322',
+                'promotMan':'李老师',
+                'school':'山东一中',
+                'address':'家庭地址',
+
+            },
+            function(data){
+                if(data){
+                    console.log(data);
+                }
+            },
+            "json"
+        );
+
+    })
+</script>
+{/block}
+
+
+
