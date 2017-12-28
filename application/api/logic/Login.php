@@ -1,6 +1,6 @@
 <?php
 
-namespace app\index\logic;
+namespace app\api\logic;
 
 use app\index\model\User as UserModel;
 use think\Request;
@@ -23,7 +23,6 @@ class Login extends Base
         $data['title']          =   'static\index\images\avatar.png';
         $data['type']           =   3;
         $data['createdTime']    =   date('Y-m-d H:i:s');
-
         //is user exist?
         if(UserModel::get(['email'=>$data['email']])){
             return json_data(120,$this->codeMessage[120],'');
@@ -41,7 +40,7 @@ class Login extends Base
                 //add data
                 $result = UserModel::create($data);
                 if($result){
-                    return json_data(0,$this->codeMessage[0],'');
+                    return json_data(0,$this->codeMessage[0],$result);
                 }
                 else{
                     return json_data(100,$this->codeMessage[100],'');
@@ -82,20 +81,14 @@ class Login extends Base
 
             if(password_verify($data['password'],$user['password'])){
                 //需要对返回数据进行整理，这里需要改成只返回access_token
-                $key = [
-                    'id'=>'',
-                    'nickname'=>'',
-                    'mobile'=>'',
-                    'username'=>'',
-                    'password'=>'',
-                    'title'=>'',
-                    'type'=>'',
+                $user_token = [
+                    'user_token'    =>  md5($user->id.time().uniqid()),
+                    'expiretime'    =>  time()+7200,
                 ];
-                $user = $user->toArray();
-
-                $user = array_intersect_key($user,$key);
-                return json_data(0,$this->codeMessage[0],$user);
-
+                $user->save($user_token);
+                unset($user_token['expiretime']);
+                $user_token['expire'] = 7200;
+                return json_data(0,$this->codeMessage[0],$user_token);
             }
             else{
                 //密码错误，次数+1，到达3的时候锁定

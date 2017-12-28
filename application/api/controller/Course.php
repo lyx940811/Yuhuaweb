@@ -1,16 +1,7 @@
 <?php
-namespace app\index\controller;
+namespace app\api\controller;
 
-use think\Exception;
 use think\Loader;
-use think\Config;
-use app\index\model\Course as CourseModel;
-use app\index\model\User as UserModel;
-use app\index\model\CourseFile;
-use think\Db;
-use think\Validate;
-
-
 /**
  * Class Course 在教师角色下的我的教学-在教课程-课程管理中的一些功能
  * @package app\index\controller

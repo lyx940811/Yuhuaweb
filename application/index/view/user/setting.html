@@ -1,0 +1,137 @@
+{extend name="public/userlayout"}
+{block name="container"}
+<div class="col-md-9">
+  <div class="panel panel-default panel-col">
+    <div class="panel-heading">基础信息</div>
+    <div class="panel-body">
+      <form id="user-profile-form" class="form-horizontal" method="post" novalidate="novalidate">
+        <div class="form-group">
+          <label class="col-md-2 control-label">用户名</label>
+          <div class="col-md-7 controls">
+            <div class="form-control-static">admin</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label" for="profile_truename">昵称</label>
+          <div class="col-md-7 controls radios">
+            <input type="text" id="profile_truename" name="profile[truename]" class="form-control" data-widget-cid="widget-1" data-explain="" value="西西">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">性别</label>
+          <div class="col-md-7 controls radios">
+            <div id="profile_gender">
+              <input type="radio" id="profile_gender_0" name="profile[gender]" value="male">
+              <label for="profile_gender_0">男</label>
+              <input type="radio" id="profile_gender_1" name="profile[gender]" value="female">
+              <label for="profile_gender_1">女</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="profile_mobile" class="col-md-2 control-label">手机号码</label>
+          <div class="col-md-7 controls">
+            <input type="text" id="profile_mobile" name="profile[mobile]" class="form-control" data-widget-cid="widget-5" data-explain="" value="18001139910">
+            <div class="help-block" style="display:none"></div>
+          </div>
+        </div>
+        <div class="form-group form-forIam-group form-notStudent-group">
+          <label class="col-md-2 control-label">公司</label>
+          <div class="col-md-7 controls">
+            <input type="text" id="profile_company" name="profile[company]" class="form-control" value="1">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="form-group form-forIam-group form-notStudent-group">
+          <label class="col-md-2 control-label">职业</label>
+          <div class="col-md-7 controls">
+            <input type="text" id="profile_job" name="profile[job]" class="form-control" value="1">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">个人签名</label>
+          <div class="col-md-7 controls">
+            <textarea type="text" rows="4" maxlength="80" id="profile_signature" name="profile[signature]" class="form-control">1</textarea>
+            <div class="help-block" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">自我介绍</label>
+          <div class="col-md-7 controls">
+            <div id="editor-container"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">个人空间</label>
+          <div class="col-md-7 controls">
+            <input type="text" id="profile_site" name="profile[site]" class="form-control" data-widget-cid="widget-4" data-explain="" value="">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-md-2 control-label">
+            <label for="weibo">微博</label>
+          </div>
+          <div class="col-md-7 controls">
+            <input type="text" id="weibo" name="profile[weibo]" class="form-control" data-widget-cid="widget-3" data-explain="" value="">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+          <div class="col-md-2 controls mts">
+            <label class="text-normal">
+              <input type="checkbox" name="profile[isWeiboPublic]">
+              公开
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">微信</label>
+          <div class="col-md-7 controls">
+            <input type="text" id="profile_weixin" name="profile[weixin]" class="form-control" value="1">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+          <div class="col-md-2 controls mts">
+            <label class="text-normal">
+              <input type="checkbox" name="profile[isWeixinPublic]">
+              公开
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="profile_qq" class="col-md-2 control-label">QQ</label>
+          <div class="col-md-7 controls">
+            <input type="text" id="profile_qq" name="profile[qq]" class="form-control" data-widget-cid="widget-2" data-explain="" value="767367711">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+          <div class="col-md-2 controls mts">
+            <label class="text-normal">
+              <input type="checkbox" name="profile[isQQPublic]">
+              公开
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-7 col-md-offset-2">
+            <button id="profile-save-btn" data-submiting-text="正在保存" type="submit" class="btn btn-primary">保存</button>
+          </div>
+        </div>
+
+        <input type="hidden" name="_csrf_token" value="lqPsFKCSLa3fO97r0lLtJ6hPJTMiPuBV0XX5CAcUhog">
+      </form>
+    </div>
+  </div>
+</div>
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+        $('.list-group-item').eq(0).addClass("active");
+
+
+        $('#profile-save-btn').click(function(){
+            console.log($('#user-profile-form').serialise())
+        });
+    })
+</script>
+{/block}
