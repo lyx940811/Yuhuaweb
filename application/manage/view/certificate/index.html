@@ -131,10 +131,11 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="newfile" class="col-sm-2 control-label">File input</label>
+                            <label for="newfile" class="col-sm-2 control-label">证书图片</label>
                             <div class="col-sm-10">
                                 <input type="file" id="newfile" name="newfile" onchange="uploadImage();">
                                 <input type="hidden" name="pic" id="pic">
+                                <div id="showinfoPic"></div>
                             </div>
                         </div>
 
@@ -159,8 +160,9 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h4 class="modal-title">查看证书</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">查看证书</h4>
+
                 </div>
 
                 <div class="modal-body" id="showpic">
@@ -201,7 +203,13 @@
             }, //发送请求
             success: function(data){
                 // console.log(data);
-                $('#pic').val(data.path)
+
+                if(data.code=='000'){
+                    $('#pic').val(data.path)
+                    $('#showinfoPic').html('<img class="img-rounded" src="\\'+data.path+'" width="100%"/>');
+                    alert('上传成功');
+                }
+
             },
             error: function(jqXHR){
                 alert("发生错误：" + jqXHR.status);
@@ -242,6 +250,11 @@
                             $(this).prop('selected',true)
                         }
                     })
+                    if(data.info.pic){
+                        $('#showinfoPic').html('<img class="img-rounded" src="\\'+data.info.pic+'" width="100%"/>');
+                    }
+
+
                 });
                 
                 break;
@@ -259,9 +272,6 @@
             url: $url+"?"+Math.random(),
             type:"post",
             data:$("#form1").serialize(),
-            beforeSend:function () {
-                alert('正在添加中...')
-            }, //发送请求
             success:function(data){
 
                 if(data.code=='000'){
@@ -289,7 +299,7 @@
         var str = b.decode(pic);
 
         if(pic){
-            $('#showpic').html('<img src="\\'+str+'" width="100%"/>')
+            $('#showpic').html('<img class="img-rounded" src="\\'+str+'" width="100%"/>')
         }else{
             $('#showpic').html('暂无图片')
         }
