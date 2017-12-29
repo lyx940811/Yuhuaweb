@@ -21,9 +21,10 @@ function check($uid,$url='')
 
     // 执行查询;
     $user_groups = Db::view('user', 'id,username')
-        ->view('role', 'name,code', "user.roles=role.id", 'LEFT')
-        ->view('role_function', 'rolecode,functioncode', "role_function.rolecode=role.id", 'LEFT')
-        ->where("user.id='$uid' and role_function.Flag='1'")
+        ->alias('a')
+        ->view('role b', 'name,code', "a.roles=b.id", 'LEFT')
+        ->view('role_function c', 'rolecode,functioncode', "c.rolecode=b.id", 'LEFT')
+        ->where("a.id='$uid' and c.Flag='1'")
         ->find();
 
     if(!$user_groups){
@@ -51,6 +52,7 @@ function check($uid,$url='')
 
                 if($url==$v['url']){//如果当前路由在允许的表里
                     $flag = true;
+                    break;
                 }
 
             }
@@ -88,9 +90,10 @@ function check($uid,$url='')
             $current_url = url('','',false);//当前路由
 
             foreach ($funcs as $k=>$v){
-
                 if($current_url==$v['url']){//如果当前路由在允许的表里
+
                     $flag = true;
+                    break;
                 }
 
             }
