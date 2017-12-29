@@ -35,7 +35,7 @@ class Review extends Base
      * @throws Exception
      */
     public function writeComment($data){
-        $validate = Loader::validate('CourseReview');
+        $validate = Loader::validate('index/CourseReview');
         if(!$validate->check($data)){
             throw new Exception();
         }
@@ -44,16 +44,21 @@ class Review extends Base
     /**
      * 得到某课程下的所有一级评论
      */
-    public function getcoursecomment($courseid){
+    public function getcoursecomment($courseid,$page){
+        $request = Request::instance();
         $comment = Db::name('course_review')
             ->where('courseid',$courseid)
             ->where('parentid',0)
             ->field('id,userid,content,createdTime')
+            ->page($page,10)
             ->select();
         if($comment){
             foreach ($comment as &$c){
-                $c['username'] = Db::name('user')->where('id',$c['userid'])->value('username');
-                $c['avatar']   = Db::name('user')->where('id',$c['userid'])->value('title');
+                $user = \app\index\model\User::get($c['userid']);
+                $c['username'] = $user->username;
+                $c['avatar']   = $request->domain().DS.$user->title;
+                $c['sonreviewNum']   = Db::name('course_review')->where('parentid',$c['id'])->count();
+                $c['likeNum']   = Db::name('like')->where('type','comments')->where('articleid',$c['id'])->count();
             }
         }
         return $comment;
@@ -61,27 +66,20 @@ class Review extends Base
     /**
      * 得到某个评论的详细评论
      */
-    public function getcommentdetail($commentid){
-        $comment = Db::name('course_review')->field('id,userid,content,createdTime')->find($commentid);
-
-        $son = Db::name('course_review')->where('parentid',$commentid)->field('id,userid,content,createdTime,touserId')->select();
-        if($son){
-            foreach ($son as &$s){
-                $s['username'] = Db::name('user')->where('id',$s['userid'])->value('username');
-                $s['tousername'] = Db::name('user')->where('id',$s['touserId'])->value('username');
-                $s['avatar'] = Db::name('user')->where('id',$s['userid'])->value('title');
-                $s['son'] = Db::name('course_review')->where('parentid',$s['id'])->field('id,userid,content,createdTime,touserId')->select();
-                if($s['son']){
-                    foreach ($s['son'] as &$ss){
-                        $ss['username'] = Db::name('user')->where('id',$ss['userid'])->value('username');
-                        $s['tousername'] = Db::name('user')->where('id',$s['touserId'])->value('username');
-                        $ss['avatar'] = Db::name('user')->where('id',$ss['userid'])->value('title');
-                    }
-                }
-            }
-        }
-        $comment['son'] = $son;
-        return $comment;
-    }
+//    public function getcommentdetail($commentid){
+//        $request = Request::instance();
+//        $comment = Db::name('course_review')->field('id,userid,content,createdTime')->find($commentid);
+//
+//        $son = Db::name('course_review')->where('parentid',$commentid)->field('id,userid,content,createdTime,touserId')->select();
+//        if($son){
+//            foreach ($son as &$s){
+//                $s['username'] = Db::name('user')->where('id',$s['userid'])->value('username');
+//                $s['tousername'] = Db::name('user')->where('id',$s['touserId'])->value('username');
+//                $s['avatar'] = $request->domain().DS.Db::name('user')->where('id',$s['userid'])->value('title');
+//            }
+//        }
+//        $comment['son'] = $son;
+//        return $comment;
+//    }
 }
 ?>

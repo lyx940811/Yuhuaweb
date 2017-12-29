@@ -42,6 +42,21 @@
 //            },
 //            "json"
 //        );
+        $.post(
+            "http://66.112.221.116/api/student/answerask",
+            {
+                'user_token':'17600738252',
+                'askID':'9',
+                'content':'srrsss',
+
+            },
+            function(data){
+                if(data){
+                    console.log(data);
+                }
+            },
+            "json"
+        );
         $("#inputfile").change(function () {
 
             //创建FormData对象
@@ -67,23 +82,13 @@
 
         });
         $.post(
-            "http://66.112.221.116/index/testpaper/delqst",
+            "http://66.112.221.116/api/student/delcomment",
             {
-                'id':44,
-                'token':123456},
-            function(data){
-                if(data){
-                    console.log(data);
-                }
-            },
-            "json"
-        );
-        $.post(
-            "http://localhost/index/user/getuserinfo",
-            {
-                'userid':'1',
-                'type':'base',
-                'token':123456
+                'user_token':'c48a10e4bdcd8e6853ab4281e7b6ed77',
+
+                'courseid':1,
+
+
             },
             function(data){
                 if(data){
@@ -93,9 +98,24 @@
             "json"
         );
         $.post(
-            "http://66.112.221.116/index/testpaper/getqsttype",
+            "http://66.112.221.116/api/student/delask",
             {
-                'token':123456},
+                'user_token':'c48a10e4bdcd8e6853ab4281e7b6ed77',
+                'askID':1,
+
+            },
+            function(data){
+                if(data){
+                    console.log(data);
+                }
+            },
+            "json"
+        );
+        $.post(
+            "http://66.112.221.116/api/user/getmyinfo",
+            {
+                'user_token':'c48a10e4bdcd8e6853ab4281e7b6ed77',
+            },
             function(data){
                 if(data){
                     console.log(data);

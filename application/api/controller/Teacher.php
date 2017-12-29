@@ -368,10 +368,12 @@ class Teacher extends User
     public function uploadfile(){
         try{
             $courseid = 2;//$this->data['courseid'];
+            $seq = uniqid();
             $files = $_FILES;
             $res = $this->LogicUpload->uploadFile($files);
 
             foreach ($res as &$r){
+                $r['seq']   = $seq;
                 $r['courseid']   = $courseid;
                 $r['createTime'] = date('Y-m-d H:i:s',time());
                 $name_type = explode('.',$r['filename']);

@@ -32,8 +32,8 @@ class Index extends Home
      * @return array
      */
     public function getindexcourse(){
-        $type               = 'hot';//$this->data['type'];
-        $map['categoryId']  = '0021201';//$this->data['category'];
+        $type               = $this->data['type'];
+        $map['categoryId']  = $this->data['categoryId'];
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
 
         $type_array = ['hot','recommend','new'];
@@ -56,17 +56,22 @@ class Index extends Home
                 break;
         }
 
+        $map['status'] = 1;
+
         $course = Db::name('course')
             ->where($map)
-            ->field('id,title,smallPicture')
+            ->field('id,title,smallPicture,price')
             ->page($page,6)
             ->select();
         //需要对在学人数和评论进行计数
         foreach ( $course as &$c ){
-            $c['learnNum'] = 0;
+            $c['learnNum']      = 0;
             $c['commentsNum']   = 0;
-        }
 
+            $c['price']==0.00?$c['is_free'] = 1:$c['is_free'] = 0;
+            unset($c['price']);
+            $c['smallPicture']  = $this->request->domain().DS.$c['smallPicture'];
+        }
 
         return json_data(0,$this->codeMessage[0],$course);
     }
@@ -74,17 +79,39 @@ class Index extends Home
     /**
      * 得到轮播图
      */
-    public function getscrollpic(){}
+    public function getscrollpic(){
+        $pic = Db::name('scroll_pic')->where('type','mobile')->field('path')->select();
+        if($pic){
+            $pic = array_column($pic,'path');
+            foreach ($pic as &$item) {
+                $item = $this->request->domain().DS.$item;
+            }
+        }
+        return json_data(0,$this->codeMessage[0],$pic);
+    }
 
     /**
      * 搜索
      */
     public function searchcourse(){
         $keywords = $this->data['keywords'];
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $course = Db::name('course')
             ->where('title','like','%'.$keywords.'%')
-            ->field('id,title,smallPicture')
+            ->where('status',1)
+            ->field('id,title,smallPicture,price')
+            ->page($page,6)
             ->select();
+
+        //需要对在学人数和评论进行计数
+        foreach ( $course as &$c ){
+            $c['learnNum']      = 0;
+            $c['commentsNum']   = 0;
+
+            $c['price']==0.00?$c['is_free'] = 1:$c['is_free'] = 0;
+            unset($c['price']);
+            $c['smallPicture']  = $this->request->domain().DS.$c['smallPicture'];
+        }
 
         return json_data(0,$this->codeMessage[0],$course);
     }

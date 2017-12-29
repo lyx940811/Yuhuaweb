@@ -51,8 +51,8 @@ class User extends Controller
             $this->data = $this->request->param();
         }
 
-        $user_token = $this->request->param('user_token');
-//        $this->verifyUserToken($user_token);
+        $user_token = 'c48a10e4bdcd8e6853ab4281e7b6ed77';//$this->request->param('user_token');
+        $this->verifyUserToken($user_token);
     }
 
     /**
@@ -245,8 +245,9 @@ class User extends Controller
     public function getmyinfo(){
         $data = [
             'username'  =>  $this->user->username,
-            'avatar'    =>  $this->user->avatar,
-            'mobile'    =>  $this->user->mobile
+            'avatar'    =>  $this->request->domain().DS.$this->user->title,
+            'mobile'    =>  $this->user->mobile,
+            'classname' =>  '电气化1702班',
         ];
         return json_data(0,$this->codeMessage[0],$data);
     }
@@ -308,34 +309,42 @@ class User extends Controller
     public function like(){
         $type = ['ask','answer','commment'];
         $data = [
-            'userid'        =>  1,
-            'type'          =>  'ask',
-            'articleid'     =>  1,
+            'userid'        =>  $this->user->id,
+            'type'          =>  $this->data['type'],
+            'articleid'     =>  $this->data['articleid'],
             'createTime'    =>  date('Y-m-d H:i:s'),
         ];
         if(!in_array($data['type'],$type)){
             return json_data(180,$this->codeMessage[180],'');
         }
         Like::create($data);
+        return json_data(0,$this->codeMessage[0],'');
     }
 
     /**
      * 取消点赞
      */
     public function canclelike(){
+        $type = ['ask','answer','commment'];
+        $retype = $this->data['type'];
+        if(!in_array($retype,$type)){
+            return json_data(180,$this->codeMessage[180],'');
+        }
         $delete = Like::destroy([
-            'userid'    =>  1,
-            'type'      =>  'ask',
-            'articleid'   =>1,
+            'userid'    =>  $this->user->id,
+            'type'      =>  $this->data['type'],
+            'articleid' =>  $this->data['articleid']
         ]);
 
         if($delete){
             return json_data(0,$this->codeMessage[0],'');
         }
         else{
-            return json_data(180,$this->codeMessage[180],'');
+            return json_data(181,$this->codeMessage[181],'');
         }
     }
+
+
 
 
 

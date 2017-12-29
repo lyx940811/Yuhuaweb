@@ -19,16 +19,17 @@ class Ask extends Base
     /**
      * 编辑/新增问答
      */
-    public function editask($ask_data){
-        $id = $ask_data['id'];
+    public function editask($ask_data,$id){
+
         $data = [
             'title'     =>  $ask_data['title'],
             'content'   =>  $ask_data['content'],
             'userID'    =>  $ask_data['userID'],
             'courseid'  =>  $ask_data['courseid'],
+            'category_id'  =>  $ask_data['category_id'],
             'addtime'   =>  date('Y-m-d H:i:s',time()),
         ];
-        $validate = Loader::validate('Asklist');
+        $validate = Loader::validate('index/Asklist');
         if(!$validate->check($data)){
             throw new Exception($validate->getError(),130);
         }
@@ -57,7 +58,7 @@ class Ask extends Base
             'content'        =>  $answer_data['content'],
             'addtime'        =>  date('Y-m-d H:i:s',time()),
         ];
-        $validate = Loader::validate('AskAnswer');
+        $validate = Loader::validate('index/AskAnswer');
         if(!$validate->check($data)){
             throw new Exception($validate->getError(),130);
         }
