@@ -33,6 +33,9 @@ return[
         200     =>  'not find the course',
         210     =>  'wrong request course type',
         220     =>  'not find any course files',
+        230     =>  'not find the note',
+        240     =>  '用户已经收藏了该课程',
+        250     =>  '用户还没收藏该课程',
         //题目相关的
         300     =>  'not find the question',
         310     =>  'page cannot be null',

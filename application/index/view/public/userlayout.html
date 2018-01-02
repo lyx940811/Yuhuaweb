@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
     <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <title>基础信息</title>
+    <title>{block name="title"}基础信息{/block}</title>
     <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href="__CSS__vendor.css" rel="stylesheet">
     <link href="__CSS__app-bootstrap.css" rel="stylesheet">
@@ -67,7 +67,7 @@
                             <li class="user-nav-li-logout"><a href="{:url('index/index/logout')}"><i class="es-icon es-icon-power"></i>退出登录</a></li>
                         </ul>
                     </li>
-                    <li class="visible-lg"><a href="../study/mystudy.html">我的学习</a></li>
+                    <li class="visible-lg"><a href="{:url('index/user/space')}">我的学习</a></li>
                     <li class="visible-lg nav-hover">
                         <a><i class="es-icon es-icon-mail"></i></a>
                         <ul class="dropdown-menu" role="menu">

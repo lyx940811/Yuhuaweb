@@ -1,10 +1,12 @@
 {extend name="public/userlayout"}
+{block name="title"}基础信息 - 实名认证 - 豫化在线课堂 - 豫化在线课堂{/block}
 {block name="container"}
 <div class="col-md-9">
     <div class="panel panel-default panel-col">
         <div class="panel-heading">实名认证</div>
         <div class="panel-body">
-            <form id="approval-form" class="form-horizontal" method="post" enctype="multipart/form-data" novalidate="novalidate">
+            <form id="approval-form" action="{:url('index/user/attention')}" class="form-horizontal" method="post" enctype="multipart/form-data" novalidate="novalidate">
+                <input type="hidden" name="__token__" value="{$Request.token}" />
                 <div class="help-block approval">
                     <label class="col-md-2 control-label"></label>
                     <div class="alert alert-warning" role="alert">您尚未实名认证。</div>
@@ -51,7 +53,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-7 col-md-offset-2">
-                        <button type="submit" class="btn btn-primary">提交</button>
+                        <button type="submit" id="tijiao" class="btn btn-primary">提交</button>
                     </div>
                 </div>
                 <input type="hidden" name="_csrf_token" value="lqPsFKCSLa3fO97r0lLtJ6hPJTMiPuBV0XX5CAcUhog">
@@ -64,6 +66,10 @@
 <script>
     $(function(){
         $('.list-group-item').eq(2).addClass("active");
+        $('input[type="file"]').change(function(e){
+            console.log(e)//e就是你获取的file对象
+        })
+
     })
 </script>
 {/block}
