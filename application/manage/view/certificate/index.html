@@ -28,7 +28,7 @@
         if($access){
         foreach($access as $k=>$v){
         if($v=='/manage/certificate/add'){
-        echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">新增专业</a>';
+        echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加证书</a>';
         }
         }
         }
@@ -254,7 +254,6 @@
                         $('#showinfoPic').html('<img class="img-rounded" src="\\'+data.info.pic+'" width="100%"/>');
                     }
 
-
                 });
                 
                 break;
@@ -303,7 +302,6 @@
         }else{
             $('#showpic').html('暂无图片')
         }
-
     }
 
 
