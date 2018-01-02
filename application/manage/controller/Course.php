@@ -17,7 +17,7 @@ class Course extends Base{
         $list = Db::table('course')->field('id,title,price,serializeMode,studentNum,status,userid')->paginate(20);
 
 
-        $category = Db::table('category')->select();
+        $category = Db::table('category')->field('code,name')->select();
         $tags = Db::table('tag')->select();
 
         $this->assign('list',$list);
