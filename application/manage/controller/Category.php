@@ -155,7 +155,7 @@ class Category extends Base{
             'point'=>$info['point'],
             'studyTimes'=>$info['studyTimes'],
             'description'=>$info['description'],
-            'createtime'=>date('Y-m-d H:i:s',time())
+//            'createtime'=>date('Y-m-d H:i:s',time())
         ];
 
         $ok = $role_table->field('name,code,point,studyTimes,description,createtime')->where('id',$id)->update($data);
