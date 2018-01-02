@@ -130,13 +130,12 @@ class Course extends Base{
             'tags'          => $info['tags'],
             'categoryId'    => $info['categoryId'],
             'serializeMode' => $info['serializeMode'],
-            'status'=> 1,
             'userid'        => session('admin_uid'),
             'about'        => $info['about'],
 //            'createdTime'   =>date('Y-m-d H:i:s',time()),
         ];
 
-        $ok = $role_table->field('title,subtitle,tags,categoryId,serializeMode,status,smallPicture,userid,about')->where('id',$id)->update($data);
+        $ok = $role_table->field('title,subtitle,tags,categoryId,serializeMode,smallPicture,userid,about')->where('id',$id)->update($data);
 
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];
