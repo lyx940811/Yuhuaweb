@@ -82,13 +82,10 @@
 
         });
         $.post(
-            "http://66.112.221.116/api/student/delcomment",
+            "http://66.112.221.116/api/student/getlessonnote",
             {
-                'user_token':'c48a10e4bdcd8e6853ab4281e7b6ed77',
-
-                'courseid':1,
-
-
+                'courseId':'5',
+                'user_token':'11234dsfasdfa',
             },
             function(data){
                 if(data){
@@ -112,9 +109,10 @@
             "json"
         );
         $.post(
-            "http://66.112.221.116/api/user/getmyinfo",
+            "http://66.112.221.116/api/student/is_collect",
             {
-                'user_token':'c48a10e4bdcd8e6853ab4281e7b6ed77',
+                'user_token':'asiuhdaishdan',
+                'courseid':'2',
             },
             function(data){
                 if(data){

@@ -7,6 +7,9 @@ use think\Loader;
 use think\Db;
 use think\Exception;
 use app\index\model\User as UserModel;
+use app\index\model\Course;
+use app\index\model\CourseNote;
+use app\index\model\CourseCollect;
 use app\index\model\AskAnswer;
 
 /** 学生类
@@ -44,7 +47,10 @@ class Student extends User
     public function getmyask(){
         $userid = $this->user->id;
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
-        $askList = Db::name('asklist')->where('userID',$userid)->page($page,10)->select();
+        $askList = Db::name('asklist')
+            ->where('userID',$userid)
+            ->page($page,10)
+            ->select();
         if($askList){
             foreach ($askList as &$a){
                 $user = UserModel::get($a['userID']);
@@ -199,6 +205,126 @@ class Student extends User
     /**
      * 【笔记部分】
      */
+
+    /**
+     * write/updaste course note
+     */
+    public function editnote(){
+        $id  =  $this->data['id'];
+        $data = [
+            'userid'    =>  $this->user->id,
+            'courseId'  =>  $this->data['courseId'],
+            'content'   =>  $this->data['content'],
+            'lessonid'  =>  $this->data['lessonid'],
+            'createdTime'=> date('Y-m-d H:i:s',time())
+        ];
+        if(!\app\index\model\Course::get($data['courseId'])){
+            return json_data(200,$this->codeMessage[200],'');
+        }
+
+        $validate = Loader::validate('index/CourseNote');
+        if(!$validate->check($data)){
+            return json_data(130,$validate->getError(),'');
+        }
+        if(empty($id)){
+            CourseNote::create($data);
+        }
+        else{
+            $note = new CourseNote;
+            $note->data($data)
+                ->isUpdate(true)
+                ->save(['id' => $id]);
+        }
+
+        return json_data(0,$this->codeMessage[0],'');
+    }
+
+    /**
+     * get lesson note
+     */
+    public function getlessonnote(){
+        $map['courseId'] = $this->data['courseId'];
+        $map['userid']   = $this->user->id;
+        $map['lessonid'] = $this->data['lessonid'];
+
+        if($note = CourseNote::get($map)){
+            $data = [
+                'id'        =>  $note['id'],
+                'content'   =>  $note['content'],
+                'createdTime'=> $note['createdTime'],
+            ];
+            return json_data(0,$this->codeMessage[0],$data);
+        }
+        else{
+            return json_data(230,$this->codeMessage[230],'');
+        }
+    }
+    /**
+     * get course note
+     */
+    public function getcoursenote(){
+        $map['cn.userid'] = $this->user->id;
+        $map['cn.courseId'] = 12;//$this->data['courseId'];
+        $note = Db::name('course_note')
+            ->alias('cn')
+            ->join('course_lesson cl','cn.lessonid=cl.id')
+            ->where($map)
+            ->order('lessonid')
+            ->field('cn.content,cn.id,cn.lessonid,cn.courseId,cn.createdTime,cl.title')
+            ->select();
+        return json_data(0,$this->codeMessage[0],$note);
+    }
+    /**
+     * 【收藏部分】
+     */
+    /**
+     * 判断是否收藏
+     * @return array
+     */
+    public function is_collect(){
+        $courseid = $this->data['courseid'];
+        if(!CourseCollect::get(['userid'=>$this->user->id,'courseid'=>$courseid])){
+            return json_data(0,$this->codeMessage[0],['is_collect'=>0]);
+        }
+        return json_data(0,$this->codeMessage[0],['is_collect'=>1]);
+    }
+    /**
+     * 收藏动作
+     */
+    public function collect(){
+        $courseid = $this->data['courseid'];
+        $data = [
+            'courseid'  =>  $courseid,
+            'userid'    =>  $this->user->id
+        ];
+        if(!Course::get($courseid)){
+            return json_data(200,$this->codeMessage[200],'');
+        }
+        if(CourseCollect::get($data)){
+            return json_data(240,$this->codeMessage[240],'');
+        }
+        $data['createTime'] = date('Y-m-d H:i:s',time());
+        CourseCollect::create($data);
+        return json_data(0,$this->codeMessage[0],'');
+    }
+    /**
+     * 取消收藏
+     */
+    public function canclecollect(){
+        $courseid = $this->data['courseid'];
+        $data = [
+            'courseid'  =>  $courseid,
+            'userid'    =>  $this->user->id
+        ];
+        if(!Course::get($courseid)){
+            return json_data(200,$this->codeMessage[200],'');
+        }
+        if(!CourseCollect::get($data)){
+            return json_data(250,$this->codeMessage[250],'');
+        }
+        CourseCollect::destroy($data);
+        return json_data(0,$this->codeMessage[0],'');
+    }
 
 
     /**
