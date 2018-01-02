@@ -34,34 +34,30 @@ class Apply extends Home
      */
     public function apply()
     {
-        try {
-            $data = $this->data;
-            $key = [
-                'realname'  =>  '',
-                'cardsn'  =>  '',
-                'education'  =>  '',
-                'admissionID'  =>  '',
-                'categoryID'  =>  '',
-                'telephone'  =>  '',
-                'promotMan'  =>  '',
-                'school'  =>  '',
-                'address'  =>  '',
-            ];
+        $data = $this->data;
 
-            $data = array_intersect_key($data,$key);
-            $validate = $this->validateData();
-            if(!$validate->check($data)){
-                return json_data(130,$validate->getError(),'');
-            }
+        $key = [
+            'realname'  =>  '',
+            'cardsn'  =>  '',
+            'education'  =>  '',
+            'admissionID'  =>  '',
+            'categoryID'  =>  '',
+            'telephone'  =>  '',
+            'promotMan'  =>  '',
+            'school'  =>  '',
+            'address'  =>  '',
+        ];
 
-            $data['createTime'] = date('Y-m-d H:i:s',time());
-            StudentEnroll::create($data);
-
-            return json_data(0,$this->codeMessage[0],'');
-        } catch (Exception $e) {
-            $errorCode = $e->getCode();
-            return json_data($errorCode,$this->codeMessage[$errorCode],'');
+        $data = array_intersect_key($data,$key);
+        $validate = $this->validateData();
+        if(!$validate->check($data)){
+            return json_data(130,$validate->getError(),'');
         }
+
+        $data['createTime'] = date('Y-m-d H:i:s',time());
+        StudentEnroll::create($data);
+
+        return json_data(0,$this->codeMessage[0],'');
 
     }
 

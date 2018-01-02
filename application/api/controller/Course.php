@@ -2,6 +2,10 @@
 namespace app\api\controller;
 
 use think\Loader;
+use think\Db;
+use app\index\model\User;
+use app\index\model\Like;
+use app\index\model\Course as CourseModel;
 /**
  * Class Course 在教师角色下的我的教学-在教课程-课程管理中的一些功能
  * @package app\index\controller
@@ -189,13 +193,36 @@ class Course extends Home
      * 获得某课程下的所有一级评论
      */
     public function getcoursecomments(){
-        $courseid = 5;
+        $courseid = $this->data['courseid'];
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         if(!\app\index\model\Course::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
-        $coursecomment = $this->LogicReview->getcoursecomment($courseid);
+        $comment = Db::name('course_review')
+            ->where('courseid',$courseid)
+            ->where('parentid',0)
+            ->field('id,userid,content,createdTime')
+            ->page($page,10)
+            ->select();
+        if($comment){
+            foreach ($comment as &$c){
+                $user = User::get($c['userid']);
+                $c['username'] = $user->username;
+                $c['avatar']   = $this->request->domain().DS.$user->title;
+                $c['sonreviewNum']   = Db::name('course_review')->where('parentid',$c['id'])->count();
+                $c['likeNum']   = Db::name('like')->where('type','comments')->where('articleid',$c['id'])->count();
+                if(!empty($this->user)){
+                    if(Like::get(['userid'=>$this->user->id,'type'=>'comments','articleid'=>$c['id']])){
+                        $c['is_like'] = 1;
+                    }
+                    else{
+                        $c['is_like'] = 0;
+                    }
+                }
+            }
+        }
 
-        return json_data(0,$this->codeMessage[0],$coursecomment);
+        return json_data(0,$this->codeMessage[0],$comment);
     }
 
     /**
@@ -203,13 +230,92 @@ class Course extends Home
      * @return array
      */
     public function getcomdetail(){
-        $commentid = 1;
+        $commentid = $this->data['commentid'];
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         if(!\app\index\model\CourseReview::get($commentid)){
+            return json_data(600,$this->codeMessage[600],'');
+        }
+
+        $comment = Db::name('course_review')
+            ->field('id,userid,content,createdTime')
+            ->page($page,10)
+            ->find($commentid);
+
+        $user = User::get($comment['userid']);
+        $comment['username']       = $user->username;
+        $comment['avatar']         = $user->title;
+        $comment['sonreviewNum']   = Db::name('course_review')->where('parentid',$comment['id'])->count();
+        $comment['likeNum']        = Db::name('like')->where('type','comments')->where('articleid',$comment['id'])->count();
+        if(!empty($this->user)){
+            if(Like::get(['userid'=>$this->user->id,'type'=>'comments','articleid'=>$commentid])){
+                $comment['is_like'] = 1;
+            }
+            else{
+                $comment['is_like'] = 0;
+            }
+        }
+        $son = Db::name('course_review')->where('parentid',$commentid)->field('id,userid,content,createdTime,touserId')->select();
+        if($son){
+            foreach ($son as &$s){
+                $s['username'] = Db::name('user')->where('id',$s['userid'])->value('username');
+                $s['tousername'] = Db::name('user')->where('id',$s['touserId'])->value('username');
+                $s['avatar'] = $this->request->domain().DS.Db::name('user')->where('id',$s['userid'])->value('title');
+            }
+        }
+        $comment['son'] = $son;
+        unset($comment['id']);
+
+        return json_data(0,$this->codeMessage[0],$comment);
+    }
+
+    /**
+     * 获得某个课程下的所有问答
+     */
+    public function courseasklist(){
+        $courseid = $this->data['courseid'];
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        if(!CourseModel::get($courseid)){
+            return json_data(200,$this->codeMessage[200],'');
+        }
+        $askList = Db::name('asklist')
+            ->where('courseid',$courseid)
+            ->page($page,10)
+            ->select();
+        foreach ($askList as &$a){
+            $user = User::get($a['userID']);
+            $a['username'] = $user->username;
+            $a['avatar']   = $this->request->domain().DS.$user->title;
+            $a['category'] = Db::name('category')->where('code',$a['category_id'])->value('name');
+            unset($a['category_id'],$a['userID'],$a['courseid']);
+            $a['answerNum'] = Db::name('ask_answer')->where('askID',$a['id'])->count();
+            if(!empty($this->user)){
+                if(Like::get(['userid'=>$this->user->id,'type'=>'ask','articleid'=>$a['id']])){
+                    $a['is_like'] = 1;
+                }
+                else{
+                    $a['is_like'] = 0;
+                }
+            }
+        }
+        return json_data(0,$this->codeMessage[0],$askList);
+    }
+
+    public function coursedetail(){
+        $courseid = $this->data['courseid'];
+
+        if(!$course = CourseModel::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
 
-        $coursecomment = $this->LogicReview->getcommentdetail($commentid);
-        return json_data(0,$this->codeMessage[0],$coursecomment);
+        $user = User::get($course['userid']);
+
+        $data = [
+            'about'         =>  $course->about,
+            'teacher_name'  =>  $user->username,
+            'avatar'        =>  $user->title,
+            'achivement'    =>  '教师成就'
+        ];
+        return json_data(0,$this->codeMessage[0],$data);
     }
 
 

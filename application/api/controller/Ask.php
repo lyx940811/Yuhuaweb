@@ -1,6 +1,7 @@
 <?php
 namespace app\api\controller;
 
+use app\index\model\Asklist;
 use think\Exception;
 use think\Loader;
 use think\Config;
@@ -33,13 +34,14 @@ class Ask extends Home
             if($c['newask']){
                 $user = User::get($c['newask']['userID']);
                 $c['newask']['username'] = $user->username;
-                $c['newask']['avatar']   = $user->title;
+                $c['newask']['avatar']   = $this->request->domain().DS.$user->title;
                 $answer = Db::name('ask_answer')->where('askID',$c['newask']['askID'])->field('addtime as answerTime')->order('addtime desc')->find();
                 if($answer){
                     $c['newask']['answerTime'] =$answer['answerTime'];
                 }
             }
         }
+
         return json_data(0,$this->codeMessage[0],$category);
     }
 
@@ -57,7 +59,7 @@ class Ask extends Home
             foreach ( $askList as &$a ){
                 $user = User::get($a['userID']);
                 $a['username']  = $user->username;
-                $a['avatar']    = $user->title;
+                $a['avatar']    = $this->request->domain().DS.$user->title;
                 $a['commentsNum'] = Db::name('ask_answer')->where('askID',$a['id'])->count();
             }
         }
@@ -68,22 +70,29 @@ class Ask extends Home
      * 得到某个问答的详细信息（问题详情、回答数）
      */
     public function getaskdetail(){
-        $askid = 2;//$this->data['askid'];
+        $askid = $this->data['askid'];
         $ask = Db::name('asklist')->find($askid);
         if(!$ask){
             return json_data(500,$this->codeMessage[500],'');
         }
+        $user = User::get($ask['userID']);
+        $ask['avatar']   = $this->request->domain().DS.$user->title;
+        $ask['username'] = $user->username;
+        $ask['category']  = Db::name('category')->where('code',$ask['category_id'])->value('name');
         $ask['answerNum'] = Db::name('ask_answer')->where('askID',$askid)->count();
-
+        unset($ask['category_id'],$ask['userID'],$ask['courseid']);
         return json_data(0,$this->codeMessage[0],$ask);
     }
 
     /**
-     * 得到某个问答的回答列表【还没加【用户是否已经点赞此条】】
+     * 得到某个问答的回答列表
      */
     public function getaskanswer(){
-        $askid = 2;
+        $askid = $this->data['askid'];
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        if(!Asklist::get($askid)){
+            return json_data(500,$this->codeMessage[500],'');
+        }
         $answer = Db::name('ask_answer')
             ->where('askID',$askid)
             ->page($page,10)
@@ -92,12 +101,13 @@ class Ask extends Home
             foreach ( $answer as &$as){
                 $user = User::get($as['answerUserID']);
                 $as['username'] = $user->username;
-                $as['avatar']   = $user->title;
-                $as['like']     = Db::name('like')->where('type','answer')->where('articleid',$as['id'])->count();
+                $as['avatar']   = $this->request->domain().DS.$user->title;
+                unset($as['askID'],$as['answerUserID']);
+//                $as['like']     = Db::name('like')->where('type','answer')->where('articleid',$as['id'])->count();
             }
         }
+        return json_data(0,$this->codeMessage[0],$answer);
 
-        var_dump($answer);die;
     }
 
 
