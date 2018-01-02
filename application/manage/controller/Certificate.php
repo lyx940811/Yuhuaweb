@@ -156,22 +156,9 @@ class Certificate extends Base{
 
     public function upload(){
 
-        // 获取上传文件
-        $file = request() -> file('newfile');
-        // 验证图片,并移动图片到框架目录下。
-        $info = $file ->validate(['size' => 512000,'ext' => 'jpg,png,jpeg','type' => 'image/jpeg,image/png']) -> move(ROOT_PATH.'public'.DS.'uploads'.DS.'certificate');
-        if($info){
-            // $info->getExtension();         // 文件扩展名
-            $mes = $info->getFilename();      // 文件名
-            $mes2 = $info->getSaveName();
 
-            return ['mes'=>$mes,'mes2'=>$mes2,'path'=>'uploads'.DS.'certificate'.DS.$mes2,'code'=>000];
-        }else{
-            // 文件上传失败后的错误信息
-            $mes = $file->getError();
-            return ['mes'=>$mes,'code'=>200];
-
-        }
+        $file = upload('newfile','certificate');
+        return $file;
 
     }
 }
