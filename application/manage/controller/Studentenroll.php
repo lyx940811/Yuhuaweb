@@ -15,15 +15,15 @@ class StudentEnroll extends Base{
         $info = input('get.');
 
         $where = [];
-        if(isset($info['admission'])){
+        if(!empty($info['admission'])){
             $where['admissionID'] = ['eq',$info['admission']];
 
         }
-        if(isset($info['category'])){
+        if(!empty($info['category'])){
             $where['categoryID'] = ['eq' ,$info['category']];
         }
-        if(isset($info['starttime']) && isset($info['endtime'])){
-            $where['a.createTime'] = ['between time',[$info['starttime']." 00:00:00", $info['starttime']." 23:59:59"]];
+        if(!empty($info['starttime']) && !empty($info['endtime'])){
+            $where['a.createTime'] = ['between time',[$info['starttime']." 00:00:00", $info['endtime']." 23:59:59"]];
         }
 
         $list = Db::table('student_enroll')
@@ -44,7 +44,7 @@ class StudentEnroll extends Base{
         $this->assign('admission',$admission);
         $this->assign('categorylist',$category);
         $this->assign('page',$list->render());
-        
+
         return $this->fetch();
     }
 }
