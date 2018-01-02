@@ -37,7 +37,7 @@
             <td>{$vo.id}</td>
             <td>{$vo.title}</td>
             <td>{$vo.price}</td>
-            <td>{$vo.serializeMode}</td>
+            <td>{if condition="$vo['serializeMode'] eq 'none'"}非连载课程{elseif condition="$vo['serializeMode'] eq 'serialized'"/}连载课程{else/}已完结{/if}</td>
             <td>{$vo.studentNum}</td>
             <td>{$vo.status}</td>
             <td>{$vo.userid|getUserinfo}</td>
@@ -87,32 +87,28 @@
                         <div class="form-group">
                             <label for="subtitle" class="col-sm-2 control-label">副标题</label>
                             <div class="col-sm-10">
-                                <div class="checkbox">
                                     <input type="text" class="form-control" id="subtitle" name="subtitle"
                                            placeholder="请输入副标题">
-                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="tags" class="col-sm-2 control-label">标签</label>
                             <div class="col-sm-10">
-                                <div class="checkbox">
-                                    <input type="text" class="form-control" id="tags" name="tags"
-                                           placeholder="请输入标签">
-                                </div>
+                                <select name="tags" id="tags" class="form-control">
+                                    {volist name="tags" id="t"}
+                                    <option value="{$t.code}">{$t.name}</option>
+                                    {/volist}
+                                </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="categoryId" class="col-sm-2 control-label">分类</label>
                             <div class="col-sm-10">
-                                <div class="checkbox">
                                     <select name="categoryId" id="categoryId" class="form-control">
                                         {volist name="category" id="c"}
                                         <option value="{$c.code}">{$c.name}</option>
                                         {/volist}
-
                                     </select>
-                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -123,11 +119,25 @@
                                 <label><input type="radio" name="serializeMode" value="finished" > 已完结</label>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="about" class="col-sm-2 control-label">课程简介</label>
+                            <div class="col-sm-10">
+                                <textarea name="about" id="about" cols="30" rows="10" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newfile" class="col-sm-2 control-label">封面图片</label>
+                            <div class="col-sm-10">
+                                <input type="file" id="newfile" name="newfile" onchange="uploadImage();">
+                                <input type="hidden" name="pic" id="pic">
+                                <div id="showinfoPic"></div>
+                            </div>
+                        </div>
                         <input type="hidden" name="rid" value="" id="selfcode"/>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                            <button type="button" class="btn btn-" id="add_role" onclick="dopost('add');">添加</button>
+                            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>-->
+                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add');">添加</button>
                             <button type="button" class="btn btn-default" id="edit_role" style="display:none;" onclick="dopost('edit')">修改</button>
                         </div>
                     </form>
@@ -166,7 +176,43 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
+    function uploadImage() {
+        // FormData对象，来发送二进制文件。
+        var formdata = new FormData();
 
+        // 将文件追加到 formdata对象中。
+        formdata.append("newfile",document.getElementById('newfile').files[0]);
+        $.ajax({
+            type: "POST",
+            url: "{:url('upload')}",
+            data:formdata,
+            /**
+             * 必须false才会避开jQuery对 formdata 的默认处理
+             * XMLHttpRequest会对 formdata 进行正确的处理
+             */
+            processData: false,
+            // 告诉jQuery不要去设置Content-Type请求头
+            contentType: false,
+            dataType: "json",
+            beforeSend:function () {
+                alert('正在上传中...')
+            }, //发送请求
+            success: function(data){
+                // console.log(data);
+
+                if(data.code=='000'){
+                    $('#pic').val(data.path)
+                    $('#showinfoPic').html('<img class="img-rounded" src="'+data.path+'" width="100%"/>');
+                    alert('上传成功');
+                }
+
+            },
+            error: function(jqXHR){
+                alert("发生错误：" + jqXHR.status);
+            },
+        });
+
+    }
     /*添加*/
 
     function add_edit(type,id,parentcode) {
@@ -178,6 +224,7 @@
                 $(" input[ type='hidden' ] ").val('')
                 $('#add_role').show()
                 $('#edit_role').hide()
+                $('#showinfoPic').html('');
 
                 break;
             case 'edit':
@@ -187,9 +234,33 @@
                 $('#add_role').hide()
                 $('#edit_role').show()
                 $.get("{:url('edit')}?do=get&rid="+id,function (data) {
-                    $('#name').val(data.info.name)
-                    $('#code').val(data.info.code)
-                    $('#role').val(data.info.roles)
+
+                    var newdata = data.info;
+
+                    $('#title').val(newdata.title)
+                    $('#subtitle').val(newdata.subtitle)
+                    $.each($('#tags').children(),function () {
+                        if($(this).val()==newdata.tags){
+                            $(this).prop('selected',true)
+                        }
+                    })
+
+                    $.each($('#categoryId').children(),function () {
+                        if($(this).val()==newdata.categoryId){
+                            $(this).prop('selected',true)
+                        }
+                    })
+                    $.each($('input[name="serializeMode"]'),function () {
+                        if($(this).val()==newdata.serializeMode){
+                            $(this).prop('checked',true)
+                        }
+                    })
+
+                    $('#about').val(newdata.about)
+
+                    if(newdata.smallPicture){
+                        $('#showinfoPic').html('<img src="'+newdata.smallPicture+'" width="100%"/>')
+                    }
                 });
 
                 break;
@@ -209,7 +280,7 @@
             data:$("#form1").serialize(),
             success:function(data){
 
-                console.log(data)
+                // console.log(data)
                 if(data.code=='000'){
 
                     alert(data.info)
