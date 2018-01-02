@@ -127,7 +127,7 @@ class User extends Base{
 
         $user_table = Db::name('user');
 
-        $id = $info['rid'];
+        $id = $info['rid']+0;
 
         $have = $user_table->field('id')->where("id='$id'")->find();
 
