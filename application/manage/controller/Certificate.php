@@ -17,6 +17,14 @@ class Certificate extends Base{
 
         $where = [];
 
+        if(!empty($info['flag'])){
+            $where['a.flag'] = ['eq',$info['flag']];
+        }
+        if(!empty($info['name'])){
+            $cer = Db::table('categorycertificate')->field('id,name')->where('name','like',"%{$info['name']}%")->find();
+
+            $where['a.certificateid'] = ['eq',$cer['id']];
+        }
 
         $list = Db::table('certificate')
             ->alias('a')
@@ -26,7 +34,6 @@ class Certificate extends Base{
             ->field('a.id,b.realname,b.idcard,d.name,c.sn,c.name as cname,c.level,c.unit,a.createtime,a.pic')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
-
 
 
         $userprofile = Db::table('user_profile')->field("id,realname")->select();
@@ -118,7 +125,7 @@ class Certificate extends Base{
 
         $role_table = Db::name('certificate');
 
-        $id = $info['rid'];
+        $id = $info['rid']+0;
         $have = $role_table->field('id,pic')->where("id='$id'")->find();
 
         if(!$have){//如果没这个code
