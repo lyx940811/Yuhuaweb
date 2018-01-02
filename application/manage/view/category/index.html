@@ -5,7 +5,6 @@
 <div class="container-fluid">
     {php}
     $uid = session('admin_uid');
-    $access = check($uid,['/manage/category/edit','/manage/category/enable','/manage/category/add']);
     {/php}
 
     <div class="well clearfix">
@@ -26,12 +25,8 @@
     </div>
     <div class="pull-right">
         {php}
-        if($access){
-        foreach($access as $k=>$v){
-        if($v=='/manage/category/add'){
-        echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">新增专业</a>';
-        }
-        }
+        if(check($uid,'/manage/category/add')){
+            echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">新增专业</a>';
         }
         {/php}
 
@@ -70,16 +65,15 @@
             <td>
                 {php}
 
-                foreach($access as $k=>$v){
 
-                    if($v=='/manage/category/edit'){
+                    if(check($uid,'/manage/category/edit')){
                         echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
                         echo '<strong>/</strong>';
-                    }elseif($v=='/manage/category/enable'){
-                            $flag = $vo['Flag']?'禁用':'启用';
+                    }elseif(check($uid,'/manage/category/enable')){
+
+                        $flag = $vo['Flag']?'禁用':'启用';
                         echo '<a href="#" onclick="enable('.$vo['id'].');">'.$flag.'</a>';
                     }
-                }
                 {/php}
 
             </td>
