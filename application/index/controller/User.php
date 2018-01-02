@@ -12,6 +12,9 @@ class User extends Home
     public function __construct()
     {
         parent::__construct();
+        if(!session('userid')){
+            $this->error('您没有该权限');
+        }
     }
 
     public function setting(){

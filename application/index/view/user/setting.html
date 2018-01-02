@@ -24,28 +24,28 @@
           <div class="col-md-7 controls radios">
             <div id="profile_gender">
               {switch name="$profile.sex" }
-              {case value="male"}
-              <input type="radio" id="profile_gender_1" name="profile[gender]" value="male" checked="true">
+              {case value="0"}
+              <input type="radio" id="profile_gender_1" name="profile[gender]" value="0" checked="true">
               <label for="profile_gender_0">男</label>
-              <input type="radio" id="profile_gender_2" name="profile[gender]" value="female">
+              <input type="radio" id="profile_gender_2" name="profile[gender]" value="1">
               <label for="profile_gender_1">女</label>
-              <input type="radio" id="profile_gender_0" name="profile[gender]" value="secret">
+              <input type="radio" id="profile_gender_0" name="profile[gender]" value="2">
               <label for="profile_gender_1">保密</label>
               {/case}
-              {case value="female"}
-              <input type="radio" id="profile_gender_1" name="profile[gender]" value="male">
+              {case value="1"}
+              <input type="radio" id="profile_gender_1" name="profile[gender]" value="0">
               <label for="profile_gender_0">男</label>
-              <input type="radio" id="profile_gender_2" name="profile[gender]" value="female" checked="true">
+              <input type="radio" id="profile_gender_2" name="profile[gender]" value="1" checked="true">
               <label for="profile_gender_1">女</label>
-              <input type="radio" id="profile_gender_0" name="profile[gender]" value="secret">
+              <input type="radio" id="profile_gender_0" name="profile[gender]" value="2">
               <label for="profile_gender_1">保密</label>
               {/case}
-              {case value="secret"}
-              <input type="radio" id="profile_gender_1" name="profile[gender]" value="male">
+              {case value="2"}
+              <input type="radio" id="profile_gender_1" name="profile[gender]" value="0">
               <label for="profile_gender_0">男</label>
-              <input type="radio" id="profile_gender_2" name="profile[gender]" value="female">
+              <input type="radio" id="profile_gender_2" name="profile[gender]" value="1">
               <label for="profile_gender_1">女</label>
-              <input type="radio" id="profile_gender_0" name="profile[gender]" value="secret" checked="true">
+              <input type="radio" id="profile_gender_0" name="profile[gender]" value="2" checked="true">
               <label for="profile_gender_1">保密</label>
               {/case}
               {default /}默认情况
@@ -150,11 +150,7 @@
 {block name="javascript"}
 <script>
     $(function(){
-
         $('.list-group-item').eq(0).addClass("active");
-
-
-//        console.log($('input[type="radio"]:checked').val());
 
         $('#testsave').click(function(){
             var isQQPublic = 0;
@@ -169,7 +165,6 @@
             if($('#isWeiboPublic').is(':checked')) {
                 isWeiboPublic = 1;
             }
-
             $.post(
                 "{:url('index/user/settingajax')}",
                 {
@@ -178,7 +173,8 @@
                     'mobile':$('#profile_mobile').val(),
                     'company':$('#profile_company').val(),
                     'job':$('#profile_job').val(),
-                    'about':$('#editor-container').val(),
+                    'signature':$('#profile_signature').html(),
+                    'about':$('#editor-container').html(),
                     'site':$('#profile_site').val(),
                     'weibo':$('#weibo').val(),
                     'weixin':$('#profile_weixin').val(),

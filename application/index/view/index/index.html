@@ -62,18 +62,18 @@
               </div>
               <div class="course-list">
                   <div class="row">
+                      {volist name="course" id="course"}
                       <div class="col-lg-3 col-md-4 col-xs-6">
                           <div class="course-item">
                               <div class="course-img">
-
-                                  <a href="#www.hnhgjx.cn:1700__COURSE__158">
-                                      <img src="__IMG__courseSet.png" alt="化学基础" class="img-responsive">
+                                  <a href="{:url('index/course/catalogue')}">
+                                      <img src="http://localhost/{$course.smallPicture}" alt="化学基础" class="img-responsive">
                                   </a>
                               </div>
                               <div class="course-info">
                                   <div class="title">
-                                      <a class="link-dark" href="#www.hnhgjx.cn:1700__COURSE__158" target="_blank">
-                                          化学基础
+                                      <a class="link-dark" href="{:url('index/course/catalogue')}" target="_blank">
+                                          {$course.title}
                                       </a>
                                   </div>
                                   <div class="metas clearfix">
@@ -86,6 +86,30 @@
                               </div>
                           </div>
                       </div>
+                      {/volist}
+                      <!--<div class="col-lg-3 col-md-4 col-xs-6">
+                          <div class="course-item">
+                              <div class="course-img">
+                                  <a href="{:url('index/course/catalogue')}">
+                                      <img src="__IMG__courseSet.png" alt="化学基础" class="img-responsive">
+                                  </a>
+                              </div>
+                              <div class="course-info">
+                                  <div class="title">
+                                      <a class="link-dark" href="{:url('index/course/catalogue')}" target="_blank">
+                                          化学基础2
+                                      </a>
+                                  </div>
+                                  <div class="metas clearfix">
+                                      <span class="num"><i class="es-icon es-icon-people"></i>3</span>
+                                      <span class="comment"><i class="es-icon es-icon-textsms"></i>0</span>
+                                      <span class="course-price-widget">
+                                    <span class="free">免费</span>
+                                  </span>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>-->
                   </div>
               </div>
               <div class="section-more-btn">

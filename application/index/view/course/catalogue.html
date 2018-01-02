@@ -1,0 +1,59 @@
+{extend name="public/courselayout"}
+{block name="title"}在教课程 - 个人主页{/block}
+{block name="navdetail"}
+<div class="course-detail-content">
+    <ul class="task-list task-list-md task-list-hover">
+
+        <li class="task-item task-content mouse-control">
+            <i class="es-icon
+                            es-icon-undone-check color-gray
+                            left-menu"></i>
+
+
+            <a class="title" href="#/course/118/task/779/show">
+                任务1： 直接称样法
+            </a>
+
+            <span class="right-menu color-gray ">
+
+        09:11
+    <i class="es-icon es-icon es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i>
+</span>
+            <span class="right-menu mouse-enter">
+                            </span>
+        </li>
+
+
+        <li class="task-item task-content mouse-control">
+            <i class="es-icon
+                            es-icon-undone-check color-gray
+                            left-menu"></i>
+
+
+            <a class="title" href="#/course/118/task/823/show">
+                任务2： 分析化验室的清洁与管理
+            </a>
+
+            <span class="right-menu color-gray ">
+
+        17:43
+    <i class="es-icon es-icon es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i>
+</span>
+            <span class="right-menu mouse-enter">
+                            </span>
+        </li>
+
+
+
+    </ul>
+</div>
+
+
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+        $('.nav-tabs').children().eq(0).addClass('active');
+    })
+</script>
+{/block}

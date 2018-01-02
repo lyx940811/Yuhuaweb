@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh_CN"><!--<![endif]-->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    {block name="meta"}
+
+    {/block}
+    <title>{block name="title"}title{/block}</title>
+    <link href="__CSS__vendor.css" rel="stylesheet">
+    <link href="__CSS__app-bootstrap.css" rel="stylesheet">
+    <link href="__CSS__main.css" rel="stylesheet">
+    <link rel="stylesheet" href="__CSS__student/student-index.css">
+    {block name="link"}
+
+    {/block}
+</head>
+<body class="es-main-default es-nav-default userpage bg-blank">
+{block name="script"}
+
+{/block}
+{block name="style"}
+
+{/block}
+<div class="es-wrap">
+{block name="header"}
+{include file="Public:header" /}
+{/block}
+
+{block name="container"}
+
+
+
+
+{/block}
+
+
+{block name="footer"}
+{include file="Public:footer" /}
+{/block}
+</div>
+<div id="login-modal" class="modal" data-url="/login/ajax"></div>
+<div id="modal" class="modal"></div>
+<div id="attachment-modal" class="modal"></div>
+
+<script src="__JS__jquery-1.11.3.min.js"></script>
+<!--<script src="__JS__public.js"></script>-->
+<!--<script src="__JS__index.js"></script>-->
+{block name="javascript"}
+
+{/block}
+</body>
+</html>
