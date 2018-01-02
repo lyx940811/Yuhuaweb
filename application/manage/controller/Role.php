@@ -66,7 +66,7 @@ class Role extends Base{
         }
 
         $role_table = Db::name('role');
-        $is_have = $role_table->where("code='{$info['code']}'")->find();
+        $is_have = $role_table->field('id')->where("code='{$info['code']}'")->find();
 
         if($is_have){//如果这个code有
             return ['error'=>'已经有此代码','code'=>'300'];
@@ -98,7 +98,7 @@ class Role extends Base{
             $id = $_GET['rid']+0;
 
             $role_table = Db::name('role');
-            $have = $role_table->where("id='$id'")->find();
+            $have = $role_table->field('id')->where("id='$id'")->find();
 
             if(!$have){//如果这个code有
                 return ['error'=>'没有此角色','code'=>'300'];
@@ -143,7 +143,7 @@ class Role extends Base{
 
         $role_table = Db::name('role');
 
-        $id = $info['rid'];
+        $id = $info['rid']+0;
         $have = $role_table->field('id,code')->where("id='$id'")->find();
 
         if(!$have){//如果没这个code
@@ -152,19 +152,19 @@ class Role extends Base{
 
         if($have['code']==$info['code']){
 
-            $ok = $role_table->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name']]);
+            $ok = $role_table->field('name,data')->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name']]);
         }else{
 
             $where['id'] = ['neq',$id];
             $where['code'] = $info['code'];
 
-            $have = $role_table->field('id,code')->where($where)->find();
+            $have = $role_table->field('id')->where($where)->find();
 
             if($have){
                 return ['error'=>'已经有此代码','code'=>'300'];
             }
 
-            $ok = $role_table->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name'],'code'=>$info['code']]);
+            $ok = $role_table->field('name,data,code')->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name'],'code'=>$info['code']]);
         }
 
 

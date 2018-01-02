@@ -74,7 +74,7 @@ class Classcity extends Base{
         if(isset($_GET['do'])=='get'){
             $id = $_GET['rid']+0;
 
-            $have = Db::name('classcity')->field('id,classname')->where("id='$id'")->find();
+            $have = Db::name('classcity')->field('id,classname,code')->where("id='$id'")->find();
 
             if(!$have){//如果这个code有
                 return ['error'=>'没有此专业','code'=>'300'];
@@ -117,11 +117,9 @@ class Classcity extends Base{
         $data = [
             'classname' => $info['name'],
             'code' => $info['code'],
-            'parentCode' => $info['parentcode'],
-            'Flag'=>1,
         ];
 
-        $ok = $role_table->field('name,code,parentCode,Flag')->where('id',$id)->update($data);
+        $ok = $role_table->field('classname,code')->where('id',$id)->update($data);
 
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];

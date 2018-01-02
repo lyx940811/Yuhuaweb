@@ -17,6 +17,14 @@ class Certificate extends Base{
 
         $where = [];
 
+        if(!empty($info['flag'])){
+            $where['a.flag'] = ['eq',$info['flag']];
+        }
+        if(!empty($info['name'])){
+            $cer = Db::table('categorycertificate')->field('id,name')->where('name','like',"%{$info['name']}%")->find();
+
+            $where['a.certificateid'] = ['eq',$cer['id']];
+        }
 
         $list = Db::table('certificate')
             ->alias('a')
@@ -26,7 +34,6 @@ class Certificate extends Base{
             ->field('a.id,b.realname,b.idcard,d.name,c.sn,c.name as cname,c.level,c.unit,a.createtime,a.pic')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
-
 
 
         $userprofile = Db::table('user_profile')->field("id,realname")->select();
@@ -118,7 +125,7 @@ class Certificate extends Base{
 
         $role_table = Db::name('certificate');
 
-        $id = $info['rid'];
+        $id = $info['rid']+0;
         $have = $role_table->field('id,pic')->where("id='$id'")->find();
 
         if(!$have){//如果没这个code
@@ -149,22 +156,9 @@ class Certificate extends Base{
 
     public function upload(){
 
-        // 获取上传文件
-        $file = request() -> file('newfile');
-        // 验证图片,并移动图片到框架目录下。
-        $info = $file ->validate(['size' => 512000,'ext' => 'jpg,png,jpeg','type' => 'image/jpeg,image/png']) -> move(ROOT_PATH.'public'.DS.'uploads'.DS.'certificate');
-        if($info){
-            // $info->getExtension();         // 文件扩展名
-            $mes = $info->getFilename();      // 文件名
-            $mes2 = $info->getSaveName();
 
-            return ['mes'=>$mes,'mes2'=>$mes2,'path'=>'uploads'.DS.'certificate'.DS.$mes2,'code'=>000];
-        }else{
-            // 文件上传失败后的错误信息
-            $mes = $file->getError();
-            return ['mes'=>$mes,'code'=>200];
-
-        }
+        $file = upload('newfile','certificate');
+        return $file;
 
     }
 }

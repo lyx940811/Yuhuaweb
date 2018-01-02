@@ -5,14 +5,13 @@
 <div class="container-fluid">
     {php}
     $uid = session('admin_uid');
-    $access = check($uid,['/manage/category/edit','/manage/category/enable','/manage/category/add']);
     {/php}
 
     <div class="well clearfix">
         <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
             <div class="form-group">
                 <label>状态</label>
-                <select name="flag">
+                <select name="flag" class="form-control">
                     <option value="0">禁用</option>
                     <option value="1" selected="selected">启用</option>
                 </select>
@@ -26,22 +25,18 @@
     </div>
     <div class="pull-right">
         {php}
-        if($access){
-        foreach($access as $k=>$v){
-        if($v=='/manage/category/add'){
-        echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">新增专业</a>';
-        }
-        }
+        if(check($uid,'/manage/category/add')){
+            echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">新增专业</a>';
         }
         {/php}
 
     </div>
     <ul class="nav nav-tabs">
-        <li role="presentation" class="active"><a href="#">专业管理</a></li>
-        <li role="presentation"><a href="#">专业课程</a></li>
-        <li role="presentation"><a href="#">专业报名数据查询</a></li>
-        <li role="presentation"><a href="#">专业证书</a></li>
-        <li role="presentation"><a href="#">证书记录</a></li>
+        <li role="presentation" class="active"><a href="{:url('category/index')}">专业管理</a></li>
+        <li role="presentation"><a href="{:url('categorycourse/index')}">专业课程</a></li>
+        <li role="presentation"><a href="{:url('studentenroll/index')}">专业报名数据查询</a></li>
+        <li role="presentation"><a href="{:url('categorycertificate/index')}">专业证书</a></li>
+        <li role="presentation"><a href="{:url('certificate/index')}">证书记录</a></li>
     </ul>
 
     <table class="table table-striped table-hover">
@@ -70,16 +65,15 @@
             <td>
                 {php}
 
-                foreach($access as $k=>$v){
 
-                    if($v=='/manage/category/edit'){
+                    if(check($uid,'/manage/category/edit')){
                         echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
                         echo '<strong>/</strong>';
-                    }elseif($v=='/manage/category/enable'){
-                            $flag = $vo['Flag']?'禁用':'启用';
+                    }elseif(check($uid,'/manage/category/enable')){
+
+                        $flag = $vo['Flag']?'禁用':'启用';
                         echo '<a href="#" onclick="enable('.$vo['id'].');">'.$flag.'</a>';
                     }
-                }
                 {/php}
 
             </td>
@@ -198,6 +192,8 @@
 
                 break;
             case 'edit':
+                $(" input[ type='text' ] ").val('')
+                $(" input[ type='hidden' ] ").val('')
                 $('#selfcode').val(id)//如果是修改,id是自己
                 $('#add_role').hide()
                 $('#edit_role').show()

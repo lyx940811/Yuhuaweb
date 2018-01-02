@@ -20,14 +20,14 @@ class Categorycourse extends Base{
         $info = input('get.');
 
         $where = [];
-        if(isset($info['category'])){
+        if(!empty($info['category'])){
 
             $where['a.categoryID'] = ['eq',$info['category']];
         }
-        if(isset($info['type'])){
+        if(!empty($info['type'])){
             $where['c.type'] = ['eq',$info['type']];
         }
-        if(isset($info['name'])){
+        if(!empty($info['name'])){
             $where['c.title'] = ['like',"%{$info['name']}%"];
         }
 
@@ -101,7 +101,7 @@ class Categorycourse extends Base{
 
         $role_table = Db::name('categorycourse');
 
-        $id = $info['rid'];
+        $id = $info['rid']+0;
 
         $data = [
             'categoryID'=>$info['category'],

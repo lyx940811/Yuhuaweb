@@ -12,15 +12,15 @@
         <li role="presentation">
             {php}
             if($access){
-
-
-
-            }
-            foreach($access as $k=>$v){
+                foreach($access as $k=>$v){
                 if($v=='/manage/user/add'){
                 echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加新用户</a>';
                 }
+                }
+
+
             }
+
             {/php}
         </li>
     </ul>
@@ -56,13 +56,16 @@
             <td>
                 {php}
 
-                foreach($access as $k=>$v){
+                if($access){
 
-                    if($v=='/manage/user/edit'){
-                        echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
-                        echo '<strong>/</strong>';
-                    }elseif($v=='/manage/user/delete'){
-                        echo '<a href="#" onclick="deleteUser('.$vo['id'].');">删除</a>';
+                    foreach($access as $k=>$v){
+
+                        if($v=='/manage/user/edit'){
+                            echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
+                            echo '<strong>/</strong>';
+                        }elseif($v=='/manage/user/delete'){
+                            echo '<a href="#" onclick="deleteUser('.$vo['id'].');">删除</a>';
+                        }
                     }
                 }
                 {/php}
