@@ -22,11 +22,11 @@ class Category extends Base{
         $info = input('get.');
 
         $where = [];
-        if(isset($info['flag'])){
+        if(!empty($info['flag'])){
 
             $where['Flag'] = ['eq',$info['flag']];
         }
-        if(isset($info['name'])){
+        if(!empty($info['name'])){
             $where['name'] = ['like',"%{$info['name']}%"];
         }
 
@@ -67,7 +67,7 @@ class Category extends Base{
 
         $role_table = Db::name('category');
 
-        $is_have = $role_table->where(['code'=>['eq',$info['code']]])->find();
+        $is_have = $role_table->field('id')->where(['code'=>['eq',$info['code']]])->find();
 
         if($is_have){//如果这个code有
             return ['error'=>'已经有此代码','code'=>'300'];
@@ -83,7 +83,7 @@ class Category extends Base{
             'Flag'=>1,
         ];
 
-        $ok = Db::name('category')->field('name,code,point,studyTimes,description,createtime,Flag')->insert($data);
+        $ok = $role_table->field('name,code,point,studyTimes,description,createtime,Flag')->insert($data);
 
         if($ok){
             return ['info'=>'添加成功','code'=>'000'];
@@ -136,7 +136,7 @@ class Category extends Base{
 
         $role_table = Db::name('category');
 
-        $id = $info['rid'];
+        $id = $info['rid']+0;
         $have = $role_table->field('id')->where("id='$id'")->find();
 
         if(!$have){//如果没这个code
@@ -158,7 +158,7 @@ class Category extends Base{
             'createtime'=>date('Y-m-d H:i:s',time())
         ];
 
-        $ok = $role_table->where('id',$id)->update($data);
+        $ok = $role_table->field('name,code,point,studyTimes,description,createtime')->where('id',$id)->update($data);
 
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];
@@ -172,7 +172,7 @@ class Category extends Base{
         $id = $_GET['rid']+0;
 
         $data = ['Flag'=>0,'createtime'=>date('Y-m-d H:i:s',time())];
-        $ok = Db::name('category')->where("id='$id'")->update($data);
+        $ok = Db::name('category')->field('Flag,createtime')->where("id='$id'")->update($data);
 
         if($ok){
             return ['info'=>'禁用成功','code'=>'000'];

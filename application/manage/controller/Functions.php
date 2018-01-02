@@ -73,7 +73,7 @@ class Functions extends Base{
             'code'=>['eq',$info['code']]
         ])->whereOr([
             'url' =>['eq',$info['url']]
-        ])->find();
+        ])->field('id')->find();
 
         if($is_have){//如果这个code有
             return ['error'=>'已经有此代码','code'=>'300'];
@@ -103,7 +103,7 @@ class Functions extends Base{
         if(isset($_GET['do'])=='get'){
             $id = $_GET['rid']+0;
 
-            $have = Db::name('function')->where("id='$id'")->find();
+            $have = Db::name('function')->field('id')->where("id='$id'")->find();
 
             if(!$have){//如果这个code有
                 return ['error'=>'没有此角色','code'=>'300'];
@@ -149,7 +149,7 @@ class Functions extends Base{
 
         $role_table = Db::name('function');
 
-        $id = $info['rid'];
+        $id = $info['rid']+0;
         $have = $role_table->field('id,code')->where("id='$id'")->find();
 
         if(!$have){//如果没这个code
@@ -164,7 +164,7 @@ class Functions extends Base{
             return ['error'=>'已经有此代码','code'=>'300'];
         }
 
-        $ok = $role_table->where('id',$id)->update(['name' => $info['name'],'code'=>$info['code'],'url'=>$info['url']]);
+        $ok = $role_table->field('name,code,url')->where('id',$id)->update(['name' => $info['name'],'code'=>$info['code'],'url'=>$info['url']]);
 
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];

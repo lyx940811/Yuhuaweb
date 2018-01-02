@@ -68,7 +68,7 @@ class Rolefunction extends Base{
         }
 
         $role_table = Db::name('role_function');
-        $is_have = $role_table->where("rolecode='{$info['role_code']}'")->find();
+        $is_have = $role_table->field('id')->where("rolecode='{$info['role_code']}'")->find();
 
         if($is_have){//如果这个code有
             return ['error'=>'已经有此代码','code'=>'300'];
@@ -96,7 +96,7 @@ class Rolefunction extends Base{
             $id = $_GET['rid']+0;
 
             $role_table = Db::name('role_function');
-            $func = $role_table->where("id='$id'")->find();
+            $func = $role_table->field('id,functioncode,rolecode')->where("id='$id'")->find();
 
             if(!$func){//如果这个code有
                 return ['error'=>'没有此角色','code'=>'300'];
@@ -104,7 +104,7 @@ class Rolefunction extends Base{
 
                 if($func['functioncode']){//如果权限组里有相应权限，给前端返回，循环
                     $funccode = $func['functioncode'];
-                    $func['children'] = Db::name('function')->where("id in ($funccode)")->select();
+                    $func['children'] = Db::name('function')->field('id')->where("id in ($funccode)")->select();
                 }
 
                 return ['info'=>$func,'code'=>'000'];
@@ -114,9 +114,7 @@ class Rolefunction extends Base{
         //前端获取资料结束
 
 
-
         $info = input('post.');
-
 
         $msg  =   [
             'role_code.require' => '权限组code不能为空',
@@ -138,9 +136,9 @@ class Rolefunction extends Base{
 
         $role_table = Db::name('role_function');
 
-        $id = $info['rid'];
+        $id = $info['rid']+0;
 
-        $have = $role_table->field('id,rolecode')->where("id='$id'")->find();
+        $have = $role_table->field('id')->where("id='$id'")->find();
 
         if(!$have){//如果没这个code
             return ['error'=>'没有此角色','code'=>'300'];
