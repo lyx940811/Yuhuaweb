@@ -36,7 +36,7 @@
                 </ul>
             </div>
 
-            <a href="{:url('Manage/login/logout')}" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
+            <a href="#" onclick="logout();" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
         </div>
         <div class="row J_mainContent" id="content-main">
             <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="{:url('Manage/manage/right')}" frameborder="0" data-id="{:url('Manage/manage/right')}" seamless></iframe>
@@ -50,6 +50,17 @@
 
 </div>
 {include file="manage/bottom" /}
+<script type="text/javascript">
+
+    function logout() {
+        //{:url('Manage/login/logout')}
+
+        $.get("{:url('Manage/login/logout')}",function (data) {
+            alert(data.info)
+            window.location.href = "{:url('Manage/login/index')}";
+        });
+    }
+</script>
 </body>
 
 </html>
