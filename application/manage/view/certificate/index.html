@@ -285,8 +285,9 @@
 
 
     function show(pic) {
-        var b = new Base64();
-        var str = b.decode(pic);
+        // var b = new Base64();
+        var str = '{php}base64_decode("pic");{/php}'//b.decode(pic);
+
 
         if(pic){//pic是没base64解码过的，str是解码过的
             if(str.indexOf("\\")>0){
