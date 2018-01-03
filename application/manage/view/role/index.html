@@ -5,18 +5,13 @@
 <div class="container-fluid">
     {php}
     $uid = session('admin_uid');
-    $access = check($uid,['/manage/role/edit','/manage/role/delete','/manage/role/add']);
     {/php}
     <ul class="nav nav-tabs">
         <li role="presentation" class="active"><a href="#">列表</a></li>
         <li role="presentation">
             {php}
-            if($access){
-                foreach($access as $k=>$v){
-                    if($v=='/manage/role/add'){
-                        echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加角色</a>';
-                    }
-                }
+            if(check($uid,'/manage/role/add')){
+                echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加角色</a>';
 
             }
 
@@ -58,19 +53,15 @@
             <td>{$vo.flag?'是':'否'}              </td>
             <td>
                 {php}
-
-                foreach($access as $k=>$v){
-
-                    if($v=='/manage/role/edit'){
+                    if(check($uid,'/manage/role/edit')){
                         echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
                         echo '<strong>/</strong>';
-                    }elseif($v=='/manage/role/delete'){
+                    }elseif(check($uid,'/manage/role/delete')){
                         echo '<a href="#" onclick="deleteRole('.$vo['id'].');">删除</a>';
-                    }elseif($v=='/manage/role/add'){
+                    }elseif(check($uid,'/manage/role/add')){
                         echo '<strong>/</strong>';
                         echo '<a href="#" onclick="add_edit(\'addSon\','.$vo['id'].','.$vo['code'].')" data-toggle="modal" data-target="#myModal">添加子角色</a>';
                     }
-                }
                 {/php}
 
             </td>

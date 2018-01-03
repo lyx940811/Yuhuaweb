@@ -5,20 +5,14 @@
 <div class="container-fluid">
     {php}
     $uid = session('admin_uid');
-    $access = check($uid,['/manage/rolefunction/edit','/manage/rolefunction/delete','/manage/rolefunction/add']);
     {/php}
     <ul class="nav nav-tabs">
         <li role="presentation" class="active"><a href="#">列表</a></li>
         <li role="presentation">
             {php}
-            if($access){
-                foreach($access as $k=>$v){
-                        if($v=='/manage/rolefunction/add'){
-                        echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加权限组</a>';
-                        }
+                if(check($uid,'/manage/rolefunction/add')){
+                    echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加权限组</a>';
                 }
-
-            }
             {/php}
         </li>
     </ul>
@@ -45,15 +39,11 @@
             <td>{volist name="vo.groups" id="g"}{$g.name}<strong> | </strong>{/volist}</td>
             <td>
                 {php}
-
-                foreach($access as $k=>$v){
-
-                    if($v=='/manage/rolefunction/edit'){
-                        echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
-                        echo '<strong>/</strong>';
-                    }elseif($v=='/manage/rolefunction/delete'){
-                        echo '<a href="#" onclick="deleteRole('.$vo['id'].');">删除</a>';
-                    }
+                if(check($uid,'/manage/rolefunction/edit')){
+                    echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
+                    echo '<strong>/</strong>';
+                }elseif(check($uid,'/manage/rolefunction/delete')){
+                    echo '<a href="#" onclick="deleteRole('.$vo['id'].');">删除</a>';
                 }
                 {/php}
 
@@ -95,7 +85,7 @@
                                 <div class="checkbox">
                                     {volist name='allgroup' id='a'}
                                     <label class="checkbox-inline">
-                                        <input type="checkbox" class="function_code"  value="{$a.id}"  name="function_code[]"/>  {$a.name}
+                                        <input type="checkbox" class="function_code" id="function_code"  value="{$a.id}"  name="function_code[]"/>  {$a.name}
                                     </label>
                                     {/volist}
                                 </div>

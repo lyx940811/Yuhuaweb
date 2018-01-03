@@ -6,7 +6,6 @@
 <div class="container-fluid">
     {php}
     $uid = session('admin_uid');
-    $access = check($uid,['/manage/studentenroll/edit','/manage/studentenroll/add']);
     {/php}
 
     <div class="well clearfix">
@@ -39,12 +38,8 @@
     </div>
     <div class="pull-right">
         {php}
-        if($access){
-        foreach($access as $k=>$v){
-        if($v=='/manage/studentenroll/add'){
+        if(check($uid,'/manage/studentenroll/add')){
         echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">新增专业</a>';
-        }
-        }
         }
         {/php}
 
