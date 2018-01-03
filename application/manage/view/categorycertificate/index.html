@@ -236,18 +236,6 @@
         });
     }
 
-    function enable(id) {
-        $.get("{:url('enable')}?rid="+id,function (data) {
-            if(data.code=='000'){
-                alert(data.info)
-                $('#myModal2').modal('hide')
-            }else{
-
-            }
-        });
-    }
-
-
 </script>
 </body>
 </html>
