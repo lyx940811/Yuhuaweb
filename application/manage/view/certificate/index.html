@@ -288,11 +288,22 @@
         var b = new Base64();
         var str = b.decode(pic);
 
-        if(pic){
-            $('#showpic').html('<img class="img-rounded" src="'+str+'" width="100%"/>')
+        if(pic){//pic是没base64解码过的，str是解码过的
+            if(str.indexOf("\\")>0){
+                $('#showpic').html('<img class="img-rounded" src="\\'+str+'" width="100%"/>')
+            }else{
+                $('#showpic').html('<img class="img-rounded" src="'+str+'" width="100%"/>')
+            }
+
         }else{
             $('#showpic').html('暂无图片')
         }
+    }
+
+    function IndexDemo(str2){
+        var str1 = "\BABEBIBOBUBABEBIBOBU"
+        var s = str1.indexOf(str2);
+        return(s);
     }
 
 
