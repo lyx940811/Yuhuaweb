@@ -11,11 +11,21 @@
             </div>
             <div class="form-group">
                 <label>模块</label>
-                <input type="text" class="form-control" placeholder="模块" name="user_module">
+                <select class="form-control" name="user_module">
+                    <option value="">--请选择--</option>
+                    {volist name='module' id="m"}
+                    <option value="{$m.id}">{$m.classname}</option>
+                    {/volist}
+                </select>
             </div>
             <div class="form-group">
                 <label>方法</label>
-                <input type="text" class="form-control" placeholder="方法" name="user_action">
+                <select class="form-control" name="user_action">
+                    <option value="">--请选择--</option>
+                    {volist name='action' id="a"}
+                    <option value="{$a.code}">{$a.classname}</option>
+                    {/volist}
+                </select>
             </div>
             <div class="form-group">
                 <label>动作</label>
@@ -32,15 +42,15 @@
             <th>方法</th>
             <th>动作</th>
             <th>日期</th>
-            <th>操作</th>
+            <th width="55%">操作</th>
         </tr>
         </thead>
         <tbody>
         {volist name="list" id="vo"}
         <tr>
             <td>{$vo.userid|getUserinfo}</td>
-            <td>{$vo.module}</td>
-            <td>{$vo.action}</td>
+            <td>{$vo.bname}</td>
+            <td>{$vo.cname}</td>
             <td>{$vo.message}</td>
             <td>{$vo.createdTime}</td>
             {php}
@@ -56,7 +66,7 @@
                 }
 
             {/php}
-            <td><a href="#"  class="btn btn-primary" onclick="showInfo('{$html}');"  data-toggle="modal" data-target="#myModal">查看详细</a></td>
+            <td>{$html}</td>
         </tr>
         {/volist}
         </tbody>

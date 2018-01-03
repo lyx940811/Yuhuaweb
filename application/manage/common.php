@@ -165,3 +165,31 @@ function tree($arr,$pcode=0,$flag=0,&$newArr=[],$levelHtml='',$lnbsp=''){
     return $newArr;
 }
 
+/*
+ * 证书图片上传
+ */
+function upload($filename,$path){
+
+    // 获取上传文件
+    $file = request() -> file($filename);
+    // 验证图片,并移动图片到框架目录下。
+
+    $npath = DS.'uploads'.DS.$path;
+    $movepath = ROOT_PATH.'public'.DS.$npath;
+//  $movepath = ROOT_PATH.'public'.DS.'uploads'.DS.'certificate';
+    $info = $file ->validate(['size' => 512000,'ext' => 'jpg,png,jpeg','type' => 'image/jpeg,image/png']) -> move($movepath);
+    if($info){
+        // $info->getExtension();         // 文件扩展名
+        $mes = $info->getFilename();      // 文件名
+        $mes2 = $info->getSaveName();
+
+        return ['mes'=>$mes,'mes2'=>$mes2,'path'=>$npath.DS.$mes2,'code'=>000];
+    }else{
+        // 文件上传失败后的错误信息
+        $mes = $file->getError();
+        return ['mes'=>$mes,'code'=>200];
+
+    }
+
+}
+
