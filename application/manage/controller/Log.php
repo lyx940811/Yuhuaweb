@@ -15,51 +15,41 @@ class Log extends Base{
 
         $info = input('get.');
 
+        $wheredata = [];
 
-        if(request()->get()){//搜索
-
-            $wheredata = [];
-
-            if(isset($info['user_id'])){
-                $wheredata['userid'] = ['=',$info['user_id']];
-            }
-            if(isset($info['user_module'])){
-                $classname = Db::name('classmodule')->field('id')->where('classname','=',$info['user_module'])->find();
-                $wheredata['module'] = ['=',$classname['id']];
-            }
-            if(isset($info['user_action'])){
-                $wheredata['action'] = ['like',"%{$info['user_action']}%"];
-            }
-            if(isset($info['user_mes'])){
-                $wheredata['message'] = ['like',"%{$info['user_mes']}%"];
-            }
-
-            $list = Db::name('log')
-                ->where($wheredata)
-                ->paginate(20,false,['query' => request()->get()]);
-
-
-        }else{//普通显示
-
-            $list = Db::name('log')->paginate(20,false,['query' => request()->get()]);
-
-
+        if(!empty($info['user_id'])){
+            $wheredata['userid'] = ['=',$info['user_id']];
+        }
+        if(!empty($info['user_module'])){
+            $wheredata['module'] = ['=',$info['user_module']];
+        }
+        if(!empty($info['user_action'])){
+            $wheredata['action'] = ['eq',$info['user_action']];
+        }
+        if(!empty($info['user_mes'])){
+            $wheredata['message'] = ['eq',"%{$info['user_mes']}%"];
         }
 
-        $newlist = [];
-        foreach ($list as $k=>$v){
+        $list = Db::name('log a')
+            ->join('classmodule b','a.module=b.id','LEFT')
+            ->join('classaction c','a.action=c.code','LEFT')
+            ->field('a.id,a.userid,b.classname bname,c.classname cname,a.message,a.createdTime,a.data')
+            ->where($wheredata)
+            ->paginate(20,false,['query' => request()->get()]);
 
-            if($v['module']){
-                $newlist[$k] = $v;
-                $mname = Db::name('classmodule')->field('classname')->where("id={$v['module']}")->find();
-                $newlist[$k]['mname'] =$mname['classname'];
 
-            }
+//        echo Db::name('log a')->getLastSql();
+//        print_r($wheredata);
+//        exit;
+        $module = Db::table('classmodule')->field('id,classname')->select();
+        $action = Db::table('classaction')->field('classname,code')->select();
 
-        }
+        $this->assign('list',$list);
 
-        $this->assign('list',$newlist);
+        $this->assign('module',$module);
+        $this->assign('action',$action);
         $this->assign('page',$list->render());
+        $this->assign('typename','日志列表');
         return $this->fetch();
     }
 
