@@ -5,19 +5,14 @@
 <div class="container-fluid">
     {php}
     $uid = session('admin_uid');
-    $access = check($uid,['/manage/functions/edit','/manage/functions/delete','/manage/functions/add']);
     {/php}
     <ul class="nav nav-tabs">
         <li role="presentation" class="active"><a href="#">列表</a></li>
         <li role="presentation">
             {php}
-            if($access){
-                foreach($access as $k=>$v){
-                    if($v=='/manage/functions/add'){
-                        echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加功能栏目</a>';
-                    }
+                if(check($uid,'/manage/functions/add')){
+                    echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加功能栏目</a>';
                 }
-            }
 
             {/php}
         </li>
@@ -53,18 +48,16 @@
             <td>
                 {php}
 
-                foreach($access as $k=>$v){
 
-                    if($v=='/manage/functions/edit'){
+                    if(check($uid,'/manage/functions/edit')){
                         echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
                         echo '<strong>/</strong>';
-                    }elseif($v=='/manage/functions/delete'){
+                    }elseif(check($uid,'/manage/functions/delete')){
                         echo '<a href="#" onclick="deleteCategory('.$vo['id'].');">删除</a>';
-                    }elseif($v=='/manage/functions/add'){
+                    }elseif(check($uid,'/manage/functions/add')){
                         echo '<strong>/</strong>';
                         echo '<a href="#" onclick="add_edit(\'addSon\','.$vo['id'].','.$vo['code'].')" data-toggle="modal" data-target="#myModal">添加子功能栏目</a>';
                     }
-                }
                 {/php}
 
             </td>
