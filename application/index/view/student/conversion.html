@@ -1,0 +1,81 @@
+{extend name="public/spacelayout"}
+{block name="title"}{/block}
+{block name="link"}
+<link href="__CSS__gradeSave1.css" type="text/css" rel="stylesheet">
+{/block}
+{block name="container"}
+{include file="../application/index/view/student/spacetop.html" /}
+<div id="content-container" class="container">
+    {include file="../application/index/view/student/spacenav.html" /}
+    <div class="gradeWrapper2">
+        <div class="content">
+            <div class="title">
+                <div class="left">积分兑换</div>
+                <div class="right">剩余积分：800</div>
+            </div>
+            <div class="goods">
+                <span style="padding-left:12px;">商品筛选</span>
+                <span style="padding-left:26px;">共 <font style="color: red">66</font>个商品</span>
+            </div>
+            <div class="secondList">
+                <ul class="list-inline">
+                    <li>类别</li>
+                    <li>图书</li>
+                    <li>校园生活</li>
+                    <li>实践课</li>
+                    <li>顶岗实习</li>
+                    <li>其它</li>
+                </ul>
+            </div>
+            <div class="picList">
+                <ul>
+                    <li>
+                        <img src="../../img/story.png" alt="">
+                        <div class="text">
+                            <p class="first"><i class="code"></i>200积分</p>
+                            <p>明朝那些事（傻大姐发的事发方发 斯蒂芬）</p>
+                            <p class="third">兑换</p>
+                        </div>
+                    </li>
+                    <li>
+                        <img src="../../img/wash.png" alt="">
+                        <div class="text">
+                            <p class="first"><i class="code"></i>200积分</p>
+                            <p>明朝那些事（傻大姐发的事发方发 斯蒂芬）</p>
+                            <p class="third">兑换</p>
+                        </div>
+                    </li>
+                    <li>
+                        <img src="../../img/cup.png" alt="">
+                        <div class="text">
+                            <p class="first"><i class="code"></i>200积分</p>
+                            <p>明朝那些事（傻大姐发的事发方发 斯蒂芬）</p>
+                            <p class="third">兑换</p>
+                        </div>
+                    </li>
+                    <li>
+                        <img src="../../img/quilt.png" alt="">
+                        <div class="text">
+                            <p class="first"><i class="code"></i>200积分</p>
+                            <p>明朝那些事（傻大姐发的事发方发 斯蒂芬）</p>
+                            <p class="third">兑换</p>
+                        </div>
+                    </li>
+                    <li class="special">
+                        <img src="../../img/book.png" alt="">
+                        <div class="text">
+                            <p class="first"><i class="code"></i>200积分</p>
+                            <p style="text-align: left;">明朝那些事（傻大姐发的事发方发 斯蒂芬）</p>
+                            <p class="third">兑换</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="container" style="text-align: center;width: 83%;">
+                <nav aria-label="Page navigation">
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

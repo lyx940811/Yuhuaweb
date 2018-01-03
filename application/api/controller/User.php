@@ -51,7 +51,7 @@ class User extends Controller
             $this->data = $this->request->param();
         }
 
-        $user_token = 'c48a10e4bdcd8e6853ab4281e7b6ed77';//$this->request->param('user_token');
+        $user_token = $this->request->param('user_token');
         $this->verifyUserToken($user_token);
     }
 

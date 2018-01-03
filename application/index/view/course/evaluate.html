@@ -1,0 +1,33 @@
+{extend name="public/courselayout"}
+{block name="title"}在教课程 - 个人主页{/block}
+{block name="navdetail"}
+<div class="clearfix">
+    <button class="btn btn-primary btn-sm pull-right js-show-review-form" style="display:none;">重新评价</button>
+</div>
+<form id="review-form" method="post" action="#course/118/review/create" novalidate="novalidate">
+    <div class="form-group controls">
+        请打分： <span data-rating="0" data-img-path="/assets/img/raty" class="rating-btn" style="cursor: pointer; width: 100px;"><img src="__IMG__star-off.png" alt="1" title="很差">&nbsp;<img src="__IMG__star-off.png" alt="2" title="较差">&nbsp;<img src="__IMG__star-off.png" alt="3" title="还行">&nbsp;<img src="__IMG__star-off.png" alt="4" title="推荐">&nbsp;<img src="__IMG__star-off.png" alt="5" title="力荐"><input type="hidden" name="score"></span>
+        <input type="hidden" name="rating" value="0">
+    </div>
+
+    <div class="form-group controls">
+        <textarea class="form-control" rows="8" data-display="评价详细内容" name="content"></textarea>
+    </div>
+
+    <div class="form-group clearfix">
+        <span class="color-success pull-left js-review-remind" style="display: none;">评价已保存！</span>
+        <a href="javascript:;" class="btn btn-primary pull-right js-btn-save" data-loading-text="正在保存..." autocomplete="off">保存</a>
+        <a href="javascript:;" class="btn btn-link pull-right js-hide-review-form">取消</a>
+    </div>
+
+    <input type="hidden" name="_csrf_token" value="q1K5NL9uHfaq2E_e4broBlJNdBqa3_pwYCv9BeOqmhY">
+</form>
+<div class="empty">暂无评价</div>
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+        $('.nav-tabs').children().eq(4).addClass('active');
+    })
+</script>
+{/block}

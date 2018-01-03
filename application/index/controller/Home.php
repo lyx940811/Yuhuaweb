@@ -14,9 +14,9 @@ class Home extends Controller
         parent::__construct();
         $this->codeMessage = Config::get('apicode_message');
 
-        if($userid = session('userid')){
-            define('UID',$userid);
-            $this->user = User::get($userid);
+        if(session('userid')){
+            define('UID',session('userid'));
+            $this->user = User::get(UID);
             $this->assign('user',$this->user);
         }
 

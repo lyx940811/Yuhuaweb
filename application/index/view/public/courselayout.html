@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>{block name="title"}title{/block}</title>
+    <link href="__CSS__vendor.css" rel="stylesheet">
+    <link href="__CSS__app-bootstrap.css" rel="stylesheet">
+    <link href="__CSS__main.css" rel="stylesheet">
+    <link rel="stylesheet" href="__CSS__student/student-index.css">
+</head>
+<body class="es-main-default es-nav-default course-dashboard-page">
+<div class="es-wrap">
+    <header class="es-header navbar">
+        <div class="navbar-header">
+            <div class="visible-xs  navbar-mobile">
+                <a href="javascript:;" class="navbar-more js-navbar-more">
+                    <i class="es-icon es-icon-menu"></i>
+                </a>
+                <div class="html-mask"></div>
+                <div class="nav-mobile">
+                    <form class="navbar-form" action="/search" method="get">
+                        <div class="form-group">
+                            <input class="form-control" placeholder="搜索" name="q">
+                            <button class="button es-icon es-icon-search"></button>
+                        </div>
+                    </form>
+
+                    <ul class="nav navbar-nav">
+
+                        <li class="">
+                            <a href="/course/explore">全部课程 </a>
+                        </li>
+                        <li class="">
+                            <a href="/classroom/explore">班级 </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="M_header-back js-back">
+                <a><i class="es-icon es-icon-chevronleft"></i></a>
+            </div>
+            <a href="/" class="navbar-brand">
+                豫化在线课堂
+            </a>
+        </div>
+        <nav class="collapse navbar-collapse">
+            <ul class="nav navbar-nav clearfix hidden-xs " id="nav">
+
+                <li class="">
+                    <a href="/course/explore">全部课程 </a>
+                </li>
+                <li class="">
+                    <a href="/classroom/explore">班级 </a>
+                </li>
+            </ul>
+            <div class="navbar-user " id="yh_register">
+                {present name="user"}
+                <ul class="nav user-nav">
+                    <li class="user-avatar-li nav-hover">
+                        <a href="javascript:;" class="dropdown-toggle">
+                            <img class="avatar-xs" src="http://localhost/{$user.title}">
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li role="presentation" class="dropdown-header">{$user.username}</li>
+                            <li><a href="{:url('index/user/space')}"><i class="es-icon es-icon-person"></i>个人主页</a></li>
+                            <li><a href="{:url('index/user/setting')}"><i class="es-icon es-icon-setting"></i>个人设置</a></li>
+                            <li class="hidden-lg user-nav-li-my"><a href="{:url('index/student/mystudy')}"><i class="es-icon es-icon-eventnote"></i>我的学习</a></li>
+                            <li class="hidden-lg"><a href="#"><span class="pull-right num"></span><i class="es-icon es-icon-notificationson"></i>通知</a></li>
+                            <li class="hidden-lg"><a href="#"><span class="pull-right num"></span><i class="es-icon es-icon-mail"></i>私信</a></li>
+                            <li class="mobile-switch js-switch-mobile visible-xs"><a href="javascript:;"><i class="es-icon es-icon-qiehuan"></i>切换触屏版</a></li>
+                            <li class="user-nav-li-logout"><a href="{:url('index/index/logout')}"><i class="es-icon es-icon-power"></i>退出登录</a></li>
+                        </ul>
+                    </li>
+                    <li class="visible-lg"><a href="{:url('index/student/mystudy')}">我的学习</a></li>
+                    <li class="visible-lg nav-hover">
+                        <a><i class="es-icon es-icon-mail"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <a href="#">
+                                    <span class="pull-right num"></span>
+                                    <i class="es-icon es-icon-notificationson"></i>通知
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span class="pull-right num"></span>
+                                    <i class="es-icon es-icon-mail"></i>私信
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                {else /}
+                <ul class="nav user-nav">
+                    <li class="user-avatar-li nav-hover visible-xs">
+                        <a href="javascript:;" class="dropdown-toggle">
+                            <img class="avatar-xs" src="http://localhost/static\index\images\avatar.png">
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li class="user-nav-li-login"><a href="{:url('index/index/login')}">
+                                <i class="es-icon es-icon-denglu"></i>
+                                登录</a></li>
+                            <li class="user-nav-li-register"><a href="{:url('index/index/register')}">
+                                <i class="es-icon es-icon-zhuce"></i>
+                                注册</a></li>
+                            <li class="mobile-switch js-switch-mobile"><a href="javascript:;">
+                                <i class="es-icon es-icon-qiehuan"></i>
+                                切换触屏版</a></li>
+                        </ul>
+                    </li>
+                    <li class="hidden-xs"><a href="{:url('index/index/login')}" class="nav-login">登录</a></li>
+                    <li class="hidden-xs"><a href="{:url('index/index/register')}" class="nav-regist">注册</a></li>
+                </ul>
+                {/present}
+                <!--<form class="navbar-form navbar-right hidden-xs hidden-sm" action="" method="get">-->
+                <!--<div class="form-group">-->
+                <!--<input class="form-control js-search" name="q" placeholder="搜索">-->
+                <!--<button class="button es-icon es-icon-search"></button>-->
+                <!--</div>-->
+                <!--</form>-->
+            </div>
+        </nav>
+    </header>
+    <div class="event-report" data-url="/event/dispatch" data-event-name="course.view" data-subject-type="course" data-subject-id="118" data-user-id="1"></div>
+    <!-- 3、加入后：任务式学习 -->
+    <div class="container">
+        <ol class="breadcrumb breadcrumb-o">
+            <li><a href="#">首页</a></li>
+            <li><a href="#course/explore/gongyefenxixi">工业分析系</a></li>
+            <li><a href="#course/explore/gongyefenxiyujianyan">工业分析与检验</a></li>
+            <li><a href="#course/118">化学分析基本操作技能 </a></li>
+            <li class="active">默认教学计划 </li>
+        </ol>
+
+        <div class="es-section course-detail-section clearfix">
+            <div class="course-detail-top clearfix">
+                <span class="tags mrm"></span>
+                <span class="course-detail-heading">默认教学计划
+                    <span class="es-qrcode top pt5 hidden-xs" data-url="/course/118/qrcode">
+                        <i class="es-icon es-icon-qrcode"></i>
+                        <span class="qrcode-popover">
+                            <img src="#my/course/118/threads?type=all&amp;sort=posted" alt="">扫二维码继续学习二维码时效为半小时
+                        </span>
+                    </span>
+                </span>
+                <ul class="course-operation hidden-xs hidden-sm clearfix">
+                    <!--非营销页显示-->
+                    <li>
+                        <span class="btn btn-xs cursor-default">
+                            <i class="es-icon es-icon-people text-16"></i>
+                            <span class="mls">2人 </span>
+                        </span>
+                    </li>
+                    <!--营销页显示-->
+                    <li class="es-share top">
+                        <a class="btn btn-default btn-xs dropdown-toggle" href="#my/course/118/threads?type=all&amp;sort=posted" data-toggle="dropdown" title="课程分享">
+                            <i class="es-icon es-icon-share"></i>
+                        </a>
+                        <div class="dropdown-menu  js-social-share-params" data-title="化学分析基本操作技能" data-summary="" data-message="我正在学习《化学分析基本操作技能》，收获巨大哦，一起来学习吧！" data-url="#course/118" data-picture="/assets/img/default/course.png">
+                            <a href="javascript:;" class="js-social-share" data-cmd="weixin" title="分享到微信" data-share="weixin" data-qrcode-url="/common/qrcode?text=http%3A//www.hnhgjx.cn%3A1700/course/118"><i class="es-icon es-icon-weixin"></i></a>
+                            <a href="javascript:;" class="js-social-share" data-cmd="tsina" title="分享到新浪微博" data-share="weibo"><i class="es-icon es-icon-weibo"></i></a>
+                            <a href="javascript:;" class="js-social-share" data-cmd="qq" title="分享到QQ好友" data-share="qq"><i class="es-icon es-icon-qq"></i></a>
+                            <a href="javascript:;" class="js-social-share" data-cmd="qzone" title="分享到QQ空间" data-share="qzone"><i class="es-icon es-icon-qzone"></i></a>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="btn btn-default btn-xs " href="#course_set/118/manage/course/118/tasks" title="课程管理">
+                            <i class="es-icon es-icon-setting"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="btn btn-default btn-xs" data-toggle="modal" data-target="#modal" data-url="/target/118/order/refund?targetType=course"><i class="es-icon es-icon-exit"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- 2、加入后：自由式学习 -->
+            <section class="course-freelearn-section">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="course-progress">
+                            <div class="cricle-progress" id="freeprogress" data-percent="0">
+                                <span class="percent">学习进度<br><span class="num">0%</span></span>
+                                <canvas height="145" width="145" style="height: 146px; width: 146px;"></canvas></div>
+                        </div>
+                    </div>
+                    <div class="col-md-7 hidden-xs hidden-sm">
+                        <ul class="clearfix text-12 course-learn-list ">
+                            <li>
+                                <p class="mb15 color-gray">
+                                    <i class="es-icon es-icon-iccheckcircleblack24px mrm"></i>已完成
+                                </p>
+                                <span class="text-16"><span class="color-primary">1</span> / <span class="mrl">11</span>任务</span>
+                            </li>
+                            <li>
+                                <p class="mb15 color-gray">
+                                    <i class="es-icon es-icon-today mrm"></i>学习有效期
+                                </p>
+                                <span class="text-16">永久有效</span>
+                            </li>
+                            <li>
+                                <p class="mb15 color-gray">
+                                    <i class="es-icon es-icon-book mrm"></i>下一学习任务
+                                </p>
+                                <a class="link-dark text-16" href="#course/118/task/703/show">硫酸溶液的配制</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2 hidden-xs hidden-sm">
+                        <a class="btn btn-primary btn-lg mt10" href="#course/118/task/703/show">继续学习
+                        </a>
+                    </div>
+                </div>
+                <div class="course-detail-section-responsive visible-xs visible-sm clearfix">
+                    <ul class="clearfix">
+                        <!--营销页显示-->
+                        <li class="es-share top   learn-es-share ">
+                            <a class=" dropdown-toggle" href="#my/course/118/threads?type=all&amp;sort=posted" data-toggle="dropdown" title="课程分享">
+                                <i class="es-icon es-icon-share"></i>
+                                <br>分享
+                            </a>
+
+
+                            <div class="dropdown-menu  js-social-share-params" data-title="化学分析基本操作技能" data-summary="" data-message="我正在学习《化学分析基本操作技能》，收获巨大哦，一起来学习吧！" data-url="#course/118" data-picture="/assets/img/default/course.png">
+                                <a href="javascript:;" class="js-social-share" data-cmd="weixin" title="分享到微信" data-share="weixin" data-qrcode-url="/common/qrcode?text=http%3A//www.hnhgjx.cn%3A1700/course/118"><i class="es-icon es-icon-weixin"></i></a>
+                                <a href="javascript:;" class="js-social-share" data-cmd="tsina" title="分享到新浪微博" data-share="weibo"><i class="es-icon es-icon-weibo"></i></a>
+                                <a href="javascript:;" class="js-social-share" data-cmd="qq" title="分享到QQ好友" data-share="qq"><i class="es-icon es-icon-qq"></i></a>
+                                <a href="javascript:;" class="js-social-share" data-cmd="qzone" title="分享到QQ空间" data-share="qzone"><i class="es-icon es-icon-qzone"></i></a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="text-right buy-btn-group visible-xs visible-sm">
+                    <span class="mr20">完成任务：1 / 11</span>
+                    <a class="btn btn-primary btn-lg " href="#course/118/task/703/show">
+                        继续学习
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 col-md-8 course-detail-content">
+
+                <section class="es-section">
+                    <div class="nav-btn-tab">
+                        <ul class="nav nav-tabs " role="tablist">
+                            <li role="presentation" id="tasks" class=""><a href="{:url('index/course/catalogue')}">目录</a></li>
+                            <li role="presentation" id="threads" class=""><a href="{:url('index/course/discussion')}">讨论区<small>(1)</small></a></li>
+                            <li role="presentation" id="notes" class=""><a href="{:url('index/course/note')}">笔记<small>(1)</small></a></li>
+                            <li role="presentation" id="material" class=""><a href="{:url('index/course/material')}">资料区<small>(38)</small></a></li>
+                            <li role="presentation" id="reviews" class=""><a href="{:url('index/course/evaluate')}">评价<small>(0)</small></a></li>
+                            <li role="presentation" id="summary" class=""><a href="{:url('index/course/summary')}">介绍</a></li>
+                            <!--<li class="highlight" style="left: 0px; width: 92px;"></li>-->
+                        </ul>
+                    </div>
+
+                    {block name="navdetail"}
+
+                    {/block}
+                </section>
+                <div class="panel panel-default hidden-xs pt10">
+                    <div class="course-list">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 col-xs-6">
+                                <div class="course-item">
+                                    <div class="course-img">
+                                        <a href="#course/135?ref=relatedCourseSets" target="_blank">
+                                            <img src="__IMG__courseSet.png" alt="基础化学" class="img-responsive">
+                                        </a>
+                                    </div>
+                                    <div class="course-info">
+                                        <div class="title">
+                                            <a class="link-dark" href="#course/135?ref=relatedCourseSets" target="_blank">基础化学</a>
+                                        </div>
+                                        <div class="metas clearfix">
+                                            <span class="num"><i class="es-icon es-icon-people"></i>3</span>
+                                            <span class="comment"><i class="es-icon es-icon-textsms"></i>0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-4 course-sidebar">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">授课教师</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="media media-default">
+                            <div class="media-left">
+                                <a class="js-user-card" href="#user/7855" data-card-url="/user/7855/card/show" data-user-id="7855" data-original-title="" title="">
+                                    <img class="avatar-md" src="__IMG__avatar.png">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <div class="title">
+                                    <a class="link-dark link-dark" href="#user/7855">0000067</a>
+                                </div>
+                                <div class="content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">最新学员</h3>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="user-avatar-list clearfix">
+                            <li>
+                                <a class=" js-user-card" href="#user/1" data-card-url="/user/1/card/show" data-user-id="1" data-original-title="" title="">
+                                    <img class="avatar-sm" src="__IMG__100205dc0389099998.jpg">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><i class="es-icon es-icon-recentactors"></i>学员动态</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="media media-number-o color-gray text-overflow">
+                            <a class="link-dark " href="#user/1">admin</a>开始学习 <a class="link-dark" href="#course/118/task/702/show?from=student_status" title="来自《化学试剂》">化学试剂</a>
+                        </div>
+                        <div class="media media-number-o color-gray text-overflow">
+                            <a class="link-dark " href="#user/1">admin</a>开始学习 <a class="link-dark" href="#course/118/task/701/show?from=student_status" title="来自《分析化验室安全管理制度的学习》">分析化验室安全管理制度的学习</a>
+                        </div>
+                        <div class="media media-number-o color-gray text-overflow">
+                            <a class="link-dark " href="#user/1">admin</a>完成了 <a class="link-dark" href="#course/118/task/700/show?from=student_status" title="来自《分析化验室的清洁与管理》">分析化验室的清洁与管理</a>
+                        </div>
+                        <div class="media media-number-o color-gray text-overflow">
+                            <a class="link-dark " href="#user/1">admin</a>开始学习 <a class="link-dark" href="#course/118/task/700/show?from=student_status" title="来自《分析化验室的清洁与管理》">分析化验室的清洁与管理</a>
+                        </div>
+                        <div class="media media-number-o color-gray text-overflow">
+                            <a class="link-dark " href="#user/1">admin</a>加入课程<a class="link-dark" href="#course/118" title="来自《化学分析基本操作技能》">化学分析基本操作技能</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <footer class="es-footer">
+        <div class="copyright">
+            <div class="container">
+                Powered by <a href="http://www.hnhgjx.cn/" target="_blank">yuhuazaixian8.0.16</a>
+
+
+
+                <div class="mts">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+
+
+
+
+<div id="login-modal" class="modal" data-url="/login/ajax"></div>
+<div id="modal" class="modal"></div>
+<div id="attachment-modal" class="modal"></div>
+<script src="__JS__jquery-1.11.3.min.js"></script>
+{block name="javascript"}
+
+{/block}
+</body>
+</html>

@@ -5,7 +5,7 @@ use think\Controller;
 use think\Config;
 use think\Loader;
 use think\Request;
-
+use app\index\model\Course;
 use app\index\model\User as UserModel;
 class Index extends Home
 {
@@ -18,6 +18,10 @@ class Index extends Home
      * 首页
      */
     public function index(){
+        $courseModel = new Course();
+        $course = $courseModel->where('is_new',1)->limit(12)->order('createdTime desc')->select();
+        $this->assign('course',$course);
+
         return $this->fetch();
     }
 

@@ -93,7 +93,9 @@ class Home extends Controller
     public function createuser(){
         $data = [
             'mobile'    =>  $this->data['mobile'],
-            'password'  =>  password_hash($this->data['password'],PASSWORD_DEFAULT)
+            'password'  =>  password_hash($this->data['password'],PASSWORD_DEFAULT),
+            'status'    =>  1,
+            'type'      =>  3,
         ];
         $user = UserModel::create($data);
         if($user){

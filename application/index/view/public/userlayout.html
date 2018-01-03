@@ -54,20 +54,20 @@
                 <ul class="nav user-nav">
                     <li class="user-avatar-li nav-hover">
                         <a href="javascript:;" class="dropdown-toggle">
-                            <img class="avatar-xs" src="{$user.title}">
+                            <img class="avatar-xs" src="http://localhost/{$user.title}">
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li role="presentation" class="dropdown-header">{$user.username}</li>
                             <li><a href="{:url('index/user/space')}"><i class="es-icon es-icon-person"></i>个人主页</a></li>
                             <li><a href="{:url('index/user/setting')}"><i class="es-icon es-icon-setting"></i>个人设置</a></li>
-                            <li class="hidden-lg user-nav-li-my"><a href="../study/mystudy.html"><i class="es-icon es-icon-eventnote"></i>我的学习</a></li>
+                            <li class="hidden-lg user-nav-li-my"><a href="{:url('index/student/mystudy')}"><i class="es-icon es-icon-eventnote"></i>我的学习</a></li>
                             <li class="hidden-lg"><a href="#"><span class="pull-right num"></span><i class="es-icon es-icon-notificationson"></i>通知</a></li>
                             <li class="hidden-lg"><a href="#"><span class="pull-right num"></span><i class="es-icon es-icon-mail"></i>私信</a></li>
                             <li class="mobile-switch js-switch-mobile visible-xs"><a href="javascript:;"><i class="es-icon es-icon-qiehuan"></i>切换触屏版</a></li>
                             <li class="user-nav-li-logout"><a href="{:url('index/index/logout')}"><i class="es-icon es-icon-power"></i>退出登录</a></li>
                         </ul>
                     </li>
-                    <li class="visible-lg"><a href="{:url('index/user/space')}">我的学习</a></li>
+                    <li class="visible-lg"><a href="{:url('index/student/mystudy')}">我的学习</a></li>
                     <li class="visible-lg nav-hover">
                         <a><i class="es-icon es-icon-mail"></i></a>
                         <ul class="dropdown-menu" role="menu">
@@ -98,6 +98,7 @@
     <!-- left nav + conn-->
     <div id="content-container" class="container">
         <div class="row">
+            {block name="sidebar"}
             <div class="col-md-3">
                 <div class="sidenav">
                     <ul class="list-group">
@@ -120,6 +121,7 @@
                     </ul>
                 </div>
             </div>
+            {/block}
             {block name="container"}
 
             {/block}

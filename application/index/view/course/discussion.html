@@ -1,0 +1,69 @@
+{extend name="public/courselayout"}
+{block name="title"}在教课程 - 个人主页{/block}
+{block name="navdetail"}
+    <div class="nav-filter clearfix">
+        <div class="btn-group">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">发话题 <span class="caret"></span></button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#course/118/thread/create?type=discussion">发话题</a></li>
+                <li><a href="#course/118/thread/create?type=question">提问题</a></li>
+            </ul>
+        </div>
+
+
+        <ul class="nav nav-pills nav-pills-sm">
+            <li class="active"><a data-target="#thread-pane" href="#my/course/118/threads?type=all&amp;sort=posted">全部</a></li>
+
+            <li><a data-target="#thread-pane" href="#my/course/118/threads?type=question&amp;sort=posted">问答</a></li>
+
+            <li><a data-target="#thread-pane" href="#my/course/118/threads?type=elite&amp;sort=posted">精华</a></li>
+
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#my/course/118/threads?type=all&amp;sort=posted#">
+                    <span>排序：</span>
+                    最后回复
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu hidden-xs">
+                    <li class="active"><a class="js-nav" href="#my/course/118/threads?type=all&amp;sort=posted">最后回复</a></li>
+                    <li class=""><a href="#my/course/118/threads?type=all&amp;sort=created">最新发帖</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="topic-list">
+        <div class="media topic-item">
+            <div class="media-left media-middle">
+                <a class="pull-left js-user-card" href="#user/1" data-card-url="/user/1/card/show" data-user-id="1">
+                    <img class="avatar-sm" src="__IMG__100205dc0389099998.jpg">
+                </a>
+            </div>
+            <div class="media-body">
+                <div class="title">
+                    <i class="es-icon es-icon-help color-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="问答"></i>
+                    <a href="#course/118/thread/1">1</a>
+                </div>
+                <div class="metas text-sm">
+                    <a href="#user/1" class="color-gray">admin</a>
+                    <span>发起了问答</span>• <span>8小时前</span>
+                </div>
+            </div>
+            <div class="media-data hidden-xs">
+                <span>0<br>回复</span>
+                <span>2<br>浏览</span>
+            </div>
+        </div>
+    </div>
+
+    <nav class="text-center">
+
+    </nav>
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+        $('.nav-tabs').children().eq(1).addClass('active');
+    })
+</script>
+{/block}
