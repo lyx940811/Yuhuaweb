@@ -5,7 +5,6 @@
 <div class="container-fluid">
     {php}
     $uid = session('admin_uid');
-    $access = check($uid,['/manage/categorycertificate/edit','/manage/categorycertificate/enable','/manage/categorycertificate/add']);
     {/php}
 
     <div class="well clearfix">
@@ -28,13 +27,9 @@
     </div>
     <div class="pull-right">
         {php}
-        if($access){
-        foreach($access as $k=>$v){
-        if($v=='/manage/categorycertificate/add'){
-        echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">新增证书</a>';
-        }
-        }
-        }
+            if(check($uid,'/manage/categorycertificate/add')){
+                echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">新增证书</a>';
+            }
         {/php}
 
     </div>
@@ -72,13 +67,11 @@
             <td>
                 {php}
 
-                foreach($access as $k=>$v){
 
-                    if($v=='/manage/categorycertificate/edit'){
+                    if(check($uid,'/manage/categorycertificate/edit')){
                         echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
                         echo '<strong>/</strong>';
                     }
-                }
                 {/php}
 
             </td>
@@ -242,18 +235,6 @@
             }
         });
     }
-
-    function enable(id) {
-        $.get("{:url('enable')}?rid="+id,function (data) {
-            if(data.code=='000'){
-                alert(data.info)
-                $('#myModal2').modal('hide')
-            }else{
-
-            }
-        });
-    }
-
 
 </script>
 </body>

@@ -26,7 +26,8 @@ class Base extends Controller{
         $role = check($this->uid);
 
         if(!$role){
-            $this->error('您没权限查看',url('Manage/login/index'));
+            $this->error('您没权限操作!',url('Manage/login/index'),['code'=>200]);
+//            return ['error'=>'您没权限查看','url'=>url('Manage/login/index')];
         }
 
 

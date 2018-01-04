@@ -207,7 +207,8 @@ class Login extends Controller{
     public function logout(){
         session('admin_uid',NULL);
         session('admin_user',NULL);
-        $this->success('退出成功',url('Manage/login/index'));
+//        $this->success('退出成功',url('Manage/login/index'));
+        return ['info'=>'退出成功','code'=>'000'];
     }
 
 }

@@ -5,7 +5,6 @@
 <div class="container-fluid">
     {php}
     $uid = session('admin_uid');
-    $access = check($uid,['/manage/certificate/edit','/manage/certificate/enable','/manage/certificate/add']);
     {/php}
 
     <div class="well clearfix">
@@ -25,12 +24,8 @@
     </div>
     <div class="pull-right">
         {php}
-        if($access){
-        foreach($access as $k=>$v){
-        if($v=='/manage/certificate/add'){
+        if(check($uid,'/manage/certificate/add')){
         echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加证书</a>';
-        }
-        }
         }
         {/php}
 
@@ -72,14 +67,10 @@
             <td>{$vo.createtime}</td>
             <td>
                 {php}
-
-                foreach($access as $k=>$v){
-
-                    if($v=='/manage/certificate/edit'){
+                    if(check($uid,'/manage/certificate/edit')){
                         echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
                         echo '<strong>/</strong>';
                     }
-                }
                 {/php}
 
                 <a href="#" onclick="show('{$vo.pic?base64_encode($vo.pic):\'\'}');"   data-toggle="modal" data-target="#myModal2">查看证书</a>
@@ -206,7 +197,7 @@
 
                 if(data.code=='000'){
                     $('#pic').val(data.path)
-                    $('#showinfoPic').html('<img class="img-rounded" src="\\'+data.path+'" width="100%"/>');
+                    $('#showinfoPic').html('<img class="img-rounded" src="'+data.path+'" width="100%"/>');
                     alert('上传成功');
                 }
 
@@ -251,7 +242,7 @@
                         }
                     })
                     if(data.info.pic){
-                        $('#showinfoPic').html('<img class="img-rounded" src="\\'+data.info.pic+'" width="100%"/>');
+                        $('#showinfoPic').html('<img class="img-rounded" src="'+data.info.pic+'" width="100%"/>');
                     }
 
                 });
@@ -294,14 +285,26 @@
 
 
     function show(pic) {
-        var b = new Base64();
-        var str = b.decode(pic);
+        // var b = new Base64();
+        var str = '{php}base64_decode("pic");{/php}'//b.decode(pic);
 
-        if(pic){
-            $('#showpic').html('<img class="img-rounded" src="\\'+str+'" width="100%"/>')
+
+        if(pic){//pic是没base64解码过的，str是解码过的
+            if(str.indexOf("\\")>0){
+                $('#showpic').html('<img class="img-rounded" src="\\'+str+'" width="100%"/>')
+            }else{
+                $('#showpic').html('<img class="img-rounded" src="'+str+'" width="100%"/>')
+            }
+
         }else{
             $('#showpic').html('暂无图片')
         }
+    }
+
+    function IndexDemo(str2){
+        var str1 = "\BABEBIBOBUBABEBIBOBU"
+        var s = str1.indexOf(str2);
+        return(s);
     }
 
 
