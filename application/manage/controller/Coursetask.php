@@ -34,18 +34,29 @@ class Coursetask extends Base{
     public function add(){
         $info = input('post.');
 
+/*
+ * [title] => sef
+    [startTime] => 2018-01-11
+    [endTime] => 2018-01-18
+    [isFree] => 0
+    [isOptional] => 1
+    [mode] => 1
+    [maxOnlineNum] => 8
+    [maxPoint] => 90
+    [rid] =>
+    [courseId] => 5
+ */
 
-        print_r($info);exit;
         $msg  =   [
-            'name.require' => '专业名称不能为空',
-            'name.length' => '专业名称长度太短',
-            'code.require' => '代码不能为空',
-            'point.number' => '学分必须为数字',
+            'title.require' => '任务名称不能为空',
+            'title.length' => '任务名称长度太短',
+            'startTime.require' => '开始时间不能为空',
+            'endTime.require' => '结束时间必须为数字',
         ];
         $validate = new Validate([
-            'name'  => 'require|length:2,20',
-            'code'   => 'require',
-            'point'  => 'number'
+            'title'  => 'require|length:2,20',
+            'startTime'   => 'require',
+            'endTime'  => 'require'
         ],$msg);
 
         $validate->check($info);
@@ -57,13 +68,8 @@ class Coursetask extends Base{
         }
 
 
-        $role_table = Db::name('category');
+        $role_table = Db::name('course_task');
 
-        $is_have = $role_table->field('id')->where(['code'=>['eq',$info['code']]])->find();
-
-        if($is_have){//如果这个code有
-            return ['error'=>'已经有此代码','code'=>'300'];
-        }
 
         $data = [
             'name' => $info['name'],
@@ -159,5 +165,10 @@ class Coursetask extends Base{
         }
     }
 
+    public function upload(){
+
+
+
+    }
 
 }
