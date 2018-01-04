@@ -216,8 +216,13 @@
             $('#mediaHtml').html('<input type="file" name="mediaSource"/>')
 
             $.post('{:url("upload")}',function (data) {
-                if(data.data.code==200){
-                    alert(data.msg)
+                console.log(data)
+                if(typeof(data.data)!='undefined'){
+                    //有没有权限操作
+                    if(data.data.code==200){
+                        alert(data.msg)
+                    }
+
                 }else{
 
                 }
