@@ -1,10 +1,13 @@
 {extend name="public/spacelayout"}
-{block name="title"}{/block}
-
+{block name="link"}
+<!--<link href="__CSS__bootstrap.css" type="text/css" rel="stylesheet">-->
+<!--<link href="__CSS__gradeSave1.css" type="text/css" rel="stylesheet">-->
+<!--<link href="__CSS__another.css" type="text/css" rel="stylesheet">-->
+{/block}
 {block name="container"}
-{include file="../application/index/view/student/spacetop.html" /}
+{include file="../application/index/view/usercenter/public/spacetop.html" /}
 <div id="content-container" class="container">
-    {include file="../application/index/view/student/spacenav.html" /}
+    {include file="../application/index/view/usercenter/public/spacenav.html" /}
     <ul class="nav nav-pills mbl">
         <li class="active"><a href="#">关注</a></li>
         <li><a href="#">粉丝</a></li>
@@ -78,4 +81,7 @@
     </div>
 </div>
 {/block}
+
+
+
 

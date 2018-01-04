@@ -129,4 +129,72 @@ class Index extends Home
         return $this->fetch();
     }
 
+
+
+    public function space(){
+        return $this->fetch();
+    }
+    /**
+     * 我的证书
+     * @return mixed
+     */
+    public function certificate(){
+        return $this->fetch();
+    }
+    /**
+     * @return mixed
+     */
+    public function conversion(){
+        return $this->fetch();
+    }
+    /**关注/粉丝
+     * @return mixed
+     */
+    public function fans(){
+        return $this->fetch();
+    }
+    /**
+     * 收藏课程
+     * @return mixed
+     */
+    public function collect(){
+        return $this->fetch();
+    }
+    /**
+     * 我的小组
+     * @return mixed
+     */
+    public function group(){
+        return $this->fetch();
+    }
+    /**
+     * 我的积分
+     * @return mixed
+     */
+    public function integral(){
+        return $this->fetch();
+    }
+
+    /**
+     * 课程表
+     * @return mixed
+     */
+    public function timetable(){
+        return $this->fetch();
+    }
+    /**
+     * 在学班级
+     * @return mixed
+     */
+    public function learning(){
+        return $this->fetch();
+    }
+    /**
+     * 在学课程
+     * @return mixed
+     */
+    public function curriculum(){
+        return $this->fetch();
+    }
+
 }

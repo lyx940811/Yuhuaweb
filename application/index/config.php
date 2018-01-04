@@ -12,7 +12,9 @@ return[
         '__IMG__' => '/static/index/img/',
         '__JS__' => '/static/index/js/',
         '__JSS__' => '/static/index/jss/',
-        '__COURSE__' => '/static/index/course/',
+        '__TEACHERCSS__' => '/static/index/teacher/css/',
+        '__TEACHERJS__' => '/static/index/teacher/js/',
+        '__TEACHERUPLOAD__' => '/static/index/teacher/webup/',
     ],
 
 

@@ -1,0 +1,52 @@
+<!--[if lt IE 9]>
+<script src="/static-dist/libs/fix-ie.js?version=8.1.5"></script>
+<style>
+    .lt-ie9 {
+        overflow: hidden;
+    }
+    .ie-mask {
+        z-index: 999999;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        filter: alpha(opacity=50);
+        opacity: 0.5;
+        background: #000;
+    }
+    .ie-alert-wrap {
+        position: absolute;
+        z-index: 1000000;
+        margin: -200px auto 0;
+        top: 50%;
+        left: 0;
+        right: 0;
+        text-align: center;
+    }
+    .ie-alert {
+        width: 514px;
+        height: 397px;
+        margin: 0 auto;
+    }
+    .ie-alert__chrome,
+    .ie-alert__firefox {
+        position: absolute;
+        z-index: 1000001;
+        display: block;
+        bottom: 48px;
+        width: 60px;
+        height: 80px;
+    }
+    .ie-alert__chrome {
+        left: 50%;
+        margin-left: -80px;
+    }
+    .ie-alert__firefox {
+        right: 50%;
+        margin-right: -80px;
+    }
+</style>
+
+
+<![endif]-->

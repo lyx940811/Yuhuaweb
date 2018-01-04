@@ -264,13 +264,15 @@ class Student extends User
      */
     public function getcoursenote(){
         $map['cn.userid'] = $this->user->id;
-        $map['cn.courseId'] = 12;//$this->data['courseId'];
+        $map['cn.courseId'] = $this->data['courseId'];
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $note = Db::name('course_note')
             ->alias('cn')
             ->join('course_lesson cl','cn.lessonid=cl.id')
             ->where($map)
             ->order('lessonid')
             ->field('cn.content,cn.id,cn.lessonid,cn.courseId,cn.createdTime,cl.title')
+            ->page($page,10)
             ->select();
         return json_data(0,$this->codeMessage[0],$note);
     }

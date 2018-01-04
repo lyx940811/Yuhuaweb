@@ -27,29 +27,7 @@ class Student extends Home
         return $this->fetch();
     }
 
-    public function certificate(){
-        return $this->fetch();
-    }
-    public function collect(){
-        return $this->fetch();
-    }
-    public function conversion(){
-        return $this->fetch();
-    }
-    public function fans(){
-        return $this->fetch();
-    }
 
-    public function group(){
-        return $this->fetch();
-    }
-
-    public function integral(){
-        return $this->fetch();
-    }
-    public function timetable(){
-        return $this->fetch();
-    }
 
 
 

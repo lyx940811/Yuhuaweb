@@ -39,9 +39,7 @@ class User extends Home
         return $this->fetch();
     }
 
-    public function space(){
-        return $this->fetch();
-    }
+
 
     public function userlayout(){
         return $this->fetch();
@@ -52,6 +50,7 @@ class User extends Home
         $file = $_FILES;
         var_dump($data,$file);
     }
+
 
     /**
      * 个人设置页面的ajax

@@ -1,0 +1,22 @@
+{extend name="public/spacelayout"}
+{block name="link"}
+<!--<link href="__CSS__bootstrap.css" type="text/css" rel="stylesheet">-->
+<link href="__CSS__gradeSave1.css" type="text/css" rel="stylesheet">
+<link href="__CSS__another.css" type="text/css" rel="stylesheet">
+{/block}
+{block name="container"}
+{include file="../application/index/view/usercenter/public/spacetop.html" /}
+<div id="content-container" class="container">
+    {include file="../application/index/view/usercenter/public/spacenav.html" /}
+        123123
+</div>
+
+
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+        $('.nav-tabs').children("li").eq(0).addClass(' active');
+    })
+</script>
+{/block}

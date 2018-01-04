@@ -9,25 +9,18 @@
 // | 开源协议 ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
 
-namespace app\index\model;
+namespace app\index\validate;
 
-use think\Model as ThinkModel;
+use think\Validate;
 
 /**
- * 用户模型
- * @package app\cms\model
+ * 题目验证器
  */
-class Course extends ThinkModel
+class CourseNote extends Validate
 {
-    // 自动写入时间戳
-//    protected $autoWriteTimestamp = true;
-    public function category()
-    {
-        return $this->hasOne('category','code','categoryId');
-    }
+    // 定义验证规则
+    protected $rule = [
+        'content|内容'           =>  'length:1,3000',
+    ];
 
-    public function teacher()
-    {
-        return $this->hasOne('User','id','userid');
-    }
 }

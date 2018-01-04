@@ -26,117 +26,7 @@
 {/block}
 <div class="es-wrap">
     {block name="header"}
-    <header class="es-header navbar">
-        <div class="navbar-header">
-            <div class="visible-xs  navbar-mobile">
-                <a href="javascript:;" class="navbar-more js-navbar-more">
-                    <i class="es-icon es-icon-menu"></i>
-                </a>
-                <div class="html-mask"></div>
-                <div class="nav-mobile">
-                    <form class="navbar-form" action="/search" method="get">
-                        <div class="form-group">
-                            <input class="form-control" placeholder="搜索" name="q">
-                            <button class="button es-icon es-icon-search"></button>
-                        </div>
-                    </form>
-
-                    <ul class="nav navbar-nav">
-
-                        <li class="">
-                            <a href="/course/explore">全部课程 </a>
-                        </li>
-                        <li class="">
-                            <a href="/classroom/explore">班级 </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="M_header-back js-back">
-                <a><i class="es-icon es-icon-chevronleft"></i></a>
-            </div>
-            <a href="/" class="navbar-brand">
-                豫化在线课堂
-            </a>
-        </div>
-        <nav class="collapse navbar-collapse">
-            <ul class="nav navbar-nav clearfix hidden-xs " id="nav">
-
-                <li class="">
-                    <a href="/course/explore">全部课程 </a>
-                </li>
-                <li class="">
-                    <a href="/classroom/explore">班级 </a>
-                </li>
-            </ul>
-            <div class="navbar-user " id="yh_register">
-                {present name="user"}
-                <ul class="nav user-nav">
-                    <li class="user-avatar-li nav-hover">
-                        <a href="javascript:;" class="dropdown-toggle">
-                            <img class="avatar-xs" src="http://localhost/{$user.title}">
-                        </a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li role="presentation" class="dropdown-header">{$user.username}</li>
-                            <li><a href="{:url('index/user/space')}"><i class="es-icon es-icon-person"></i>个人主页</a></li>
-                            <li><a href="{:url('index/user/setting')}"><i class="es-icon es-icon-setting"></i>个人设置</a></li>
-                            <li class="hidden-lg user-nav-li-my"><a href="{:url('index/student/mystudy')}"><i class="es-icon es-icon-eventnote"></i>我的学习</a></li>
-                            <li class="hidden-lg"><a href="#"><span class="pull-right num"></span><i class="es-icon es-icon-notificationson"></i>通知</a></li>
-                            <li class="hidden-lg"><a href="#"><span class="pull-right num"></span><i class="es-icon es-icon-mail"></i>私信</a></li>
-                            <li class="mobile-switch js-switch-mobile visible-xs"><a href="javascript:;"><i class="es-icon es-icon-qiehuan"></i>切换触屏版</a></li>
-                            <li class="user-nav-li-logout"><a href="{:url('index/index/logout')}"><i class="es-icon es-icon-power"></i>退出登录</a></li>
-                        </ul>
-                    </li>
-                    <li class="visible-lg"><a href="{:url('index/student/mystudy')}">我的学习</a></li>
-                    <li class="visible-lg nav-hover">
-                        <a><i class="es-icon es-icon-mail"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li>
-                                <a href="#">
-                                    <span class="pull-right num"></span>
-                                    <i class="es-icon es-icon-notificationson"></i>通知
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <span class="pull-right num"></span>
-                                    <i class="es-icon es-icon-mail"></i>私信
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                {else /}
-                <ul class="nav user-nav">
-                    <li class="user-avatar-li nav-hover visible-xs">
-                        <a href="javascript:;" class="dropdown-toggle">
-                            <img class="avatar-xs" src="http://localhost/static\index\images\avatar.png">
-                        </a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li class="user-nav-li-login"><a href="{:url('index/index/login')}">
-                                <i class="es-icon es-icon-denglu"></i>
-                                登录</a></li>
-                            <li class="user-nav-li-register"><a href="{:url('index/index/register')}">
-                                <i class="es-icon es-icon-zhuce"></i>
-                                注册</a></li>
-                            <li class="mobile-switch js-switch-mobile"><a href="javascript:;">
-                                <i class="es-icon es-icon-qiehuan"></i>
-                                切换触屏版</a></li>
-                        </ul>
-                    </li>
-                    <li class="hidden-xs"><a href="{:url('index/index/login')}" class="nav-login">登录</a></li>
-                    <li class="hidden-xs"><a href="{:url('index/index/register')}" class="nav-regist">注册</a></li>
-                </ul>
-                {/present}
-                <!--<form class="navbar-form navbar-right hidden-xs hidden-sm" action="" method="get">-->
-                    <!--<div class="form-group">-->
-                        <!--<input class="form-control js-search" name="q" placeholder="搜索">-->
-                        <!--<button class="button es-icon es-icon-search"></button>-->
-                    <!--</div>-->
-                <!--</form>-->
-            </div>
-        </nav>
-    </header>
+    {include file="Public:header" /}
     {/block}
 
     {block name="container"}
@@ -145,18 +35,7 @@
 
 
     {block name="footer"}
-    <footer class="es-footer">
-        <div class="copyright">
-            <div class="container">
-                Powered by <a href="#" target="_blank">yuhuazaixian8.0.16</a>
-
-
-
-                <div class="mts">
-                </div>
-            </div>
-        </div>
-    </footer>
+    {include file="Public:footer" /}
     {/block}
 </div>
 <div id="login-modal" class="modal" data-url="/login/ajax"></div>
