@@ -85,17 +85,6 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="courseId" class="col-sm-2 control-label">课程名称</label>
-                            <div class="col-sm-10">
-                                <select name="courseId" id="courseId" class="form-control">
-                                    <option value="">--请选择--</option>
-                                    {volist name="course" id="c"}
-                                    <option value="{$c.id}">{$c.title}</option>
-                                    {/volist}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label for="startTime" class="col-sm-2 control-label">开始时间</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control form_datetime" id="startTime" name="startTime"
@@ -145,12 +134,12 @@
                             <label class="col-sm-2 control-label">媒体文件来源</label>
                             <div class="col-sm-10">
                                 <label class="radio-inline">
-                                    <input type="radio" class="mediatype" value="1"> 本地上传
+                                    <input type="radio" class="mediatype" name="mediaSource" value="1"> 本地上传
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" class="mediatype" value="2"> 优酷等媒体链接
+                                    <input type="radio" class="mediatype" name="mediaSource" value="2"> 优酷等媒体链接
                                 </label>
-
+                                <div id="mediaHtml"></div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -169,7 +158,7 @@
                         </div>
 
                         <input type="hidden" name="rid" value="" id="selfcode"/>
-                        <input type="hidden" name="cid" value="" id="course"/>
+                        <input type="hidden" name="courseId" value="" id="courseId"/>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add');">添加</button>
@@ -215,6 +204,31 @@
         language:"zh-CN",
         format:"yyyy-mm-dd"
     });
+
+    /*
+    * 媒体资源上传
+    * */
+    $('.mediatype').click(function () {
+        var type = $(this).val()
+        if(type==1){
+            //上传文件
+
+            $('#mediaHtml').html('<input type="file" name="mediaSource"/>')
+
+            $.post('{:url("upload")}',function (data) {
+                if(data.data.code==200){
+                    alert(data.msg)
+                }else{
+
+                }
+            })
+
+        }else{
+            //链接
+        }
+    })
+
+
     /*添加、修改*/
     function add_edit(type,id,parentcode) {
 
@@ -226,7 +240,7 @@
                 $('#add_role').show()
                 $('#edit_role').hide()
 
-                $('#course').val('{$Think.get.cid}')
+                $('#courseId').val('{$Think.get.cid}')
                 break;
             case 'edit':
                 $(" input[ type='text' ] ").val('')
