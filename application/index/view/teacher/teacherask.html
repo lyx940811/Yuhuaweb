@@ -14,12 +14,14 @@
                     学员问答
                 </div>
                 <div class="panel-body">
+                    {notempty name="asklist"}
                     <ul class="media-list">
+                        {volist name="asklist" id="ask"}
                         <li class="media">
                             <div class="media-body">
                                 <div class="mbm">
                                     <span class="label label-info" title="问答帖">问</span>
-                                    <a href="teacher_course_talk.html"><strong>11111</strong></a>
+                                    <a href="teacher_course_talk.html"><strong>{$ask.title}</strong></a>
                                     <span class="label" title="课时702">L702</span>
                                 </div>
                                 <div class="color-gray text-normal">
@@ -31,8 +33,11 @@
                                 </div>
                             </div>
                         </li>
+                        {/volist}
                     </ul>
-                    <!--  		<div class="empty">您的课程中还没有学员提问过...</div> -->
+                    {else /}
+                    <div class="empty">您的课程中还没有学员提问过...</div>
+                    {/notempty}
                 </div>
             </div>
         </div>

@@ -272,17 +272,21 @@ class User extends Controller
      * app内更新个人资料
      */
     public function saveprofile(){
-        $user_data = [
-            'mobile'    =>  $this->data['mobile'],
-            'email'     =>  $this->data['email']
-        ];
+//        $user_data = [
+//            'mobile'    =>  $this->data['mobile'],
+//            'email'     =>  $this->data['email']
+//        ];
+        $user_key = ['mobile'=>'','email'=>''];
+        $user_data = array_intersect_key($this->data,$user_key);
 
-        $userprofile_data = [
-            'realname'  =>  $this->data['mobile'],
-            'education' =>  $this->data['education'],
-            'school'    =>  $this->data['school'],
-            'address'   =>  $this->data['address'],
-        ];
+        $userprofile_key = ['realname'=>'','education'=>'','school'=>'','address'=>''];
+        $userprofile_data = array_intersect_key($this->data,$userprofile_key);
+//        $userprofile_data = [
+//            'realname'  =>  $this->data['mobile'],
+//            'education' =>  $this->data['education'],
+//            'school'    =>  $this->data['school'],
+//            'address'   =>  $this->data['address'],
+//        ];
 
         Db::startTrans();
         try{

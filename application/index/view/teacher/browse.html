@@ -80,9 +80,9 @@ p{word-wrap:break-word}
   <div class="form-group clearfix material-search-list">
     <div class="col-sm-4">
       <div class="input-group">
-        <input class="form-control" type="text" placeholder="输入标题关键字" name="keyword" value="">
+        <input class="form-control" type="text" placeholder="输入标题关键字" name="keyword" id="keyword" value="">
         <span class="input-group-btn">
-          <button class="btn btn-primary">搜索</button>
+          <div class="btn btn-primary">搜索</div>
         </span>
       </div>
     </div>
@@ -97,29 +97,29 @@ p{word-wrap:break-word}
   </div>
   <div class="material-search-list material-tabs">
   <span class="all">类型：</span>
-  <ul class="js-material-tabs right-content  clearfix">
-    <li class="active js-type-btn" data-value="">
+  <ul class="js-material-tabs right-content topfiltrate clearfix">
+    <li class="js-type-btn active" data-value="all" is_choose="1">
       <a href="javascript:;">全部</a>
     </li>
-    <li class="js-type-btn" data-value="video">
+    <li class="js-type-btn" data-value="video" is_choose="">
       <a href="javascript:;">视频</a>
     </li>
-    <li class="js-type-btn" data-value="flash">
+    <li class="js-type-btn" data-value="flash" is_choose="">
       <a href="javascript:;">flash</a>
     </li>
-    <li class="js-type-btn" data-value="audio">
+    <li class="js-type-btn" data-value="audio" is_choose="">
       <a href="javascript:;">音频</a>
     </li>
-    <li class="js-type-btn" data-value="image">
+    <li class="js-type-btn" data-value="image" is_choose="">
       <a href="javascript:;">图片</a>
     </li>
-    <li class="js-type-btn" data-value="document">
+    <li class="js-type-btn" data-value="document" is_choose="">
       <a href="javascript:;">文档</a>
     </li>
-    <li class="js-type-btn" data-value="ppt">
+    <li class="js-type-btn" data-value="ppt" is_choose="">
       <a href="javascript:;">PPT</a>
     </li>
-    <li class="js-type-btn" data-value="other">
+    <li class="js-type-btn" data-value="other" is_choose="">
       <a href="javascript:;">其它</a>
     </li>
     <input type="hidden" name="type" value=""></ul>
@@ -176,61 +176,60 @@ p{word-wrap:break-word}
           <input type="checkbox" data-role="batch-select"> 全选
         </label>  
       </span>
-    <div class="material-list-container" id="material-item-list" data-url="/material/lib/show/browse"><div class="row">
-    {volist name="file" id="file"}
-   <div class="col-lg-3 col-sm-4 col-xs-6 materials-list my-materials-list " data-file-id="1162">
-       <ul class="materials-ul clearfix">
-           <li class="img-li" style="position:relative;">
-               <input class="batch-item" value="1162" type="checkbox" data-role="batch-item" data-link-count="0" data-file-name="0ad5c744c1cb0489edb698fcec6089d4_1.jpg" style="display: none;">
-               <img src="__IMG__cloud_other.png">
-               <div class="mask">
-                   <div class="icon-operation">
-                       <i style="display: none" class="glyphicon glyphicon-star js-collect-btn left " data-toggle="tooltip" data-placement="bottom" title="" data-url="/material/lib/my/collection/save?fileId=1162" data-original-title="收藏"></i>
-                       <i style="display: none" href="javascript:;" class="glyphicon glyphicon-option-vertical" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
-                       <ul style="display: none" class="dropdown-menu">
-                           <li>
-                               <a href="javascript:;" class="js-detail-btn" data-toggle="tooltip" data-placement="bottom" data-url="/material/lib/1162/detail" data-original-title="" title="">
-                                   <i class="glyphicon glyphicon-pencil prm"></i>编辑
-                               </a>
-                           </li>
-                           <li>
-                               <a href="javascript:;" data-url="/materiallib/1162/download" class="js-download-btn" data-toggle="tooltip" data-placement="bottom" data-original-title="" title="">
-                                   <i class="glyphicon glyphicon-save prm"></i>下载
-                               </a>
-                           </li>
-                           <li>
-                               <a href="javascript:;" class="js-share-btn" data-toggle="tooltip" data-placement="bottom" data-file-id="1162" data-url="/materials/batch/share" data-original-title="" title="">
-                                   <i class="es-icon es-icon-share prm"></i>共享
-                               </a>
-                           </li>
-                           <li>
-                               <a href="javascript:;" class="js-delete-btn" data-toggle="tooltip" data-placement="bottom" data-url="/materials/delete/show" data-id="1162" data-original-title="" title="">
-                                   <i class="glyphicon glyphicon-trash prm"></i>删除
-                               </a>
-                           </li>
-                       </ul>
-                   </div>
-                   <div style="display: none" class="btn-operation">选择一种状态
-                       <a class="btn btn-info" href="http://www.hnhgjx.cn:1700/material/lib/browse#modal" data-toggle="modal" data-url="/material/lib/file/1162/preview">资料预览
-                       </a>
-                   </div>
-                   <div class="time">{$file.type}</div>
-               </div>
-           </li>
-           <li class="caption">
-               <p class="title text-overflow" data-toggle="tooltip" data-placement="top" title="" data-original-title="{$file.filename}">{$file.filename}</p>
-               <!--<p class="status-parent">-->
-                   <!--<span class="label label-default">未使用</span>-->
-               <!--</p>-->
-               <p class="color-gray text-overflow text-sm mbs" title="2017/12/28 10:58">时间：{$file.createTime}</p>
-           </li>
-       </ul>
-   </div>
-        {/volist}
-        {$page}
-
- 
-</div>
+    <div class="material-list-container" id="material-item-list" data-url="/material/lib/show/browse">
+        <div class="row filelist">
+            {volist name="file" id="file"}
+            <div class="col-lg-3 col-sm-4 col-xs-6 materials-list my-materials-list " data-file-id="1162">
+                <ul class="materials-ul clearfix">
+                    <li class="img-li" style="position:relative;">
+                        <input class="batch-item" value="1162" type="checkbox" data-role="batch-item" data-link-count="0" data-file-name="0ad5c744c1cb0489edb698fcec6089d4_1.jpg" style="display: none;">
+                        <img src="__IMG__cloud_other.png">
+                        <div class="mask">
+                            <div class="icon-operation">
+                                <i style="display: none" class="glyphicon glyphicon-star js-collect-btn left " data-toggle="tooltip" data-placement="bottom" title="" data-url="/material/lib/my/collection/save?fileId=1162" data-original-title="收藏"></i>
+                                <i style="display: none" href="javascript:;" class="glyphicon glyphicon-option-vertical" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                <ul style="display: none" class="dropdown-menu">
+                                    <li>
+                                        <a href="javascript:;" class="js-detail-btn" data-toggle="tooltip" data-placement="bottom" data-url="/material/lib/1162/detail" data-original-title="" title="">
+                                            <i class="glyphicon glyphicon-pencil prm"></i>编辑
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;" data-url="/materiallib/1162/download" class="js-download-btn" data-toggle="tooltip" data-placement="bottom" data-original-title="" title="">
+                                            <i class="glyphicon glyphicon-save prm"></i>下载
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;" class="js-share-btn" data-toggle="tooltip" data-placement="bottom" data-file-id="1162" data-url="/materials/batch/share" data-original-title="" title="">
+                                            <i class="es-icon es-icon-share prm"></i>共享
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;" class="js-delete-btn" data-toggle="tooltip" data-placement="bottom" data-url="/materials/delete/show" data-id="1162" data-original-title="" title="">
+                                            <i class="glyphicon glyphicon-trash prm"></i>删除
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div style="display: none" class="btn-operation">选择一种状态
+                                <a class="btn btn-info" href="http://www.hnhgjx.cn:1700/material/lib/browse#modal" data-toggle="modal" data-url="/material/lib/file/1162/preview">资料预览
+                                </a>
+                            </div>
+                            <div class="time">{$file.type}</div>
+                        </div>
+                    </li>
+                    <li class="caption">
+                        <p class="title text-overflow" data-toggle="tooltip" data-placement="top" title="" data-original-title="{$file.filename}">{$file.filename}</p>
+                        <!--<p class="status-parent">-->
+                        <!--<span class="label label-default">未使用</span>-->
+                        <!--</p>-->
+                        <p class="color-gray text-overflow text-sm mbs" title="2017/12/28 10:58">时间：{$file.createTime}</p>
+                    </li>
+                </ul>
+            </div>
+            {/volist}
+            {$page}
+        </div>
 </div>
   </div>
 </form>
@@ -551,6 +550,51 @@ p{word-wrap:break-word}
         $('.item').remove();
     });
 
+</script>
+<script>
+    $(function(){
+        $('.pagination').find('a').removeAttr('href');
+
+        $('.btn-primary').click(function(){
+            var keyword = $('#keyword').val();
+            $('.js-type-btn').eq(0).addClass('active').siblings().removeClass('active');
+            $('.js-type-btn').eq(0).attr('is_choose',1).siblings().attr('is_choose',"");
+            var type = $("[is_choose='1']").attr('data-value');
+            var url = "http://localhost/index/teacher/browse?&keyword="+keyword+"&type="+type;
+            $.get(url,function(data){
+                console.log(data);
+                $('.filelist').html("");
+                $('.filelist').append(data);
+            });
+        });
+
+        $('.js-type-btn').click(function(){
+            $(this).addClass('active').siblings().removeClass('active');
+            $(this).attr('is_choose',1).siblings().attr('is_choose',"");
+            var keyword = $('#keyword').val();
+            var type = $("[is_choose='1']").attr('data-value');
+            var url = "http://localhost/index/teacher/browse?&keyword="+keyword+"&type="+type;
+
+            $.get(url,function(data){
+                console.log(data);
+                $('.filelist').html("");
+                $('.filelist').append(data);
+            });
+        });
+
+        $('.pagination').children().on('click',function(){
+            $(this).addClass('active').siblings().removeClass('active');
+            var keyword = $('#keyword').val();
+            var type = $("[is_choose='1']").attr('data-value');
+            var page = $(this).children().text();
+            var url = "http://localhost/index/teacher/browse?page="+page+"&keyword="+keyword+"&type="+type;
+            console.log(url);
+            $.get(url,function(data){
+                $('.filelist').html("");
+                $('.filelist').append(data);
+            });
+        });
+    })
 </script>
 
 
