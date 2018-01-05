@@ -9,7 +9,7 @@ use think\Exception;
 use app\index\model\User as UserModel;
 use app\index\model\Course;
 use app\index\model\CourseNote;
-use app\index\model\CourseCollect;
+use app\index\model\CourseFavorite;
 use app\index\model\AskAnswer;
 
 /** 学生类
@@ -285,7 +285,7 @@ class Student extends User
      */
     public function is_collect(){
         $courseid = $this->data['courseid'];
-        if(!CourseCollect::get(['userid'=>$this->user->id,'courseid'=>$courseid])){
+        if(!CourseFavorite::get(['userid'=>$this->user->id,'courseid'=>$courseid])){
             return json_data(0,$this->codeMessage[0],['is_collect'=>0]);
         }
         return json_data(0,$this->codeMessage[0],['is_collect'=>1]);
@@ -302,11 +302,11 @@ class Student extends User
         if(!Course::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
-        if(CourseCollect::get($data)){
+        if(CourseFavorite::get($data)){
             return json_data(240,$this->codeMessage[240],'');
         }
         $data['createTime'] = date('Y-m-d H:i:s',time());
-        CourseCollect::create($data);
+        CourseFavorite::create($data);
         return json_data(0,$this->codeMessage[0],'');
     }
     /**
@@ -321,10 +321,10 @@ class Student extends User
         if(!Course::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
-        if(!CourseCollect::get($data)){
+        if(!CourseFavorite::get($data)){
             return json_data(250,$this->codeMessage[250],'');
         }
-        CourseCollect::destroy($data);
+        CourseFavorite::destroy($data);
         return json_data(0,$this->codeMessage[0],'');
     }
 

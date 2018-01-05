@@ -112,11 +112,27 @@
                       </div>-->
                   </div>
               </div>
-              <div class="section-more-btn">
+              <div class="section-more-btn" test="123" fa="testfa">
                   <a href="{:url('index/index/allcourse')}" class="btn btn-default btn-lg">
                       更多课程 <i class="mrs-o es-icon es-icon-chevronright"></i>
                   </a>
               </div>
           </div>
       </section>
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+        alert($("[test='123']").attr('fa'));
+
+//        $.post(
+//            "{:url('index/index/testajax')}",
+//            {'data':1},
+//            function(data){
+//                alert(data);
+//            },
+//            "json"
+//        );
+    })
+</script>
 {/block}

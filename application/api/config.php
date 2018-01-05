@@ -18,46 +18,46 @@ return[
 
     'apicode_message'          =>[
         //关于User相关的
-        0       =>  'success',
-        100     =>  'user insert error',
-        110     =>  'not find the user',
-        120     =>  'user has already exist',
+        0       =>  '成功',
+        100     =>  '用户注册失败',
+        110     =>  '没有找到该用户',
+        120     =>  '用户已经注册过',
         130     =>  '验证模型错误',
-        140     =>  'wrong password',
-        150     =>  'wrong user type',
-        160     =>  'user has been locked',
-        170     =>  'user have not been checked',
-        180     =>  'wrong type',
-        181     =>  'delete like error',//取消点赞失败
+        140     =>  '密码错误',
+        150     =>  '用户类型错误',
+        160     =>  '用户已经被',
+        170     =>  '用户还未通过审核',
+        180     =>  '类型错误',
+        181     =>  '取消点赞失败',//取消点赞失败
         //关于课程Course相关的
-        200     =>  'not find the course',
-        210     =>  'wrong request course type',
-        220     =>  'not find any course files',
-        230     =>  'not find the note',
+        200     =>  '没有找到该课程',
+        210     =>  '请求的错误课程类型',
+        220     =>  '没有找到课程文件',
+        230     =>  '没有找到笔记',
         240     =>  '用户已经收藏了该课程',
         250     =>  '用户还没收藏该课程',
         //题目相关的
-        300     =>  'not find the question',
-        310     =>  'page cannot be null',
+        300     =>  '没有找到该问题',
+        310     =>  '页码不能为空',
         //试卷相关的
-        400     =>  'not find the testpaper',
+        400     =>  '没有找到试卷',
         //话题相关的
-        500     =>  'not find the ask',
+        500     =>  '没有找到话题',
         //评论相关的
-        600     =>  'not find the comment',
+        600     =>  '没有找到评论',
 
 
         //文件上传部分
-        700     =>  'wrong file type',//文件格式不符合上传要求
-        710     =>  'file is over size',//文件超过大小限制
+        700     =>  '文件格式不符合上传要求',//文件格式不符合上传要求
+        710     =>  '文件超过大小限制',//文件超过大小限制
         //邮件发送部分
-        800     =>  'email send error,check your email address',
+        800     =>  '邮件发送错误',
 
         //token验证
-        900     =>  'token verified error',
-        910     =>  'user_token is empty or invalid',
-        920     =>  'code verify error',
+        900     =>  'token验证失败',
+        910     =>  'user_token无效',
+        920     =>  'user_token无效 验证失败',
         //关于请求的
-        1000    =>  'wrong request type'
+        1000    =>  '错误的请求类型'
     ],
 ];
