@@ -153,6 +153,7 @@
         $('.list-group-item').eq(0).addClass("active");
 
         $('#testsave').click(function(){
+
             var isQQPublic = 0;
             var isWeixinPublic = 0;
             var isWeiboPublic = 0;
@@ -173,8 +174,8 @@
                     'mobile':$('#profile_mobile').val(),
                     'company':$('#profile_company').val(),
                     'job':$('#profile_job').val(),
-                    'signature':$('#profile_signature').html(),
-                    'about':$('#editor-container').html(),
+                    'signature':$('#profile_signature').val(),
+                    'about':$('#editor-container').text(),
                     'site':$('#profile_site').val(),
                     'weibo':$('#weibo').val(),
                     'weixin':$('#profile_weixin').val(),

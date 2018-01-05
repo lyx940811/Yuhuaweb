@@ -21,5 +21,8 @@ class User extends ThinkModel
 {
     // 自动写入时间戳
 //    protected $autoWriteTimestamp = true;
-
+    public function profile()
+    {
+        return $this->hasOne('UserProfile','userid','id');
+    }
 }

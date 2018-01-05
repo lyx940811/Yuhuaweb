@@ -13,9 +13,9 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => '66.112.221.116',
+    'hostname'        => '60.205.171.89',
     // 数据库名
-    'database'        => 'edutrain',
+    'database'        => 'edutrain_test',
     // 用户名
     'username'        => 'ygsuser',
     // 密码

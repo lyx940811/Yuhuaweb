@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 
+use app\index\model\UserProfile;
 use think\Controller;
 use think\Config;
 use think\Loader;
@@ -13,6 +14,9 @@ class Usercenter extends Home
     public function __construct()
     {
         parent::__construct();
+        if(!$this->request->param('user')){
+            $this->error('参数错误！');
+        }
         $userid = $this->request->param('user');
         $this->theuser = \app\index\model\User::get($userid);
         $this->assign('theuser',$this->theuser);
@@ -69,6 +73,7 @@ class Usercenter extends Home
      * @return mixed
      */
     public function timetable(){
+
         return $this->fetch();
     }
     /**
@@ -83,6 +88,11 @@ class Usercenter extends Home
      * @return mixed
      */
     public function curriculum(){
+        $course = Course::where('userid',$this->theuser->id)->paginate(8);
+        $this->assign('course',$course);
+
+        $page = $course->render();
+        $this->assign('page', $page);
         return $this->fetch();
     }
 

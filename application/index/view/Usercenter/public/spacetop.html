@@ -2,14 +2,18 @@
     <div class="container clearfix" style="position: absolute; left: 0px; right: 0px; z-index: 100;">
         <div class="user-avatar">
             <div class="avatar-wrap">
-                <img class="avatar-lg" src="__IMG__100205dbce21298753.jpg">
+                <img class="avatar-lg" src="http://localhost/{$theuser->title}">
                 <span class="icon-user-status icon-md"><i class="es-icon es-icon-school"></i></span>
             </div>
             <div class="name">
-                admin
+                {$theuser->username}
             </div>
             <div class="position hidden-xs">
-                <span class="mrm">超级管理员</span>
+                {switch name="theuser.type"}
+                {case value="2"}<span class="mrm">教师</span>{/case}
+                {case value="3"}<span class="mrm">学员</span>{/case}
+                {/switch}
+
             </div>
             <div class="mates">
                 <span class="mrm">2</span>粉丝<span class="mlm mrm">｜</span><span class="mrm">3</span>关注
@@ -17,7 +21,7 @@
         </div>
         <div class="user-about hidden-sm hidden-xs">
             <div class="user-about-content">
-                1      </div>
+                {$theuser->profile->signature}      </div>
         </div>
     </div>
     <div class="mask" style="position: absolute; left: 0px; right: 0px; z-index: 100;"></div>

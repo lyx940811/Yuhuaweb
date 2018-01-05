@@ -1,28 +1,28 @@
 <ul class="nav nav-tabs clearfix">
-    <li><a href="{:url('index/usercenter/space',array('user',$theuser['id']))}">个人介绍</a></li>
-    <li><a href="{:url('index/usercenter/timetable',array('user',$theuser['id']))}">课程表</a></li>
+    <li><a href="{:url('index/usercenter/space',array('user'=>$theuser['id']))}">个人介绍</a></li>
+    <li><a href="{:url('index/usercenter/timetable',array('user'=>$theuser['id']))}">课程表</a></li>
     {switch name="theuser.type"}
     {case value="2"}
-    <li><a href="{:url('index/usercenter/curriculum',array('user',$theuser['id']))}">在教课程</a></li>
-    <li><a href="{:url('index/usercenter/learning',array('user',$theuser['id']))}">在教班级</a></li>
+    <li><a href="{:url('index/usercenter/curriculum',array('user'=>$theuser['id']))}">在教课程</a></li>
+    <li><a href="{:url('index/usercenter/learning',array('user'=>$theuser['id']))}">在教班级</a></li>
     {/case}
 
     {case value="3"}
-    <li><a href="{:url('index/usercenter/curriculum',array('user',$theuser['id']))}">在学课程</a></li>
-    <li><a href="{:url('index/usercenter/learning',array('user',$theuser['id']))}">在学班级</a></li>
+    <li><a href="{:url('index/usercenter/curriculum',array('user'=>$theuser['id']))}">在学课程</a></li>
+    <li><a href="{:url('index/usercenter/learning',array('user'=>$theuser['id']))}">在学班级</a></li>
     {/case}
     {/switch}
 
 
-    <li><a href="{:url('index/usercenter/collect',array('user',$theuser['id']))}">收藏课程</a></li>
-    <li><a href="{:url('index/usercenter/group',array('user',$theuser['id']))}">加入小组</a></li>
+    <li><a href="{:url('index/usercenter/collect',array('user'=>$theuser['id']))}">收藏课程</a></li>
+    <li><a href="{:url('index/usercenter/group',array('user'=>$theuser['id']))}">加入小组</a></li>
 
     {present name="user"}
     {if condition="$user['id'] eq $theuser['id']"}
-    <li><a href="{:url('index/usercenter/integral',array('user',$theuser['id']))}">我的积分</a></li>
-    <li><a href="{:url('index/usercenter/certificate',array('user',$theuser['id']))}">我的证书</a></li>
+    <li><a href="{:url('index/usercenter/integral',array('user'=>$theuser['id']))}">我的积分</a></li>
+    <li><a href="{:url('index/usercenter/certificate',array('user'=>$theuser['id']))}">我的证书</a></li>
     {/if}
     {/present}
 
-    <li><a href="{:url('index/usercenter/fans',array('user',$theuser['id']))}">关注&nbsp;/&nbsp;粉丝</a></li>
+    <li><a href="{:url('index/usercenter/fans',array('user'=>$theuser['id']))}">关注&nbsp;/&nbsp;粉丝</a></li>
 </ul>

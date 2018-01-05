@@ -24,6 +24,12 @@ class Index extends Home
 
         return $this->fetch();
     }
+    /**
+     * 全部课程
+     */
+    public function allcourse(){
+        return $this->fetch();
+    }
 
     /**
      * 登陆

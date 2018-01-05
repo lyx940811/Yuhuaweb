@@ -22,9 +22,9 @@ class UserProfile extends ThinkModel
     // 自动写入时间戳
 //    protected $autoWriteTimestamp = true;
 
-    public function user()
-    {
-        return $this->belongsTo('User','userid','id');
-    }
+//    public function user()
+//    {
+//        return $this->belongsTo('User','userid','id');
+//    }
 
 }
