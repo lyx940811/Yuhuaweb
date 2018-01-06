@@ -348,6 +348,69 @@ class User extends Controller
         }
     }
 
+    /**
+     * 得到【我的收藏】列表
+     * @return array
+     */
+    public function getcollect(){
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $field = 'cf.id,cf.courseid,cf.userid,c.title,c.smallPicture';
+        $course = Db::name('course_favorite')
+            ->alias('cf')
+            ->join('course c','cf.courseid=c.id')
+            ->field($field)
+            ->where('cf.userid',$this->user->id)
+            ->page($page,10)
+            ->select();
+        foreach ( $course as &$c ){
+            $c['smallPicture'] = $this->request->domain().DS.$c['smallPicture'];
+            $c['plan'] = '0%';
+            $c['lastwatch'] = '2017-12-28 13:27:34';
+        }
+        return json_data(0,$this->codeMessage[0],$course);
+    }
+    /**
+     * 得到【我的学习-学习中】列表
+     * @return array
+     */
+    public function mystudy(){
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $field = 'c.id,c.title,c.smallPicture';
+        $course = Db::name('course')
+            ->alias('c')
+            ->field($field)
+            ->where('id','in',[5,8])
+            ->page($page,10)
+            ->select();
+        foreach ( $course as &$c ){
+            $c['smallPicture'] = $this->request->domain().DS.$c['smallPicture'];
+            $c['plan'] = '10%';
+            $c['lastwatch'] = '2017-12-28 13:27:34';
+        }
+
+        return json_data(0,$this->codeMessage[0],$course);
+    }
+    /**
+     * 得到【我的学习-已学完】列表
+     * @return array
+     */
+    public function donestudy(){
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $field = 'c.id,c.title,c.smallPicture';
+        $course = Db::name('course')
+            ->alias('c')
+            ->field($field)
+            ->where('id','in',[11,12,13])
+            ->page($page,10)
+            ->select();
+        foreach ( $course as &$c ){
+            $c['smallPicture'] = $this->request->domain().DS.$c['smallPicture'];
+            $c['plan'] = '10%';
+            $c['lastwatch'] = '2017-12-28 13:27:34';
+        }
+        return json_data(0,$this->codeMessage[0],$course);
+    }
+
 
 
 
