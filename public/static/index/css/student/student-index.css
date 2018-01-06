@@ -1,0 +1,101 @@
+/* 
+* @Author: Marte
+* @Date:   2017-12-12 09:56:34
+ * @Last Modified by: Benfei Cao
+ * @Last Modified time: 2017-12-14 10:40:04
+*/
+ul.nav-tabs li.active{
+    border-bottom: 2px solid #43bc60;
+}
+ul.nav-tabs li:hover{
+    border-bottom: 2px solid #43bc60;
+}
+.navbar-user .user-nav> li:hover .dropdown-menu {  
+    display: block;  
+}
+#editor-container{
+    height: 300px;
+}
+/* css 重置 */
+*{margin:0; padding:0; list-style:none; }
+body{ background:#fff; }
+img{ border:0;  }
+a{ text-decoration:none; color:#333;  }
+a:hover{ color:#1974A1;  }
+.wrapper{
+    width: 920px;
+    height: 512px;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+}
+/* 本例子css */
+.txtScroll-left{ width:920px; height:74px; position:relative;
+    margin: 0 auto;  }
+.txtScroll-left .hd{
+    width: 470px;
+    overflow:hidden;
+    height:74px;
+    /* background:#f4f4f4;*/
+    padding:0 10px;
+    margin: 0 auto;
+}
+.txtScroll-left .hd .prev,
+.txtScroll-left .hd .next
+{ display:block;  width:18px; height:24px; float:right; margin-right:5px; margin-top:10px;
+    overflow:hidden; cursor:pointer;}
+.txtScroll-left .hd .prev {
+    background-image: url(../../img/leftArrow.png);
+    background-repeat:no-repeat;
+    -webkit-background-size:cover;
+    background-size:cover;
+    position: absolute;
+    left: 224px;
+    top: 18px;
+}
+.txtScroll-left .hd .next{
+    background-image: url(../../img/right.png);
+    background-repeat:no-repeat;
+    -webkit-background-size:cover;
+    background-size:cover;
+    position: absolute;
+    right: 232px;
+    top: 18px;
+}
+.txtScroll-left .hd .prevStop{ background-position:-60px 0; }
+.txtScroll-left .hd .nextStop{ background-position:-60px -50px; }
+.txtScroll-left .hd ul{
+    float:right;
+    overflow:hidden;
+    zoom:1;
+    /*   width:470px;
+        height:100%;*/
+    padding: 20px;
+    padding-left: 60px;
+    box-sizing: border-box;
+}
+.txtScroll-left .hd ul li{
+    float:left;
+    overflow:hidden;
+    cursor:pointer;
+    text-align: center;
+}
+.txtScroll-left .hd ul li.on{ background-position:0 0; }
+.txtScroll-left .bd{
+    width: 920px;
+    height: 438px;
+    overflow:hidden;
+}
+.txtScroll-left .bd ul{ width:100%;height:100%; overflow:hidden; zoom:1; }
+.txtScroll-left .bd ul li{ width:100%;height:100%;  float:left; text-align:left; _display:inline;}
+.txtScroll-left .bd ul li span{ color:#999;  }
+.txtScroll-left .text{
+    height: 100%;
+    line-height: 74px;
+    padding-left: 50px;
+}
+.txtScroll-left .text span{
+    padding-right: 36px;
+    font-size: 24px;
+    color:#ccc;
+    font-weight:700;
+}

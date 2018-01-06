@@ -51,7 +51,7 @@ class User extends Controller
             $this->data = $this->request->param();
         }
 
-        $user_token = $this->request->param('user_token');
+        $user_token = 'e5b08e6f14cc2cea6d986e584100b4f5';//$this->request->param('user_token');
         $this->verifyUserToken($user_token);
     }
 
@@ -245,7 +245,7 @@ class User extends Controller
     public function getmyinfo(){
         $data = [
             'username'  =>  $this->user->username,
-            'avatar'    =>  $this->request->domain().DS.$this->user->title,
+            'avatar'    =>  $this->request->domain()."/".$this->user->title,
             'mobile'    =>  $this->user->mobile,
             'classname' =>  '电气化1702班',
         ];
@@ -363,7 +363,7 @@ class User extends Controller
             ->page($page,10)
             ->select();
         foreach ( $course as &$c ){
-            $c['smallPicture'] = $this->request->domain().DS.$c['smallPicture'];
+            $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
             $c['plan'] = '0%';
             $c['lastwatch'] = '2017-12-28 13:27:34';
         }
@@ -382,13 +382,18 @@ class User extends Controller
             ->where('id','in',[5,8])
             ->page($page,10)
             ->select();
-        foreach ( $course as &$c ){
-            $c['smallPicture'] = $this->request->domain().DS.$c['smallPicture'];
-            $c['plan'] = '10%';
-            $c['lastwatch'] = '2017-12-28 13:27:34';
+        if($course){
+            foreach ( $course as &$c ){
+                $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
+                $c['plan'] = '10%';
+                $c['lastwatch'] = '2017-12-28 13:27:34';
+            }
+            return json_data(0,$this->codeMessage[0],$course);
+        }
+        else{
+            return json_data(0,$this->codeMessage[0],array());
         }
 
-        return json_data(0,$this->codeMessage[0],$course);
     }
     /**
      * 得到【我的学习-已学完】列表
@@ -403,12 +408,17 @@ class User extends Controller
             ->where('id','in',[11,12,13])
             ->page($page,10)
             ->select();
-        foreach ( $course as &$c ){
-            $c['smallPicture'] = $this->request->domain().DS.$c['smallPicture'];
-            $c['plan'] = '10%';
-            $c['lastwatch'] = '2017-12-28 13:27:34';
+        if($course){
+            foreach ( $course as &$c ){
+                $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
+                $c['plan'] = '10%';
+                $c['lastwatch'] = '2017-12-28 13:27:34';
+            }
+            return json_data(0,$this->codeMessage[0],$course);
         }
-        return json_data(0,$this->codeMessage[0],$course);
+        else{
+            return json_data(0,$this->codeMessage[0],array());
+        }
     }
 
 

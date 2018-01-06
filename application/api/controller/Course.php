@@ -208,7 +208,7 @@ class Course extends Home
             foreach ($comment as &$c){
                 $user = User::get($c['userid']);
                 $c['username'] = $user->username;
-                $c['avatar']   = $this->request->domain().DS.$user->title;
+                $c['avatar']   = $this->request->domain()."/".$user->title;
                 $c['sonreviewNum']   = Db::name('course_review')->where('parentid',$c['id'])->count();
                 $c['likeNum']   = Db::name('like')->where('type','comments')->where('articleid',$c['id'])->count();
                 if(!empty($this->user)){
@@ -259,7 +259,7 @@ class Course extends Home
             foreach ($son as &$s){
                 $s['username'] = Db::name('user')->where('id',$s['userid'])->value('username');
                 $s['tousername'] = Db::name('user')->where('id',$s['touserId'])->value('username');
-                $s['avatar'] = $this->request->domain().DS.Db::name('user')->where('id',$s['userid'])->value('title');
+                $s['avatar'] = $this->request->domain()."/".Db::name('user')->where('id',$s['userid'])->value('title');
             }
         }
         $comment['son'] = $son;
@@ -284,7 +284,7 @@ class Course extends Home
         foreach ($askList as &$a){
             $user = User::get($a['userID']);
             $a['username'] = $user->username;
-            $a['avatar']   = $this->request->domain().DS.$user->title;
+            $a['avatar']   = $this->request->domain()."/".$user->title;
             $a['category'] = Db::name('category')->where('code',$a['category_id'])->value('name');
             unset($a['category_id'],$a['userID'],$a['courseid']);
             $a['answerNum'] = Db::name('ask_answer')->where('askID',$a['id'])->count();
@@ -312,7 +312,7 @@ class Course extends Home
         $data = [
             'about'         =>  $course->about,
             'teacher_name'  =>  $user->username,
-            'avatar'        =>  $this->request->domain().DS.$user->title,
+            'avatar'        =>  $this->request->domain()."/".$user->title,
             'achivement'    =>  '教师成就'
         ];
         return json_data(0,$this->codeMessage[0],$data);

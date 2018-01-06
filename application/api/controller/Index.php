@@ -74,7 +74,7 @@ class Index extends Home
 
             $c['price']==0.00?$c['is_free'] = 1:$c['is_free'] = 0;
             unset($c['price']);
-            $c['smallPicture']  = $this->request->domain().DS.$c['smallPicture'];
+            $c['smallPicture']  = $this->request->domain()."/".$c['smallPicture'];
         }
 
         return json_data(0,$this->codeMessage[0],$course);
@@ -88,7 +88,7 @@ class Index extends Home
         if($pic){
             $pic = array_column($pic,'path');
             foreach ($pic as &$item) {
-                $item = $this->request->domain().DS.$item;
+                $item = $this->request->domain()."/".$item;
             }
         }
         return json_data(0,$this->codeMessage[0],$pic);
@@ -114,7 +114,7 @@ class Index extends Home
 
             $c['price']==0.00?$c['is_free'] = 1:$c['is_free'] = 0;
             unset($c['price']);
-            $c['smallPicture']  = $this->request->domain().DS.$c['smallPicture'];
+            $c['smallPicture']  = $this->request->domain()."/".$c['smallPicture'];
         }
 
         return json_data(0,$this->codeMessage[0],$course);

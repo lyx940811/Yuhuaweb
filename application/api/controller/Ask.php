@@ -34,7 +34,7 @@ class Ask extends Home
             if($c['newask']){
                 $user = User::get($c['newask']['userID']);
                 $c['newask']['username'] = $user->username;
-                $c['newask']['avatar']   = $this->request->domain().DS.$user->title;
+                $c['newask']['avatar']   = $this->request->domain()."/".$user->title;
                 $answer = Db::name('ask_answer')->where('askID',$c['newask']['askID'])->field('addtime as answerTime')->order('addtime desc')->find();
                 if($answer){
                     $c['newask']['answerTime'] =$answer['answerTime'];
@@ -59,7 +59,7 @@ class Ask extends Home
             foreach ( $askList as &$a ){
                 $user = User::get($a['userID']);
                 $a['username']  = $user->username;
-                $a['avatar']    = $this->request->domain().DS.$user->title;
+                $a['avatar']    = $this->request->domain()."/".$user->title;
                 $a['commentsNum'] = Db::name('ask_answer')->where('askID',$a['id'])->count();
             }
         }
@@ -76,7 +76,7 @@ class Ask extends Home
             return json_data(500,$this->codeMessage[500],'');
         }
         $user = User::get($ask['userID']);
-        $ask['avatar']   = $this->request->domain().DS.$user->title;
+        $ask['avatar']   = $this->request->domain()."/".$user->title;
         $ask['username'] = $user->username;
         $ask['category']  = Db::name('category')->where('code',$ask['category_id'])->value('name');
         $ask['answerNum'] = Db::name('ask_answer')->where('askID',$askid)->count();
@@ -101,7 +101,7 @@ class Ask extends Home
             foreach ( $answer as &$as){
                 $user = User::get($as['answerUserID']);
                 $as['username'] = $user->username;
-                $as['avatar']   = $this->request->domain().DS.$user->title;
+                $as['avatar']   = $this->request->domain()."/".$user->title;
                 unset($as['askID'],$as['answerUserID']);
 //                $as['like']     = Db::name('like')->where('type','answer')->where('articleid',$as['id'])->count();
             }

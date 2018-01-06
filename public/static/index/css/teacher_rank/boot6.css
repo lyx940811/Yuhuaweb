@@ -1,0 +1,165 @@
+.navbar {
+    margin-bottom: 0px;
+}
+
+.warp {
+    position: relative;
+    margin-top: 20px;
+}
+
+.left {
+    width: 15%;
+    position: absolute;
+    left: 20px;
+}
+
+.right {
+    position: absolute;
+    right: 0;
+    width: 83%;
+}
+.manager{
+    border-bottom: 2px solid #eeeeee;
+    position: relative;
+    height: 40px;
+    line-height: 40px;
+}
+.manager .btn{
+    position: absolute;
+    right: 20px;
+}
+.table{
+    margin-top: 20px;
+}
+#myTab{
+    margin-top: 20px;
+}
+/*
+tbody tr td{
+    padding-top: 10px!important;
+}
+tbody tr td:last-child{
+    padding-top: 0!important;
+}*/
+
+/*排行榜页面相关css*/
+.bg{
+    height: 50px;
+    overflow: hidden
+}
+
+
+/*清除浮动*/
+.clear::after{
+    display:block;
+    clear:both;
+    content:"";
+    visibility:hidden;
+    height:0;
+}
+
+ul, li{
+    margin:0;
+    padding:0;
+}
+.rankList{
+    list-style: none;
+}
+.rankList >li{
+    float: left;
+}
+.rankBtn li{
+    width: 163px;
+    height: 65px;
+    line-height: 65px;
+    border:1px solid #cccccc;
+    font-size: 28px;
+    color: #555555;
+    text-align: center;
+    border-radius: 5px;
+    margin: 60px 60px 60px 0
+}
+
+.rankBtn li:first-child{
+    margin-left: 151px;
+}
+.rankBtn li.check{
+    background-color: #42b035;
+    border:1px solid #42b035;
+    color: #ffffff;
+}
+
+.list2> li{
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 30px;
+}
+
+.list2> li:first-child{
+    margin-left: 85px;
+}
+.list2 > li:last-child{
+    margin-right: 0px;
+}
+.rankList .list-group-item{
+    border: none;
+}
+
+.rankList .list-group-item >span{
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    background-color: #9f9a9a;
+    border-radius: 5px;
+    text-align: center;
+    color: #fff;
+}
+.rankList .list-group-item>img{
+    position: absolute;
+    left: 20px;
+}
+.rankList .list-group-item > div{
+    font-size: 20px;
+    color:#555555;
+    height: 25px;
+    line-height: 25px;
+}
+.rankList .list-group-item > div >span{
+    font-size: 18px;
+    color:#ccc;
+    position: absolute;
+    right: 20px;
+    top: 11px;
+}
+
+.rankList .list-group-item >span.first{
+    background-color: #ff504d;
+}
+.rankList .list-group-item >span.second{
+    background-color: #ff7b38;
+}
+.rankList .list-group-item >span.third{
+    background-color: #ffae07;
+}
+
+.rankList .list-group-item>p{
+    margin:0;
+    display: inline-block;
+    width: calc(100% - 30px);
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 15px;
+    color: #a8a8a8;
+    padding-left: 15px;
+}
+.rankList .list-group-item>p>span{
+    position: absolute;
+    right: 20px;
+}
+.list-group{
+    padding-top: 15px;
+}
+.list-group .list-group-item:first-child{
+    margin-bottom: 5px;
+}

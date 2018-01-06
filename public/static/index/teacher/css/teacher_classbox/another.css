@@ -1,0 +1,59 @@
+table{
+    border: none;
+}
+.gradeWrapper .content .tableContent .tableWrapper{
+    margin: 0 auto;
+    height: auto;
+}
+.gradeWrapper .content .tableContent .lessonTable .table{
+    margin-bottom: 0;
+}
+.lessonTable .table td,.lessonTable .table th{
+    text-align: center;
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+.lessonTable .table td:first-child{
+    border-left: none;
+}
+.lessonTable .table th:first-child{
+    border-left: none;
+}
+.lessonTable .table th.week{
+    background-color: #f8daa4;
+}
+.lessonTable .table th.mon{
+    background-color: #d31076;
+}
+.lessonTable .table th.tue{
+    background-color: #e37d28;
+}
+.lessonTable .table th.wed{
+    background-color: #88c247;
+}
+.lessonTable .table th.thu{
+    background-color: #1875ba;
+}
+.lessonTable .table th.fri{
+    background-color: #695f9c;
+}
+.lessonTable .table th.sun{
+    background-color: #c4d701;
+}
+.lessonTable .table td.pm{
+    background-color: #42b035;
+    font-size: 24px;
+    color: #fff;
+    vertical-align:middle;
+}
+.lessonTable .table td.am{
+    background-color: #80c6a1;
+    font-size: 24px;
+    color: #fff;
+    vertical-align:middle;
+}
+
+.lessonTable .table td.pm p,.lessonTable .table td.am p{
+    margin-top: 20px;
+}
+
