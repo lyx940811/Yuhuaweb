@@ -26,6 +26,8 @@
             <th>学员数</th>
             <th>状态</th>
             <th>创建者</th>
+            <th>设置</th>
+            <th>添加章</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -41,6 +43,8 @@
             <td>{$vo.studentNum}</td>
             <td>{$vo.status}</td>
             <td>{$vo.userid|getUserinfo}</td>
+            <td><a href="{:url('coursetask/index')}?cid={$vo.id}">课程任务</a></td>
+            <td><a href="#">章</a></td>
             <td>
                 {php}
 
