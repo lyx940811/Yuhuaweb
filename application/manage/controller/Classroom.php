@@ -27,8 +27,8 @@ class Classroom extends Base{
 
         $list = Db::name('classroom a')
             ->join('category b','a.categoryId=b.code','LEFT')
-            ->join('teacher_info c','a.teacherIds=c.id','LEFT')
-            ->field('a.title,a.status,a.categoryId,a.teacherIds,a.hitNum,a.studentNum,a.createdTime,c.realname,b.name')
+            ->join('teacher_info c','a.teacherIds=c.userid','LEFT')
+            ->field('a.id,a.title,a.status,a.categoryId,a.teacherIds,a.hitNum,a.studentNum,a.createdTime,c.realname,b.name')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
 

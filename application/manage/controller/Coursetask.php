@@ -19,6 +19,8 @@ class Coursetask extends Base{
 
         $info = input('get.');
 
+
+
         $where = [];
         if(!empty($info['title'])){
 
@@ -29,7 +31,7 @@ class Coursetask extends Base{
             ->field('a.id,a.title,a.courseId,a.mediaSource,a.startTime,a.endTime,b.title btit')
             ->join('course b','a.courseId=b.id','LEFT')
             ->where($where)
-            ->paginate(20,['query'=>request()->get()]);
+            ->paginate(20,['query'=>$info]);
 
         $course = Db::table('course')->field('id,title')->select();
 
