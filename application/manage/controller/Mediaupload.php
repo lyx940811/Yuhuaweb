@@ -189,7 +189,8 @@ class Mediaupload extends Controller
 
         }
 //        send_email('312850391@qq.com','success',$sDestFile);
-        return json_data(0,'success',$sDestFile);
+//        return json_data(0,'success',$sDestFile);
+        return ['code'=>000,'message'=>'success','fileinfo'=>['name'=>$sDestFile,'type'=>$sExtension]];
     }
 
 

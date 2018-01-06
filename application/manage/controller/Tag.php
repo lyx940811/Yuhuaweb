@@ -1,0 +1,150 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: m's
+ * Date: 2017/12/29
+ * Time: 12:01
+ */
+namespace app\manage\controller;
+
+use think\Db;
+use think\Validate;
+
+class Tag extends Base{
+
+    public function index(){
+
+        $list = Db::table('tag')->field('id,name,code,roles,Flag,userid')->paginate(20);
+
+        $this->assign('list',$list);
+        $this->assign('typename','标签');
+        $this->assign('page',$list->render());
+        return $this->fetch();
+    }
+
+
+    public function add(){
+        $info = input('post.');
+
+        $msg  =   [
+            'name.require' => '标签名称不能为空',
+            'name.length' => '标签名称长度太短',
+            'code.require' => '代码不能为空',
+        ];
+        $validate = new Validate([
+            'name'  => 'require|length:2,20',
+            'code'   => 'require',
+        ],$msg);
+
+        $validate->check($info);
+
+        $error = $validate->getError();//打印错误规则
+
+        if(is_string($error)){
+            return ['error'=>$error,'code'=>'200'];
+        }
+
+        $role_table = Db::name('tag');
+
+        $is_have = $role_table->field('id')->where(['code'=>['eq',$info['code']]])->find();
+
+        if($is_have){//如果这个code有
+            return ['error'=>'已经有此代码','code'=>'300'];
+        }
+
+        $data = [
+            'name' => $info['name'],
+            'code' => $info['code'],
+            'roles'=> $info['role'],
+            'userid'=> session('admin_uid'),
+            'createdTime'=>date('Y-m-d H:i:s',time()),
+            'Flag'=>1,
+        ];
+
+        $ok = $role_table->field('name,code,roles,userid,createdTime,Flag')->insert($data);
+
+        if($ok){
+            return ['info'=>'添加成功','code'=>'000'];
+        }else{
+            return ['error'=>'添加失败','code'=>'400'];
+        }
+    }
+
+    public function edit(){
+        //前台先获取资料
+        if(isset($_GET['do'])=='get'){
+            $id = $_GET['rid']+0;
+
+            $have = Db::name('tag')->field('id,name,code,roles')->where("id='$id'")->find();
+
+            if(!$have){//如果这个code有
+                return ['error'=>'没有此标签','code'=>'300'];
+            }else{
+                return ['info'=>$have,'code'=>'000'];
+            }
+
+        }
+
+        $info = input('post.');
+
+        $msg  =   [
+            'name.require' => '标签名称不能为空',
+            'name.length' => '标签名称长度太短',
+            'code.require' => '代码不能为空',
+        ];
+        $validate = new Validate([
+            'name'  => 'require|length:2,20',
+            'code'   => 'require',
+        ],$msg);
+
+        $validate->check($info);
+
+        $error = $validate->getError();//打印错误规则
+
+        if(is_string($error)){
+            return ['error'=>$error,'code'=>'200'];
+        }
+
+        $role_table = Db::name('tag');
+
+        $id = $info['rid']+0;
+        $have = $role_table->field('id')->where("id='$id'")->find();
+
+        if(!$have){//如果没这个code
+            return ['error'=>'没有此标签','code'=>'300'];
+        }
+
+        $have = $role_table->field('id,code')->where("id <> $id AND code={$info['code']}")->find();
+
+        if($have){
+            return ['error'=>'已经有此代码','code'=>'300'];
+        }
+
+        $data = [
+            'name'=>$info['name'],
+            'code'=>$info['code'],
+            'roles'=>$info['role'],
+        ];
+
+        $ok = $role_table->field('name,code,role')->where('id',$id)->update($data);
+
+        if($ok){
+            return ['info'=>'修改成功','code'=>'000'];
+        }else{
+            return ['error'=>'修改失败','code'=>'200'];
+        }
+    }
+
+    public function delete(){
+
+        $id = $_GET['rid']+0;
+
+        $ok = Db::name('tag')->where("id='$id'")->delete();
+
+        if($ok){
+            return ['info'=>'删除成功','code'=>'000'];
+        }else{
+            return ['error'=>'删除失败','code'=>'200'];
+        }
+    }
+}

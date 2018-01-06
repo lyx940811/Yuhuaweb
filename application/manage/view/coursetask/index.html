@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 {include file="manage/header" /}
-<link href="__MANAGE_JS__datepicker/css/bootstrap-datepicker.css" rel="stylesheet">
+<link href="__MANAGE_JS__datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <body>
 <div class="container-fluid">
     {php}
@@ -13,6 +13,7 @@
             <div class="form-group">
                 <label>任务名称</label>
                 <input type="text" class="form-control" placeholder="任务名称" name="title">
+                <input type="hidden" name="cid" value="{$Think.get.cid}"><!--此为课程id，搜索的时候不能丢-->
             </div>
             <button type="submit" class="btn btn-primary">搜索</button>
         </form>
@@ -32,6 +33,8 @@
             <th>任务名称</th>
             <th>课程名称</th>
             <th>媒体资源</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -42,6 +45,8 @@
             <td>{$vo.title}</td>
             <td>{$vo.btit}</td>
             <td>{$vo.mediaSource}</td>
+            <td>{$vo.startTime}</td>
+            <td>{$vo.endTime}</td>
             <td>
                 {php}
                     if(check($uid,'/manage/coursetask/edit')){
@@ -134,12 +139,15 @@
                             <label class="col-sm-2 control-label">媒体文件来源</label>
                             <div class="col-sm-10">
                                 <label class="radio-inline">
-                                    <input type="radio" class="mediatype" name="mediaSource" value="1"> 本地上传
+                                    <input type="radio" class="mediatype" name="mediatype" value="1"> 本地上传
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" class="mediatype" name="mediaSource" value="2"> 优酷等媒体链接
+                                    <input type="radio" class="mediatype" name="mediatype" value="2"> 优酷等媒体链接
                                 </label>
-                                <div id="mediaHtml"></div>
+                                <div id="mediaHtml">
+                                    <input type="text" class="form-control" value="" name="mediaSource" id="mediaSource"/>
+                                    <input type="text" class="form-control" value="" name="type" id="type"/>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -196,13 +204,17 @@
     <!--删除结束-->
 </div>
 {include file='manage/bottom'}
-<script type="text/javascript" src="__MANAGE_JS__datepicker/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="__MANAGE_JS__datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="__MANAGE_JS__Webuploader/webuploader.js"></script>
 <script type="text/javascript">
-    $(".form_datetime").datepicker({
-        autoclose: true,
-        todayHighlight: true,
-        language:"zh-CN",
-        format:"yyyy-mm-dd"
+    $(".form_datetime").datetimepicker({
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 0,
+        forceParse: 0
     });
 
     /*
@@ -210,26 +222,59 @@
     * */
     $('.mediatype').click(function () {
         var type = $(this).val()
+
         if(type==1){
+
             //上传文件
+            var Html = '<div id="picker">' +
+                '<input type="file" name="media"/>' +
+                '<input type="text" id="length" name="length" class="form-control" placeholder="媒体长度"/>' +
+                '<input type="text" id="mediaSource" name="mediaSource" class="form-control" placeholder="媒体资源"/>' +
+                '<input type="text" id="type" name="type" class="form-control" placeholder="类型"/>' +
+                '</div>';
 
-            $('#mediaHtml').html('<input type="file" name="mediaSource"/>')
+            $('#mediaHtml').html(Html)
 
-            $.post('{:url("upload")}',function (data) {
-                console.log(data)
-                if(typeof(data.data)!='undefined'){
-                    //有没有权限操作
-                    if(data.data.code==200){
-                        alert(data.msg)
-                    }
+            WebUploader.create({
+                pick: '#picker',
+                server: '{:url("upload")}',
+                auto: true,
+                chunked: true,
+                swf: '__MANAGE_JS__Webuploader/Uploader.swf',
+            }).on('fileQueued', function( file ) {
+                var start =  +new Date();
+// console.log(file)
+                // 返回的是 promise 对象
+                this.md5File(file, 0, 1 * 1024 * 1024)
 
-                }else{
+                // 可以用来监听进度
+                    .progress(function(percentage) {
+                        // console.log('Percentage:', percentage);
+                    })
 
-                }
-            })
+                    // 处理完成后触发
+                    .then(function(ret) {
+                        // console.log('md5:', ret);
+
+                        var end = +new Date();
+                        // log('HTML5: md5 ' + file.name + ' cost ' + (end - start) + 'ms get value: ' + ret);
+                    });
+            }).on('uploadSuccess', function (file, response) {
+                // console.log(file)
+                // console.log(response); //这里可以得到后台返回的数据
+                $('#length').val(response.duration)
+                $('#mediaSource').val(response.fileinfo.name)
+                $('#type').val(response.fileinfo.type)
+                // $('#' + file.id).addClass('upload-state-done');
+                // imgArr.push(response._raw);
+            });;
+
 
         }else{
             //链接
+            var Html = '<input type="text" id="mediaSource" class="form-control" name="mediaSource" placeholder="媒体资源"/>';
+
+            $('#mediaHtml').html(Html)
         }
     })
 
@@ -251,6 +296,7 @@
                 $(" input[ type='text' ] ").val('')
                 $(" input[ type='hidden' ] ").val('')
                 $('#selfcode').val(id)//如果是修改,id是自己
+                $('#courseId').val('{$Think.get.cid}')//课程id,从地址栏传过来 的
                 $('#add_role').hide()
                 $('#edit_role').show()
 
@@ -258,21 +304,51 @@
                     var newdata = data.info
 
                     $('#title').val(newdata.title)
-                    $.each($('#categoryId').children(),function () {
+                    $('#startTime').val(newdata.startTime)
+                    $('#endTime').val(newdata.endTime)
+                    $('#type').val(newdata.type)
+                    $('#length').val(newdata.length)
+                    $('#mediaSource').val(newdata.mediaSource)
+                    $('#maxOnlineNum').val(newdata.maxOnlineNum)
+                    $('#maxPoint').val(newdata.maxPoint)
 
-                        if($(this).val()==newdata.categoryId){
-                            $(this).prop('selected',true)
+                    $.each($('.isFree'),function () {
+                        if($(this).val()==newdata.isFree){
+                            $(this).prop('checked',true)
                         }
                     })
 
-                    $.each($('#teacherIds').children(),function () {
-
-                        if($(this).val()==newdata.teacherIds){
+                    $.each($('.isOptional'),function () {
+                        if($(this).val()==newdata.isOptional){
+                            $(this).prop('checked',true)
+                        }
+                    })
+                    $.each($('#mode').children(),function () {
+                        if($(this).val()==newdata.mode){
                             $(this).prop('selected',true)
                         }
                     })
+                    $.each($('.isOptional'),function () {
+                        if($(this).val()==newdata.isOptional){
+                            $(this).prop('checked',true)
+                        }
+                    })
 
-                    $('#about').val(newdata.about)
+/*
+title	任务名称是啥
+startTime	2018-01-06 15:50:00
+endTime	2018-01-20 15:55:00
+isFree	0
+isOptional	1
+mode	0
+type	mp4
+length	00:00:07.53
+mediaSource	.\upload\20180106\1515222544.mp4
+maxOnlineNum	8
+maxPoint	90
+courseId	5
+ */
+
 
                 });
                 

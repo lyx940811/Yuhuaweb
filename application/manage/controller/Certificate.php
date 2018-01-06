@@ -26,8 +26,7 @@ class Certificate extends Base{
             $where['c.name'] = ['like',"%{$info['name']}%"];
         }
 
-        $list = Db::table('certificate')
-            ->alias('a')
+        $list = Db::table('certificate a')
             ->join('user_profile b','a.profileid=b.id','LEFT')
             ->join('categorycertificate c','a.certificateid=c.id','LEFT')
             ->join('category d','c.categoryID=d.code','LEFT')
