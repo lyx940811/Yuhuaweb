@@ -57,7 +57,7 @@
                     <div class="course-img">
                         <a href="/course/168">
                             <span class="tags"><span class="tag-finished"></span></span>
-                            <img src="../../img/0904088801e0997753.jpg" alt="化学基础" class="img-responsive">
+                            <img src="http://localhost/uploads/pictures/c1.jpg" alt="化学基础" class="img-responsive">
                         </a>
                     </div>
                     <div class="course-info">
@@ -77,4 +77,18 @@
         </div>
     </div>
 </div>
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+        $(".tabs-group").find('li').click(function(){
+            $(this).addClass('active').siblings().removeClass('active');
+            $(".nav-pills").children('li').eq(0).addClass('active').siblings().removeClass('active');
+        });
+
+        $(".nav-pills").children('li').click(function(){
+            $(this).addClass('active').siblings().removeClass('active');
+        });
+    })
+</script>
 {/block}

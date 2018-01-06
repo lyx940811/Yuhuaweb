@@ -7,12 +7,16 @@ use think\Db;
 use think\Exception;
 use think\captcha\Captcha;
 
-/** app首页相关的接口【1.还缺少得到轮播图的接口2.还需要对课程人数和评论进行计数】
+/** app首页相关的接口【2.还需要对课程人数和评论进行计数】
  * Class Index
  * @package app\index\controller
  */
 class Index extends Home
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
     public function test()
     {
         return $this->fetch();
