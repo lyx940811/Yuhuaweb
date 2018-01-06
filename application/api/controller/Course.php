@@ -312,7 +312,7 @@ class Course extends Home
         $data = [
             'about'         =>  $course->about,
             'teacher_name'  =>  $user->username,
-            'avatar'        =>  $user->title,
+            'avatar'        =>  $this->request->domain().DS.$user->title,
             'achivement'    =>  '教师成就'
         ];
         return json_data(0,$this->codeMessage[0],$data);

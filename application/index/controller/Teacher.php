@@ -29,16 +29,74 @@ class Teacher extends User
         return $this->fetch();
     }
     public function teacherask(){
+        $asklist = Db::name('asklist')
+            ->alias('a')
+            ->join('course c','a.courseid=c.id')
+            ->join('category ca','a.category_id=ca.code')
+            ->where('c.userid',UID)
+            ->field('a.*,c.userid')
+            ->paginate(10);
+        $this->assign('asklist',$asklist);
+        $page = $asklist->render();
+        $this->assign('page', $page);
+
         return $this->fetch();
     }
     public function browse(){
-        $map['id']  = ['>',1];
-        if($this->request->param('keyword')){
-            $keyword = "%".$this->request->param('keyword')."%";
-            $map['filename']  = ['like',$keyword];
+        if($this->request->isAjax()){
+            $map = array();
+            if(!empty($this->request->param('keyword'))){
+                $keyword = "%".$this->request->param('keyword')."%";
+                $map['filename']  = ['like',$keyword];
+            }
+            if(!empty($type = $this->request->param('type'))){
+                switch ($type){
+                    case 'all':
+                        $map['id']  = ['>',1];
+                        break;
+                    case 'video':
+                        $map['type']  = ['in',['mp4','rmvb','avi']];
+                        break;
+                    case 'flash':
+                        $map['type']  = ['in',['swf','flv']];
+                        break;
+                    case 'audio':
+                        $map['type']  = ['in',['mp3']];
+                        break;
+                    case 'image':
+                        $map['type']  = ['in',['jpg','png','gif']];
+                        break;
+                    case 'document':
+                        $map['type']  = ['in',['doc','txt','docx']];
+                        break;
+                    case 'ppt':
+                        $map['type']  = ['in',['ppt','pptx']];
+                        break;
+                    case 'other':
+                        $map['type'] = 'others';
+                        break;
+                }
+            }
+            $file = Db::name('course_file')
+                ->where($map)
+                ->order('createTime desc')
+                ->paginate(8);
+            $this->assign('file',$file);
+
+            $page = $file->render();
+            $this->assign('page', $page);
+//            return $file;
+            return $this->fetch('browseajax');
         }
+
+//        $map['id']  = ['>',1];
+//        if($this->request->param('keyword')){
+//            $keyword = "%".$this->request->param('keyword')."%";
+//            $map['filename']  = ['like',$keyword];
+//        }
+
         $file = Db::name('course_file')
-            ->where($map)
+//            ->where($map)
             ->order('createTime desc')
             ->paginate(8);
         $this->assign('file',$file);
@@ -47,6 +105,9 @@ class Teacher extends User
         $this->assign('page', $page);
         return $this->fetch();
     }
+
+
+
     public function classindex(){
         $courseid = $this->request->param('courseid');
         $course = Course::get($courseid);

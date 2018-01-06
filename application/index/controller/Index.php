@@ -203,4 +203,13 @@ class Index extends Home
         return $this->fetch();
     }
 
+    public function testajax(){
+        if($this->request->isAjax()){
+            return 1;
+        }
+        else{
+            return 0;
+        }
+    }
+
 }
