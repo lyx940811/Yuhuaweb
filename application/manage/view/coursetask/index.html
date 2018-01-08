@@ -97,10 +97,10 @@
                                         <label for="isFree" class="col-sm-2 control-label">是否免费</label>
                                         <div class="col-sm-10">
                                             <label class="radio-inline">
-                                                <input type="radio" name="isFree" class="isFree" value="1"> 是
+                                                <input type="radio" name="isFree" class="isFree" value="1" {if condition="$vo['isFree'] eq 1"}checked{/if}> 是
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="isFree" class="isFree" value="0"> 否
+                                                <input type="radio" name="isFree" class="isFree" value="0" {if condition="$vo['isFree'] eq 0"}checked{/if}> 否
                                             </label>
                                         </div>
                                     </div>
@@ -108,10 +108,10 @@
                                         <label for="isFree" class="col-sm-2 control-label">是否必修</label>
                                         <div class="col-sm-10">
                                             <label class="radio-inline">
-                                                <input type="radio" name="isOptional" class="isOptional" value="1"> 是
+                                                <input type="radio" name="isOptional" class="isOptional" value="1" {if condition="$vo['isOptional'] eq 1"}checked{/if}> 是
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="isOptional" class="isOptional" value="0"> 否
+                                                <input type="radio" name="isOptional" class="isOptional" value="0" {if condition="$vo['isOptional'] eq 0"}checked{/if}> 否
                                             </label>
                                         </div>
                                     </div>
@@ -135,8 +135,8 @@
                                                 <input type="radio" class="mediatype" name="mediatype" value="2"> 优酷等媒体链接
                                             </label>
                                             <div id="mediaHtml{$vo.id}">
-                                                <input type="text" class="form-control" value="" name="mediaSource" id="mediaSource{$vo.id}"/>
-                                                <input type="text" class="form-control" value="" name="type" id="type{$vo.id}"/>
+                                                <input type="text" class="form-control" value="{$vo.mediaSource}" name="mediaSource" id="mediaSource{$vo.id}"/>
+                                                <input type="text" class="form-control" value="{$vo.type}" name="type" id="type{$vo.id}"/>
                                             </div>
                                         </div>
                                     </div>
@@ -257,8 +257,8 @@
                                     <input type="radio" class="mediatype" name="mediatype" value="2"> 优酷等媒体链接
                                 </label>
                                 <div id="mediaHtml">
-                                    <input type="text" class="form-control" value="" name="mediaSource" id="mediaSource"/>
-                                    <input type="text" class="form-control" value="" name="type" id="type"/>
+                                    <input type="text" class="form-control" value="" name="mediaSource0" id="mediaSource0"/>
+                                    <input type="text" class="form-control" value="" name="type" id="type0"/>
                                 </div>
                             </div>
                         </div>
@@ -389,13 +389,13 @@
     })
 
 
-    function dopost($url) {
+    function dopost($url,formid) {
         $url=='add'?"{:url('add')}":"{:url('edit')}";
 
         $.ajax({
             url: $url+"?"+Math.random(),
             type:"post",
-            data:$("#form1").serialize(),
+            data:$('#form'+formid).serialize(),
             success:function(data){
 
                 if(data.code=='000'){

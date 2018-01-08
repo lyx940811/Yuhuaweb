@@ -28,7 +28,7 @@ class Coursetask extends Base{
         }
 
         $list = Db::table('course_task a')
-            ->field('a.id,a.title,a.courseId,a.mediaSource,a.startTime,a.endTime,b.title btit')
+            ->field('a.id,a.title,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.type,a.mediaSource,a.mediaSource,a.startTime,a.endTime,b.title btit')
             ->join('course b','a.courseId=b.id','LEFT')
             ->where($where)
             ->paginate(20,['query'=>$info]);
@@ -100,19 +100,6 @@ class Coursetask extends Base{
 
 
     public function edit(){
-        //前台先获取资料
-        if(isset($_GET['do'])=='get'){
-            $id = $_GET['rid']+0;
-
-            $have = Db::name('course_task')->field('title,startTime,endTime,isFree,isOptional,mode,type,length,mediaSource,maxOnlineNum,maxPoint,courseId')->where("id='$id'")->find();
-
-            if(!$have){//如果这个code有
-                return ['error'=>'没有此任务','code'=>'300'];
-            }else{
-                return ['info'=>$have,'code'=>'000'];
-            }
-
-        }
 
         $info = input('post.');
 
@@ -153,8 +140,8 @@ class Coursetask extends Base{
             'title' => $info['title'],
             'startTime' => $info['startTime'],
             'endTime'=> $info['endTime'],
-            'isFree'=>$info['isFree'],
-            'isOptional'=>$info['isOptional'],
+            'isFree'=>isset($info['isFree'])?$info['isFree']:0,
+            'isOptional'=>isset($info['isOptional'])?$info['isOptional']:0,
             'mode'=>$info['mode'],
             'type'=>isset($info['type'])?$info['type']:'url',
             'length'=>isset($info['length'])?$info['length']:0,
@@ -174,11 +161,6 @@ class Coursetask extends Base{
     }
 
     public function upload(){
-
-//
-//        $file = request()->file('mediaSource');
-//
-//        print_r($file)
 
         $mediafile = new Mediaupload();
         $all = $mediafile->getfile();
