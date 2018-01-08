@@ -52,7 +52,8 @@
                     if(check($uid,'/manage/coursetask/edit')){
                         echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
                         echo '<strong>/</strong>';
-                    }elseif(check($uid,'/manage/coursetask/delete')){
+                    }
+                    if(check($uid,'/manage/coursetask/delete')){
                         echo '<a href="#" onclick="deleteR('.$vo['id'].');">删除</a>';
                     }
                 {/php}

@@ -52,9 +52,11 @@
                     if(check($uid,'/manage/functions/edit')){
                         echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
                         echo '<strong>/</strong>';
-                    }elseif(check($uid,'/manage/functions/delete')){
+                    }
+                    if(check($uid,'/manage/functions/delete')){
                         echo '<a href="#" onclick="deleteCategory('.$vo['id'].');">删除</a>';
-                    }elseif(check($uid,'/manage/functions/add')){
+                    }
+                    if(check($uid,'/manage/functions/add')){
                         echo '<strong>/</strong>';
                         echo '<a href="#" onclick="add_edit(\'addSon\','.$vo['id'].','.$vo['code'].')" data-toggle="modal" data-target="#myModal">添加子功能栏目</a>';
                     }
