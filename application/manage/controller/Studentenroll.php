@@ -31,7 +31,7 @@ class StudentEnroll extends Base{
             ->join('category b','a.categoryID=b.code','LEFT')
             ->join('admission c','a.admissionID=c.id','LEFT')
             ->where($where)
-            ->field('a.id,a.realname,a.sex,a.phone,a.admissionID,b.name,a.createTime,a.status,c.title')->paginate(20,false,['query'=>request()->get()]);
+            ->field('a.id,a.realname,a.sex,a.telephone as phone,a.admissionID,b.name,a.createTime,a.status,c.title')->paginate(20,false,['query'=>request()->get()]);
 
 //        echo Db::table('student_enroll')->getLastSql();exit;
 
