@@ -5,13 +5,12 @@
 <div class="container-fluid">
     {php}
     $uid = session('admin_uid');
-
     {/php}
     <div class="pull-right">
         {php}
         $access = check($uid,'/manage/companynature/add');
         if($access){
-            echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">新增区域</a>';
+            echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增区域</a>';
         }
         {/php}
 
@@ -28,24 +27,64 @@
         <tbody>
 
         {volist name="list" id="vo"}
-
         <tr>
             <td>{$vo.classname}</td>
             <td>{$vo.code}</td>
             <td>{$vo.Flag?'启用':'禁用'}</td>
             <td>
                 {php}
-
-
                     if(check($uid,'/manage/companynature/edit')){
-                        echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
+                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
                         echo '<strong>/</strong>';
                     }
                     if(check($uid,'/manage/companynature/delete')){
-                        echo '<a href="#" onclick="deleteRole('.$vo['id'].');">删除</a>';
+                        echo '<a href="#" onclick="enableR('.$vo['id'].');">删除</a>';
                     }
 
                 {/php}
+                <!-- 模态框 -->
+                <div class="modal fade" id="myModal_edit{$vo.id}">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <!-- 模态框头部 -->
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">修改区域</h4>
+                            </div>
+
+                            <!-- 模态框主体 -->
+                            <div class="modal-body">
+                                <form class="form-horizontal" role="form" id="form{$vo.id}" method="post" action="{:url('edit')}">
+                                    <div class="form-group">
+                                        <label for="name" class="col-sm-2 control-label">区域名称</label>
+                                        <div class="col-sm-5">
+                                            <input type="text" class="form-control" name="name" value="$vo.name"
+                                                   placeholder="请输入区域名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="code" class="col-sm-2 control-label">区域代码</label>
+                                        <div class="col-sm-10">
+                                            <div class="checkbox">
+                                                <input type="text" class="form-control" name="code" value="{$vo.code}"
+                                                       placeholder="请输入区域代码">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="rid" value="{$vo.id}" />
+                                    <!-- 模态框底部 -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" onclick="dopost('edit',{$vo.id})">修改</button>
+                                    </div>
+                                </form>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+                <!--添加权限组结束-->
             </td>
         </tr>
         {/volist}
@@ -69,7 +108,7 @@
 
                 <!-- 模态框主体 -->
                 <div class="modal-body">
-                    <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('add')}">
+                    <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
                         <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">区域名称</label>
                             <div class="col-sm-5">
@@ -89,9 +128,7 @@
                         <input type="hidden" name="rid" value="" id="selfcode"/>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
-                            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>-->
-                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add');">添加</button>
-                            <button type="button" class="btn btn-default" id="edit_role" style="display:none;" onclick="dopost('edit')">修改</button>
+                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add0',0);">添加</button>
                         </div>
                     </form>
                 </div>
@@ -119,8 +156,6 @@
 
                 </div>
 
-
-
             </div>
         </div>
     </div>
@@ -129,49 +164,14 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
-    /*
-    一共3种方法，添加新专业，修改专业，禁用专业
-    */
-    /*添加*/
 
-    function add_edit(type,id,parentcode) {
-
-        switch (type){
-            case 'add':
-
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#add_role').show()
-                $('#edit_role').hide()
-
-                break;
-
-            case 'edit':
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#selfcode').val(id)//如果是修改,id是自己
-                $('#add_role').hide()
-                $('#edit_role').show()
-                $.get("{:url('edit')}?do=get&rid="+id,function (data) {
-                    $('#name').val(data.info.classname)
-                    $('#code').val(data.info.code)
-                });
-
-                break;
-            default:
-                alert('error')
-        }
-
-    }
-
-
-    function dopost($url) {
+    function dopost($url,formid) {
         $url=='add'?"{:url('add')}":"{:url('edit')}";
 
         $.ajax({
             url: $url+"?"+Math.random(),
             type:"post",
-            data:$("#form1").serialize(),
+            data:$('#form'+formid).serialize(),
             success:function(data){
 
                 console.log(data)
@@ -194,15 +194,18 @@
         });
     }
 
-    function deleteRole(id) {
-        $.get("{:url('enable')}?rid="+id,function (data) {
-            if(data.code=='000'){
-                alert(data.info)
-                $('#myModal2').modal('hide')
-            }else{
+    function enableR(id) {
+        if(confirm('确定禁用吗')){
+            $.get("{:url('enable')}?rid="+id,function (data) {
+                if(data.code=='000'){
+                    alert(data.info)
+                    $('#myModal2').modal('hide')
+                }else{
 
-            }
-        });
+                }
+            });
+        }
+
     }
 
 

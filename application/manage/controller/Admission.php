@@ -86,22 +86,8 @@ class Admission extends Base{
 
 
     public function edit(){
-        //前台先获取资料
-        if(isset($_GET['do'])=='get'){
-            $id = $_GET['rid']+0;
-
-            $have = Db::name('admission')->field('title,price,num,content,linker,telephone,endtime')->where("id='$id'")->find();
-
-            if(!$have){//如果这个code有
-                return ['error'=>'没有此招生','code'=>'300'];
-            }else{
-                return ['info'=>$have,'code'=>'000'];
-            }
-
-        }
 
         $info = input('post.');
-
         $msg  =   [
             'title.require' => '报名名称不能为空',
             'title.length' => '报名名称长度太短',

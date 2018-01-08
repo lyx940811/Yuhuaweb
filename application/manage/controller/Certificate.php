@@ -30,7 +30,7 @@ class Certificate extends Base{
             ->join('user_profile b','a.profileid=b.id','LEFT')
             ->join('categorycertificate c','a.certificateid=c.id','LEFT')
             ->join('category d','c.categoryID=d.code','LEFT')
-            ->field('a.id,b.realname,b.idcard,d.name,c.sn,c.name as cname,c.level,c.unit,a.createtime,a.pic')
+            ->field('a.id,a.pic,b.realname,b.idcard,b.id as bid,d.name,c.sn,c.name as cname,c.level,c.unit,a.createtime,a.pic,d.id as did')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
 
@@ -154,8 +154,9 @@ class Certificate extends Base{
 
     public function upload(){
 
+        $id = $_GET['id'];
 
-        $file = upload('newfile','certificate');
+        $file = upload('newfile'.$id,'certificate');
         return $file;
 
     }
