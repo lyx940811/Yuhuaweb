@@ -57,6 +57,7 @@ class Ask extends Home
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $askList = Db::name('asklist')
             ->where('category_id',$category_id)
+            ->where('courseid',0)
             ->page($page,10)
             ->select();
         if($askList){
@@ -67,7 +68,12 @@ class Ask extends Home
                 $a['commentsNum'] = Db::name('ask_answer')->where('askID',$a['id'])->count();
             }
         }
-        return json_data(0,$this->codeMessage[0],$askList);
+        $title = Db::name('category')->where('code',$category_id)->value('name');
+        $data = [
+            'title' =>  $title,
+            'asklist'   =>$askList,
+        ];
+        return json_data(0,$this->codeMessage[0],$data);
     }
 
     /**
