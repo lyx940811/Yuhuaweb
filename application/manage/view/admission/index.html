@@ -20,7 +20,7 @@
     <div class="pull-right">
         {php}
         if(check($uid,'/manage/admission/add')){
-            echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">创建招生</a>';
+            echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">创建招生</a>';
         }
         {/php}
 
@@ -53,16 +53,92 @@
             <td>
                 {php}
                     if(check($uid,'/manage/admission/edit')){
-                        echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
+                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
                         echo '<strong>/</strong>';
                     }
                     if(check($uid,'/manage/admission/delete')){
                         echo '<a href="#" onclick="deleteRole('.$vo['id'].');">删除</a>';
                     }
                 {/php}
+                <!--修改开始-->
+                <div class="modal fade" id="myModal_edit{$vo.id}">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
 
+                            <!-- 模态框头部 -->
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">修改招生</h4>
+                            </div>
+
+                            <!-- 模态框主体 -->
+                            <div class="modal-body">
+                                <form class="form-horizontal" id="form{$vo.id}" role="form" method="post" action="{:url('edit')}">
+                                    <div class="form-group">
+                                        <label for="title" class="col-sm-2 control-label">招生名称</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="title" value="{$vo.title}"
+                                                   placeholder="请输入招生名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="price" class="col-sm-2 control-label">学费</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="price" value="{$vo.price}"
+                                                   placeholder="请输入学费">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="num" class="col-sm-2 control-label">招生人数</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="num" value="{$vo.num}"
+                                                   placeholder="请输入招生人数">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="price" class="col-sm-2 control-label">招生简章</label>
+                                        <div class="col-sm-10">
+                                            <textarea name="content" class="form-control" cols="30" rows="10" placeholder="请输入招生简章">{$vo.content}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="linker" class="col-sm-2 control-label">联系人</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="linker" value="{$vo.linker}"
+                                                   placeholder="请输入联系人">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="telephone" class="col-sm-2 control-label">联系电话</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="telephone" value="{$vo.telephone}"
+                                                   placeholder="请输入联系电话">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="endtime" class="col-sm-2 control-label">截止时间</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="endtime" value="{$vo.endtime}"
+                                                   placeholder="请输入截止时间">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="rid" value="{$vo.id}"/>
+                                    <!-- 模态框底部 -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" id="edit_role" onclick="dopost('edit',{$vo.id})">修改</button>
+                                    </div>
+                                </form>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <!--修改结束-->
             </td>
         </tr>
+
         {/volist}
         </tbody>
 
@@ -85,7 +161,7 @@
 
                 <!-- 模态框主体 -->
                 <div class="modal-body">
-                    <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('add')}">
+                    <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
                         <div class="form-group">
                             <label for="title" class="col-sm-2 control-label">招生名称</label>
                             <div class="col-sm-10">
@@ -137,8 +213,7 @@
                         <input type="hidden" name="rid" value="" id="selfcode"/>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add');">添加</button>
-                            <button type="button" class="btn btn-default" id="edit_role" style="display:none;" onclick="dopost('edit')">修改</button>
+                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add',0);">添加</button>
                         </div>
                     </form>
                 </div>
@@ -157,12 +232,12 @@
 
                 <!-- 模态框头部 -->
                 <div class="modal-header">
-                    <h4 class="modal-title">更改成功</h4>
+                    <h4 class="modal-title">删除成功</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <!-- 模态框主体 -->
                 <div class="modal-body">
-                    更改成功！
+                    删除成功！
 
                 </div>
 
@@ -183,52 +258,14 @@
         minView: 0,
         forceParse: 0
     });
-    /*添加*/
 
-    function add_edit(type,id,parentcode) {
-
-        switch (type){
-            case 'add':
-
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#add_role').show()
-                $('#edit_role').hide()
-
-                break;
-            case 'edit':
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#selfcode').val(id)//如果是修改,id是自己
-                $('#add_role').hide()
-                $('#edit_role').show()
-                $.get("{:url('edit')}?do=get&rid="+id,function (data) {
-                    var newdata = data.info
-
-                    $('#title').val(newdata.title)
-                    $('#price').val(newdata.price)
-                    $('#num').val(newdata.num)
-                    $('#content').val(newdata.content)
-                    $('#linker').val(newdata.linker)
-                    $('#telephone').val(newdata.telephone)
-                    $('#endtime').val(newdata.endtime)
-                });
-                
-                break;
-            default:
-                alert('error')
-        }
-
-    }
-
-
-    function dopost($url) {
+    function dopost($url,formid) {
         $url=='add'?"{:url('add')}":"{:url('edit')}";
 
         $.ajax({
             url: $url+"?"+Math.random(),
             type:"post",
-            data:$("#form1").serialize(),
+            data:$('#form'+formid).serialize(),
             success:function(data){
 
                 if(data.code=='000'){
@@ -249,14 +286,17 @@
     }
 
     function deleteRole(id) {
-        $.get("{:url('delete')}?rid="+id,function (data) {
-            if(data.code=='000'){
-                alert(data.info)
-                $('#myModal2').modal('hide')
-            }else{
+        if(confirm('确定删除吗')){
+            $.get("{:url('delete')}?rid="+id,function (data) {
+                if(data.code=='000'){
+                    alert(data.info)
+                    $('#myModal2').modal('hide')
+                }else{
 
-            }
-        });
+                }
+            });
+        }
+
     }
 
 </script>
