@@ -160,10 +160,6 @@ class Admission extends Base{
         }
     }
 
-    public function accept(){
-        echo 1;
-    }
-
 
 
 }

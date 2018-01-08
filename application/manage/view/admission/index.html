@@ -56,10 +56,6 @@
                         echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
                         echo '<strong>/</strong>';
                     }
-                    if(check($uid,'/manage/admission/accept')){
-                        echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">查看</a>';
-                        echo '<strong>/</strong>';
-                    }
                     if(check($uid,'/manage/admission/delete')){
                         echo '<a href="#" onclick="deleteRole('.$vo['id'].');">删除</a>';
                     }
@@ -153,6 +149,7 @@
         </div>
     </div>
     <!--添加结束-->
+
     <!--删除提示-->
     <div class="modal fade" id="myModal2">
         <div class="modal-dialog">
