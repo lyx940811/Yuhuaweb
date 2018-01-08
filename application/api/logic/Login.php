@@ -92,25 +92,25 @@ class Login extends Base
             }
             else{
                 //密码错误，次数+1，到达3的时候锁定
-                $redis_key = 'wrongpwd'.$user['id'];
-                $redis = new \Redis();
-                $redis->connect('127.0.0.1', 6379);
-                if($redis->exists($redis_key)){
-                    $num = $redis->get($redis_key);
-                    $num = $num+1;
-                    if($num == 3){
+               // $redis_key = 'wrongpwd'.$user['id'];
+              //  $redis = new \Redis();
+              //  $redis->connect('127.0.0.1', 6379);
+              //  if($redis->exists($redis_key)){
+              //      $num = $redis->get($redis_key);
+             //       $num = $num+1;
+              //      if($num == 3){
                         //locked
-                        $user->locked = 1;
-                        $user->save();
-                        $redis->delete($redis_key);
-                    }
-                    else{
-                        $redis->setex($redis_key, 86400, $num);
-                    }
-                }
-                else{
-                    $redis->setex($redis_key, 86400, 1);
-                }
+              //          $user->locked = 1;
+              //          $user->save();
+              //          $redis->delete($redis_key);
+              //      }
+              //      else{
+              //          $redis->setex($redis_key, 86400, $num);
+              //      }
+              //  }
+             //   else{
+             //       $redis->setex($redis_key, 86400, 1);
+              //  }
 
                 return json_data(140,$this->codeMessage[140],'');
             }

@@ -208,11 +208,11 @@ class Course extends Home
             foreach ($comment as &$c){
                 $user = User::get($c['userid']);
                 $c['username'] = $user->username;
-                $c['avatar']   = $this->request->domain()."/".$user->title;
+                $c['avatar']   = $this->request->domain().DS.$user->title;
                 $c['sonreviewNum']   = Db::name('course_review')->where('parentid',$c['id'])->count();
-                $c['likeNum']   = Db::name('like')->where('type','comments')->where('articleid',$c['id'])->count();
+                $c['likeNum']   = Db::name('like')->where('type','comment')->where('articleid',$c['id'])->count();
                 if(!empty($this->user)){
-                    if(Like::get(['userid'=>$this->user->id,'type'=>'comments','articleid'=>$c['id']])){
+                    if(Like::get(['userid'=>$this->user->id,'type'=>'comment','articleid'=>$c['id']])){
                         $c['is_like'] = 1;
                     }
                     else{
@@ -221,7 +221,7 @@ class Course extends Home
                 }
             }
         }
-
+        
         return json_data(0,$this->codeMessage[0],$comment);
     }
 
@@ -243,7 +243,7 @@ class Course extends Home
 
         $user = User::get($comment['userid']);
         $comment['username']       = $user->username;
-        $comment['avatar']         = $user->title;
+        $comment['avatar']         = $this->request->domain()."/".$user->title;
         $comment['sonreviewNum']   = Db::name('course_review')->where('parentid',$comment['id'])->count();
         $comment['likeNum']        = Db::name('like')->where('type','comments')->where('articleid',$comment['id'])->count();
         if(!empty($this->user)){
@@ -284,7 +284,7 @@ class Course extends Home
         foreach ($askList as &$a){
             $user = User::get($a['userID']);
             $a['username'] = $user->username;
-            $a['avatar']   = $this->request->domain()."/".$user->title;
+            $a['avatar']   = $this->request->domain().DS.$user->title;
             $a['category'] = Db::name('category')->where('code',$a['category_id'])->value('name');
             unset($a['category_id'],$a['userID'],$a['courseid']);
             $a['answerNum'] = Db::name('ask_answer')->where('askID',$a['id'])->count();
@@ -316,6 +316,175 @@ class Course extends Home
             'achivement'    =>  '教师成就'
         ];
         return json_data(0,$this->codeMessage[0],$data);
+    }
+
+
+    /**
+     * 获得课程目录(加了进度)
+     */
+    public function getcourselesson(){
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $courseid = $this->data['courseid'];
+        if(!$course = CourseModel::get($courseid)){
+            return json_data(200,$this->codeMessage[200],'');
+        }
+        $fields = 'ct.id as taskid,ct.courseid,ct.length,ct.chapterid,ct.title,cc.title as chapter,cc.seq';
+        $lesson = Db::name('course_task')
+            ->alias('ct')
+            ->join('course_chapter cc','ct.chapterid = cc.id')
+            ->field($fields)
+            ->order('cc.seq')
+            ->where('ct.courseid',$courseid)
+            ->page($page,10)
+            ->select();
+
+        if(!empty($this->user)){
+            foreach ($lesson as &$l){
+                $length = explode(':',$l['length']);
+                $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
+                if($watch_log = Db::name('study_result')->where(['userid'=>$this->user->id,'courseid'=>$l['courseid'],'chapterid'=>$l['chapterid']])->find()){
+                    if($watch_log['status']==1){
+                        $l['plan'] = '100%';
+                    }
+                    else{
+                        $watch_time = strtotime($watch_log['endtime'])-strtotime($watch_log['starttime']);
+                        $l['plan'] = (round($watch_time/$couse_time,2)*100)."%";
+                    }
+                }
+                else{
+                    $l['plan'] = '0%';
+                }
+                unset($l['length'],$l['seq']);
+            }
+        }
+        return json_data(0,$this->codeMessage[0],$lesson);
+    }
+
+    public function getcoursetop(){
+        $course_all_time = 0;
+        $courseid = $this->data['courseid'];
+        //为了拿顶部的title
+        $course = Db::name('course')->field('title')->find($courseid);
+        //课程下的所有任务，为了计算时间
+        $task = Db::name('course_task')
+            ->where('courseId',$courseid)
+            ->field('id,courseId,chapterid,length,title')
+            ->select();
+
+        //计算这个课程的所有的task的总时间
+        if($task){
+            foreach ( $task as $t){
+                $length = explode(':',$t['length']);
+                $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
+                $course_all_time = $course_all_time+$couse_time;
+            }
+        }
+        //为了计算任务比需要的分母
+        $taskNum = count($task);
+
+        empty($task)?$next_task='还未有新课程':$next_task = $task[0]['title'];
+        empty($task)?$learn_taskid='0':$next_task = $task[0]['id'];
+        //假如登陆了
+        if(!empty($this->user)){
+            $learn_task = Db::name('study_result')
+                ->where('courseid',$courseid)
+                ->where('userid',$this->user->id)
+                ->order('chapterid desc')
+                ->find();
+            //找到最后一条学习记录
+            if($learn_task){
+                if($learn_task['status']==0){
+                    //还没学完,需要拿这一节课得名字
+                    $next_task = Db::name('course_task')
+                        ->where('courseid',$courseid)
+                        ->where('chapterid',$learn_task['chapterid'])
+                        ->find();
+                    $learn_taskid = $next_task['id'];
+                    $next_task    = $next_task['title'];
+                }
+                else{
+                    //学完了，需要拿下一节课得名字
+                    $next_task = Db::name('course_task')
+                        ->where('courseid',$courseid)
+                        ->where('chapterid','>',$learn_task['chapterid'])
+                        ->find();
+
+                    if(!empty($next_task)){
+                        $learn_taskid = $next_task['id'];
+                        $next_task = $next_task['title'];
+                    }
+                    else{
+                        $next_task = '已学完';
+                        $learn_taskid = 0;
+                    }
+                }
+                //还需要算进度
+                $learn_task = Db::name('study_result')
+                    ->where('courseid',$courseid)
+                    ->where('userid',$this->user->id)
+                    ->order('chapterid desc')
+                    ->select();
+                $has_learn_time = 0;
+                foreach ( $learn_task as $t){
+                    if($t['status']==0){
+                        $watch_time = strtotime($t['endtime'])-strtotime($t['starttime']);
+                    }
+                    else{
+                        $length = Db::name('course_task')->where(['courseId'=>$t['courseid'],'chapterid'=>$t['chapterid']])->value('length');
+                        $length = explode(':',$length);
+                        $watch_time = $length[2]+$length[1]*60+$length[0]*3600;
+                    }
+                    $has_learn_time = $has_learn_time+$watch_time;
+                }
+                if($course_all_time!=0){
+                    $plan = (round($has_learn_time/$course_all_time,2)*100)."%";
+                }
+
+                //拿到完成的任务比（1/30）
+                $has_done_task = Db::name('study_result')
+                    ->where('courseid',$courseid)
+                    ->where('userid',$this->user->id)
+                    ->where('status',1)
+                    ->select();
+                $has_done = count($has_done_task).'/'.$taskNum;
+            }
+            else{
+                //没找到学习记录
+                $plan = '0%';
+                $has_done = '0/'.$taskNum;
+            }
+        }
+        else{
+            //没登陆
+            $plan = '0%';
+            $has_done = '0/'.$taskNum;
+        }
+        $data = [
+            'title'     =>  $course['title'],
+            'plan'      =>  $plan,
+            'has_done'  =>  $has_done,
+            'next_task' =>  $next_task,
+            'next_task_id'  =>  $learn_taskid,
+        ];
+        return json_data(0,$this->codeMessage[0],$data);
+    }
+
+    /**
+     * 获得一节课得详细url和类型
+     * @return array
+     */
+    public function getlessondetail(){
+        $taskid = $this->data['taskid'];
+        $course_key = ['id'=>"",'title'=>"",'courseid'=>"",'chapterid'=>"",'type'=>"",'mediaSource'=>"",'length'=>"",];
+        $course = Db::name('course_task')->find($taskid);
+        if(!$course){
+            if($course['type']!='url'){
+                $course['mediaSource'] = $this->request->domain().".".$course['mediaSource'];
+            }
+            return json_data(200,$this->codeMessage[200],[]);
+        }
+        $course = array_intersect_key($course,$course_key);
+        return json_data(0,$this->codeMessage[0],$course);
     }
 
 
