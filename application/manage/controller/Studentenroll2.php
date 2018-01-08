@@ -31,7 +31,7 @@ class StudentEnroll2 extends Base{
             ->join('category b','a.categoryID=b.code','LEFT')
             ->join('admission c','a.admissionID=c.id','LEFT')
             ->where($where)
-            ->field('a.id,a.realname,a.sex,a.telephone as phone,b.name,a.createTime,a.age,a.promotMan,a.admissionID,a.school,a.address,c.title')->paginate(20,false,['query'=>request()->get()]);
+            ->field('a.id,a.realname,a.sex,a.telephone as phone,b.name,a.createTime,a.age,a.promotMan,a.admissionID,a.cardsn,a.school,a.address,c.title')->paginate(20,false,['query'=>request()->get()]);
 
 //        echo Db::table('student_enroll')->getLastSql();exit;
 
@@ -51,13 +51,56 @@ class StudentEnroll2 extends Base{
     public function accept(){
         $id = $_GET['rid']+0;
 
-        if($_GET['type']==2){
-            $s['status'] = 2;
-        }else{
-            $s['status'] = 1;
+        if($_GET['type']==1){
+            Db::name('student_enroll')->field('status')->where('id',$id)->update(['status'=>1]);
+            return ['info'=>'拒绝成功','code'=>'000'];
         }
 
-        $ok = Db::name('student_enroll')->field('status')->where('id',$id)->update($s);
+        $info = input('post.');
+        /*
+         * 先添加用户表获取userid
+         */
+        $rand = rand(0,199);
+        $data = [
+            'username' => $info['phone'],
+            'nickname'=> '云工社0'.$rand,
+            'password' => password_hash('123456',PASSWORD_DEFAULT),
+            'mobile'=> $info['phone'],
+            'type'=>3,
+            'roles'=>5,//5为学员
+            'createdIp'=>request()->ip(),
+            'createdTime'=>date('Y-m-d H:i:s',time()),
+            'createUserID'=>session('admin_uid'),
+            'status'=>1,
+        ];
+
+        $user = Db::table('user');
+        $user->field('username,nickname,password,mobile,type,roles,createdIp,createdTime,createUserID,status')->insert($data);
+
+        $userid = $user->getLastInsID();
+
+        $day = date('Y',time());
+        $data2 = [
+            'userid' => $userid,
+            'idcard'=> $info['cardsn'],
+            'birthday'=>$day-$info['age'].':00:00 00:00:00',
+            'mobile'=> $info['phone'],
+            'sex'=>$info['sex'],
+            'age'=>$info['age'],
+            'school'=>$info['school'],
+            'address'=>$info['address'],
+            'realname'=>$info['realname'],
+            'createdTime'=>date('Y-m-d H:i:s',time()),
+        ];
+
+        $user_profile = Db::table('user_profile');
+        $user_profile->field('userid,idcard,birthday,mobile,mobile,sex,age,school,address,realname,createdTime')->insert($data2);
+
+
+        $s['status'] = 2;
+        $s['userid'] = $userid;
+
+        $ok = Db::name('student_enroll')->field('status,userid')->where('id',$id)->update($s);
 
         if($ok){
             return ['info'=>'授理成功','code'=>'000'];
