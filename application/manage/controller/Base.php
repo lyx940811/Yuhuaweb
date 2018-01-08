@@ -33,5 +33,7 @@ class Base extends Controller{
 
     }
 
+    public function sss(){}
+
 
 }
