@@ -55,7 +55,7 @@ class Student extends User
             foreach ($askList as &$a){
                 $user = UserModel::get($a['userID']);
                 $a['username'] = $user->username;
-                $a['avatar']   = $this->request->domain()."/".$user->title;
+                $a['avatar']   = $this->request->domain().DS.$user->title;
                 $a['category'] = Db::name('category')->where('code',$a['category_id'])->value('name');
                 $a['addtime'] = date('Y-m-d',strtotime($a['addtime']));
                 unset($a['category_id'],$a['courseid']);
@@ -83,8 +83,8 @@ class Student extends User
         foreach ( $answerList as &$a ){
             $askuser = UserModel::get($a['askUserID']);
             $a['askusername'] = $askuser->username;
-            $a['askuseravatar'] = $this->request->domain()."/".$askuser->title;
-            $a['answerAvatar'] = $this->request->domain()."/".$a['answerAvatar'];
+            $a['askuseravatar'] = $this->request->domain().DS.$askuser->title;
+            $a['answerAvatar'] = $this->request->domain().DS.$a['answerAvatar'];
             $a['askcategory'] = Db::name('category')->where('code',$a['category_id'])->value('name');
             $a['addtime'] = date('Y-m-d',strtotime($a['addtime']));
             $a['asktime'] = date('Y-m-d',strtotime($a['asktime']));
@@ -284,7 +284,7 @@ class Student extends User
      * @return array
      */
     public function is_collect(){
-        $courseid = 5;//$this->data['courseid'];
+        $courseid = $this->data['courseid'];
         if(!CourseFavorite::get(['userid'=>$this->user->id,'courseid'=>$courseid])){
             return json_data(0,$this->codeMessage[0],['is_collect'=>0]);
         }

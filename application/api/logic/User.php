@@ -180,7 +180,7 @@ class User extends Base
 //        $userid = $data['userid'];
         $res = uploadPic($file,$userid);
         if($res['code']!=0){
-            return json_data($res['code'],$this->codeMessage[$res['code']],$res['path']);
+            return json_data($res['code'],$this->codeMessage[$res['code']],[]);
         }
 
         if( $user = UserModel::get($userid) ){

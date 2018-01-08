@@ -7,7 +7,7 @@ use think\Loader;
 use think\Config;
 use app\index\model\UserProfile as UserProfileModel;
 use app\index\model\User as UserModel;
-use app\index\model\Friend as FriendModel;
+use app\index\model\StudyResult;
 use app\index\model\Asklist;
 use think\Db;
 use think\Exception;
@@ -51,7 +51,7 @@ class User extends Controller
             $this->data = $this->request->param();
         }
 
-        $user_token = 'e5b08e6f14cc2cea6d986e584100b4f5';//$this->request->param('user_token');
+        $user_token = $this->request->param('user_token');
         $this->verifyUserToken($user_token);
     }
 
@@ -245,7 +245,7 @@ class User extends Controller
     public function getmyinfo(){
         $data = [
             'username'  =>  $this->user->username,
-            'avatar'    =>  $this->request->domain()."/".$this->user->title,
+            'avatar'    =>  $this->request->domain().DS.$this->user->title,
             'mobile'    =>  $this->user->mobile,
             'classname' =>  '电气化1702班',
         ];
@@ -311,7 +311,7 @@ class User extends Controller
      * 给某个问答、回答、评论点赞
      */
     public function like(){
-        $type = ['ask','answer','commment'];
+        $type = ['ask','answer','comment'];
         $data = [
             'userid'        =>  $this->user->id,
             'type'          =>  $this->data['type'],
@@ -321,6 +321,10 @@ class User extends Controller
         if(!in_array($data['type'],$type)){
             return json_data(180,$this->codeMessage[180],'');
         }
+        if(Like::get(['userid'=>$data['userid'],'type'=>$data['type'],'articleid'=>$data['articleid']])){
+            return json_data(182,$this->codeMessage[182],'');
+        }
+
         Like::create($data);
         return json_data(0,$this->codeMessage[0],'');
     }
@@ -329,10 +333,13 @@ class User extends Controller
      * 取消点赞
      */
     public function canclelike(){
-        $type = ['ask','answer','commment'];
+        $type = ['ask','answer','comment'];
         $retype = $this->data['type'];
         if(!in_array($retype,$type)){
             return json_data(180,$this->codeMessage[180],'');
+        }
+        if(!Like::get(['userid'=>$this->user->id,'type'=>$this->data['type'],'articleid'=>$this->data['articleid']])){
+            return json_data(183,$this->codeMessage[183],'');
         }
         $delete = Like::destroy([
             'userid'    =>  $this->user->id,
@@ -363,9 +370,41 @@ class User extends Controller
             ->page($page,10)
             ->select();
         foreach ( $course as &$c ){
-            $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
-            $c['plan'] = '0%';
-            $c['lastwatch'] = '2017-12-28 13:27:34';
+            $c['smallPicture'] = $this->request->domain().DS.$c['smallPicture'];
+            //算总时间
+            $course_all_time = 0;
+            $all_task = Db::name('course_task')->where('courseId',$c['courseid'])->field('length')->select();
+            foreach ( $all_task as $at ){
+                $length = explode(':',$at['length']);
+                $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
+                $course_all_time = $course_all_time+$couse_time;
+            }
+            //一共学的时间
+            $c['lastwatch'] = '';
+            $c['plan'] = "0%";
+            $learn_task = Db::name('study_result')
+                ->where('courseid',$c['courseid'])
+                ->where('userid',$this->user->id)
+                ->order('endtime desc')
+                ->select();
+            $has_learn_time = 0;
+            if($learn_task){
+                foreach ( $learn_task as $t){
+                    if($t['status']==0){
+                        $watch_time = strtotime($t['endtime'])-strtotime($t['starttime']);
+                    }
+                    else{
+                        $length = Db::name('course_task')->where(['courseId'=>$t['courseid'],'chapterid'=>$t['chapterid']])->value('length');
+                        $length = explode(':',$length);
+                        $watch_time = $length[2]+$length[1]*60+$length[0]*3600;
+                    }
+                    $has_learn_time = $has_learn_time+$watch_time;
+                }
+                $c['lastwatch'] = $learn_task[0]['endtime'];
+            }
+            if($course_all_time!=0){
+                $c['plan'] = (round($has_learn_time/$course_all_time,2)*100)."%";
+            }
         }
         return json_data(0,$this->codeMessage[0],$course);
     }
@@ -375,51 +414,188 @@ class User extends Controller
      */
     public function mystudy(){
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
-        $field = 'c.id,c.title,c.smallPicture';
-        $course = Db::name('course')
-            ->alias('c')
-            ->field($field)
-            ->where('id','in',[5,8])
-            ->page($page,10)
+        $course = Db::name('study_result')
+            ->alias('sr')
+            ->join('course c','sr.courseid=c.id')
+            ->field('sr.courseid as id,c.title,c.smallPicture')
+            ->group('sr.courseid')
             ->select();
+
         if($course){
+            $done_course = array();
             foreach ( $course as &$c ){
                 $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
-                $c['plan'] = '10%';
-                $c['lastwatch'] = '2017-12-28 13:27:34';
+                //算总时间
+                $course_all_time = 0;
+                $all_task = Db::name('course_task')->where('courseId',$c['id'])->field('length')->select();
+                foreach ( $all_task as $at ){
+                    $length = explode(':',$at['length']);
+                    $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
+                    $course_all_time = $course_all_time+$couse_time;
+                }
+                //一共学的时间
+                $c['lastwatch'] = '';
+                $c['plan'] = "0%";
+                $learn_task = Db::name('study_result')
+                    ->where('courseid',$c['id'])
+                    ->where('userid',$this->user->id)
+                    ->order('endtime desc')
+                    ->select();
+                $has_learn_time = 0;
+                if($learn_task){
+                    foreach ( $learn_task as $t){
+                        if($t['status']==0){
+                            $watch_time = strtotime($t['endtime'])-strtotime($t['starttime']);
+                        }
+                        else{
+                            $length = Db::name('course_task')->where(['courseId'=>$t['courseid'],'chapterid'=>$t['chapterid']])->value('length');
+                            $length = explode(':',$length);
+                            $watch_time = $length[2]+$length[1]*60+$length[0]*3600;
+                        }
+                        $has_learn_time = $has_learn_time+$watch_time;
+                    }
+                    $c['lastwatch'] = $learn_task[0]['endtime'];
+                }
+                if($course_all_time!=0){
+                    $c['plan'] = (round($has_learn_time/$course_all_time,2)*100)."%";
+                }
+                if($c['plan']!='100%'){
+                    $done_course = array_merge($done_course,$c);
+                }
             }
-            return json_data(0,$this->codeMessage[0],$course);
+            return json_data(0,$this->codeMessage[0],$done_course);
         }
         else{
             return json_data(0,$this->codeMessage[0],array());
         }
-
     }
+
     /**
      * 得到【我的学习-已学完】列表
      * @return array
      */
     public function donestudy(){
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
-        $field = 'c.id,c.title,c.smallPicture';
-        $course = Db::name('course')
-            ->alias('c')
-            ->field($field)
-            ->where('id','in',[11,12,13])
-            ->page($page,10)
+        $course = Db::name('study_result')
+            ->alias('sr')
+            ->join('course c','sr.courseid=c.id')
+            ->field('sr.courseid as id,c.title,c.smallPicture')
+            ->group('sr.courseid')
             ->select();
+
         if($course){
+            $done_course = array();
             foreach ( $course as &$c ){
                 $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
-                $c['plan'] = '10%';
-                $c['lastwatch'] = '2017-12-28 13:27:34';
+                //算总时间
+                $course_all_time = 0;
+                $all_task = Db::name('course_task')->where('courseId',$c['id'])->field('length')->select();
+                foreach ( $all_task as $at ){
+                    $length = explode(':',$at['length']);
+                    $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
+                    $course_all_time = $course_all_time+$couse_time;
+                }
+                //一共学的时间
+                $c['lastwatch'] = '';
+                $c['plan'] = "0%";
+                $learn_task = Db::name('study_result')
+                    ->where('courseid',$c['id'])
+                    ->where('userid',$this->user->id)
+                    ->order('endtime desc')
+                    ->select();
+                $has_learn_time = 0;
+                if($learn_task){
+                    foreach ( $learn_task as $t){
+                        if($t['status']==0){
+                            $watch_time = strtotime($t['endtime'])-strtotime($t['starttime']);
+                        }
+                        else{
+                            $length = Db::name('course_task')->where(['courseId'=>$t['courseid'],'chapterid'=>$t['chapterid']])->value('length');
+                            $length = explode(':',$length);
+                            $watch_time = $length[2]+$length[1]*60+$length[0]*3600;
+                        }
+                        $has_learn_time = $has_learn_time+$watch_time;
+                    }
+                    $c['lastwatch'] = $learn_task[0]['endtime'];
+                }
+                if($course_all_time!=0){
+                    $c['plan'] = (round($has_learn_time/$course_all_time,2)*100)."%";
+                }
+                if($c['plan']='100%'){
+                    $done_course = array_merge($done_course,$c);
+                }
             }
-            return json_data(0,$this->codeMessage[0],$course);
+            return json_data(0,$this->codeMessage[0],$done_course);
         }
         else{
             return json_data(0,$this->codeMessage[0],array());
         }
     }
+
+
+    /**
+     * 开始观看
+     * @return array
+     */
+    public function startwatch(){
+        $courseid  = $this->data['courseid'];
+        $chapterid = $this->data['chapterid'];
+        if($watch = StudyResult::get(['userid'=>$this->user->id,'courseid'=>$courseid,'chapterid'=>$chapterid])){
+            if($watch['status']!=1){
+                $data = [
+                    'starttime' => date('Y-m-d H:i:s',time()),
+                    'endtime'   => '0000-00-00 00:00:00'
+                ];
+                StudyResult::update($data,['id'=>$watch['id']]);
+            }
+            return json_data(0,$this->codeMessage[0],'');
+        }
+        else{
+            $task = Db::name('course_task')->where(['courseId'=>$courseid,'chapterid'=>$chapterid])->find();
+            $video_type = ['mp4'];
+            $data = [
+                'userid'    =>  $this->user->id,
+                'starttime' => date('Y-m-d H:i:s',time()),
+                'courseid'=>$courseid,
+                'chapterid'=>$chapterid
+            ];
+            if(!in_array($task['type'],$video_type)){
+                $data['status'] = 1;
+            }
+            StudyResult::create($data);
+            return json_data(0,$this->codeMessage[0],'');
+        }
+    }
+
+    /**
+     * 结束观看
+     */
+    public function endwatch(){
+        $courseid  = $this->data['courseid'];
+        $chapterid = $this->data['chapterid'];
+        if($watch = StudyResult::get(['userid'=>$this->user->id,'courseid'=>$courseid,'chapterid'=>$chapterid])){
+            $time = time();
+            $course = Db::name('course_task')
+                ->where('courseId',$courseid)
+                ->where('chapterid',$chapterid)
+                ->find();
+
+            $length = explode(':',$course['length']);
+            $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
+
+            $watch_time = $time-strtotime($watch['starttime']);
+            if($watch_time>$couse_time){
+                $data['status'] = 1;
+            }
+            $data = ['endtime' => date('Y-m-d H:i:s',$time)];
+            StudyResult::update($data,['id'=>$watch['id']]);
+            return json_data(0,$this->codeMessage[0],'');
+        }
+        else{
+            return json_data(184,$this->codeMessage[184],'');
+        }
+    }
+
 
 
 

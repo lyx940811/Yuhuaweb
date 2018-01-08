@@ -7,7 +7,7 @@ use think\Db;
 use think\Exception;
 use think\captcha\Captcha;
 
-/** app首页相关的接口【2.还需要对课程人数和评论进行计数】
+/** app首页相关的接口【1.还缺少得到轮播图的接口2.还需要对课程人数和评论进行计数】
  * Class Index
  * @package app\index\controller
  */
@@ -48,37 +48,40 @@ class Index extends Home
             unset($map['categoryId']);
         }
 
-        switch($type){
-            case 'hot':
-                $map['is_hot'] = 1;
-                break;
-            case 'recommend':
-                $map['recommended'] = 1;
-                break;
-            case 'new':
-                $map['is_new'] = 1;
-                break;
-        }
+//        switch($type){
+//            case 'hot':
+//                $map['is_hot'] = 1;
+//                break;
+//            case 'recommend':
+//                $map['recommended'] = 1;
+//                break;
+//            case 'new':
+//                $map['is_new'] = 1;
+//                break;
+//        }
 
         $map['status'] = 1;
 
         $course = Db::name('course')
             ->where($map)
             ->field('id,title,smallPicture,price')
+            ->order('createdTime desc')
             ->page($page,6)
             ->select();
         //需要对在学人数和评论进行计数
         foreach ( $course as &$c ){
-            $c['learnNum']      = 0;
-            $c['commentsNum']   = 0;
+            $people = Db::name('study_result')->where('courseid',$c['id'])->group('userid')->select();
+            $c['learnNum']      = count($people);
+            $c['commentsNum']   = Db::name('course_review')->where('courseid',$c['id'])->count();
 
             $c['price']==0.00?$c['is_free'] = 1:$c['is_free'] = 0;
             unset($c['price']);
-            $c['smallPicture']  = $this->request->domain()."/".$c['smallPicture'];
+            $c['smallPicture']  = $this->request->domain().DS.$c['smallPicture'];
         }
 
         return json_data(0,$this->codeMessage[0],$course);
     }
+
 
     /**
      * 得到轮播图
@@ -88,7 +91,7 @@ class Index extends Home
         if($pic){
             $pic = array_column($pic,'path');
             foreach ($pic as &$item) {
-                $item = $this->request->domain()."/".$item;
+                $item = $this->request->domain().DS.$item;
             }
         }
         return json_data(0,$this->codeMessage[0],$pic);
@@ -109,12 +112,13 @@ class Index extends Home
 
         //需要对在学人数和评论进行计数
         foreach ( $course as &$c ){
-            $c['learnNum']      = 0;
-            $c['commentsNum']   = 0;
+            $people = Db::name('study_result')->where('courseid',$c['id'])->group('userid')->select();
+            $c['learnNum']      = count($people);
+            $c['commentsNum']   = Db::name('course_review')->where('courseid',$c['id'])->count();
 
             $c['price']==0.00?$c['is_free'] = 1:$c['is_free'] = 0;
             unset($c['price']);
-            $c['smallPicture']  = $this->request->domain()."/".$c['smallPicture'];
+            $c['smallPicture']  = $this->request->domain().DS.$c['smallPicture'];
         }
 
         return json_data(0,$this->codeMessage[0],$course);
