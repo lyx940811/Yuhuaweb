@@ -94,13 +94,75 @@ class User extends Controller
     }
 
     /**
-     * 修改头像
+     * 修改头像（表单）
      */
     public function chheadicon(){
         $file = $_FILES;
-//        $this->data['userid'] = $this->user->id;
         $res  = $this->LogicUser->upUserHeadImg($file,$this->user->id);
         return $res;
+    }
+    /**
+     * 修改头像(接收base64)
+     */
+    public function chheadiconbase(){
+        $uploads_dir = "uploads".DS."pictures".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
+        $date_dir    = ROOT_PATH."public".DS.$uploads_dir;
+        if(!file_exists($date_dir)){
+            mkdir($date_dir,0775,true);
+        }
+//        $base64_img = $this->data['head_icon'];
+        $base64_img = '';
+        $type = 'jpg';
+
+        if(in_array($type,array('pjpeg','jpeg','jpg','gif','bmp','png'))){
+            $new_file = $uploads_dir.DS.date('YmdHis_').'.'.$type;
+            if(file_put_contents($new_file, base64_decode($base64_img))){
+                $img_path = str_replace('../../..', '', $new_file);
+                $user = \app\index\model\User::get($this->user->id);
+                $user->title = $img_path;
+                $user->save();
+                return json_data(0,$this->codeMessage[0],$this->request->domain()."/".$img_path);
+            }else{
+                return json_data(720,'文件上传错误','');
+            }
+        }else{
+            //文件类型错误
+            return json_data(700,$this->codeMessage[700],'');
+        }
+
+    }
+
+    //网页64编码后的接收，有【data:image/jpeg;base64,】头
+    public function chheadiconbase_beifen(){
+        $uploads_dir = "uploads".DS."pictures".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
+        $date_dir    = ROOT_PATH."public".DS.$uploads_dir;
+        if(!file_exists($date_dir)){
+            mkdir($date_dir,0775,true);
+        }
+        $base64_img = $this->data['head_icon'];
+        if(preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_img, $result)){
+            $type = $result[2];
+            if(in_array($type,array('pjpeg','jpeg','jpg','gif','bmp','png'))){
+                $new_file = $uploads_dir.DS.date('YmdHis_').'.'.$type;
+                if(file_put_contents($new_file, base64_decode(str_replace($result[1], '', $base64_img)))){
+                    $img_path = str_replace('../../..', '', $new_file);
+                    $user = \app\index\model\User::get($this->user->id);
+                    $user->title = $img_path;
+                    $user->save();
+                    return json_data(0,$this->codeMessage[0],$this->request->domain()."/".$img_path);
+                }else{
+                    return json_data(720,'文件上传错误','');
+                }
+            }else{
+                //文件类型错误
+                return json_data(700,$this->codeMessage[700],'');
+            }
+
+        }else{
+            //文件错误
+            return json_data(730,'文件错误','');
+        }
+
     }
     /**
      * 实名认证
@@ -460,7 +522,7 @@ class User extends Controller
                     $c['plan'] = (round($has_learn_time/$course_all_time,2)*100)."%";
                 }
                 if($c['plan']!='100%'){
-                    $done_course = array_merge($done_course,$c);
+                    $done_course[] = $c;
                 }
             }
             return json_data(0,$this->codeMessage[0],$done_course);
@@ -481,6 +543,7 @@ class User extends Controller
             ->join('course c','sr.courseid=c.id')
             ->field('sr.courseid as id,c.title,c.smallPicture')
             ->group('sr.courseid')
+            ->page($page,10)
             ->select();
 
         if($course){
@@ -522,7 +585,7 @@ class User extends Controller
                     $c['plan'] = (round($has_learn_time/$course_all_time,2)*100)."%";
                 }
                 if($c['plan']='100%'){
-                    $done_course = array_merge($done_course,$c);
+                    $done_course[] = $c;
                 }
             }
             return json_data(0,$this->codeMessage[0],$done_course);

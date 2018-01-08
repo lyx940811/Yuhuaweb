@@ -61,7 +61,7 @@ class Home extends Controller
         ];
         $res = $LogicUser->getusertoken($data);
 
-        return json_data(0,$this->codeMessage[0],$res);
+        return $res;
 
     }
 
