@@ -9,7 +9,7 @@ namespace app\manage\controller;
 
 use think\Db;
 
-class StudentEnroll extends Base{
+class StudentEnroll2 extends Base{
     public function index(){
 
         $info = input('get.');

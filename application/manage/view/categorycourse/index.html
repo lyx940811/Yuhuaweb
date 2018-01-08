@@ -69,7 +69,8 @@
                     if(check($uid,'/manage/categorycourse/edit')){
                         echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
                         echo '<strong>/</strong>';
-                    }elseif(check($uid,'/manage/categorycourse/enable')){
+                    }
+                    if(check($uid,'/manage/categorycourse/enable')){
                             $flag = $vo['Flag']?'禁用':'启用';
                         echo '<a href="#" onclick="enable('.$vo['id'].');">'.$flag.'</a>';
                     }

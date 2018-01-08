@@ -42,7 +42,8 @@
                 if(check($uid,'/manage/rolefunction/edit')){
                     echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
                     echo '<strong>/</strong>';
-                }elseif(check($uid,'/manage/rolefunction/delete')){
+                }
+                if(check($uid,'/manage/rolefunction/delete')){
                     echo '<a href="#" onclick="deleteRole('.$vo['id'].');">删除</a>';
                 }
                 {/php}

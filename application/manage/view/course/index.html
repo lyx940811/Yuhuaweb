@@ -305,7 +305,7 @@
     }
 
     function deleteRole(id) {
-        $.get("{:url('enable')}?rid="+id,function (data) {
+        $.get("{:url('delete')}?rid="+id,function (data) {
             if(data.code=='000'){
                 alert(data.info)
                 $('#myModal2').modal('hide')

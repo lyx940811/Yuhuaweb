@@ -56,9 +56,11 @@
                     if(check($uid,'/manage/role/edit')){
                         echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
                         echo '<strong>/</strong>';
-                    }elseif(check($uid,'/manage/role/delete')){
+                    }
+                    if(check($uid,'/manage/role/delete')){
                         echo '<a href="#" onclick="deleteRole('.$vo['id'].');">删除</a>';
-                    }elseif(check($uid,'/manage/role/add')){
+                    }
+                    if(check($uid,'/manage/role/add')){
                         echo '<strong>/</strong>';
                         echo '<a href="#" onclick="add_edit(\'addSon\','.$vo['id'].','.$vo['code'].')" data-toggle="modal" data-target="#myModal">添加子角色</a>';
                     }
