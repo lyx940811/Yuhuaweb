@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+{include file="manage/header" /}
+<link href="__MANAGE_JS__datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+<body>
+<div class="container-fluid">
+    {php}
+    $uid = session('admin_uid');
+    {/php}
+
+    <div class="well clearfix">
+        <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
+            <div class="form-group">
+                <label>招生名称</label>
+                <input type="text" class="form-control" placeholder="招生名称" name="title">
+            </div>
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </form>
+    </div>
+    <div class="pull-right">
+        {php}
+        if(check($uid,'/manage/admission/add')){
+            echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">创建招生</a>';
+        }
+        {/php}
+
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>招生名称</th>
+            <th>学费</th>
+            <th>招生人数</th>
+            <th>发布日期</th>
+            <th>截止日期</th>
+            <th>联系人</th>
+            <th>联系电话</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {volist name="list" id="vo"}
+        <tr>
+            <td>{$vo.title}</td>
+            <td>{$vo.price}</td>
+            <td>{$vo.num}</td>
+            <td>{$vo.createdTime}</td>
+            <td>{$vo.endtime}</td>
+            <td>{$vo.linker}</td>
+            <td>{$vo.telephone}</td>
+            <td>
+                {php}
+                    if(check($uid,'/manage/admission/edit')){
+                        echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
+                        echo '<strong>/</strong>';
+                    }
+                    if(check($uid,'/manage/admission/accept')){
+                        echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">查看</a>';
+                        echo '<strong>/</strong>';
+                    }
+                    if(check($uid,'/manage/admission/delete')){
+                        echo '<a href="#" onclick="deleteRole('.$vo['id'].');">删除</a>';
+                    }
+                {/php}
+
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+
+    </table>
+    <ul class="pagination">
+        {$page}
+    </ul>
+
+    <!--新增-->
+    <!-- 模态框 -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">创建招生</h4>
+                </div>
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('add')}">
+                        <div class="form-group">
+                            <label for="title" class="col-sm-2 control-label">招生名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="title" name="title"
+                                       placeholder="请输入招生名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="price" class="col-sm-2 control-label">学费</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="price" name="price"
+                                       placeholder="请输入学费">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="num" class="col-sm-2 control-label">招生人数</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="num" name="num"
+                                       placeholder="请输入招生人数">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="price" class="col-sm-2 control-label">招生简章</label>
+                            <div class="col-sm-10">
+                                <textarea name="content" id="content" class="form-control" cols="30" rows="10" placeholder="请输入招生简章"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="linker" class="col-sm-2 control-label">联系人</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="linker" name="linker"
+                                       placeholder="请输入联系人">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="telephone" class="col-sm-2 control-label">联系电话</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="telephone" name="telephone"
+                                       placeholder="请输入联系电话">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="endtime" class="col-sm-2 control-label">截止时间</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="endtime" name="endtime"
+                                       placeholder="请输入截止时间">
+                            </div>
+                        </div>
+                        <input type="hidden" name="rid" value="" id="selfcode"/>
+                        <!-- 模态框底部 -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add');">添加</button>
+                            <button type="button" class="btn btn-default" id="edit_role" style="display:none;" onclick="dopost('edit')">修改</button>
+                        </div>
+                    </form>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    <!--添加结束-->
+    <!--删除提示-->
+    <div class="modal fade" id="myModal2">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">更改成功</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+                    更改成功！
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--删除结束-->
+</div>
+{include file='manage/bottom'}
+<script type="text/javascript" src="__MANAGE_JS__datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+    $("#endtime").datetimepicker({
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 0,
+        forceParse: 0
+    });
+    /*添加*/
+
+    function add_edit(type,id,parentcode) {
+
+        switch (type){
+            case 'add':
+
+                $(" input[ type='text' ] ").val('')
+                $(" input[ type='hidden' ] ").val('')
+                $('#add_role').show()
+                $('#edit_role').hide()
+
+                break;
+            case 'edit':
+                $(" input[ type='text' ] ").val('')
+                $(" input[ type='hidden' ] ").val('')
+                $('#selfcode').val(id)//如果是修改,id是自己
+                $('#add_role').hide()
+                $('#edit_role').show()
+                $.get("{:url('edit')}?do=get&rid="+id,function (data) {
+                    var newdata = data.info
+
+                    $('#title').val(newdata.title)
+                    $('#price').val(newdata.price)
+                    $('#num').val(newdata.num)
+                    $('#content').val(newdata.content)
+                    $('#linker').val(newdata.linker)
+                    $('#telephone').val(newdata.telephone)
+                    $('#endtime').val(newdata.endtime)
+                });
+                
+                break;
+            default:
+                alert('error')
+        }
+
+    }
+
+
+    function dopost($url) {
+        $url=='add'?"{:url('add')}":"{:url('edit')}";
+
+        $.ajax({
+            url: $url+"?"+Math.random(),
+            type:"post",
+            data:$("#form1").serialize(),
+            success:function(data){
+
+                if(data.code=='000'){
+                    alert(data.info)
+                    $('#selfcode').val('')//必须清空
+
+                    $('#myModal').modal('hide')
+
+                }else{
+                    alert(data.error)
+                }
+
+            },
+            error:function(e){
+                alert("添加信息错误");
+            }
+        });
+    }
+
+    function deleteRole(id) {
+        $.get("{:url('delete')}?rid="+id,function (data) {
+            if(data.code=='000'){
+                alert(data.info)
+                $('#myModal2').modal('hide')
+            }else{
+
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
