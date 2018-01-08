@@ -39,7 +39,7 @@
     <div class="pull-right">
         {php}
         if(check($uid,'/manage/studentenroll/add')){
-        echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">新增专业</a>';
+        echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增专业</a>';
         }
         {/php}
 
@@ -56,6 +56,7 @@
             <th>报名专业</th>
             <th>报名日期</th>
             <th>学生状态</th>
+            <th>操作</th>
         </tr>
         </thead>
         <tbody>
@@ -70,6 +71,14 @@
             <td>{$vo.name}</td>
             <td>{$vo.createTime}</td>
             <td>{if condition="$vo['status'] eq 1"}未通过{elseif condition="$vo['status'] eq 2"}通过{else}待审{/if}</td>
+            <td>
+                <!--修改-->
+                <!-- 模态框 -->
+                <div class="modal fade" id="myModal_edit{$vo.id}">
+
+                </div>
+                <!--修改结束-->
+            </td>
         </tr>
         {/volist}
         </tbody>
@@ -93,7 +102,7 @@
 
                 <!-- 模态框主体 -->
                 <div class="modal-body">
-                    <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('add')}">
+                    <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
                         <div class="form-group">
                             <label for="role_code" class="col-sm-2 control-label">专业代码</label>
                             <div class="col-sm-10">
@@ -137,8 +146,6 @@
                     </form>
                 </div>
 
-
-
             </div>
         </div>
     </div>
@@ -170,57 +177,23 @@
 {include file='manage/bottom'}
 <script type="text/javascript" src="__MANAGE_JS__datepicker/bootstrap-datepicker.js"></script>
 <script type="text/javascript">
-/*
-一共3种方法，添加新专业，修改专业，禁用专业
-*/
-    /*添加*/
+
 $(".form_datetime").datepicker({
     autoclose: true,
     todayHighlight: true,
     language:"zh-CN",
     format:"yyyy-mm-dd"
 });
-    function add_edit(type,id,parentcode) {
-
-        switch (type){
-            case 'add':
-
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#add_role').show()
-                $('#edit_role').hide()
-
-                break;
-            case 'edit':
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#selfcode').val(id)//如果是修改,id是自己
-                $('#add_role').hide()
-                $('#edit_role').show()
-                $.get("{:url('edit')}?do=get&rid="+id,function (data) {
-                    $('#role_name').val(data.info.name)
-                    $('#role_code').val(data.info.code)
-                    $('#selfcode').val(data.info.id)
-                    $('#studyTimes').val(data.info.studyTimes)
-                    $('#point').val(data.info.point)
-                    $('#description').val(data.info.description)
-                });
-                
-                break;
-            default:
-                alert('error')
-        }
-
-    }
 
 
-    function dopost($url) {
+
+    function dopost($url,formid) {
         $url=='add'?"{:url('add')}":"{:url('edit')}";
 
         $.ajax({
             url: $url+"?"+Math.random(),
             type:"post",
-            data:$("#form1").serialize(),
+            data:$('#form'+formid).serialize(),
             success:function(data){
 
                 console.log(data)
@@ -230,8 +203,8 @@ $(".form_datetime").datepicker({
 
                     $('#selfcode').val('')//必须清空
 
+                    $('#myModal_edit'+formid).modal('hide')
                     $('#myModal').modal('hide')
-
                 }else{
                     alert(data.error)
                 }

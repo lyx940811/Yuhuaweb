@@ -10,7 +10,7 @@ namespace app\manage\controller;
 use think\Db;
 use think\Validate;
 
-class RewardPointFlow extends Base{
+class Rewardpointflow extends Base{
 
     public function index(){
 
@@ -31,6 +31,7 @@ class RewardPointFlow extends Base{
             ->paginate(20,['query'=>$info]);
 
         $course = Db::table('course')->field('id,title')->select();
+        $teacher = Db::table('teacher_info')->field('id')->select();
 
         $this->assign('list',$list);
         $this->assign('course',$course);

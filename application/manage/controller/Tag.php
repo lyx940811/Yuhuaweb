@@ -71,19 +71,6 @@ class Tag extends Base{
     }
 
     public function edit(){
-        //前台先获取资料
-        if(isset($_GET['do'])=='get'){
-            $id = $_GET['rid']+0;
-
-            $have = Db::name('tag')->field('id,name,code,roles')->where("id='$id'")->find();
-
-            if(!$have){//如果这个code有
-                return ['error'=>'没有此标签','code'=>'300'];
-            }else{
-                return ['info'=>$have,'code'=>'000'];
-            }
-
-        }
 
         $info = input('post.');
 

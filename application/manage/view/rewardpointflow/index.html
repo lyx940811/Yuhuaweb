@@ -6,7 +6,6 @@
     {php}
     $uid = session('admin_uid');
     {/php}
-
     <div class="well clearfix">
         <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
             <div class="form-group">
@@ -52,14 +51,77 @@
             <td>
                 {php}
                     if(check($uid,'/manage/classroom/edit')){
-                        echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
+                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
                         echo '<strong>/</strong>';
                     }
                     if(check($uid,'/manage/classroom/delete')){
                         echo '<a href="#" onclick="deleteR('.$vo['id'].');">删除</a>';
                     }
                 {/php}
+                <!--新增-->
+                <!-- 模态框 -->
+                <div class="modal fade" id="myModal_edit{$vo.id}">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
 
+                            <!-- 模态框头部 -->
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">修改班级</h4>
+                            </div>
+
+                            <!-- 模态框主体 -->
+                            <div class="modal-body">
+                                <form class="form-horizontal" role="form" id="form{$vo.id}" method="post" action="{:url('add')}">
+                                    <div class="form-group">
+                                        <label for="title" class="col-sm-2 control-label">班级名称</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="title" value="{$vo.title}"
+                                                   placeholder="请输入班级名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="categoryId" class="col-sm-2 control-label">专业</label>
+                                        <div class="col-sm-10">
+                                            <select name="categoryId" class="form-control">
+                                                <option value="">--请选择--</option>
+                                                {volist name="category" id="c"}
+                                                <option value="{$c.code}">{$c.name}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="teacherIds" class="col-sm-2 control-label">教师</label>
+                                        <div class="col-sm-10">
+                                            <select name="teacherIds" class="form-control">
+                                                <option value="">--请选择--</option>
+                                                {volist name="teacher" id="t"}
+                                                <option value="{$t.id}" {if condition="$vo['bid'] eq $t['id']"}selected{/if}>{$t.realname}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="about" class="col-sm-2 control-label">简介</label>
+                                        <div class="col-sm-10">
+                                            <textarea cols="30" rows="10" class="form-control" name="about">{$vo.about}</textarea>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="rid" value="{$vo.id}" />
+                                    <!-- 模态框底部 -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" onclick="dopost('edit',{$vo.id})">修改</button>
+                                    </div>
+                                </form>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <!--添加结束-->
             </td>
         </tr>
         {/volist}
@@ -84,7 +146,7 @@
 
                 <!-- 模态框主体 -->
                 <div class="modal-body">
-                    <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('add')}">
+                    <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
                         <div class="form-group">
                             <label for="title" class="col-sm-2 control-label">班级名称</label>
                             <div class="col-sm-10">

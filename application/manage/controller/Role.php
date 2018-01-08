@@ -93,30 +93,7 @@ class Role extends Base{
 
     public function edit(){
 
-        //前台先获取资料
-        if(isset($_GET['do'])=='get'){
-            $id = $_GET['rid']+0;
-
-            $role_table = Db::name('role');
-            $have = $role_table->field('id')->where("id='$id'")->find();
-
-            if(!$have){//如果这个code有
-                return ['error'=>'没有此角色','code'=>'300'];
-            }else{
-                return ['info'=>$have,'code'=>'000'];
-            }
-
-        }
-        //前台获取资料结束
-
-
-
         $info = input('post.');
-
-        if($info['parentcode']){
-            
-            return ['error'=>'角色不能修改父类','code'=>'200'];
-        }
 
         $msg  =   [
             'rid.require' => '角色rid不能为空',

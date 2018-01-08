@@ -38,7 +38,7 @@
             <td>
                 {php}
                     if(check($uid,'/manage/studyresult/edit')){
-                        echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
+                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
                         echo '<strong>/</strong>';
                     }
                     if(check($uid,'/manage/studyresult/delete')){
@@ -59,82 +59,7 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
-    /*添加、修改*/
 
-    function add_edit(type,id,parentcode) {
-
-        switch (type){
-            case 'add':
-
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#add_role').show()
-                $('#edit_role').hide()
-
-                break;
-            case 'edit':
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#selfcode').val(id)//如果是修改,id是自己
-                $('#add_role').hide()
-                $('#edit_role').show()
-                $.get("{:url('edit')}?do=get&rid="+id,function (data) {
-                    var newdata = data.info
-
-                    $('#title').val(newdata.title)
-                    $.each($('#categoryId').children(),function () {
-
-                        if($(this).val()==newdata.categoryId){
-                            $(this).prop('selected',true)
-                        }
-                    })
-
-                    $.each($('#teacherIds').children(),function () {
-
-                        if($(this).val()==newdata.teacherIds){
-                            $(this).prop('selected',true)
-                        }
-                    })
-
-                    $('#about').val(newdata.about)
-
-                });
-                
-                break;
-            default:
-                alert('error')
-        }
-
-    }
-
-
-    function dopost($url) {
-        $url=='add'?"{:url('add')}":"{:url('edit')}";
-
-        $.ajax({
-            url: $url+"?"+Math.random(),
-            type:"post",
-            data:$("#form1").serialize(),
-            success:function(data){
-
-                if(data.code=='000'){
-
-                    alert(data.info)
-
-                    $('#selfcode').val('')//必须清空
-
-                    $('#myModal').modal('hide')
-
-                }else{
-                    alert(data.error)
-                }
-
-            },
-            error:function(e){
-                alert("添加信息错误");
-            }
-        });
-    }
 
     function deleteR(id) {
         $.get("{:url('delete')}?rid="+id,function (data) {
