@@ -22,15 +22,14 @@ class Userprofile extends Base{
             $where['a.realname'] = ['like',"%{$info['username']}%"];
         }
 
+
         $list = Db::table('user_profile a')
-            ->join('user b','a.userid=b.id','LEFT')
-            ->field('a.id,a.userid,a.realname,a.sex,a.age,a.mobile,a.createdTime,b.username')
+            ->join('student_school b','a.id=b.userid','LEFT')
+            ->field('a.*,b.grade,b.starttime,b.depart,b.majors,b.class,b.style,b.studentstatus')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
 
-        $user = Db::table('user')->field('id,username')->select();
         $this->assign('list',$list);
-        $this->assign('user',$user);
         $this->assign('typename','学生列表');
         $this->assign('page',$list->render());
         return $this->fetch();
@@ -39,16 +38,20 @@ class Userprofile extends Base{
     public function add(){
         $info = input('post.');
 
+
         $msg  =   [
-            'userid.require' => '请选择用户',
+            'sn.require' => '请输入学号',
             'realname.require' => '真实性别不能为空',
-            'mobile.number' => '手机方式错误',
-            'mobile.between' => '手机太短',
+            'nation.require' => '请输入民族',
+            'birthday.require' => '请输入生日',
+            'mobile.require' => '手机号必须填写',
         ];
         $validate = new Validate([
-            'userid'  => 'require',
+            'sn'  => 'require',
             'realname'   => 'require',
-            'mobile'   => 'number|between:1,12',
+            'nation'   => 'require',
+            'birthday'   => 'require',
+            'mobile'   => 'require',
         ],$msg);
 
         $validate->check($info);
@@ -61,23 +64,48 @@ class Userprofile extends Base{
 
         $role_table = Db::name('user_profile');
 
-        $have = $role_table->field('id')->where("userid={$info['userid']}")->find();
-
-        if($have){
-            return ['error'=>'已经有此学生信息','code'=>'300'];
-        }
-
         $data = [
-            'userid' => $info['userid'],
+            'sn' => $info['sn'],
+            'userid'=>session('admin_uid'),
             'realname' => $info['realname'],
-            'mobile'=> $info['mobile'],
             'sex'=>$info['sex'],
+            'nation'=>$info['nation'],
+            'cardpic'=>serialize(["front_pic"=>$info['cardpic']]),
+            'birthday'=>$info['birthday'],
+            'idcard'=>$info['idcard'],
+            'policy'=>$info['policy'],
+            'mobile'=>$info['mobile'],
+            'city'=>$info['city'],
+            'household'=>$info['household'],
+            'address'=>$info['address'],
             'createdTime'=>date('Y-m-d H:i:s',time()),
         ];
 
-        $ok = $role_table->field('userid,realname,mobile,sex,createdTime')->insert($data);
+        $ok = $role_table->insert($data);
 
         if($ok){
+            //添加学生在校信息
+
+            $sdata = [
+                'userid'=>$role_table->getLastInsID(),
+                'grade'=>$info['grade'],
+                'depart'=>$info['depart'],
+                'majors'=>$info['majors'],
+                'class'=>$info['class'],
+                'culture'=>$info['culture'],
+                'style'=>$info['style'],
+                'academic'=>$info['academic'],
+                'starttime'=>$info['starttime'],
+                'quarter'=>$info['quarter'],
+                'studentstatus'=>$info['studentstatus'],
+                'level'=>$info['level'],
+                'createTime'=>date('Y-m-d H:i:s',time()),
+                'createuserid'=>session('admin_uid'),
+
+            ];
+            Db::table('student_school')->insert($sdata);
+
+
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
@@ -86,34 +114,22 @@ class Userprofile extends Base{
 
 
     public function edit(){
-        //前台先获取资料
-        if(isset($_GET['do'])=='get'){
-            $id = $_GET['rid']+0;
-
-            $have = Db::name('user_profile')->field('id,userid,realname,sex,mobile')->where("id='$id'")->find();
-
-            if(!$have){//如果这个code有
-                return ['error'=>'没有此专业','code'=>'300'];
-            }else{
-                return ['info'=>$have,'code'=>'000'];
-            }
-
-        }
 
         $info = input('post.');
 
         $msg  =   [
-            'rid.require' => '学生rid不能为空',
-            'userid.require' => '请选择用户',
+            'sn.require' => '请输入学号',
             'realname.require' => '真实性别不能为空',
-            'mobile.number' => '手机方式错误',
-            'mobile.between' => '手机太短',
+            'nation.require' => '请输入民族',
+            'birthday.require' => '请输入生日',
+            'mobile.require' => '手机号必须填写',
         ];
         $validate = new Validate([
-            'rid'    => 'require',
-            'userid'  => 'require',
+            'sn'  => 'require',
             'realname'   => 'require',
-            'mobile'   => 'number|between:1,12',
+            'nation'   => 'require',
+            'birthday'   => 'require',
+            'mobile'   => 'require',
         ],$msg);
 
         $validate->check($info);
@@ -129,20 +145,57 @@ class Userprofile extends Base{
         $id = $info['rid']+0;
 
         $data = [
-            'userid' => $info['userid'],
+            'sn' => $info['sn'],
+            'userid'=>session('admin_uid'),
             'realname' => $info['realname'],
-            'mobile'=> $info['mobile'],
             'sex'=>$info['sex'],
-//            'createdTime'=>date('Y-m-d H:i:s',time()),
+            'nation'=>$info['nation'],
+            'cardpic'=>serialize(["front_pic"=>$info['cardpic'],'behind_pic'=>'']),
+            'birthday'=>$info['birthday'],
+            'idcard'=>$info['idcard'],
+            'policy'=>$info['policy'],
+            'mobile'=>$info['mobile'],
+            'city'=>$info['city'],
+            'household'=>$info['household'],
+            'address'=>$info['address'],
+            'createdTime'=>date('Y-m-d H:i:s',time()),
         ];
 
-        $ok = $role_table->field('userid,realname,mobile,sex')->where('id',$id)->update($data);
+        $ok = $role_table->where('id',$id)->update($data);
 
         if($ok){
+
+            //修改学员在校信息
+            $sdata = [
+                'grade'=>$info['grade'],
+                'depart'=>$info['depart'],
+                'majors'=>$info['majors'],
+                'class'=>$info['class'],
+                'culture'=>$info['culture'],
+                'style'=>$info['style'],
+                'academic'=>$info['academic'],
+                'starttime'=>$info['starttime'],
+                'quarter'=>$info['quarter'],
+                'studentstatus'=>$info['studentstatus'],
+                'level'=>$info['level'],
+//                'createTime'=>date('Y-m-d H:i:s',time()),
+//                'createuserid'=>session('admin_uid'),
+
+            ];
+            Db::table('student_school')->where('userid='.$id)->update($sdata);
+
+
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];
         }
+    }
+    public function upload(){
+
+        $id = $_GET['id']+0;
+        $file = upload('newfile'.$id,'teacherinfo');
+
+        return $file;
     }
 
     public function delete(){

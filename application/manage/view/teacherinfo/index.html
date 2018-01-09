@@ -20,7 +20,7 @@
     <div class="pull-right">
         {php}
         if(check($uid,'/manage/teacherinfo/add')){
-            echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增教师</a>';
+            echo '<a class="btn btn-primary" onclick="clearInput()" data-toggle="modal" data-target="#myModal">新增教师</a>';
         }
         {/php}
 
@@ -455,7 +455,10 @@
         format: 'yyyy/mm/dd'
 
     });
-
+    function clearInput() {
+        $('#form0').children().find('input').val('')
+        $('#form0').children().find('select').val('')
+    }
 
     function uploadImage(id) {
         // FormData对象，来发送二进制文件。

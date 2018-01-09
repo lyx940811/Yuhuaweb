@@ -198,7 +198,6 @@ class Teacherinfo extends Base{
 
             //成功了修改学历信息表
             $leveldata = [
-                'teacherid'=>$id,
                 'education'=>$info['education'],
                 'degree'=>$info['degree'],
                 'topeducation'=>$info['topeducation'],
