@@ -11,7 +11,7 @@
         <li role="presentation">
             {php}
                 if(check($uid,'/manage/rolefunction/add')){
-                    echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加权限组</a>';
+                    echo '<a class="btn btn-primary"  data-toggle="modal" data-target="#myModal">添加权限组</a>';
                 }
             {/php}
         </li>
@@ -28,26 +28,68 @@
         <tbody>
 
         {volist name="list" id="vo"}
-
         <tr>
             <td>{$vo.id}</td>
-            <td>
-                <strong>
-                    <a href="#" onclick="add_edit('edit',{$vo.id});"  data-toggle="modal" data-target="#myModal">{$vo.rolecode}组</a>
-                </strong>
-            </td>
+            <td>{$vo.rolecode}组</td>
             <td>{volist name="vo.groups" id="g"}{$g.name}<strong> | </strong>{/volist}</td>
             <td>
                 {php}
                 if(check($uid,'/manage/rolefunction/edit')){
-                    echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
+                    echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
                     echo '<strong>/</strong>';
                 }
                 if(check($uid,'/manage/rolefunction/delete')){
-                    echo '<a href="#" onclick="deleteRole('.$vo['id'].');">删除</a>';
+                    echo '<a href="#" onclick="deleteR('.$vo['id'].');">删除</a>';
                 }
                 {/php}
+                <!--修改-->
+                <!-- 模态框 -->
+                <div class="modal fade" id="myModal_edit{$vo.id}">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
 
+                            <!-- 模态框头部 -->
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">修改权限组</h4>
+
+                            </div>
+
+                            <!-- 模态框主体 -->
+                            <div class="modal-body">
+                                <form class="form-horizontal" role="form" id="form{$vo.id}" method="post" action="{:url('edit')}">
+                                    <div class="form-group">
+                                        <label for="role_code" class="col-sm-2 control-label">权限组名称</label>
+                                        <div class="col-sm-5">
+                                            <input type="text" class="form-control" name="role_code" value="{$vo.role_code}"
+                                                   placeholder="请输入权限组名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="function_code" class="col-sm-2 control-label">详细列表</label>
+                                        <div class="col-sm-10">
+                                            <div class="checkbox">
+                                                {volist name='allgroup' id='a'}
+                                                <label class="checkbox-inline">
+                                                    <input type="checkbox" class="function_code" value="{$a.id}"  name="function_code[]"/> {$a.name}
+                                                </label>
+                                                {/volist}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="rid" value="{$vo.id}" />
+                                    <!-- 模态框底部 -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" onclick="dopost('edit',{$vo.id})">修改</button>
+                                    </div>
+                                </form>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+                <!--修改结束-->
             </td>
         </tr>
         {/volist}
@@ -72,7 +114,7 @@
 
                 <!-- 模态框主体 -->
                 <div class="modal-body">
-                    <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('add')}">
+                    <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
                         <div class="form-group">
                             <label for="role_code" class="col-sm-2 control-label">权限组名称</label>
                             <div class="col-sm-5">
@@ -95,9 +137,7 @@
                         <input type="hidden" name="rid" value="" id="selfcode"/>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
-                            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>-->
-                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add');">添加</button>
-                            <button type="button" class="btn btn-default" id="edit_role" style="display:none;" onclick="dopost('edit')">修改</button>
+                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add',0);">添加</button>
                         </div>
                     </form>
                 </div>
@@ -134,71 +174,14 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
-/*
-一共3种方法，添加新权限组，修改权限组，删除权限组
-*/
-    /*添加*/
 
-    function add_edit(type,id) {
-
-        switch (type){
-            case 'add':
-
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $(" input[ type='checkbox' ] ").prop('checked',false)
-                $('#add_role').show()
-                $('#edit_role').hide()
-                break;
-
-            case 'edit':
-
-                $('#selfcode').val(id)//如果是修改,id是自己
-                $('#add_role').hide()
-                $('#edit_role').show()
-
-                $.get("{:url('edit')}?"+Math.random()+"&do=get&rid="+id,function (data) {
-
-                    $('#role_code').val(data.info.rolecode)
-                    $('#selfcode').val(data.info.id)
-
-                    var childInfo = data.info.children;
-
-                    var func_check = $('input[name="function_code[]"]');//所有多选框
-
-                    $(func_check).each(function (e,item) {
-
-                        for (var i in childInfo) {
-
-                            if($(this).val()==childInfo[i].id){
-                                $(this).prop('checked',true)
-                                break;
-                            }else{
-                                $(this).prop('checked',false)
-                            }
-                        }
-                    });
-
-
-
-                });
-                
-                break;
-            default:
-                alert('error')
-        }
-
-
-    }
-
-
-    function dopost($url) {
+    function dopost($url,formid) {
         $url=='add'?"{:url('add')}":"{:url('edit')}";
 
         $.ajax({
             url: $url+"?"+Math.random(),
             type:"post",
-            data:$("#form1").serialize(),
+            data:$('#form'+formid).serialize(),
             success:function(data){
 
                 if(data.code=='000'){
@@ -208,6 +191,7 @@
                     $(" input[ type='text' ] ").val('')
                     $(" input[ type='hidden' ] ").val('')
 
+                    $('#myModal_edit'+formid).modal('hide')
                     $('#myModal').modal('hide')
 
                 }else{
@@ -221,7 +205,7 @@
         });
     }
 
-    function deleteRole(id) {
+    function deleteR(id) {
         if(confirm('确定要删除吗')){
             $.get("{:url('delete')}?rid="+id,function (data) {
                 if(data.code=='000'){

@@ -99,29 +99,7 @@ class Functions extends Base{
 
     public function edit(){
 
-        //前台先获取资料
-        if(isset($_GET['do'])=='get'){
-            $id = $_GET['rid']+0;
-
-            $have = Db::name('function')->field('id')->where("id='$id'")->find();
-
-            if(!$have){//如果这个code有
-                return ['error'=>'没有此角色','code'=>'300'];
-            }else{
-                return ['info'=>$have,'code'=>'000'];
-            }
-
-        }
-        //前台获取资料结束
-
-
-
         $info = input('post.');
-
-        if($info['parentcode']){
-
-            return ['error'=>'功能栏目不能修改父类','code'=>'200'];
-        }
 
         $msg  =   [
             'rid.require' => '功能栏目rid不能为空',
@@ -164,7 +142,14 @@ class Functions extends Base{
             return ['error'=>'已经有此代码','code'=>'300'];
         }
 
-        $ok = $role_table->field('name,code,url')->where('id',$id)->update(['name' => $info['name'],'code'=>$info['code'],'url'=>$info['url']]);
+        $ok = $role_table->field('name,code,url,parentcode')->where('id',$id)->update(
+            [
+                'name' => $info['name'],
+                'code'=>$info['code'],
+                'url'=>$info['url'],
+                'parentcode'=>$info['parentcode'],
+            ]
+        );
 
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];

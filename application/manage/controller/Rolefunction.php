@@ -91,29 +91,6 @@ class Rolefunction extends Base{
 
     public function edit(){
 
-        //前端先获取资料
-        if(isset($_GET['do'])=='get'){
-            $id = $_GET['rid']+0;
-
-            $role_table = Db::name('role_function');
-            $func = $role_table->field('id,functioncode,rolecode')->where("id='$id'")->find();
-
-            if(!$func){//如果这个code有
-                return ['error'=>'没有此角色','code'=>'300'];
-            }else{
-
-                if($func['functioncode']){//如果权限组里有相应权限，给前端返回，循环
-                    $funccode = $func['functioncode'];
-                    $func['children'] = Db::name('function')->field('id')->where("id in ($funccode)")->select();
-                }
-
-                return ['info'=>$func,'code'=>'000'];
-            }
-
-        }
-        //前端获取资料结束
-
-
         $info = input('post.');
 
         $msg  =   [

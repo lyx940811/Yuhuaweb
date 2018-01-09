@@ -15,7 +15,7 @@ class User extends Base{
 
     public function index(){
 
-        $lists = Db::name('user')->field('id,username,nickname,title,mobile,roles,type,email,createdIp,createdTime')->order('id asc')->paginate(20);
+        $lists = Db::name('user')->field('id,username,nickname,title,locked,mobile,roles,type,email,createdIp,createdTime')->order('id asc')->paginate(20);
 
 
         $roles = Db::name('role')->field('id,name,code')->select();

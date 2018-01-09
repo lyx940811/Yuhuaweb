@@ -11,7 +11,7 @@
         <li role="presentation">
             {php}
                 if(check($uid,'/manage/functions/add')){
-                    echo '<a class="btn btn-primary" onclick="add_edit(\'add\');"  data-toggle="modal" data-target="#myModal">添加功能栏目</a>';
+                    echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">添加功能栏目</a>';
                 }
 
             {/php}
@@ -33,34 +33,74 @@
         {volist name="list" id="vo"}
         <tr>
             <td>{$vo.id}</td>
-            <td>
-                <strong>
-                    <a href="#" onclick="add_edit('edit',{$vo.id});"  data-toggle="modal" data-target="#myModal">{$vo.levelHtml}{$vo.name}</a>
-                </strong>
-            </td>
-            <td>
-                <strong>
-                    <a href="#" onclick="add_edit('edit',{$vo.id});"  data-toggle="modal" data-target="#myModal">{$vo.code}</a>
-                </strong>
-            </td>
+            <td>{$vo.levelHtml}{$vo.name}</td>
+            <td>{$vo.levelHtml}{$vo.name}</td>
             <td>{$vo.url}</td>
             <td>{$vo.Flag?'是':'否'}              </td>
             <td>
                 {php}
-
-
                     if(check($uid,'/manage/functions/edit')){
-                        echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
+                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
                         echo '<strong>/</strong>';
                     }
                     if(check($uid,'/manage/functions/delete')){
-                        echo '<a href="#" onclick="deleteCategory('.$vo['id'].');">删除</a>';
+                        echo '<a href="#" onclick="deleteR('.$vo['id'].');">删除</a>';
                     }
                     if(check($uid,'/manage/functions/add')){
                         echo '<strong>/</strong>';
-                        echo '<a href="#" onclick="add_edit(\'addSon\','.$vo['id'].','.$vo['code'].')" data-toggle="modal" data-target="#myModal">添加子功能栏目</a>';
+                        echo '<a href="#" data-toggle="modal" data-target="#myModal">添加子功能栏目</a>';
                     }
                 {/php}
+                <!--修改-->
+                <!-- 模态框 -->
+                <div class="modal fade" id="myModal_edit{$vo.id}">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <!-- 模态框头部 -->
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">修改栏目</h4>
+
+                            </div>
+
+                            <!-- 模态框主体 -->
+                            <div class="modal-body">
+                                <form class="form-horizontal" role="form" id="form{$vo.id}" method="post" action="{:url('edit')}">
+                                    <div class="form-group">
+                                        <label for="category_name" class="col-sm-2 control-label">栏目名称</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="name" value="{$vo.name}"
+                                                   placeholder="请输入功能栏目名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="category_code" class="col-sm-2 control-label">栏目代码</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="code" value="{$vo.code}"
+                                                   placeholder="请输入栏目代码">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="category_url" class="col-sm-2 control-label">栏目url</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="url" value="{$vo.url}"
+                                                   placeholder="请输入栏目url">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="parentcode" value="{$vo.parentcode}"/>
+                                    <input type="hidden" name="rid" value="{$vo.id}" />
+                                    <!-- 模态框底部 -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" onclick="dopost('edit',{$vo.id})">修改</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!--修改结束-->
 
             </td>
         </tr>
@@ -86,7 +126,7 @@
 
                 <!-- 模态框主体 -->
                 <div class="modal-body">
-                    <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('add')}">
+                    <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
                         <div class="form-group">
                             <label for="category_name" class="col-sm-2 control-label">栏目名称</label>
                             <div class="col-sm-10">
@@ -113,14 +153,10 @@
                         <!--<input type="hidden" name="__token__" value="{$Request.token}" />-->
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
-                            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>-->
-                            <button type="button" class="btn btn-default" id="add_category" onclick="dopost('add');">添加</button>
-                            <button type="button" class="btn btn-default" id="edit_category" style="display:none;" onclick="dopost('edit')">修改</button>
+                            <button type="button" class="btn btn-default" id="add_category" onclick="dopost('add',0);">添加</button>
                         </div>
                     </form>
                 </div>
-
-
 
             </div>
         </div>
@@ -151,61 +187,14 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
-/*
-一共4种方法，添加新功能，添加子功能，修改功能栏目，删除功能
-*/
-    /*添加子类*/
 
-    function add_edit(type,id,parentcode) {
-
-        switch (type){
-            case 'add':
-
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#add_category').show()
-                $('#edit_category').hide()
-                break;
-            case 'addSon':
-
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#parentcode').val(parentcode)
-                $('#add_category').show()
-                $('#edit_category').hide()
-
-                break;
-            case 'edit':
-
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#selfcode').val(id)//如果是修改,id是自己
-                $('#add_category').hide()
-                $('#edit_category').show()
-
-                $.get("{:url('edit')}?do=get&rid="+id,function (data) {
-                    $('#category_name').val(data.info.name)
-                    $('#category_code').val(data.info.code)
-                    $('#category_url').val(data.info.url)
-                    $('#selfcode').val(data.info.id)
-                });
-                
-                break;
-            default:
-                alert('error')
-        }
-
-
-    }
-
-
-    function dopost($url) {
+    function dopost($url,formid) {
         $url=='add'?"{:url('add')}":"{:url('edit')}";
 
         $.ajax({
             url: $url+"?"+Math.random(),
             type:"post",
-            data:$("#form1").serialize(),
+            data:$('#form'+formid).serialize(),
             success:function(data){
 
                 console.log(data);
@@ -216,6 +205,7 @@
 
                     $('#selfcode').val('')//必须清空
 
+                    $('#myModal_edit'+formid).modal('hide')
                     $('#myModal').modal('hide')
 
                 }else{
@@ -229,7 +219,7 @@
         });
     }
 
-    function deleteCategory(id) {
+    function deleteR(id) {
         if(confirm('确定要删除吗')){
             $.get("{:url('delete')}?rid="+id,function (data) {
                 if(data.code=='000'){

@@ -14,7 +14,7 @@ class Course extends Base{
 
     public function index(){
 
-        $list = Db::table('course')->field('id,title,price,serializeMode,studentNum,status,userid')->paginate(20);
+        $list = Db::table('course')->field('id,title,subtitle,categoryId,tags,about,smallPicture,price,serializeMode,studentNum,status,userid')->paginate(20);
 
 
         $category = Db::table('category')->field('code,name')->select();
@@ -75,19 +75,6 @@ class Course extends Base{
     }
 
     public function edit(){
-        //前台先获取资料
-        if(isset($_GET['do'])=='get'){
-            $id = $_GET['rid']+0;
-
-            $have = Db::name('course')->field('id,title,subtitle,tags,categoryId,serializeMode,smallPicture,about')->where("id='$id'")->find();
-
-            if(!$have){//如果这个code有
-                return ['error'=>'没有此课程','code'=>'300'];
-            }else{
-                return ['info'=>$have,'code'=>'000'];
-            }
-
-        }
 
         $info = input('post.');
 
@@ -159,8 +146,9 @@ class Course extends Base{
 
     public function upload(){
 
+        $id = $_GET['id']+0;
 
-        $file = upload('newfile','course');
+        $file = upload('newfile'.$id,'course');
         return $file;
 
     }

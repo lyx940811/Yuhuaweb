@@ -65,9 +65,8 @@
             <td>{$vo.Flag?'启用':'禁用'}</td>
             <td>
                 {php}
-
                     if(check($uid,'/manage/categorycourse/edit')){
-                        echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
+                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
                         echo '<strong>/</strong>';
                     }
                     if(check($uid,'/manage/categorycourse/enable')){
@@ -75,7 +74,55 @@
                         echo '<a href="#" onclick="enable('.$vo['id'].');">'.$flag.'</a>';
                     }
                 {/php}
+                <!--修改开始-->
+                <!-- 模态框 -->
+                <div class="modal fade" id="myModal_edit{$vo.id}">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
 
+                            <!-- 模态框头部 -->
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">修改专业课程</h4>
+                            </div>
+
+                            <!-- 模态框主体 -->
+                            <div class="modal-body">
+                                <form class="form-horizontal" role="form" id="form{$vo.id}" method="post" action="{:url('edit')}">
+                                    <div class="form-group">
+                                        <label for="code" class="col-sm-2 control-label">课程名称</label>
+                                        <div class="col-sm-10">
+                                            <select name="code" class="form-control">
+                                                {volist name='courselist' id='c'}
+                                                <option value="{$c.id}" {if condition="$vo['id'] eq $c['id']"}selected{/if}>{$c.title}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="category" class="col-sm-2 control-label">所属专业</label>
+                                        <div class="col-sm-10">
+                                            <select name="category" class="form-control">
+                                                {volist name='categorylist' id='c'}
+                                                <option value="{$c.code}" {if condition="$vo['code'] eq $c['code']"}selected{/if}>{$c.name}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="rid" value="{$vo.id}"/>
+                                    <!-- 模态框底部 -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" onclick="dopost('edit',{$vo.id});">添加</button>
+                                    </div>
+                                </form>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <!--修改结束-->
             </td>
         </tr>
         {/volist}
@@ -95,12 +142,12 @@
                 <!-- 模态框头部 -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">修改专业课程</h4>
+                    <h4 class="modal-title">专业课程</h4>
                 </div>
 
                 <!-- 模态框主体 -->
                 <div class="modal-body">
-                    <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('add')}">
+                    <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
                         <div class="form-group">
                             <label for="code" class="col-sm-2 control-label">课程名称</label>
                             <div class="col-sm-10">
@@ -121,32 +168,10 @@
                                 </select>
                             </div>
                         </div>
-                        <!--<div class="form-group">
-                            <label for="type" class="col-sm-2 control-label">课程形式</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="type" name="type"
-                                       placeholder="请输入课程形式">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="studyTimes" class="col-sm-2 control-label">总课时</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="studyTimes" name="studyTimes"
-                                       placeholder="请输入总课时">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="point" class="col-sm-2 control-label">学分</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="point" name="point"
-                                       placeholder="请输入总学分">
-                            </div>
-                        </div>-->
                         <input type="hidden" name="rid" value="" id="selfcode"/>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add');">添加</button>
-                            <button type="button" class="btn btn-default" id="edit_role" style="display:none;" onclick="dopost('edit')">修改</button>
+                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add',0);">添加</button>
                         </div>
                     </form>
                 </div>
@@ -182,65 +207,18 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
-/*
-一共3种方法，添加新专业，修改专业，禁用专业
-*/
-    /*添加*/
 
-    function add_edit(type,id,parentcode) {
-
-        switch (type){
-            case 'add':
-
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#add_role').show()
-                $('#edit_role').hide()
-
-                break;
-            case 'edit':
-                $('#selfcode').val(id)//如果是修改,id是自己
-                $('#add_role').hide()
-                $('#edit_role').show()
-                $.get("{:url('edit')}?do=get&rid="+id,function (data) {
-                    $.each($('#code').children(),function (des,item) {
-                        if($(this).val()==data.info.cid){
-                            $(this).prop('selected',true);
-                        }
-                    })
-                    $.each($('#category').children(),function (des,item) {
-                        if($(this).val()==data.info.categoryID){
-                            $(this).prop('selected',true);
-                        }
-                    })
-                    // $('#type').val(data.info.type)
-                    // $('#studyTimes').val(data.info.studyTimes)
-                    // $('#point').val(data.info.point)
-                    // $('#selfcode').val(data.info.id)
-                });
-
-                break;
-            default:
-                alert('error')
-        }
-
-    }
-
-
-    function dopost($url) {
+    function dopost($url,formid) {
         $url=='add'?"{:url('add')}":"{:url('edit')}";
 
         $.ajax({
             url: $url+"?"+Math.random(),
             type:"post",
-            data:$("#form1").serialize(),
+            data:$('#form'+formid).serialize(),
             success:function(data){
 
-                console.log(data)
                 if(data.code=='000'){
-
                     alert(data.info)
-
                     $('#selfcode').val('')//必须清空
 
                     $('#myModal').modal('hide')
@@ -257,14 +235,17 @@
     }
 
     function enable(id) {
-        $.get("{:url('enable')}?rid="+id,function (data) {
-            if(data.code=='000'){
-                alert(data.info)
-                $('#myModal2').modal('hide')
-            }else{
+        if(confirm('确定要禁用吗')){
+            $.get("{:url('enable')}?rid="+id,function (data) {
+                if(data.code=='000'){
+                    alert(data.info)
+                    $('#myModal2').modal('hide')
+                }else{
 
-            }
-        });
+                }
+            });
+        }
+
     }
 
 

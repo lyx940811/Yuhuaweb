@@ -76,19 +76,6 @@ class Dormitory extends Base{
 
 
     public function edit(){
-        //前台先获取资料
-        if(isset($_GET['do'])=='get'){
-            $id = $_GET['rid']+0;
-
-            $have = Db::name('dormitory')->field('id,name,code,Flag')->where("id='$id'")->find();
-
-            if(!$have){
-                return ['error'=>'没有此宿舍','code'=>'300'];
-            }else{
-                return ['info'=>$have,'code'=>'000'];
-            }
-
-        }
 
         $info = input('post.');
 

@@ -32,9 +32,8 @@ class Categorycourse extends Base{
         }
 
 
-        $list = Db::table('categorycourse')
-            ->alias('a')
-            ->field('a.id,c.id as cid,c.title,b.name,c.type,b.studyTimes,b.point,d.realname,a.Flag')
+        $list = Db::table('categorycourse a')
+            ->field('a.id,c.id as cid,c.title,b.name,c.type,b.studyTimes,b.point,b.code,d.realname,a.Flag')
             ->join('category b','a.categoryID = b.code','LEFT')
             ->join('course c','a.courseID = c.id','LEFT')
             ->join('teacher_info d','c.teacherIds = d.id','LEFT')
@@ -53,25 +52,6 @@ class Categorycourse extends Base{
     }
 
     public function edit(){
-        //前台先获取资料
-        if(isset($_GET['do'])=='get'){
-            $id = $_GET['rid']+0;
-
-            $have = Db::table('categorycourse')
-                ->alias('a')
-                ->field('a.id,a.categoryID,c.id as cid,c.title,b.name,c.type,b.studyTimes,b.point,d.realname,a.Flag')
-                ->join('category b','a.categoryID = b.code','LEFT')
-                ->join('course c','a.courseID = c.id','LEFT')
-                ->join('teacher_info d','c.teacherIds = d.id','LEFT')
-                ->where("a.id='$id'")->find();
-
-            if(!$have){//如果这个code有
-                return ['error'=>'没有此专业课程','code'=>'300'];
-            }else{
-                return ['info'=>$have,'code'=>'000'];
-            }
-
-        }
 
         /*
          * 这个表就2个关联的字段  categoryID 和课程id  所以只能修改这2个东西！！！！！！！！！！
