@@ -128,39 +128,6 @@ class User extends Controller
         }
 
     }
-
-    //网页64编码后的接收，有【data:image/jpeg;base64,】头
-    public function chheadiconbase_beifen(){
-        $uploads_dir = "uploads".DS."pictures".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
-        $date_dir    = ROOT_PATH."public".DS.$uploads_dir;
-        if(!file_exists($date_dir)){
-            mkdir($date_dir,0775,true);
-        }
-        $base64_img = $this->data['head_icon'];
-        if(preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_img, $result)){
-            $type = $result[2];
-            if(in_array($type,array('pjpeg','jpeg','jpg','gif','bmp','png'))){
-                $new_file = $uploads_dir.DS.date('YmdHis_').'.'.$type;
-                if(file_put_contents($new_file, base64_decode(str_replace($result[1], '', $base64_img)))){
-                    $img_path = str_replace('../../..', '', $new_file);
-                    $user = \app\index\model\User::get($this->user->id);
-                    $user->title = $img_path;
-                    $user->save();
-                    return json_data(0,$this->codeMessage[0],$this->request->domain()."/".$img_path);
-                }else{
-                    return json_data(720,'文件上传错误','');
-                }
-            }else{
-                //文件类型错误
-                return json_data(700,$this->codeMessage[700],'');
-            }
-
-        }else{
-            //文件错误
-            return json_data(730,'文件错误','');
-        }
-
-    }
     /**
      * 实名认证
      */
@@ -304,7 +271,7 @@ class User extends Controller
     public function getmyinfo(){
         $data = [
             'username'  =>  $this->user->username,
-            'avatar'    =>  $this->request->domain().DS.$this->user->title,
+            'avatar'    =>  $this->request->domain()."/".$this->user->title,
             'mobile'    =>  $this->user->mobile,
             'classname' =>  '电气化1702班',
         ];
@@ -419,6 +386,7 @@ class User extends Controller
      * @return array
      */
     public function getcollect(){
+        $video_type = ['mp4','url'];
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $field = 'cf.id,cf.courseid,cf.userid,c.title,c.smallPicture';
         $course = Db::name('course_favorite')
@@ -428,50 +396,73 @@ class User extends Controller
             ->where('cf.userid',$this->user->id)
             ->page($page,10)
             ->select();
-        foreach ( $course as &$c ){
-            $c['smallPicture'] = $this->request->domain().DS.$c['smallPicture'];
-            //算总时间
-            $course_all_time = 0;
-            $all_task = Db::name('course_task')->where('courseId',$c['courseid'])->field('length')->select();
-            foreach ( $all_task as $at ){
-                $length = explode(':',$at['length']);
-                $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
-                $course_all_time = $course_all_time+$couse_time;
-            }
-            //一共学的时间
-            $c['lastwatch'] = '';
-            $c['plan'] = "0%";
-            $learn_task = Db::name('study_result')
-                ->where('courseid',$c['courseid'])
-                ->where('userid',$this->user->id)
-                ->order('endtime desc')
-                ->select();
-            $has_learn_time = 0;
-            if($learn_task){
-                foreach ( $learn_task as $t){
-                    if($t['status']==0){
-                        $watch_time = strtotime($t['endtime'])-strtotime($t['starttime']);
+
+        //这里以课程为基底，查出对应数据
+        if($course){
+            $done_course = array();
+            foreach ( $course as &$c ){
+                //拼上域名
+                $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
+                //算课程总数，算法为完成的课程数/课程总数，pdf和ppt直接为整个的课程数1，视频的话按看过的时间/该课程总时间，得到一个完成的比例，当作小数用
+                $all_task_num = Db::name('course_task')->where('courseId',$c['courseid'])->count();
+
+                //一共学的时间
+                //先赋值一个基底防止没有数据
+                $c['lastwatch'] = '';
+                $c['plan'] = "0%";
+                //选出对应课程id的学习记录,结果是学过了这节课的哪些task
+                $learn_task = Db::name('study_result')
+                    ->where('courseid',$c['courseid'])
+                    ->where('userid',$this->user->id)
+                    ->order('endtime desc')
+                    ->select();
+                //完成的课程数目从0开始计算
+                $has_learn_time = 0;
+                //如果找到该课程的学习记录了（原则上碰不到找不到的情况）
+                if($learn_task){
+                    //循环学习记录，每一条对应该课程下的每个task的学习情况
+                    foreach ( $learn_task as $t){
+                        //如果没有学完的话
+                        if($t['status']==0){
+                            //先选出type，判断是否为视频
+                            $task = Db::name('course_task')
+                                ->where('courseid',$t['courseid'])
+                                ->where('chapterid',$t['chapterid'])
+                                ->field('type,length')
+                                ->find();
+                            //不是视频，直接完成数目+1
+                            if(!in_array($task['type'],$video_type)){
+                                $has_learn_time = $has_learn_time+1;
+                            }
+                            else{
+                                //视频类型，计算看过的时间/该task的总时间，得到比例，取两位小数
+                                $watch_time = strtotime($t['endtime'])-strtotime($t['starttime']);
+                                $length = explode(':',$task['length']);
+                                $task_all_time = $length[2]+$length[1]*60+$length[0]*3600;
+                                $has_learn_time = $has_learn_time+round(($watch_time/$task_all_time),2);
+                            }
+                        }
+                        else{
+                            //如果学完了得话，直接完成课目+1
+                            $has_learn_time = $has_learn_time+1;
+                        }
                     }
-                    else{
-                        $length = Db::name('course_task')->where(['courseId'=>$t['courseid'],'chapterid'=>$t['chapterid']])->value('length');
-                        $length = explode(':',$length);
-                        $watch_time = $length[2]+$length[1]*60+$length[0]*3600;
-                    }
-                    $has_learn_time = $has_learn_time+$watch_time;
+                    //拿倒序排列的第一个作为最后观看时间
+                    $c['lastwatch'] = $learn_task[0]['endtime'];
                 }
-                $c['lastwatch'] = $learn_task[0]['endtime'];
+                //计算这个课程的完成比，换算成百分比
+                $c['plan'] = (round($has_learn_time/$all_task_num,2)*100)."%";
+                $done_course[] = $c;
             }
-            if($course_all_time!=0){
-                $c['plan'] = (round($has_learn_time/$course_all_time,2)*100)."%";
-            }
+            return json_data(0,$this->codeMessage[0],$done_course);
         }
-        return json_data(0,$this->codeMessage[0],$course);
+        return json_data(0,$this->codeMessage[0],[]);
     }
     /**
-     * 得到【我的学习-学习中】列表
+     * 得到【我的学习-学习中】列表(abandoned,use the rebuild version)
      * @return array
      */
-    public function mystudy(){
+    public function mystudyabandoned(){
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $course = Db::name('study_result')
             ->alias('sr')
@@ -528,60 +519,153 @@ class User extends Controller
             return json_data(0,$this->codeMessage[0],array());
         }
     }
-
-    /**
-     * 得到【我的学习-已学完】列表
-     * @return array
-     */
-    public function donestudy(){
+    //this is rebuild version,use this
+    public function mystudy(){
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $video_type = ['mp4','url'];
+        //先选择学习记录并group掉重复的课程
         $course = Db::name('study_result')
             ->alias('sr')
             ->join('course c','sr.courseid=c.id')
             ->field('sr.courseid as id,c.title,c.smallPicture')
             ->group('sr.courseid')
-            ->page($page,10)
             ->select();
-
+        //这里以课程为基底，查出对应数据
         if($course){
             $done_course = array();
             foreach ( $course as &$c ){
+                //拼上域名
                 $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
-                //算总时间
-                $course_all_time = 0;
-                $all_task = Db::name('course_task')->where('courseId',$c['id'])->field('length')->select();
-                foreach ( $all_task as $at ){
-                    $length = explode(':',$at['length']);
-                    $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
-                    $course_all_time = $course_all_time+$couse_time;
-                }
+                //算课程总数，算法为完成的课程数/课程总数，pdf和ppt直接为整个的课程数1，视频的话按看过的时间/该课程总时间，得到一个完成的比例，当作小数用
+                $all_task_num = Db::name('course_task')->where('courseId',$c['id'])->count();
                 //一共学的时间
+                //先赋值一个基底防止没有数据
                 $c['lastwatch'] = '';
                 $c['plan'] = "0%";
+                //选出对应课程id的学习记录,结果是学过了这节课的哪些task
                 $learn_task = Db::name('study_result')
                     ->where('courseid',$c['id'])
                     ->where('userid',$this->user->id)
                     ->order('endtime desc')
                     ->select();
+                //完成的课程数目从0开始计算
                 $has_learn_time = 0;
+                //如果找到该课程的学习记录了（原则上碰不到找不到的情况）
                 if($learn_task){
+                    //循环学习记录，每一条对应该课程下的每个task的学习情况
                     foreach ( $learn_task as $t){
+                        //如果没有学完的话
                         if($t['status']==0){
-                            $watch_time = strtotime($t['endtime'])-strtotime($t['starttime']);
+                            //先选出type，判断是否为视频
+                            $task = Db::name('course_task')
+                                ->where('courseid',$t['courseid'])
+                                ->where('chapterid',$t['chapterid'])
+                                ->field('type,length')
+                                ->find();
+                            //不是视频，直接完成数目+1
+                            if(!in_array($task['type'],$video_type)){
+                                $has_learn_time = $has_learn_time+1;
+                            }
+                            else{
+                                //视频类型，计算看过的时间/该task的总时间，得到比例，取两位小数
+                                $watch_time = strtotime($t['endtime'])-strtotime($t['starttime']);
+                                $length = explode(':',$task['length']);
+                                $task_all_time = $length[2]+$length[1]*60+$length[0]*3600;
+                                $has_learn_time = $has_learn_time+round(($watch_time/$task_all_time),2);
+                            }
                         }
                         else{
-                            $length = Db::name('course_task')->where(['courseId'=>$t['courseid'],'chapterid'=>$t['chapterid']])->value('length');
-                            $length = explode(':',$length);
-                            $watch_time = $length[2]+$length[1]*60+$length[0]*3600;
+                            //如果学完了得话，直接完成课目+1
+                            $has_learn_time = $has_learn_time+1;
                         }
-                        $has_learn_time = $has_learn_time+$watch_time;
                     }
+                    //拿倒序排列的第一个作为最后观看时间
                     $c['lastwatch'] = $learn_task[0]['endtime'];
                 }
-                if($course_all_time!=0){
-                    $c['plan'] = (round($has_learn_time/$course_all_time,2)*100)."%";
+                //计算这个课程的完成比，换算成百分比
+                $c['plan'] = (round($has_learn_time/$all_task_num,2)*100)."%";
+                //如果不是100%的话，放入正在学习的数组
+                if($c['plan']!='100%'){
+                    $done_course[] = $c;
                 }
-                if($c['plan']='100%'){
+            }
+            return json_data(0,$this->codeMessage[0],$done_course);
+        }
+        else{
+            return json_data(0,$this->codeMessage[0],array());
+        }
+    }
+
+    /**
+     * 得到【我的学习-已学完】列表(rebuild version)
+     * @return array
+     */
+    public function donestudy(){
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $video_type = ['mp4','url'];
+        //先选择学习记录并group掉重复的课程
+        $course = Db::name('study_result')
+            ->alias('sr')
+            ->join('course c','sr.courseid=c.id')
+            ->field('sr.courseid as id,c.title,c.smallPicture')
+            ->group('sr.courseid')
+            ->select();
+        //这里以课程为基底，查出对应数据
+        if($course){
+            $done_course = array();
+            foreach ( $course as &$c ){
+                //拼上域名
+                $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
+                //算课程总数，算法为完成的课程数/课程总数，pdf和ppt直接为整个的课程数1，视频的话按看过的时间/该课程总时间，得到一个完成的比例，当作小数用
+                $all_task_num = Db::name('course_task')->where('courseId',$c['id'])->count();
+                //一共学的时间
+                //先赋值一个基底防止没有数据
+                $c['lastwatch'] = '';
+                $c['plan'] = "0%";
+                //选出对应课程id的学习记录,结果是学过了这节课的哪些task
+                $learn_task = Db::name('study_result')
+                    ->where('courseid',$c['id'])
+                    ->where('userid',$this->user->id)
+                    ->order('endtime desc')
+                    ->select();
+                //完成的课程数目从0开始计算
+                $has_learn_time = 0;
+                //如果找到该课程的学习记录了（原则上碰不到找不到的情况）
+                if($learn_task){
+                    //循环学习记录，每一条对应该课程下的每个task的学习情况
+                    foreach ( $learn_task as $t){
+                        //如果没有学完的话
+                        if($t['status']==0){
+                            //先选出type，判断是否为视频
+                            $task = Db::name('course_task')
+                                ->where('courseid',$t['courseid'])
+                                ->where('chapterid',$t['chapterid'])
+                                ->field('type,length')
+                                ->find();
+                            //不是视频，直接完成数目+1
+                            if(!in_array($task['type'],$video_type)){
+                                $has_learn_time = $has_learn_time+1;
+                            }
+                            else{
+                                //视频类型，计算看过的时间/该task的总时间，得到比例，取两位小数
+                                $watch_time = strtotime($t['endtime'])-strtotime($t['starttime']);
+                                $length = explode(':',$task['length']);
+                                $task_all_time = $length[2]+$length[1]*60+$length[0]*3600;
+                                $has_learn_time = $has_learn_time+round(($watch_time/$task_all_time),2);
+                            }
+                        }
+                        else{
+                            //如果学完了得话，直接完成课目+1
+                            $has_learn_time = $has_learn_time+1;
+                        }
+                    }
+                    //拿倒序排列的第一个作为最后观看时间
+                    $c['lastwatch'] = $learn_task[0]['endtime'];
+                }
+                //计算这个课程的完成比，换算成百分比
+                $c['plan'] = (round($has_learn_time/$all_task_num,2)*100)."%";
+                //如果不是100%的话，放入正在学习的数组
+                if($c['plan']=='100%'){
                     $done_course[] = $c;
                 }
             }
@@ -612,7 +696,7 @@ class User extends Controller
         }
         else{
             $task = Db::name('course_task')->where(['courseId'=>$courseid,'chapterid'=>$chapterid])->find();
-            $video_type = ['mp4'];
+            $video_type = ['mp4','url'];
             $data = [
                 'userid'    =>  $this->user->id,
                 'starttime' => date('Y-m-d H:i:s',time()),
