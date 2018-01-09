@@ -168,7 +168,7 @@ class Teacherinfo extends Base{
 
         $id = $info['rid']+0;
 
-        $have = $role_table->field('id')->where("id='$id'")->find();
+        $have = $role_table->field('id,cardpic')->where("id='$id'")->find();
 
         if(!$have){//如果没这个code
             return ['error'=>'没有此教师','code'=>'300'];
@@ -188,7 +188,7 @@ class Teacherinfo extends Base{
             'household'=>$info['household'],
             'address'=>$info['address'],
             'maritalstatus'=>$info['maritalstatus'],
-            'cardpic'=>$info['cardpic'],
+            'cardpic'=>!empty($info['cardpic'])?$info['cardpic']:$have['cardpic'],
 //            'createdTime'=>date('Y-m-d H:i:s',time()),
         ];
 
