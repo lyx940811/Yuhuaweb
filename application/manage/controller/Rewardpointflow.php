@@ -23,10 +23,7 @@ class Rewardpointflow extends Base{
         }
 
         $list = Db::table('reward_point_flow a')
-            ->field('b.title,c.title ctit,d.realname')
-            ->join('course b','a.courseid=b.id','LEFT')
-            ->join('course_chapter c','a.chapterid=c.id','LEFT')
-            ->join('user_profile d','a.userid=d.id','LEFT')
+            ->field('a.*')
             ->where($where)
             ->paginate(20,['query'=>$info]);
 
