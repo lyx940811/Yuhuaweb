@@ -29,7 +29,14 @@ class Userprofile extends Base{
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
 
-        $this->assign('list',$list);
+
+        $newlist = [];
+        foreach ($list as $k=>$v){
+            $newlist[$k] = $v;
+            $newlist[$k]['home'] = Db::table('student_home')->where('userid='.$v['id'])->select();
+        }
+
+        $this->assign('list',$newlist);
         $this->assign('typename','学生列表');
         $this->assign('page',$list->render());
         return $this->fetch();
@@ -211,5 +218,44 @@ class Userprofile extends Base{
         }
     }
 
+    public function addhome(){
+
+        if(request()->post('add')=='home'){
+
+            $info = input('post.');
+
+            $data = [
+                'userid'=>$info['userid'],
+                'name'=>$info['name'],
+                'phone'=>$info['phone'],
+                'relation'=>$info['relation'],
+                'createuserid'=>session('admin_uid'),
+                'createTime'=>date('Y-m-d H:i:s',time())
+            ];
+
+            $ok = Db::table('student_home')->insert($data);
+            if($ok){
+
+                return ['info'=>'添加成功','code'=>'000'];
+            }else{
+                return ['error'=>'添加失败','code'=>'400'];
+            }
+
+        }else{
+            $tid = $_GET['tid']+0;
+
+            $list = Db::table('student_home a')
+                ->join('user_profile b','a.userid=b.id','LEFT')
+                ->field('a.*')
+                ->where('b.id='.$tid)->paginate(20);
+
+            $this->assign('list',$list);
+            $this->assign('page',$list->render());
+            $this->assign('typename','添加家庭信息');
+            return $this->fetch();
+        }
+
+
+    }
 
 }

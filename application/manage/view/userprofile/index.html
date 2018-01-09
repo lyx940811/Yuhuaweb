@@ -53,8 +53,12 @@
                 <td>{$vo.studentstatus}</td>
                 <td>
                     {php}
-                    if(check($uid,'/manage/teacherinfo/edit')){
+                    if(check($uid,'/manage/userprofile/edit')){
                         echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
+                        echo '<strong>/</strong>';
+                    }
+                    if(check($uid,'/manage/userprofile/add')){
+                        echo '<a href="'.url('addhome').'?tid='.$vo['id'].'">添加家庭情况</a>';
                         echo '<strong>/</strong>';
                     }
                     {/php}
@@ -160,7 +164,6 @@
             data:$('#form'+formid).serialize(),
             success:function(data){
 
-                console.log(data)
                 if(data.code=='000'){
 
                     alert(data.info)

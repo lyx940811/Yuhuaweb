@@ -198,6 +198,21 @@
                         <button type="button" class="btn btn-default" onclick="dopost('edit',{$vo.id});">修改</button>
                     </div>
                 </form>
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>联系方式</th>
+                        <th>亲属关系</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="$vo['home']" id="w"}
+                    <tr><td>{$w.name}</td><td>{$w.phone}</td><td>{$w.relation}</td></tr>
+                    {/volist}
+                    </tbody>
+
+                </table>
             </div>
 
         </div>
