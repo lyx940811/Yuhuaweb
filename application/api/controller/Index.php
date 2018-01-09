@@ -120,8 +120,27 @@ class Index extends Home
             unset($c['price']);
             $c['smallPicture']  = $this->request->domain().DS.$c['smallPicture'];
         }
+        
+        $word = Db::name('search_word')->where('keyword',$keywords)->find();
+        if($word){
+            $data['hit'] = $word['hit']+1;
+            Db::name('search_word')->where('id',$word['id'])->update($data);
+        }
+        else{
+            $data['keyword'] = $keywords;
+            Db::name('search_word')->insert($data);
+        }
 
         return json_data(0,$this->codeMessage[0],$course);
+    }
+    
+    /**
+     * 得到热门搜索词
+     */
+    public function gethotword(){
+        $word = Db::name('search_word')->order('hit desc')->field('keyword')->limit(6)->select();
+        
+        return json_data(0,$this->codeMessage[0],$word);
     }
 
 }

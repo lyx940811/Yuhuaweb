@@ -94,24 +94,21 @@ class User extends Controller
     }
 
     /**
-     * 修改头像（表单）
+     * 修改头像
      */
     public function chheadicon(){
         $file = $_FILES;
         $res  = $this->LogicUser->upUserHeadImg($file,$this->user->id);
         return $res;
     }
-    /**
-     * 修改头像(接收base64)
-     */
+
     public function chheadiconbase(){
         $uploads_dir = "uploads".DS."pictures".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
         $date_dir    = ROOT_PATH."public".DS.$uploads_dir;
         if(!file_exists($date_dir)){
             mkdir($date_dir,0775,true);
         }
-//        $base64_img = $this->data['head_icon'];
-        $base64_img = '';
+        $base64_img = $this->data['head_icon'];
         $type = 'jpg';
 
         if(in_array($type,array('pjpeg','jpeg','jpg','gif','bmp','png'))){

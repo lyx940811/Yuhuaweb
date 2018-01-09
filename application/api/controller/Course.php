@@ -344,15 +344,15 @@ class Course extends Home
                 $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
                 if($watch_log = Db::name('study_result')->where(['userid'=>$this->user->id,'courseid'=>$l['courseid'],'chapterid'=>$l['chapterid']])->find()){
                     if($watch_log['status']==1){
-                        $l['plan'] = '100%';
+                        $l['plan'] = '100';
                     }
                     else{
                         $watch_time = strtotime($watch_log['endtime'])-strtotime($watch_log['starttime']);
-                        $l['plan'] = (round($watch_time/$couse_time,2)*100)."%";
+                        $l['plan'] = (round($watch_time/$couse_time,2)*100);
                     }
                 }
                 else{
-                    $l['plan'] = '0%';
+                    $l['plan'] = '0';
                 }
                 unset($l['length'],$l['seq']);
             }
@@ -383,7 +383,8 @@ class Course extends Home
         $taskNum = count($task);
 
         empty($task)?$next_task='还未有新课程':$next_task = $task[0]['title'];
-        empty($task)?$learn_taskid='0':$next_task = $task[0]['id'];
+        empty($task)?$learn_taskid='0':$learn_taskid = $task[0]['id'];
+
         //假如登陆了
         if(!empty($this->user)){
             $learn_task = Db::name('study_result')
@@ -391,6 +392,7 @@ class Course extends Home
                 ->where('userid',$this->user->id)
                 ->order('chapterid desc')
                 ->find();
+            
             //找到最后一条学习记录
             if($learn_task){
                 if($learn_task['status']==0){
@@ -436,8 +438,9 @@ class Course extends Home
                     }
                     $has_learn_time = $has_learn_time+$watch_time;
                 }
+
                 if($course_all_time!=0){
-                    $plan = (round($has_learn_time/$course_all_time,2)*100)."%";
+                    $plan = (round($has_learn_time/$course_all_time,2)*100);
                 }
 
                 //拿到完成的任务比（1/30）
@@ -450,13 +453,13 @@ class Course extends Home
             }
             else{
                 //没找到学习记录
-                $plan = '0%';
+                $plan = '0';
                 $has_done = '0/'.$taskNum;
             }
         }
         else{
             //没登陆
-            $plan = '0%';
+            $plan = '0';
             $has_done = '0/'.$taskNum;
         }
         $data = [
