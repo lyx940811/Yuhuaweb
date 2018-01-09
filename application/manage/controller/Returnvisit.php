@@ -11,29 +11,28 @@ use think\Db;
 use think\Validate;
 
 /*
- * 此为专业管理控制器
- * 还有一个Category控制，那个是栏目功能列表控制器
+ * 生员回访控制器
  */
 
-class Category extends Base{
+class Returnvisit extends Base{
 
     public function index(){
 
         $info = input('get.');
 
         $where = [];
-        if(!empty($info['flag'])){
+        if(!empty($info['content'])){
 
-            $where['Flag'] = ['eq',$info['flag']];
-        }
-        if(!empty($info['name'])){
-            $where['name'] = ['like',"%{$info['name']}%"];
+            $where['content'] = ['like',"%{$info['content']}%"];
         }
 
-        $list = Db::name('category')
-            ->field('id,name,code,studyTimes,point,createtime,Flag,description')
+        $list = Db::name('return_visit a')
+            ->join('user b','a.userid=b.id','LEFT')
             ->where($where)
+            ->field('a.*,b.nickname')
             ->paginate(20,false,['query'=>request()->get()]);
+
+
 
         $this->assign('list',$list);
         $this->assign('page',$list->render());

@@ -140,7 +140,7 @@ class User extends Base{
         $data['type'] = $info['user_type'];
         $data['email'] = $info['user_email'];
         $data['roles'] = $info['user_roles'];
-        $data['locked'] = $info['user_locked'];
+        $data['locked'] = isset($info['user_locked'])?$info['user_locked']:0;
 
         $ok = $user_table->field('nickname,email,roles,type,locked')->where('id',$id)->update($data);
 
