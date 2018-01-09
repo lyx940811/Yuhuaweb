@@ -30,7 +30,10 @@ class Category extends Base{
             $where['name'] = ['like',"%{$info['name']}%"];
         }
 
-        $list = Db::name('category')->where($where)->paginate(20,false,['query'=>request()->get()]);
+        $list = Db::name('category')
+            ->field('id,name,code,studyTimes,point,createtime,Flag,description')
+            ->where($where)
+            ->paginate(20,false,['query'=>request()->get()]);
 
         $this->assign('list',$list);
         $this->assign('page',$list->render());
