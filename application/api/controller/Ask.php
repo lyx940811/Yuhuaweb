@@ -34,7 +34,7 @@ class Ask extends Home
             ->page($page,10)
             ->select();
         foreach ( $category as &$c ){
-            $c['newask'] = Db::name('asklist')->where('category_id',$c['code'])->field('id as askID,userID,title')->order('addtime')->find();
+            $c['newask'] = Db::name('asklist')->where('category_id',$c['code'])->field('id as askID,userID,title,addtime')->order('addtime desc')->find();
             if($c['newask']){
                 $user = User::get($c['newask']['userID']);
                 $c['newask']['username'] = $user->username;
@@ -58,6 +58,7 @@ class Ask extends Home
         $askList = Db::name('asklist')
             ->where('category_id',$category_id)
             ->where('courseid',0)
+            ->order('addtime desc')
             ->page($page,10)
             ->select();
         if($askList){

@@ -49,6 +49,7 @@ class Student extends User
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $askList = Db::name('asklist')
             ->where('userID',$userid)
+            ->order('addtime desc')
             ->page($page,10)
             ->select();
         if($askList){
@@ -77,6 +78,7 @@ class Student extends User
             ->join('user u','u.id=aa.answerUserID')
             ->field($field)
             ->where('answerUserID',$userid)
+            ->order('aa.addtime desc')
             ->page($page,10)
             ->select();
 
@@ -104,7 +106,7 @@ class Student extends User
             'content'       =>  $this->data['content'],
             'userID'        =>  $this->user->id,
             'courseid'      =>  $this->data['courseid'],
-            'category_id'   =>  $this->data['courseid'],
+            'category_id'   =>  $this->data['category_id'],
             'addtime'       =>  date('Y-m-d H:i:s',time()),
         ];
 

@@ -76,7 +76,7 @@ class Index extends Home
 
             $c['price']==0.00?$c['is_free'] = 1:$c['is_free'] = 0;
             unset($c['price']);
-            $c['smallPicture']  = $this->request->domain().DS.$c['smallPicture'];
+            $c['smallPicture']  = $this->request->domain()."/".$c['smallPicture'];
         }
 
         return json_data(0,$this->codeMessage[0],$course);
@@ -118,7 +118,7 @@ class Index extends Home
 
             $c['price']==0.00?$c['is_free'] = 1:$c['is_free'] = 0;
             unset($c['price']);
-            $c['smallPicture']  = $this->request->domain().DS.$c['smallPicture'];
+            $c['smallPicture']  = $this->request->domain()."/".$c['smallPicture'];
         }
         
         $word = Db::name('search_word')->where('keyword',$keywords)->find();
@@ -138,8 +138,8 @@ class Index extends Home
      * 得到热门搜索词
      */
     public function gethotword(){
-        $word = Db::name('search_word')->order('hit desc')->field('keyword')->limit(6)->select();
-        
+        $word = Db::name('search_word')->order('hit desc')->field('keyword')->limit(4)->select();
+        $word = array_column($word,'keyword');
         return json_data(0,$this->codeMessage[0],$word);
     }
 
