@@ -23,7 +23,6 @@ class Rolefunction extends Base{
         $funlist = [];
         foreach ($list as $k=>$v){
 
-
             $funlist[$k] = $v;
 
             if($v['functioncode']){
@@ -33,8 +32,8 @@ class Rolefunction extends Base{
                 $funlist[$k]['groups'] = [];
             }
 
-
         }
+
 
         $allgroup = $db_func->field('id,code,name,url')->where('Flag=1')->select();
 

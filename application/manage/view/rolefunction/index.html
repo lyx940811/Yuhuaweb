@@ -6,17 +6,14 @@
     {php}
     $uid = session('admin_uid');
     {/php}
-    <ul class="nav nav-tabs">
-        <li role="presentation" class="active"><a href="#">列表</a></li>
-        <li role="presentation">
-            {php}
-                if(check($uid,'/manage/rolefunction/add')){
-                    echo '<a class="btn btn-primary"  data-toggle="modal" data-target="#myModal">添加权限组</a>';
-                }
-            {/php}
-        </li>
-    </ul>
 
+    <div class="pull-right">
+        {php}
+        if(check($uid,'/manage/rolefunction/add')){
+        echo '<a class="btn btn-primary"  data-toggle="modal" data-target="#myModal">添加权限组</a>';
+        }
+        {/php}
+    </div>
     <table class="table table-striped table-hover">
         <thead>
         <tr>
@@ -67,7 +64,7 @@
                                             <select name="rolecode" class="form-control">
                                                 <option value="">--请选择--</option>
                                                 {volist name="roles" id="r"}
-                                                <option value="{$r.id}">{$r.name}</option>
+                                                <option value="{$r.id}" {if condition="$vo['rolecode'] eq $r['id']"}selected="selected"{/if}>{$r.name}</option>
                                                 {/volist}
                                             </select>
                                         </div>
