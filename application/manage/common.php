@@ -197,8 +197,10 @@ function upload($filename,$path){
 
 function getVideoInfo($file) {
 
-    $command = sprintf('ffmpeg -i "'.$file.'" 2>&1', $file);
 
+    $command = sprintf('ffmpeg -i "'.$file.'" 2>&1', $file);
+//    exec('ffmpeg -i '.$file.' 2>&1',$arr);
+//    var_dump($arr);
     ob_start();
     passthru($command);
     $info = ob_get_contents();
