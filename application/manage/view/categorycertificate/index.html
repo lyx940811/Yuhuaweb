@@ -79,7 +79,7 @@
                             <!-- 模态框头部 -->
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">修改专业</h4>
+                                <h4 class="modal-title">修改证书</h4>
                             </div>
 
                             <!-- 模态框主体 -->
@@ -91,7 +91,7 @@
                                             <select name="category" class="form-control">
                                                 <option value="">--请选择专业代码--</option>
                                                 {volist name='categorylist' id='c'}
-                                                <option value="{$c.code}" {if condition="$vo['code'] eq $c['code']"}selected{/if}>{$c.name}</option>
+                                                <option value="{$c.code}" {if condition="$vo['categoryID'] eq $c.code"}selected="selected"{/if}>{$c.name}</option>
                                                 {/volist}
                                             </select>
                                         </div>
@@ -110,15 +110,13 @@
                                                    placeholder="请输入颁发机构">
                                         </div>
                                     </div>
-                                    <input type="hidden" name="rid" value="{$vo.id}" />
+                                    <input type="hidden" name="rid" value="{$vo.id}"/>
                                     <!-- 模态框底部 -->
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-default"  onclick="dopost('edit',{$vo.id})">修改</button>
+                                        <button type="button" class="btn btn-default"  onclick="dopost('edit',{$vo.id});">修改</button>
                                     </div>
                                 </form>
                             </div>
-
-
 
                         </div>
                     </div>
@@ -134,7 +132,7 @@
         {$page}
     </ul>
 
-    <!--新增专业-->
+    <!--新增开始-->
     <!-- 模态框 -->
     <div class="modal fade" id="myModal">
         <div class="modal-dialog">
@@ -143,7 +141,7 @@
                 <!-- 模态框头部 -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">新增专业</h4>
+                    <h4 class="modal-title">新增证书</h4>
                 </div>
 
                 <!-- 模态框主体 -->
@@ -182,12 +180,11 @@
                     </form>
                 </div>
 
-
-
             </div>
         </div>
     </div>
-    <!--添加专业结束-->
+    <!--添加结束-->
+
     <!--删除专业提示-->
     <div class="modal fade" id="myModal2">
         <div class="modal-dialog">
