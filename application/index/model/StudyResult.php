@@ -19,6 +19,8 @@ use think\Model as ThinkModel;
  */
 class StudyResult extends ThinkModel
 {
-
-
+    public function user()
+    {
+        return $this->hasOne('User','id','userid');
+    }
 }

@@ -14,9 +14,9 @@
         <ul class="nav nav-pills nav-pills-sm">
             <li class="active"><a data-target="#thread-pane" href="#my/course/118/threads?type=all&amp;sort=posted">全部</a></li>
 
-            <li><a data-target="#thread-pane" href="#my/course/118/threads?type=question&amp;sort=posted">问答</a></li>
+            <!--<li><a data-target="#thread-pane" href="#my/course/118/threads?type=question&amp;sort=posted">问答</a></li>-->
 
-            <li><a data-target="#thread-pane" href="#my/course/118/threads?type=elite&amp;sort=posted">精华</a></li>
+            <!--<li><a data-target="#thread-pane" href="#my/course/118/threads?type=elite&amp;sort=posted">精华</a></li>-->
 
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#my/course/118/threads?type=all&amp;sort=posted#">
@@ -33,27 +33,53 @@
     </div>
 
     <div class="topic-list">
+        {volist name="asklist" id="asklist"}
         <div class="media topic-item">
             <div class="media-left media-middle">
                 <a class="pull-left js-user-card" href="#user/1" data-card-url="/user/1/card/show" data-user-id="1">
-                    <img class="avatar-sm" src="__IMG__100205dc0389099998.jpg">
+                    <img class="avatar-sm" src="http://localhost/{$asklist->user->title}">
                 </a>
             </div>
             <div class="media-body">
                 <div class="title">
                     <i class="es-icon es-icon-help color-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="问答"></i>
-                    <a href="#course/118/thread/1">1</a>
+                    <a href="#course/118/thread/1">{$asklist.title}</a>
                 </div>
                 <div class="metas text-sm">
-                    <a href="#user/1" class="color-gray">admin</a>
-                    <span>发起了问答</span>• <span>8小时前</span>
+                    <a href="#user/1" class="color-gray">{$asklist->user->username}</a>
+                    <span>发起了问答</span>• <span>{$asklist.addtime|time_tran}</span>
                 </div>
             </div>
             <div class="media-data hidden-xs">
-                <span>0<br>回复</span>
-                <span>2<br>浏览</span>
+                <span>{$asklist->answer()->count()}<br>回复</span>
+                <span>{$asklist->hit}<br>浏览</span>
             </div>
         </div>
+        {/volist}
+        {$page}
+
+        <!--<div class="media topic-item">-->
+            <!--<div class="media-left media-middle">-->
+                <!--<a class="pull-left js-user-card" href="#user/1" data-card-url="/user/1/card/show" data-user-id="1">-->
+                    <!--<img class="avatar-sm" src="__IMG__100205dc0389099998.jpg">-->
+                <!--</a>-->
+            <!--</div>-->
+            <!--<div class="media-body">-->
+                <!--<div class="title">-->
+                    <!--<i class="es-icon es-icon-help color-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="问答"></i>-->
+                    <!--<a href="#course/118/thread/1">1</a>-->
+                <!--</div>-->
+                <!--<div class="metas text-sm">-->
+                    <!--<a href="#user/1" class="color-gray">admin</a>-->
+                    <!--<span>发起了问答</span>• <span>8小时前</span>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="media-data hidden-xs">-->
+                <!--<span>0<br>回复</span>-->
+                <!--<span>2<br>浏览</span>-->
+            <!--</div>-->
+        <!--</div>-->
+
     </div>
 
     <nav class="text-center">

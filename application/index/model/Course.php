@@ -30,4 +30,14 @@ class Course extends ThinkModel
     {
         return $this->hasOne('User','id','userid');
     }
+
+    public function ask()
+    {
+        return $this->hasMany('Asklist','courseid','id');
+    }
+
+    public function studyresult()
+    {
+        return $this->hasMany('StudyResult','courseid','id');
+    }
 }
