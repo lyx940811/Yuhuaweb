@@ -87,6 +87,7 @@
                                         <label for="user_type" class="col-sm-2 control-label">用户类型</label>
                                         <div class="col-sm-8">
                                             <select class="form-control" name="user_type">
+                                                <option value="">--请选择--</option>
                                                 {volist name='types' id='t'}
                                                 <option value="{$t.id}" {if condition="$vo['id'] eq $t['id']"}selected{/if}>{$t.name}</option>
                                                 {/volist}
@@ -97,6 +98,7 @@
                                         <label for="user_roles" class="col-sm-2 control-label">用户分组</label>
                                         <div class="col-sm-8">
                                             <select class="form-control" name="user_roles">
+                                                <option value="">--请选择--</option>
                                                 {volist name='roles' id='v'}
                                                 <option value="{$v.id}" {if condition="$vo['roles'] eq $v['id']"}selected{/if}>{$v.name}</option>
                                                 {/volist}
@@ -170,6 +172,7 @@
                             <label for="user_type" class="col-sm-2 control-label">用户类型</label>
                             <div class="col-sm-8">
                                 <select id="user_type" class="form-control" name="user_type">
+                                    <option value="">--请选择--</option>
                                     {volist name='types' id='t'}
                                         <option value="{$t.id}">{$t.name}</option>
                                     {/volist}
@@ -180,6 +183,7 @@
                             <label for="user_roles" class="col-sm-2 control-label">用户分组</label>
                             <div class="col-sm-8">
                                     <select id="user_roles" class="form-control" name="user_roles">
+                                        <option value="">--请选择--</option>
                                         {volist name='roles' id='v'}
                                         <option value="{$v.id}">{$v.name}</option>
                                         {/volist}
