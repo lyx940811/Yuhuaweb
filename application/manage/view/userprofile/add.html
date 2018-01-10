@@ -119,8 +119,12 @@
                         </div>
                         <label class="col-sm-2 control-label form-inline">班级</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" name="class"
-                                   placeholder="请输入班级">
+                            <select name="class"  class="form-control" >
+                                <option value="">--请选择--</option>
+                                {volist name="classroom" id="c"}
+                                <option value="{$c.id}">{$c.title}</option>
+                                {/volist}
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">

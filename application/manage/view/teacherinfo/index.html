@@ -60,10 +60,7 @@
                         echo '<a href="'.url('addunit').'?tid='.$vo['id'].'">添加工作信息</a>';
                         echo '<strong>/</strong>';
                     }
-                    if(check($uid,'/manage/teacherreview/index')){
-                        echo '<a href="'.url('teacherreview/index').'?id='.$vo['id'].'">添加评价</a>';
-                        echo '<strong>/</strong>';
-                    }
+
                     if(check($uid,'/manage/teacherinfo/delete')){
                         echo '<a href="#" onclick="enable('.$vo['id'].');">删除</a>';
                     }

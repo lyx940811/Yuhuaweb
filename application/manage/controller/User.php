@@ -19,7 +19,7 @@ class User extends Base{
 
 
         $roles = Db::name('role')->field('id,name,code')->select();
-        $types = [['id'=>0,'name'=>'其他'],['id'=>'3','name'=>'学员']];
+        $types = [['id'=>0,'name'=>'超级管理员'],['id'=>'1','name'=>'管理员'],['id'=>'2','name'=>'教师'],['id'=>'3','name'=>'学员'],['id'=>'4','name'=>'企业']];
 
         $this->assign('list', $lists);
         $this->assign('roles', $roles);

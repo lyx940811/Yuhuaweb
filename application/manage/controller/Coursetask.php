@@ -165,12 +165,12 @@ class Coursetask extends Base{
         $mediafile = new Mediaupload();
         $all = $mediafile->getfile();
 
-
         if($all['message']=='success'){
-            //用法
+
+            //mp4上传
             $video_info = getVideoInfo($all['fileinfo']['name']);
-            $duration = $video_info['duration'];
-            $all['duration'] = $duration;
+            $duration = isset($video_info['duration'])?$video_info['duration']:NULL;
+            $all['fileinfo']['duration'] = $duration;
 
         }
 

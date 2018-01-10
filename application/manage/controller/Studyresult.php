@@ -23,7 +23,7 @@ class Studyresult extends Base{
         }
 
         $list = Db::table('study_result a')
-            ->field('b.title,c.title ctit,d.realname')
+            ->field('a.id,b.title,c.title ctit,d.realname')
             ->join('course b','a.courseid=b.id','LEFT')
             ->join('course_chapter c','a.chapterid=c.id','LEFT')
             ->join('user_profile d','a.userid=d.id','LEFT')

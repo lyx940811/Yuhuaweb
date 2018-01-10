@@ -27,10 +27,9 @@ class Categorycertificate extends Base{
             $where['a.name'] = ['like',"%{$info['name']}%"];
         }
 
-        $list = Db::table('categorycertificate')
-            ->alias('a')
+        $list = Db::table('categorycertificate a')
             ->join('category b','a.categoryID=b.code')
-            ->field('a.id,b.code,b.name as bname,a.name,a.unit,a.createtime,a.userid')
+            ->field('a.id,b.code,b.name as bname,a.name,a.unit,a.createtime,a.userid,a.categoryID')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
 

@@ -22,13 +22,13 @@ class Userprofile extends Base{
             $where['a.realname'] = ['like',"%{$info['username']}%"];
         }
 
-
         $list = Db::table('user_profile a')
             ->join('student_school b','a.id=b.userid','LEFT')
-            ->field('a.*,b.grade,b.starttime,b.depart,b.majors,b.class,b.style,b.studentstatus')
+            ->join('student_class c','a.id=c.userid','LEFT')
+            ->join('classroom d','c.classid=d.id','LEFT')
+            ->field('a.*,b.grade,b.starttime,b.depart,b.majors,b.class,b.style,b.studentstatus,d.title')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
-
 
         $newlist = [];
         foreach ($list as $k=>$v){
@@ -36,8 +36,12 @@ class Userprofile extends Base{
             $newlist[$k]['home'] = Db::table('student_home')->where('userid='.$v['id'])->select();
         }
 
+
+        $classroom = Db::table('classroom')->field('id,title')->select();
+
         $this->assign('list',$newlist);
         $this->assign('typename','学生列表');
+        $this->assign('classroom',$classroom);
         $this->assign('page',$list->render());
         return $this->fetch();
     }

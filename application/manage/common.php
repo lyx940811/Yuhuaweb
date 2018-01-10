@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: jason
+ * User: m's
  * Date: 2017/12/11
  * Time: 16:20
  */
@@ -19,6 +19,14 @@ function md5code($str,$str1,$md5str='ygs'){
 function check($uid,$url='')
 {
 
+    $admin_id = session('admin_uid');
+
+    if($admin_id==1){
+
+        return true;
+
+    }
+
     // 执行查询;
     $user_groups = Db::view('user', 'id,username')
         ->alias('a')
@@ -33,13 +41,7 @@ function check($uid,$url='')
 
     $groups = $user_groups['functioncode'];
 
-    $admin_id = session('admin_uid');
-
-    if($admin_id==1){
-
-        return true;
-
-    }elseif($groups){
+    if($groups){
 
         $funcs = Db::name('function')->field('url')->where('id','in',$groups)->select();
 
@@ -195,8 +197,10 @@ function upload($filename,$path){
 
 function getVideoInfo($file) {
 
-    $command = sprintf('ffmpeg -i "'.$file.'" 2>&1', $file);
 
+    $command = sprintf('ffmpeg -i "'.$file.'" 2>&1', $file);
+//    exec('ffmpeg -i '.$file.' 2>&1',$arr);
+//    var_dump($arr);
     ob_start();
     passthru($command);
     $info = ob_get_contents();

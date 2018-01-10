@@ -151,12 +151,14 @@ class Mediaupload extends Controller
         }
 
         if ($done) {
+
             $time = time();
             $path = date('Ymd',$time);
-            $sDestFile = '.'.DS.'upload'.DS.$path.DS.$time.'.'.$sExtension;       //合并文件地址
+            $path2 = 'upload/'.$path.'/';
+            $sDestFile = $path2.$time.'.'.$sExtension;       //合并文件地址
 
-            if(!file_exists('.'.DS.'upload'.DS.$path.DS)){
-                mkdir('.'.DS.'upload'.DS.$path.DS,0777,true);
+            if(!file_exists($path2)){
+                mkdir($path2,0777,true);
             }
 
             if (!$out = @fopen(iconv("utf-8","gb2312",$sDestFile), "wb")) {

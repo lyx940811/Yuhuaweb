@@ -129,14 +129,14 @@
                                         <label class="col-sm-2 control-label">媒体文件来源</label>
                                         <div class="col-sm-10">
                                             <label class="radio-inline">
-                                                <input type="radio" class="mediatype" name="mediatype" value="1"> 本地上传
+                                                <input type="radio" class="mediatype" name="mediatype" value="1"> 本地.mp4等文件上传
                                             </label>
                                             <label class="radio-inline">
                                                 <input type="radio" class="mediatype" name="mediatype" value="2"> 优酷等媒体链接
                                             </label>
                                             <div id="mediaHtml{$vo.id}">
                                                 <input type="text" class="form-control" value="{$vo.mediaSource}" name="mediaSource" id="mediaSource{$vo.id}"/>
-                                                <input type="text" class="form-control" value="{$vo.type}" name="type" id="type{$vo.id}"/>
+                                                <input type="text" class="form-control" value="{$vo.type}" name="type" id="type{$vo.id}" placeholder="如果是媒体链接，此项可选"/>
                                             </div>
                                         </div>
                                     </div>
@@ -251,7 +251,7 @@
                             <label class="col-sm-2 control-label">媒体文件来源</label>
                             <div class="col-sm-10">
                                 <label class="radio-inline">
-                                    <input type="radio" class="mediatype" name="mediatype" value="1"> 本地上传
+                                    <input type="radio" class="mediatype" name="mediatype" value="1"> 本地.mp4等文件上传
                                 </label>
                                 <label class="radio-inline">
                                     <input type="radio" class="mediatype" name="mediatype" value="2"> 优酷等媒体链接
@@ -353,7 +353,8 @@
                 swf: '__MANAGE_JS__Webuploader/Uploader.swf',
             }).on('fileQueued', function( file ) {
                 var start =  +new Date();
-// console.log(file)
+console.log(file);
+
                 // 返回的是 promise 对象
                 this.md5File(file, 0, 1 * 1024 * 1024)
 
@@ -364,15 +365,18 @@
 
                     // 处理完成后触发
                     .then(function(ret) {
-                        // console.log('md5:', ret);
+                        console.log('md5:', ret);
 
                         var end = +new Date();
                         // log('HTML5: md5 ' + file.name + ' cost ' + (end - start) + 'ms get value: ' + ret);
                     });
             }).on('uploadSuccess', function (file, response) {
-                // console.log(file)
-                // console.log(response); //这里可以得到后台返回的数据
-                $('#length').val(response.duration)
+                console.log(file)
+                console.log(response); //这里可以得到后台返回的数据
+                if(response.fileinfo.duration){
+                    $('#length').val(response.fileinfo.duration)
+                }
+
                 $('#mediaSource').val(response.fileinfo.name)
                 $('#type').val(response.fileinfo.type)
                 // $('#' + file.id).addClass('upload-state-done');
