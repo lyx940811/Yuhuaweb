@@ -22,7 +22,6 @@ class Userprofile extends Base{
             $where['a.realname'] = ['like',"%{$info['username']}%"];
         }
 
-
         $list = Db::table('user_profile a')
             ->join('student_school b','a.id=b.userid','LEFT')
             ->join('student_class c','a.id=c.userid','LEFT')
@@ -30,8 +29,6 @@ class Userprofile extends Base{
             ->field('a.*,b.grade,b.starttime,b.depart,b.majors,b.class,b.style,b.studentstatus,d.title')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
-
-//        echo Db::table('user_profile a')->getLastSql();exit;
 
         $newlist = [];
         foreach ($list as $k=>$v){

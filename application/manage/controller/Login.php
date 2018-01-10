@@ -55,6 +55,8 @@ class Login extends Controller{
                 //success
                 session('admin_uid',$user->id);
                 session('admin_name',$user->username);
+                $role = Db::table('role')->field('name')->where('id='.$user->roles)->find();
+                session('admin_role',$role['name']);
 
                 return ['info'=>'登陆成功','code'=>'000','url'=>url('Manage/manage/index')];
 

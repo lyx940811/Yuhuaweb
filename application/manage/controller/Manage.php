@@ -15,10 +15,12 @@ class Manage extends Base{
 
     public function index(){
 
+        parent::_initialize();
         $admin_info['name'] = session('admin_name');
         $admin_info['uid'] = session('admin_uid');
         $img = Config::get('view_replace_str');
         $admin_info['img'] = $img['__MANAGE_IMG__'].'profile_small.jpg';
+        $admin_info['role'] = session('admin_role');
 
         $this->assign('typename','后台首页');
         $this->assign('admin_info',$admin_info);
