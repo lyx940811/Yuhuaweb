@@ -13,6 +13,7 @@
                 <label>章节名称</label>
                 <input type="text" class="form-control" placeholder="章节名称" name="title">
             </div>
+            <input type="hidden" name="cid" value="{$Think.get.cid}"><!--此为课程id，搜索的时候不能丢-->
             <button type="submit" class="btn btn-primary">搜索</button>
         </form>
     </div>
