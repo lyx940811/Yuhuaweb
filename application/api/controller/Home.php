@@ -28,7 +28,7 @@ class Home extends Controller
         //define ajax return message
         $this->codeMessage = Config::get('apicode_message');
 
-        //controller from dir logic
+        //controller from dir logic。
         $this->LogicLog  = Loader::controller('Log','logic');
         //define data
         $this->data = $this->request->param();
