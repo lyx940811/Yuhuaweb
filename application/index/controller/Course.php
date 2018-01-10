@@ -30,13 +30,31 @@ class Course extends Home
         $this->course['learnNum'] = count($people);
         $this->assign('course',$this->course);
 
+        //头部信息
         $courseinfo = $this->getcourseinfo($courseid);
         $this->assign('coursedata',$courseinfo);
+        //右侧学生信息
+        $student = $this->newstudent($courseid);
+        $this->assign('student',$student);
+
 
     }
 
     protected function newstudent($courseid){
-        $student = StudyResult::where('courseid',$courseid)->group('userid')->limit(6)->select();
+        $student = Db::name('study_result')
+            ->alias('sr')
+            ->join('user u','u.id=sr.userid')
+            ->where('sr.courseid',$courseid)
+            ->field('u.title,u.id,sr.courseid,sr.chapterid,u.username')
+            ->group('sr.userid')
+            ->limit(10)
+            ->select();
+        if($student){
+            foreach ( $student as &$s ){
+                $s['task'] = Db::name('course_task')->where(['courseId'=>$s['courseid'],'chapterid'=>$s['chapterid']])->value('title');
+            }
+        }
+        return $student;
     }
 
     protected function getcourseinfo($courseid){
@@ -225,6 +243,12 @@ class Course extends Home
         return $this->fetch();
     }
     public function material(){
+
+        $file = $this->course->file()->paginate(10);
+        $page = $file->render();
+        $this->assign('file',$file);
+        $this->assign('page',$page);
+
         return $this->fetch();
     }
     public function summary(){

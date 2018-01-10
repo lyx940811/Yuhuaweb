@@ -40,4 +40,9 @@ class Course extends ThinkModel
     {
         return $this->hasMany('StudyResult','courseid','id');
     }
+
+    public function file()
+    {
+        return $this->hasMany('CourseFile','courseid','id');
+    }
 }

@@ -157,7 +157,7 @@
                             <li role="presentation" id="tasks" class=""><a href="{:url('index/course/catalogue',array('course'=>$course['id']))}">目录</a></li>
                             <li role="presentation" id="threads" class=""><a href="{:url('index/course/discussion',array('course'=>$course['id']))}">讨论区<small>({$course->ask()->count()})</small></a></li>
                             <li role="presentation" id="notes" class=""><a href="{:url('index/course/note',array('course'=>$course['id']))}">笔记<small>(1)</small></a></li>
-                            <li role="presentation" id="material" class=""><a href="{:url('index/course/material',array('course'=>$course['id']))}">资料区<small>(38)</small></a></li>
+                            <li role="presentation" id="material" class=""><a href="{:url('index/course/material',array('course'=>$course['id']))}">资料区<small>({$course->file()->count()})</small></a></li>
                             <li role="presentation" id="reviews" class=""><a href="{:url('index/course/evaluate',array('course'=>$course['id']))}">评价<small>(0)</small></a></li>
                             <li role="presentation" id="summary" class=""><a href="{:url('index/course/summary',array('course'=>$course['id']))}">介绍</a></li>
                             <!--<li class="highlight" style="left: 0px; width: 92px;"></li>-->
@@ -221,11 +221,20 @@
                     </div>
                     <div class="panel-body">
                         <ul class="user-avatar-list clearfix">
+                            {notempty name="student"}
+                            {volist name="student" id="stu"}
                             <li>
+                                <a class=" js-user-card" href="#user/1" data-card-url="/user/1/card/show" data-user-id="1" data-original-title="" title="">
+                                    <img class="avatar-sm" src="http://localhost/{$stu.title}">
+                                </a>
+                            </li>
+                            {/volist}
+                            {/notempty}
+                            <!--<li>
                                 <a class=" js-user-card" href="#user/1" data-card-url="/user/1/card/show" data-user-id="1" data-original-title="" title="">
                                     <img class="avatar-sm" src="__IMG__100205dc0389099998.jpg">
                                 </a>
-                            </li>
+                            </li>-->
                         </ul>
                     </div>
                 </div>
@@ -234,21 +243,25 @@
                         <h3 class="panel-title"><i class="es-icon es-icon-recentactors"></i>学员动态</h3>
                     </div>
                     <div class="panel-body">
+                        {notempty name="student"}
+                        {volist name="student" id="student"}
                         <div class="media media-number-o color-gray text-overflow">
-                            <a class="link-dark " href="#user/1">admin</a>开始学习 <a class="link-dark" href="#course/118/task/702/show?from=student_status" title="来自《化学试剂》">化学试剂</a>
+                            <a class="link-dark " href="#user/1">{$student.username}</a>  开始学习 <a class="link-dark" href="#course/118/task/702/show?from=student_status" title="来自《{$student.task}》">{$student.task}</a>
                         </div>
-                        <div class="media media-number-o color-gray text-overflow">
-                            <a class="link-dark " href="#user/1">admin</a>开始学习 <a class="link-dark" href="#course/118/task/701/show?from=student_status" title="来自《分析化验室安全管理制度的学习》">分析化验室安全管理制度的学习</a>
-                        </div>
-                        <div class="media media-number-o color-gray text-overflow">
-                            <a class="link-dark " href="#user/1">admin</a>完成了 <a class="link-dark" href="#course/118/task/700/show?from=student_status" title="来自《分析化验室的清洁与管理》">分析化验室的清洁与管理</a>
-                        </div>
-                        <div class="media media-number-o color-gray text-overflow">
-                            <a class="link-dark " href="#user/1">admin</a>开始学习 <a class="link-dark" href="#course/118/task/700/show?from=student_status" title="来自《分析化验室的清洁与管理》">分析化验室的清洁与管理</a>
-                        </div>
-                        <div class="media media-number-o color-gray text-overflow">
-                            <a class="link-dark " href="#user/1">admin</a>加入课程<a class="link-dark" href="#course/118" title="来自《化学分析基本操作技能》">化学分析基本操作技能</a>
-                        </div>
+                        {/volist}
+                        {/notempty}
+                        <!--<div class="media media-number-o color-gray text-overflow">-->
+                            <!--<a class="link-dark " href="#user/1">admin</a>开始学习 <a class="link-dark" href="#course/118/task/701/show?from=student_status" title="来自《分析化验室安全管理制度的学习》">分析化验室安全管理制度的学习</a>-->
+                        <!--</div>-->
+                        <!--<div class="media media-number-o color-gray text-overflow">-->
+                            <!--<a class="link-dark " href="#user/1">admin</a>完成了 <a class="link-dark" href="#course/118/task/700/show?from=student_status" title="来自《分析化验室的清洁与管理》">分析化验室的清洁与管理</a>-->
+                        <!--</div>-->
+                        <!--<div class="media media-number-o color-gray text-overflow">-->
+                            <!--<a class="link-dark " href="#user/1">admin</a>开始学习 <a class="link-dark" href="#course/118/task/700/show?from=student_status" title="来自《分析化验室的清洁与管理》">分析化验室的清洁与管理</a>-->
+                        <!--</div>-->
+                        <!--<div class="media media-number-o color-gray text-overflow">-->
+                            <!--<a class="link-dark " href="#user/1">admin</a>加入课程<a class="link-dark" href="#course/118" title="来自《化学分析基本操作技能》">化学分析基本操作技能</a>-->
+                        <!--</div>-->
                     </div>
                 </div>
             </div>

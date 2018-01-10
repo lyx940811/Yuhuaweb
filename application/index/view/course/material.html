@@ -2,24 +2,27 @@
 {block name="title"}在教课程 - 个人主页{/block}
 {block name="navdetail"}
 <ul class="media-list">
+    {volist name="file" id="file"}
     <li class="media">
         <div class="media-body">
             <div class="mbs">
-                <a href="#course/118/material/389/download" target="_blank">39重结晶法提纯苯甲酸.pptx</a>
+                <a href="#course/118/material/389/download" target="_blank">{$file.filename}</a>
             </div>
 
 
             <div class="text-sm">
-                <span class="color-gray">209.49KB</span>
+                <span class="color-gray">{$file.filesize|attrFilesize}</span>
                 <span class="bullet">•</span>
                 <a class="link-primary" href="#course/118/task/743/show" title="重结晶法提纯苯甲酸">任务</a>
                 <span class="bullet">•</span>
-                <span class="color-gray">上传于4天前</span>
+                <span class="color-gray">上传于 {$file.createTime|time_tran}</span>
             </div>
 
         </div>
     </li>
-    <li class="media">
+    {/volist}
+    {$page}
+    <!--<li class="media">
         <div class="media-body">
             <div class="mbs">
                 <a href="#course/118/material/388/download" target="_blank">38 热过滤法提纯硝酸钾.pptx</a>
@@ -52,7 +55,7 @@
             </div>
 
         </div>
-    </li>
+    </li>-->
 </ul>
 {/block}
 {block name="javascript"}

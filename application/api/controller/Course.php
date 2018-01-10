@@ -409,7 +409,8 @@ class Course extends Home
                 unset($l['length'],$l['seq']);
             }
         }
-        return json_data(0,$this->codeMessage[0],$lesson);    }
+        return json_data(0,$this->codeMessage[0],$lesson);
+    }
 
     //abandoned , use the rebuild version
     public function getcoursetop_abandoned(){
