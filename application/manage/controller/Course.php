@@ -14,7 +14,9 @@ class Course extends Base{
 
     public function index(){
 
-        $list = Db::table('course')->field('id,title,subtitle,categoryId,tags,about,smallPicture,price,serializeMode,studentNum,status,userid')->paginate(20);
+        $list = Db::table('course')
+            ->field('id,title,subtitle,categoryId,tags,about,smallPicture,price,serializeMode,studentNum,status,userid')
+            ->paginate(20);
 
 
         $category = Db::table('category')->field('code,name')->select();
