@@ -31,7 +31,7 @@
         {volist name="list" id="vo"}
         <tr>
             <td>{$vo.id}</td>
-            <td>{$vo.rolecode}组</td>
+            <td>{$vo.name}</td>
             <td>{volist name="vo.groups" id="g"}{$g.name}<strong> | </strong>{/volist}</td>
             <td>
                 {php}
@@ -62,14 +62,18 @@
                             <div class="modal-body">
                                 <form class="form-horizontal" role="form" id="form{$vo.id}" method="post" action="{:url('edit')}">
                                     <div class="form-group">
-                                        <label for="role_code" class="col-sm-2 control-label">权限组名称</label>
+                                        <label for="rolecode" class="col-sm-2 control-label">权限组名称</label>
                                         <div class="col-sm-5">
-                                            <input type="text" class="form-control" name="role_code" value="{$vo.rolecode}"
-                                                   placeholder="请输入权限组名称">
+                                            <select name="rolecode" class="form-control">
+                                                <option value="">--请选择--</option>
+                                                {volist name="roles" id="r"}
+                                                <option value="{$r.id}">{$r.name}</option>
+                                                {/volist}
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="function_code" class="col-sm-2 control-label">详细列表</label>
+                                        <label for="functioncode" class="col-sm-2 control-label">详细列表</label>
                                         <div class="col-sm-10">
                                             <div class="checkbox">
                                                 {php}
@@ -77,7 +81,7 @@
                                                 {/php}
                                                 {volist name='allgroup' id='a'}
                                                 <label class="checkbox-inline">
-                                                    <input type="checkbox" {if condition="in_array($a['id'],$arr)"}checked="checked"{/if} class="function_code" value="{$a.id}"  name="function_code[]"/> {$a.name}
+                                                    <input type="checkbox" {if condition="in_array($a['id'],$arr)"}checked="checked"{/if} class="functioncode" value="{$a.id}"  name="functioncode[]"/> {$a.name}
                                                 </label>
                                                 {/volist}
                                             </div>
@@ -123,19 +127,19 @@
                 <div class="modal-body">
                     <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
                         <div class="form-group">
-                            <label for="role_code" class="col-sm-2 control-label">权限组名称</label>
+                            <label for="name" class="col-sm-2 control-label">权限组名称</label>
                             <div class="col-sm-5">
-                                <input type="text" class="form-control" id="role_code" name="role_code"
+                                <input type="text" class="form-control" id="name" name="name"
                                        placeholder="请输入权限组名称">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="function_code" class="col-sm-2 control-label">详细列表</label>
+                            <label for="functioncode" class="col-sm-2 control-label">详细列表</label>
                             <div class="col-sm-10">
                                 <div class="checkbox">
                                     {volist name='allgroup' id='a'}
                                     <label class="checkbox-inline">
-                                        <input type="checkbox" class="function_code" id="function_code"  value="{$a.id}"  name="function_code[]"/>  {$a.name}
+                                        <input type="checkbox" class="functioncode" id="functioncode"  value="{$a.id}"  name="functioncode[]"/>  {$a.name}
                                     </label>
                                     {/volist}
                                 </div>

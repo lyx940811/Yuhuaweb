@@ -1,0 +1,237 @@
+<!--左侧导航开始-->
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="nav-close"><i class="fa fa-times-circle"></i>
+    </div>
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <span><img alt="image" class="img-circle" src="{$admin_info['img']}" /></span>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                <span class="clear">
+                               <span class="block m-t-xs"><strong class="font-bold">{$admin_info['name']}</strong></span>
+                                <span class="text-muted text-xs block">{$admin_info['role']}<b class="caret"></b></span>
+                                </span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+
+                        <li><a class="J_menuItem" href="reset">重置密码</a>
+                        </li>
+
+                        <li class="divider"></li>
+                        <li><a href="{:url('Manage/login/logout')}">安全退出</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-group"></i>
+                    <span class="nav-label">用户管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/user/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>用户列表</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/role/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>角色列表</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/rolefunction/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>权限组</a>
+                    </li>
+                </ul>
+
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-certificate"></i>
+                    <span class="nav-label">栏目管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/functions/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>栏目功能列表</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-leanpub"></i>
+                    <span class="nav-label">日志管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/log/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>日志列表</a>
+                    </li>
+
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-leanpub"></i>
+                    <span class="nav-label">专业管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/category/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>专业列表</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/categorycourse/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>专业课程</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/studentenroll/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>专业报名数据查询</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/categorycertificate/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>专业证书</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/certificate/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>证书记录</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-file"></i>
+                    <span class="nav-label">类别管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/classcity/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>区域列表</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/companynature/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>企业性质</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/companysize/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>企业规模</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/classcourse/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>课程类型</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/filetype/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>文件类型</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/tasktype/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>任务类型</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-bookmark"></i>
+                    <span class="nav-label">标签管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/tag/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>标签列表</a>
+                    </li>
+
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-book"></i>
+                    <span class="nav-label">课程管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/course/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>课程列表</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/coursefile/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>课程资料</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/coursefavorite/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>收藏记录</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/coursereview/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>课程评价</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-leanpub"></i>
+                    <span class="nav-label">笔记管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/coursenote/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>笔记列表</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-user-plus"></i>
+                    <span class="nav-label">学生管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/userprofile/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>学生列表</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/dormitory/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>宿舍管理</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/studyresult/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>学习记录</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/rewardpointflow/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>积分记录</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-sitemap"></i>
+                    <span class="nav-label">班级管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/classroom/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>班级管理</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-leanpub"></i>
+                    <span class="nav-label">招生管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/admission/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>招生列表</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/studentenroll2/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>报名管理</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/returnvisit/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>生员回访</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-leanpub"></i>
+                    <span class="nav-label">教师管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/teacherinfo/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>教师列表</a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="{:url('Manage/teacherreview/index')}" data-index="0"><i class="fa fa-angle-double-right"></i>教师评价列表</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+<!--左侧导航结束-->

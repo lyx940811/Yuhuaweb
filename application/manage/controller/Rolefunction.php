@@ -15,7 +15,10 @@ class Rolefunction extends Base{
 
         $db_func = Db::name('function');
 
-        $list = Db::name('role_function')->paginate(20);
+        $list = Db::name('role_function a')
+            ->join('role b','a.rolecode=b.id','LEFT')
+            ->field('a.*,b.name')
+            ->paginate(20);
 
         $funlist = [];
         foreach ($list as $k=>$v){
@@ -35,9 +38,11 @@ class Rolefunction extends Base{
 
         $allgroup = $db_func->field('id,code,name,url')->where('Flag=1')->select();
 
+        $roles = Db::table('role')->select();
 
         $this->assign('list',$funlist);
         $this->assign('allgroup',$allgroup);
+        $this->assign('roles',$roles);
         $this->assign('page',$list->render());
         $this->assign('typename','权限组管理');
         return $this->fetch();
@@ -51,12 +56,12 @@ class Rolefunction extends Base{
 
         //错误信息提示
         $msg  =   [
-            'role_code.require' => '权限组名称不能为空',
-            'role_code.length' => '权限组名称长度太短',
+            'name.require' => '权限组名称不能为空',
+            'name.length' => '权限组名称长度太短',
         ];
 
         $validate = new Validate([
-            'role_code'  => 'require|length:1,20',
+            'name'  => 'require|length:1,20',
         ],$msg);
 
         $validate->check($info);
@@ -67,20 +72,31 @@ class Rolefunction extends Base{
             return ['error'=>$error,'code'=>'200'];
         }
 
-        $role_table = Db::name('role_function');
-        $is_have = $role_table->field('id')->where("rolecode='{$info['role_code']}'")->find();
+        $role_table = Db::name('role');
+//        $is_have = $role_table->field('id')->where("rolecode='{$info['rolecode']}'")->find();
+//
+//        if($is_have){//如果这个code有
+//            return ['error'=>'已经有此代码','code'=>'300'];
+//        }
 
-        if($is_have){//如果这个code有
-            return ['error'=>'已经有此代码','code'=>'300'];
-        }
+        $data = [
+            'name' =>$info['name'],
+            'data' =>$info['data'],
+            'flag' =>1,
+            'createdUserId'=>session('admin_uid'),
+            'createdTime'=>date('Y-m-d H:i:s',time()),
+        ];
 
-        $data['rolecode'] = $info['role_code'];
-        $data['functioncode'] = isset($info['function_code'])?implode(',',$info['function_code']):'';
-        $data['Flag'] = 1;
-
-        $ok = $role_table->field('rolecode,functioncode,Flag')->insert($data);
+        $ok = $role_table->insert($data);
 
         if($ok){
+            //添加角色权限
+
+            $sdata['functioncode'] = isset($info['functioncode'])?implode(',',$info['functioncode']):'';
+            $sdata['Flag'] = 1;
+
+            Db::table('role_function')->insert($sdata);
+
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
@@ -94,12 +110,12 @@ class Rolefunction extends Base{
         $info = input('post.');
 
         $msg  =   [
-            'role_code.require' => '权限组code不能为空',
-            'role_code.require' => '角色名称不能为空',
+            'rolecode.require' => '权限组code不能为空',
+            'rolecode.require' => '角色名称不能为空',
         ];
 
         $validate = new Validate([
-            'role_code'  => 'require|length:1,20',
+            'rolecode'  => 'require|length:1,20',
         ],$msg);
 
         $validate->check($info);
@@ -120,14 +136,26 @@ class Rolefunction extends Base{
         if(!$have){//如果没这个code
             return ['error'=>'没有此角色','code'=>'300'];
         }
-        $funcs = isset($info['function_code'])?implode(',',$info['function_code']):'';
+        $funcs = isset($info['functioncode'])?implode(',',$info['functioncode']):'';
 
-        $ok = $role_table->field('rolecode,functioncode')->where('id',$id)->update(['rolecode' => $info['role_code'],'functioncode'=>$funcs]);
+        $ok = $role_table->field('rolecode,functioncode')->where('id',$id)->update(['rolecode' => $info['rolecode'],'functioncode'=>$funcs]);
 
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];
+        }
+    }
+    public function delete(){
+
+        $id = $_GET['rid']+0;
+
+        $ok = Db::name('role_function')->where("id='$id'")->delete();
+
+        if($ok){
+            return ['info'=>'删除成功','code'=>'000'];
+        }else{
+            return ['error'=>'删除失败','code'=>'200'];
         }
     }
 }
