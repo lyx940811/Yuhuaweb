@@ -80,7 +80,7 @@ class Rolefunction extends Base{
 
         $data = [
             'name' =>$info['name'],
-            'data' =>$info['data'],
+            'data' =>$info['name'],
             'flag' =>1,
             'createdUserId'=>session('admin_uid'),
             'createdTime'=>date('Y-m-d H:i:s',time()),
@@ -91,6 +91,7 @@ class Rolefunction extends Base{
         if($ok){
             //添加角色权限
 
+            $sdata['rolecode'] = $role_table->getLastInsID();
             $sdata['functioncode'] = isset($info['functioncode'])?implode(',',$info['functioncode']):'';
             $sdata['Flag'] = 1;
 
