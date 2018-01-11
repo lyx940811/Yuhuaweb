@@ -1,0 +1,53 @@
+{extend name="public/spacelayout"}
+{block name="title"}{/block}
+{block name="link"}
+<!--[if lt IE 9]>
+<script src="/static-dist/libs/html5shiv.js?version=8.1.5"></script>
+<script src="/static-dist/es5-shim/es5-shim.js?version=8.1.5"></script>
+<script src="/static-dist/es5-shim/es5-sham.js?version=8.1.5"></script>
+<![endif]-->
+{/block}
+
+{block name="style"}
+{include file="../application/index/view/teacher/public/mobilestyle.html" /}
+{/block}
+{block name="container"}
+
+{/block}
+
+{block name="javascript"}
+<script>
+    if (typeof app === 'undefined') {
+        var app = {};
+    }
+    app.version = '8.1.5';
+    app.httpHost = 'http://www.hnhgjx.cn:1700';
+    app.basePath = 'http://www.hnhgjx.cn:1700';
+    app.theme = 'jianmo';
+
+
+    var CLOUD_FILE_SERVER = "";
+
+    app.config = {"api":{"weibo":{"key":""},"qq":{"key":""},"douban":{"key":""},"renren":{"key":""}},"loading_img_path":"\/assets\/img\/default\/loading.gif?version=8.1.5"};
+
+    app.arguments = {};
+
+    app.scripts = null;
+
+    app.uploadUrl = '/file/upload';
+    app.imgCropUrl = '/file/img/crop';
+    app.lessonCopyEnabled = '0';
+    app.cloudSdkCdn = '';
+    app.lang = 'zh_CN';
+</script>
+<script src="__JS__translator.min.js"></script>
+<script src="__JS__js"></script>
+<script src="__JS__vendor.js"></script>
+<script src="__JS__common.js"></script>
+<script src="__JS__main.js"></script>
+<script type="text/javascript">
+    window.seajsBoot && window.seajsBoot();
+</script>
+{/block}
+
+

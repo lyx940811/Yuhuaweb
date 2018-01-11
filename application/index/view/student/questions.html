@@ -1,0 +1,63 @@
+{extend name="public/studentlayout"}
+{block name="title"}{/block}
+
+{block name="container"}
+<div class="col-md-9">
+    <div class="panel panel-default panel-col">
+        <div class="panel-heading">我的问答</div>
+        <div class="panel-body">
+            <ul class="media-list">
+                <li class="media">
+                    <div class="media-body">
+                        <div class="mbm">
+                            <span class="label label-info" title="问答帖">问</span>
+                            <a href="#"><strong>11111111</strong></a>
+                            <span class="label" title="课时267">L267</span>
+                        </div>
+                        <div class="color-gray text-normal">
+                            <span>来自<a href="#" class="link-primary">专业英语</a>-<a href="#" class="link-primary">专业英语</a></span>
+                            <span class="bullet">•</span>
+                            <span>0浏览</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="media">
+                    <div class="media-body">
+                        <div class="mbm">
+                            <span class="label label-info" title="问答帖">问</span>
+                            <a href="#"><strong>11111111</strong></a>
+                            <span class="label" title="课时267">L267</span>
+                        </div>
+                        <div class="color-gray text-normal">
+                            <span>来自<a href="#" class="link-primary">专业英语</a>-<a href="#" class="link-primary">专业英语</a></span>
+                            <span class="bullet">•</span>
+                            <span>0浏览</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="media">
+                    <div class="media-body">
+                        <div class="mbm">
+                            <span class="label label-info" title="问答帖">问</span>
+                            <a href="#"><strong>11111111</strong></a>
+                            <span class="label" title="课时267">L267</span>
+                        </div>
+                        <div class="color-gray text-normal">
+                            <span>来自<a href="#" class="link-primary">专业英语</a>-<a href="#" class="link-primary">专业英语</a></span>
+                            <span class="bullet">•</span>
+                            <span>0浏览</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+        $('.list-group-item').eq(2).addClass("active");
+    })
+</script>
+{/block}

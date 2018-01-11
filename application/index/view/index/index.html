@@ -1,0 +1,138 @@
+{extend name="public/layout"}
+{block name="title"}在教课程 - 个人主页{/block}
+{block name="container"}
+      <section class="es-poster swiper-container">
+          <div class="swiper-wrapper" >
+              <div class="swiper-slide swiper-slide-duplicate" style="background: rgb(255, 255, 255); width: 1903px; height: 450px;">
+                  <div>
+                      <a href="#www.hnhgjx.cn/xxdwnews/4878.jhtml" target="_blank"><img class="img-responsive" src="__IMG__17125244f702024599.jpg">
+                      </a>
+                  </div>
+              </div>
+          </div>
+          <div class="swiper-pager"><span class="swiper-pagination-switch swiper-visible-switch swiper-active-switch"></span><span class="swiper-pagination-switch"></span></div>
+      </section>
+      <section class="course-list-section " id="course-list-section">
+          <div class="container">
+              <div class="text-line">
+                  <h5><span>网校课程</span>
+                      <div class="line"></div>
+                  </h5>
+                  <div class="subtitle">精选网校课程，满足你的学习兴趣。</div>
+              </div>
+              <div class="course-filter" id="course-filter">
+                  <ul class="nav nav-pills hidden-xs" role="tablist">
+                      <li role="presentation" class="active  js-course-filter" data-url="__COURSE__search?orderBy=latest" data-type="course"><a href="javascript:;">全部课程</a></li>
+                      <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447244&amp;orderBy=latest" data-type="course"><a href="javascript:;">焊接技术</a></li>
+                      <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447245&amp;orderBy=latest" data-type="course"><a href="javascript:;">设备维修</a></li>
+                      <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447246&amp;orderBy=latest" data-type="course"><a href="javascript:;">电气自动化</a></li>
+                      <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447247&amp;orderBy=latest" data-type="course"><a href="javascript:;">仪表自动化</a></li>                                                                                                                                                                                                                                                                                                                    <li class="dropdown nav-hover">
+                      <li>
+                          <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
+                              <i class="es-icon es-icon-morehoriz"></i>
+                          </a>
+                          <ul class="dropdown-menu">
+                              <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447248&amp;orderBy=latest" data-type="course"><a href="javascript:;">铆管技术</a></li>
+                              <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=13&amp;orderBy=latest" data-type="course"><a href="javascript:;">经济管理系</a></li>
+                              <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=680140&amp;orderBy=latest" data-type="course"><a href="javascript:;">化学工程系</a></li>
+                          </ul>
+                      </li>
+                  </ul>
+                  <div class="btn-group visible-xs">
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">全部课程 <span class="caret"></span></button>
+                      <ul class="dropdown-menu" role="menu">
+                          <li role="presentation" class="js-course-filter active " data-url="__COURSE__search?orderBy=latest" data-type="course"><a href="javascript:;">全部课程</a></li>
+                          <li role="presentation" class="js-course-filter " data-url="__COURSE__search?categoryId=36447244&amp;orderBy=latest" data-type="course"><a href="javascript:;">焊接技术</a></li>
+                          <li role="presentation" class="js-course-filter " data-url="__COURSE__search?categoryId=36447245&amp;orderBy=latest" data-type="course"><a href="javascript:;">设备维修</a></li>
+                          <li role="presentation" class="js-course-filter " data-url="__COURSE__search?categoryId=36447246&amp;orderBy=latest" data-type="course"><a href="javascript:;">电气自动化</a></li>
+                          <li role="presentation" class="js-course-filter " data-url="__COURSE__search?categoryId=36447247&amp;orderBy=latest" data-type="course"><a href="javascript:;">仪表自动化</a></li>
+                      </ul>
+                  </div>
+                  <div class="course-sort btn-group">
+                      <a href="javascript:;" class="btn btn-default  active js-course-filter" data-url="__COURSE__search?categoryId=0&amp;orderBy=latest" data-type="course">
+                          最新
+                      </a>
+                      <a href="javascript:;" class="btn btn-default js-course-filter" data-url="__COURSE__search?categoryId=0&amp;orderBy=studentNum" data-type="course">
+                          最热
+                      </a>
+                      <a href="javascript:;" class="btn btn-default js-course-filter" data-url="__COURSE__search?categoryId=0&amp;orderBy=recommendedSeq" data-type="course">
+                          推荐
+                      </a>
+                  </div>
+              </div>
+              <div class="course-list">
+                  <div class="row">
+                      {volist name="course" id="course"}
+                      <div class="col-lg-3 col-md-4 col-xs-6">
+                          <div class="course-item">
+                              <div class="course-img">
+                                  <a href="{:url('index/course/catalogue',array('course'=>$course['id']))}">
+                                      <img src="http://localhost/{$course.smallPicture}" alt="化学基础" class="img-responsive">
+                                  </a>
+                              </div>
+                              <div class="course-info">
+                                  <div class="title">
+                                      <a class="link-dark" href="{:url('index/course/catalogue',array('course'=>$course['id']))}" target="_blank">
+                                          {$course.title}
+                                      </a>
+                                  </div>
+                                  <div class="metas clearfix">
+                                      <span class="num"><i class="es-icon es-icon-people"></i>3</span>
+                                      <span class="comment"><i class="es-icon es-icon-textsms"></i>0</span>
+                                      <span class="course-price-widget">
+                                    <span class="free">免费</span>
+                                  </span>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      {/volist}
+                      <!--<div class="col-lg-3 col-md-4 col-xs-6">
+                          <div class="course-item">
+                              <div class="course-img">
+                                  <a href="{:url('index/course/catalogue')}">
+                                      <img src="__IMG__courseSet.png" alt="化学基础" class="img-responsive">
+                                  </a>
+                              </div>
+                              <div class="course-info">
+                                  <div class="title">
+                                      <a class="link-dark" href="{:url('index/course/catalogue')}" target="_blank">
+                                          化学基础2
+                                      </a>
+                                  </div>
+                                  <div class="metas clearfix">
+                                      <span class="num"><i class="es-icon es-icon-people"></i>3</span>
+                                      <span class="comment"><i class="es-icon es-icon-textsms"></i>0</span>
+                                      <span class="course-price-widget">
+                                    <span class="free">免费</span>
+                                  </span>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>-->
+                  </div>
+              </div>
+              <div class="section-more-btn" test="123" fa="testfa">
+                  <a href="{:url('index/index/allcourse')}" class="btn btn-default btn-lg">
+                      更多课程 <i class="mrs-o es-icon es-icon-chevronright"></i>
+                  </a>
+              </div>
+          </div>
+      </section>
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+//        alert($("[test='123']").attr('fa'));
+
+//        $.post(
+//            "{:url('index/index/testajax')}",
+//            {'data':1},
+//            function(data){
+//                alert(data);
+//            },
+//            "json"
+//        );
+    })
+</script>
+{/block}

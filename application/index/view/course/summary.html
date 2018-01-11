@@ -1,0 +1,37 @@
+{extend name="public/courselayout"}
+{block name="title"}在教课程 - 个人主页{/block}
+{block name="navdetail"}
+<div class="es-piece">
+    <div class="piece-header">课程介绍</div>
+    <div class="piece-body p-lg clearfix">
+        {notempty name="course.about"}
+        {$course.about}
+        {else /}
+        还没有课程评价
+        {/notempty}
+    </div>
+</div>
+<div class="es-piece  hidden ">
+    <div class="piece-header">课程目标</div>
+    <div class="piece-body">
+        <ul class="piece-body-list">
+            <span class="empty">为设置目标</span>
+        </ul>
+    </div>
+</div>
+<div class="es-piece  hidden ">
+    <div class="piece-header">适合人群</div>
+    <div class="piece-body">
+        <ul class="piece-body-list">
+            <span class="empty">为设置目标</span>
+        </ul>
+    </div>
+</div>
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+        $('.nav-tabs').children().eq(5).addClass('active');
+    })
+</script>
+{/block}

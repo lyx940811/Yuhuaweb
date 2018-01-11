@@ -103,8 +103,8 @@ class User extends Controller
     }
 
     public function chheadiconbase(){
-        $uploads_dir = "uploads".DS."pictures".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
-        $date_dir    = ROOT_PATH."public".DS.$uploads_dir;
+        $uploads_dir = "uploads/pictures"."/".date('Y',time())."/".date('m',time())."/".date('d',time());
+        $date_dir    = ROOT_PATH."public"."/".$uploads_dir;
         if(!file_exists($date_dir)){
             mkdir($date_dir,0775,true);
         }
@@ -112,7 +112,7 @@ class User extends Controller
         $type = 'jpg';
 
         if(in_array($type,array('pjpeg','jpeg','jpg','gif','bmp','png'))){
-            $new_file = $uploads_dir.DS.date('YmdHis_').'.'.$type;
+            $new_file = $uploads_dir."/".date('YmdHis_').'.'.$type;
             if(file_put_contents($new_file, base64_decode($base64_img))){
                 $img_path = str_replace('../../..', '', $new_file);
                 $user = \app\index\model\User::get($this->user->id);

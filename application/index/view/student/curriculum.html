@@ -1,0 +1,39 @@
+{extend name="public/spacelayout"}
+{block name="title"}{/block}
+
+{block name="container"}
+{include file="../application/index/view/student/spacetop.html" /}
+<div id="content-container" class="container">
+  {include file="../application/index/view/student/spacenav.html" /}
+  <div class="course-list">
+    <div class="row">
+      <div class="col-lg-3 col-md-4 col-xs-6">
+        <div class="course-item">
+          <div class="course-img">
+            <a href="http://www.hnhgjx.cn:1700/course/67" target="_blank">
+              <img src="../../img/090503ff23e6615961.jpg" alt="电子技术课件" class="img-responsive">
+            </a>
+          </div>
+          <div class="course-info">
+            <div class="title">
+              <a class="link-dark" href="http://www.hnhgjx.cn:1700/course/67" target="_blank">
+                电子技术课件
+              </a>
+            </div>
+            <div class="metas clearfix">
+              <span class="num"><i class="es-icon es-icon-people"></i>10</span>
+              <span class="comment"><i class="es-icon es-icon-textsms"></i>4</span>
+              <span class="course-price-widget">
+                    <span class="price">
+                      <span class="color-success">免费</span>
+                    </span>
+                  </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="text-center"></nav>
+</div>
+{/block}

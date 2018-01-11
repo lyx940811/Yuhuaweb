@@ -1,0 +1,200 @@
+{extend name="public/userlayout"}
+{block name="title"}基础信息 - 个人设置 - 豫化在线课堂 - 豫化在线课堂{/block}
+{block name="container"}
+<div class="col-md-9">
+  <div class="panel panel-default panel-col">
+    <div class="panel-heading">基础信息</div>
+    <div class="panel-body">
+      <form id="user-profile-form" class="form-horizontal" method="post" novalidate="novalidate">
+        <div class="form-group">
+          <label class="col-md-2 control-label">用户名</label>
+          <div class="col-md-7 controls">
+            <div class="form-control-static">{$user.username}</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label" for="profile_nickname">昵称</label>
+          <div class="col-md-7 controls radios">
+            <input type="text" id="profile_nickname" name="profile[truename]" class="form-control" data-widget-cid="widget-1" data-explain="" value="{$user.nickname}">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">性别</label>
+          <div class="col-md-7 controls radios">
+            <div id="profile_gender">
+              {switch name="$profile.sex" }
+              {case value="0"}
+              <input type="radio" id="profile_gender_1" name="profile[gender]" value="0" checked="true">
+              <label for="profile_gender_0">男</label>
+              <input type="radio" id="profile_gender_2" name="profile[gender]" value="1">
+              <label for="profile_gender_1">女</label>
+              <input type="radio" id="profile_gender_0" name="profile[gender]" value="2">
+              <label for="profile_gender_1">保密</label>
+              {/case}
+              {case value="1"}
+              <input type="radio" id="profile_gender_1" name="profile[gender]" value="0">
+              <label for="profile_gender_0">男</label>
+              <input type="radio" id="profile_gender_2" name="profile[gender]" value="1" checked="true">
+              <label for="profile_gender_1">女</label>
+              <input type="radio" id="profile_gender_0" name="profile[gender]" value="2">
+              <label for="profile_gender_1">保密</label>
+              {/case}
+              {case value="2"}
+              <input type="radio" id="profile_gender_1" name="profile[gender]" value="0">
+              <label for="profile_gender_0">男</label>
+              <input type="radio" id="profile_gender_2" name="profile[gender]" value="1">
+              <label for="profile_gender_1">女</label>
+              <input type="radio" id="profile_gender_0" name="profile[gender]" value="2" checked="true">
+              <label for="profile_gender_1">保密</label>
+              {/case}
+              {default /}默认情况
+              {/switch}
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="profile_mobile" class="col-md-2 control-label">手机号码</label>
+          <div class="col-md-7 controls">
+            <input type="text" id="profile_mobile" name="profile[mobile]" class="form-control" data-widget-cid="widget-5" data-explain="" value="{$user.mobile}">
+            <div class="help-block" style="display:none"></div>
+          </div>
+        </div>
+        <div class="form-group form-forIam-group form-notStudent-group">
+          <label class="col-md-2 control-label">公司</label>
+          <div class="col-md-7 controls">
+            <input type="text" id="profile_company" name="profile[company]" class="form-control" value="{$profile.company}">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="form-group form-forIam-group form-notStudent-group">
+          <label class="col-md-2 control-label">职业</label>
+          <div class="col-md-7 controls">
+            <input type="text" id="profile_job" name="profile[job]" class="form-control" value="{$profile.job}">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">个人签名</label>
+          <div class="col-md-7 controls">
+            <textarea type="text" rows="4" maxlength="80" id="profile_signature" name="profile[signature]" class="form-control">{$profile.signature}</textarea>
+            <div class="help-block" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">自我介绍</label>
+          <div class="col-md-7 controls">
+            <div id="editor-container">{$profile.about}</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">个人空间</label>
+          <div class="col-md-7 controls">
+            <input type="text" id="profile_site" name="profile[site]" class="form-control" data-widget-cid="widget-4" data-explain="" value="{$profile.site}">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-md-2 control-label">
+            <label for="weibo">微博</label>
+          </div>
+          <div class="col-md-7 controls">
+            <input type="text" id="weibo" name="profile[weibo]" class="form-control" data-widget-cid="widget-3" data-explain="" value="{$profile.weibo}">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+          <div class="col-md-2 controls mts">
+            <label class="text-normal">
+              <input id="isWeiboPublic" type="checkbox" name="profile[isWeiboPublic]">
+              公开
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-2 control-label">微信</label>
+          <div class="col-md-7 controls">
+            <input type="text" id="profile_weixin" name="profile[weixin]" class="form-control" value="{$profile.weixin}">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+          <div class="col-md-2 controls mts">
+            <label class="text-normal">
+              <input id="isWeixinPublic" type="checkbox" name="profile[isWeixinPublic]">
+              公开
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="profile_qq" class="col-md-2 control-label">QQ</label>
+          <div class="col-md-7 controls">
+            <input type="text" id="profile_qq" name="profile[qq]" class="form-control" data-widget-cid="widget-2" data-explain="" value="{$profile.qq}">
+            <div class="help-block" style="display:none;"></div>
+          </div>
+          <div class="col-md-2 controls mts">
+            <label class="text-normal">
+              <input type="checkbox" name="profile[isQQPublic]" id="isQQPublic">
+              公开
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-7 col-md-offset-2">
+            <button id="profile-save-btn" data-submiting-text="正在保存" type="submit" class="btn btn-primary">保存</button>
+          </div>
+        </div>
+        <a id="testsave">测试保存</a>
+        <input type="hidden" name="_csrf_token" value="lqPsFKCSLa3fO97r0lLtJ6hPJTMiPuBV0XX5CAcUhog">
+      </form>
+    </div>
+  </div>
+</div>
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+        $('.list-group-item').eq(0).addClass("active");
+
+        $('#testsave').click(function(){
+
+            var isQQPublic = 0;
+            var isWeixinPublic = 0;
+            var isWeiboPublic = 0;
+            if($('#isWeixinPublic').is(':checked')) {
+                isWeixinPublic = 1;
+            }
+            if($('#isQQPublic').is(':checked')) {
+                isQQPublic = 1;
+            }
+            if($('#isWeiboPublic').is(':checked')) {
+                isWeiboPublic = 1;
+            }
+            $.post(
+                "{:url('index/user/settingajax')}",
+                {
+                    'nickname':$('#profile_nickname').val(),
+                    'sex':$('input[type="radio"]:checked').val(),
+                    'mobile':$('#profile_mobile').val(),
+                    'company':$('#profile_company').val(),
+                    'job':$('#profile_job').val(),
+                    'signature':$('#profile_signature').val(),
+                    'about':$('#editor-container').text(),
+                    'site':$('#profile_site').val(),
+                    'weibo':$('#weibo').val(),
+                    'weixin':$('#profile_weixin').val(),
+                    'qq':$('#profile_qq').val(),
+                    'isWeixinPublic':isWeixinPublic,
+                    'isQQPublic':isQQPublic,
+                    'isWeiboPublic':isWeiboPublic,
+                },
+                function(data){
+                    if(data['code']==0){
+                        alert("success");
+                    }
+                    else{
+                        alert("error");
+                    }
+                },
+                "json"
+            );
+        });
+    })
+</script>
+{/block}
