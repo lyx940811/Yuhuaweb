@@ -143,7 +143,7 @@ class User extends Controller
     }
 
     /**
-     * 修改密码
+     * 修改密码.
      */
     public function chpwd(){
         $data = $this->data;
