@@ -259,4 +259,12 @@ class Course extends Home
         return $this->fetch();
     }
 
+    public function createask(){
+        if($this->request->isAjax()){
+            $data = $this->request->param();
+
+        }
+        return $this->fetch();
+    }
+
 }

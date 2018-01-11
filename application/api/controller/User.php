@@ -62,21 +62,21 @@ class User extends Controller
     protected function verifyUserToken($user_token){
         if(!$user_token){
             //没有token或token为空
-            exit(json_encode(json_data(910,$this->codeMessage[910],'')));
+            exit(json_encode(json_data(910,$this->codeMessage[910],[])));
         }
 
         if($user = UserModel::get(['user_token'=>$user_token])){
             //判断过期没
             if(time()>$user['expiretime']){
                 //token过期
-                exit(json_encode(json_data(910,$this->codeMessage[910],'')));
+                exit(json_encode(json_data(910,$this->codeMessage[910],[])));
             }
             unset($this->data['user_token']);
             $this->user = $user;
         }
         else{
             //没有在数据库内找到对应token
-            exit(json_encode(json_data(910,$this->codeMessage[910],'')));
+            exit(json_encode(json_data(910,$this->codeMessage[910],[])));
         }
     }
 
@@ -143,7 +143,7 @@ class User extends Controller
     }
 
     /**
-     * 修改密码.
+     * 修改密码
      */
     public function chpwd(){
         $data = $this->data;
@@ -532,10 +532,11 @@ class User extends Controller
             ->join('course c','sr.courseid=c.id')
             ->field('sr.courseid as id,c.title,c.smallPicture')
             ->group('sr.courseid')
+            ->page($page,10)
             ->select();
         //这里以课程为基底，查出对应数据
         if($course){
-            $done_course = array();
+            $done_course = [];
             foreach ( $course as &$c ){
                 //拼上域名
                 $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
@@ -595,7 +596,7 @@ class User extends Controller
             return json_data(0,$this->codeMessage[0],$done_course);
         }
         else{
-            return json_data(0,$this->codeMessage[0],array());
+            return json_data(0,$this->codeMessage[0],[]);
         }
     }
 
@@ -612,6 +613,7 @@ class User extends Controller
             ->join('course c','sr.courseid=c.id')
             ->field('sr.courseid as id,c.title,c.smallPicture')
             ->group('sr.courseid')
+            ->page($page,10)
             ->select();
         //这里以课程为基底，查出对应数据
         if($course){

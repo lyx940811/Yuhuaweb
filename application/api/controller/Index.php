@@ -89,7 +89,7 @@ class Index extends Home
     public function getscrollpic(){
         $pic = Db::name('ad')->where('type','mobile')->field('img')->select();
         if($pic){
-            $pic = array_column($pic,'path');
+            $pic = array_column($pic,'img');
             foreach ($pic as &$item) {
                 $item = $this->request->domain()."/".$item;
             }

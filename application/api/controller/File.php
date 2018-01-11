@@ -88,6 +88,7 @@ class File extends Controller
         $iChunks    = $aFile['chunks'];
         $iError     = 0;
 
+
         if ($p_iError > 0) {
             // 文件上传出错
             $iError  = 1;
@@ -151,6 +152,8 @@ class File extends Controller
 
 
         if ($done) {
+//            $sDestFile = './upload/'.time().'.'.$sExtension;       //合并文件地址
+
             $sDestFile = "./uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
             if(!file_exists($sDestFile)){
                 mkdir($sDestFile,0775,true);
@@ -166,7 +169,7 @@ class File extends Controller
             }
 
 
-            //走以下部分的话为分片了的文件
+
             if (!$out = @fopen(iconv("utf-8","gb2312",$sDestFile), "wb")) {
                 $iError  = 1;
                 $mReturn = "1Failed to open output stream.";
@@ -179,7 +182,6 @@ class File extends Controller
             if (flock($out, LOCK_EX)) {
                 for ($index = 0; $index < $iChunks; $index++) {
                     if (!$in = @fopen(iconv("utf-8","gb2312","{$p_sFilePath}_{$index}.part"), "rb")) {
-                        return json_data(800,'800','');
                         break;
                     }
 

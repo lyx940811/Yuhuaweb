@@ -38,7 +38,7 @@ class Ask extends Home
             if($c['newask']){
                 $user = User::get($c['newask']['userID']);
                 $c['newask']['username'] = $user->username;
-                $c['newask']['avatar']   = $this->request->domain().DS.$user->title;
+                $c['newask']['avatar']   = $this->request->domain()."/".$user->title;
                 $answer = Db::name('ask_answer')->where('askID',$c['newask']['askID'])->field('addtime as answerTime')->order('addtime desc')->find();
                 if($answer){
                     $c['newask']['answerTime'] =$answer['answerTime'];
@@ -65,7 +65,7 @@ class Ask extends Home
             foreach ( $askList as &$a ){
                 $user = User::get($a['userID']);
                 $a['username']  = $user->username;
-                $a['avatar']    = $this->request->domain().DS.$user->title;
+                $a['avatar']    = $this->request->domain()."/".$user->title;
                 $a['commentsNum'] = Db::name('ask_answer')->where('askID',$a['id'])->count();
             }
         }
