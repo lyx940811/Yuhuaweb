@@ -1,0 +1,15 @@
+{extend name="public/spacelayout"}
+{block name="title"}{/block}
+
+{block name="container"}
+{include file="../application/index/view/student/spacetop.html" /}
+<div id="content-container" class="container">
+  {include file="../application/index/view/student/spacenav.html" /}
+  <div class="course-list">
+    <div class="row">
+      <div class="empty">暂无证书！</div>
+    </div>
+  </div>
+  <nav class="text-center"></nav>
+</div>
+{/block}

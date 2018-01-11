@@ -97,7 +97,7 @@ class Student extends User
     }
 
     /**
-     * 发起一个问答.
+     * 发起一个问答
      */
     public function editask(){
         $id = $this->data['id'];

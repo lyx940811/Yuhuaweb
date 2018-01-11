@@ -405,55 +405,56 @@ class User extends Controller
                 $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
                 //算课程总数，算法为完成的课程数/课程总数，pdf和ppt直接为整个的课程数1，视频的话按看过的时间/该课程总时间，得到一个完成的比例，当作小数用
                 $all_task_num = Db::name('course_task')->where('courseId',$c['courseid'])->count();
-
+                
                 //一共学的时间
                 //先赋值一个基底防止没有数据
                 $c['lastwatch'] = '';
-                $c['plan'] = "0%";
+                $c['plan'] = "0";
                 if($all_task_num!=0){
                     //选出对应课程id的学习记录,结果是学过了这节课的哪些task
-                    $learn_task = Db::name('study_result')
-                        ->where('courseid',$c['courseid'])
-                        ->where('userid',$this->user->id)
-                        ->order('endtime desc')
-                        ->select();
-                    //完成的课程数目从0开始计算
-                    $has_learn_time = 0;
-                    //如果找到该课程的学习记录了（原则上碰不到找不到的情况）
-                    if($learn_task){
-                        //循环学习记录，每一条对应该课程下的每个task的学习情况
-                        foreach ( $learn_task as $t){
-                            //如果没有学完的话
-                            if($t['status']==0){
-                                //先选出type，判断是否为视频
-                                $task = Db::name('course_task')
-                                    ->where('courseid',$t['courseid'])
-                                    ->where('chapterid',$t['chapterid'])
-                                    ->field('type,length')
-                                    ->find();
-                                //不是视频，直接完成数目+1
-                                if(!in_array($task['type'],$video_type)){
-                                    $has_learn_time = $has_learn_time+1;
-                                }
-                                else{
-                                    //视频类型，计算看过的时间/该task的总时间，得到比例，取两位小数
-                                    $watch_time = strtotime($t['endtime'])-strtotime($t['starttime']);
-                                    $length = explode(':',$task['length']);
-                                    $task_all_time = $length[2]+$length[1]*60+$length[0]*3600;
-                                    $has_learn_time = $has_learn_time+round(($watch_time/$task_all_time),2);
-                                }
-                            }
-                            else{
-                                //如果学完了得话，直接完成课目+1
+                $learn_task = Db::name('study_result')
+                    ->where('courseid',$c['courseid'])
+                    ->where('userid',$this->user->id)
+                    ->order('endtime desc')
+                    ->select();
+                //完成的课程数目从0开始计算
+                $has_learn_time = 0;
+                //如果找到该课程的学习记录了（原则上碰不到找不到的情况）
+                if($learn_task){
+                    //循环学习记录，每一条对应该课程下的每个task的学习情况
+                    foreach ( $learn_task as $t){
+                        //如果没有学完的话
+                        if($t['status']==0){
+                            //先选出type，判断是否为视频
+                            $task = Db::name('course_task')
+                                ->where('courseid',$t['courseid'])
+                                ->where('chapterid',$t['chapterid'])
+                                ->field('type,length')
+                                ->find();
+                            //不是视频，直接完成数目+1
+                            if(!in_array($task['type'],$video_type)){
                                 $has_learn_time = $has_learn_time+1;
                             }
+                            else{
+                                //视频类型，计算看过的时间/该task的总时间，得到比例，取两位小数
+                                $watch_time = strtotime($t['endtime'])-strtotime($t['starttime']);
+                                $length = explode(':',$task['length']);
+                                $task_all_time = $length[2]+$length[1]*60+$length[0]*3600;
+                                $has_learn_time = $has_learn_time+round(($watch_time/$task_all_time),2);
+                            }
                         }
-                        //拿倒序排列的第一个作为最后观看时间
-                        $c['lastwatch'] = $learn_task[0]['endtime'];
+                        else{
+                            //如果学完了得话，直接完成课目+1
+                            $has_learn_time = $has_learn_time+1;
+                        }
                     }
-                    //计算这个课程的完成比，换算成百分比
-                    $c['plan'] = (round($has_learn_time/$all_task_num,2)*100)."%";
+                    //拿倒序排列的第一个作为最后观看时间
+                    $c['lastwatch'] = $learn_task[0]['endtime'];
                 }
+                //计算这个课程的完成比，换算成百分比
+                $c['plan'] = (round($has_learn_time/$all_task_num,2)*100);
+                }
+                
                 $done_course[] = $c;
             }
             return json_data(0,$this->codeMessage[0],$done_course);
@@ -543,7 +544,7 @@ class User extends Controller
                 //一共学的时间
                 //先赋值一个基底防止没有数据
                 $c['lastwatch'] = '';
-                $c['plan'] = "0%";
+                $c['plan'] = "0";
                 //选出对应课程id的学习记录,结果是学过了这节课的哪些task
                 $learn_task = Db::name('study_result')
                     ->where('courseid',$c['id'])
@@ -585,9 +586,9 @@ class User extends Controller
                     $c['lastwatch'] = $learn_task[0]['endtime'];
                 }
                 //计算这个课程的完成比，换算成百分比
-                $c['plan'] = (round($has_learn_time/$all_task_num,2)*100)."%";
+                $c['plan'] = (round($has_learn_time/$all_task_num,2)*100);
                 //如果不是100%的话，放入正在学习的数组
-                if($c['plan']!='100%'){
+                if($c['plan']!='100'){
                     $done_course[] = $c;
                 }
             }
@@ -623,7 +624,7 @@ class User extends Controller
                 //一共学的时间
                 //先赋值一个基底防止没有数据
                 $c['lastwatch'] = '';
-                $c['plan'] = "0%";
+                $c['plan'] = "0";
                 //选出对应课程id的学习记录,结果是学过了这节课的哪些task
                 $learn_task = Db::name('study_result')
                     ->where('courseid',$c['id'])
@@ -665,9 +666,9 @@ class User extends Controller
                     $c['lastwatch'] = $learn_task[0]['endtime'];
                 }
                 //计算这个课程的完成比，换算成百分比
-                $c['plan'] = (round($has_learn_time/$all_task_num,2)*100)."%";
+                $c['plan'] = (round($has_learn_time/$all_task_num,2)*100);
                 //如果不是100%的话，放入正在学习的数组
-                if($c['plan']=='100%'){
+                if($c['plan']=='100'){
                     $done_course[] = $c;
                 }
             }
@@ -686,11 +687,12 @@ class User extends Controller
     public function startwatch(){
         $courseid  = $this->data['courseid'];
         $chapterid = $this->data['chapterid'];
+        $time = date('Y-m-d H:i:s',time());
         if($watch = StudyResult::get(['userid'=>$this->user->id,'courseid'=>$courseid,'chapterid'=>$chapterid])){
             if($watch['status']!=1){
                 $data = [
-                    'starttime' => date('Y-m-d H:i:s',time()),
-                    'endtime'   => '0000-00-00 00:00:00'
+                    'starttime' => $time,
+                    'endtime'   => $time
                 ];
                 StudyResult::update($data,['id'=>$watch['id']]);
             }
@@ -701,7 +703,8 @@ class User extends Controller
             $video_type = ['mp4','url'];
             $data = [
                 'userid'    =>  $this->user->id,
-                'starttime' => date('Y-m-d H:i:s',time()),
+                'starttime' => $time,
+                'endtime'   => $time,
                 'courseid'=>$courseid,
                 'chapterid'=>$chapterid
             ];
@@ -717,9 +720,12 @@ class User extends Controller
      * 结束观看
      */
     public function endwatch(){
-        $courseid  = 5;//$this->data['courseid'];
-        $chapterid = 1;//$this->data['chapterid'];
-        if($watch = StudyResult::get(['userid'=>72,'courseid'=>$courseid,'chapterid'=>$chapterid])){
+        $courseid  = $this->data['courseid'];
+        $chapterid = $this->data['chapterid'];
+        if(!$res = Db::name('course_task')->where(['courseId'=>$courseid,'chapterid'=>$chapterid])->find()){
+            return json_data(200,$this->codeMessage[200],'');
+        }
+        if($watch = StudyResult::get(['userid'=>$this->user->id,'courseid'=>$courseid,'chapterid'=>$chapterid])){
             $time = time();
             $course = Db::name('course_task')
                 ->where('courseId',$courseid)
@@ -730,7 +736,7 @@ class User extends Controller
             $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
 
             $watch_time = $time-strtotime($watch['starttime']);
-
+            
             $data = ['endtime' => date('Y-m-d H:i:s',$time)];
             if($watch_time>$couse_time){
                 $data['status'] = 1;

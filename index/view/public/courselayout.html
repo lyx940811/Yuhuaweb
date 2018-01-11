@@ -33,9 +33,9 @@
     <div class="container">
         <ol class="breadcrumb breadcrumb-o">
             <li><a href="#">首页</a></li>
-            <li><a href="#course/explore/gongyefenxixi">工业分析系</a></li>
-            <li><a href="#course/explore/gongyefenxiyujianyan">工业分析与检验</a></li>
-            <li><a href="#course/118">化学分析基本操作技能 </a></li>
+            <li><a>{$course->category->name}</a></li>
+            <!--<li><a href="#course/explore/gongyefenxiyujianyan">工业分析与检验</a></li>-->
+            <!--<li><a href="#course/118">化学分析基本操作技能 </a></li>-->
             <!--<li class="active">默认教学计划 </li>-->
         </ol>
 
@@ -158,7 +158,7 @@
                             <li role="presentation" id="threads" class=""><a href="{:url('index/course/discussion',array('course'=>$course['id']))}">讨论区<small>({$course->ask()->count()})</small></a></li>
                             <li role="presentation" id="notes" class=""><a href="{:url('index/course/note',array('course'=>$course['id']))}">笔记<small>(1)</small></a></li>
                             <li role="presentation" id="material" class=""><a href="{:url('index/course/material',array('course'=>$course['id']))}">资料区<small>({$course->file()->count()})</small></a></li>
-                            <li role="presentation" id="reviews" class=""><a href="{:url('index/course/evaluate',array('course'=>$course['id']))}">评价<small>(0)</small></a></li>
+                            <li role="presentation" id="reviews" class=""><a href="{:url('index/course/evaluate',array('course'=>$course['id']))}">评价<small>({$course->review()->count()})</small></a></li>
                             <li role="presentation" id="summary" class=""><a href="{:url('index/course/summary',array('course'=>$course['id']))}">介绍</a></li>
                             <!--<li class="highlight" style="left: 0px; width: 92px;"></li>-->
                         </ul>

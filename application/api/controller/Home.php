@@ -28,7 +28,7 @@ class Home extends Controller
         //define ajax return message
         $this->codeMessage = Config::get('apicode_message');
 
-        //controller from dir logic。
+        //controller from dir logic
         $this->LogicLog  = Loader::controller('Log','logic');
         //define data
         $this->data = $this->request->param();
@@ -48,7 +48,7 @@ class Home extends Controller
     //ajax token verifiy
     protected function verifyToken(){
         if($this->access_token!=$this->token){
-            exit(json_encode(json_data(900,$this->codeMessage[900],'')));
+            exit(json_encode(json_data(900,$this->codeMessage[900],[])));
         }
     }
 
@@ -72,21 +72,21 @@ class Home extends Controller
     protected function verifyUserToken($user_token){
         if(!$user_token){
             //没有token或token为空
-            exit(json_encode(json_data(910,$this->codeMessage[910],'')));
+            exit(json_encode(json_data(910,$this->codeMessage[910],[])));
         }
 
         if($user = UserModel::get(['user_token'=>$user_token])){
             //判断过期没
             if(time()>$user['expiretime']){
                 //token过期
-                exit(json_encode(json_data(910,$this->codeMessage[910],'')));
+                exit(json_encode(json_data(910,$this->codeMessage[910],[])));
             }
             unset($this->data['user_token']);
             $this->user = $user;
         }
         else{
             //没有在数据库内找到对应token
-            exit(json_encode(json_data(910,$this->codeMessage[910],'')));
+            exit(json_encode(json_data(910,$this->codeMessage[910],[])));
         }
     }
 

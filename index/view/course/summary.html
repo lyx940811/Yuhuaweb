@@ -4,7 +4,11 @@
 <div class="es-piece">
     <div class="piece-header">课程介绍</div>
     <div class="piece-body p-lg clearfix">
-
+        {notempty name="course.about"}
+        {$course.about}
+        {else /}
+        还没有课程评价
+        {/notempty}
     </div>
 </div>
 <div class="es-piece  hidden ">

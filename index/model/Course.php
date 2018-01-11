@@ -45,4 +45,9 @@ class Course extends ThinkModel
     {
         return $this->hasMany('CourseFile','courseid','id');
     }
+
+    public function review()
+    {
+        return $this->hasMany('CourseReview','courseid','id');
+    }
 }

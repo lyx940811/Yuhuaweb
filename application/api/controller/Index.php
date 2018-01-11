@@ -91,7 +91,7 @@ class Index extends Home
         if($pic){
             $pic = array_column($pic,'path');
             foreach ($pic as &$item) {
-                $item = $this->request->domain().DS.$item;
+                $item = $this->request->domain()."/".$item;
             }
         }
         return json_data(0,$this->codeMessage[0],$pic);
