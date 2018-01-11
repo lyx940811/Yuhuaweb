@@ -15,15 +15,22 @@ class Questionanswers extends Base{
 
 	//问卷 问列表
 	public function question(){
-		
+        $info = input('get.');
+        $search='';
+        $where = [];
+        if(!empty($info['name'])){
+            $search=$info['name'];
+            $where['a.title'] = ['like',"%{$info['name']}%"];
+        }
         $list = DB::table('asklist')
         	->alias('a')
         	->join('user u','a.userid=u.id')
         	->field('a.*,u.username')
         	->order('addtime')
+            ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);//查找积分规则列表数据
         $this->assign('list',$list);
-        // $this->assign('search',$search);
+        $this->assign('search',$search);
         $this->assign('page',$list->render());
         return $this->fetch();
 	}

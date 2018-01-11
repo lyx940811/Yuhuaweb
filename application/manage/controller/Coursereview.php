@@ -16,7 +16,7 @@ class Coursereview extends Base{
 
         $list = Db::table('course_review a')
             ->join('course b','a.courseId=b.id','LEFT')
-            ->field('a.id,a.userid,a.courseId,a.content,a.private,a.rating,a.createdTime,b.title')->paginate(20);
+            ->field('a.id,a.userid,a.courseId,a.content,a.private,a.rating,a.createdTime,b.title')->order('createdTime desc')->paginate(20);
 
 
 

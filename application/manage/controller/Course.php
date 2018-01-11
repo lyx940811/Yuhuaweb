@@ -19,7 +19,7 @@ class Course extends Base{
             ->paginate(20);
 
 
-        $category = Db::table('category')->field('code,name')->select();
+        $category = Db::table('category')->field('code,name')->order('grade desc')->select();
         $tags = Db::table('tag')->select();
 
         $this->assign('list',$list);

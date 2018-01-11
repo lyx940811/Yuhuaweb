@@ -32,7 +32,7 @@
         <tr>
             <td>{$vo.id}</td>
             <td>{$vo.levelHtml}{$vo.name}</td>
-            <td>{$vo.levelHtml}{$vo.name}</td>
+            <td>{$vo.levelHtml}{$vo.code}</td>
             <td>{$vo.url}</td>
             <td>{$vo.Flag?'是':'否'}              </td>
             <td>
@@ -84,6 +84,16 @@
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" name="url" value="{$vo.url}"
                                                    placeholder="请输入栏目url">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="center-block" style="width: 200px">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="flag" value="1"  {if condition="$vo['Flag'] eq 1"}checked{/if}> 启用
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="flag" value="0"  {if condition="$vo['Flag'] eq 0"}checked{/if}> 禁用
+                                            </label>
                                         </div>
                                     </div>
                                     <input type="hidden" name="parentcode" value="{$vo.parentcode}"/>
@@ -146,6 +156,16 @@
                                        placeholder="请输入栏目url">
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="center-block" style="width: 200px">
+                                <label class="radio-inline">
+                                    <input type="radio" name="flag" value="1"  {if condition="$vo['Flag'] eq 1"}checked{/if}> 启用
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="flag" value="0"  {if condition="$vo['Flag'] eq 0"}checked{/if}> 禁用
+                                </label>
+                            </div>
+                        </div>
                         <input type="hidden" name="parentcode" value="" id="parentcode"/>
                         <input type="hidden" name="rid" value="" id="selfcode"/>
                         <!--<input type="hidden" name="__token__" value="{$Request.token}" />-->
@@ -191,7 +211,7 @@
 
         $.ajax({
             url: $url+"?"+Math.random(),
-            type:"post",
+            type:"POST",
             data:$('#form'+formid).serialize(),
             success:function(data){
 
@@ -205,6 +225,7 @@
 
                     $('#myModal_edit'+formid).modal('hide')
                     $('#myModal').modal('hide')
+                    window.location.href="{:url()}"
 
                 }else{
                     alert(data.error)

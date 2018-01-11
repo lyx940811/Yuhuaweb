@@ -215,16 +215,9 @@ class Teacherinfo extends Base{
 
     public function enable(){
 
-        $id = $_GET['rid']+0;
-
-        $data = ['Flag'=>0,'createtime'=>date('Y-m-d H:i:s',time())];
-        $ok = Db::name('category')->field('Flag,createtime')->where("id='$id'")->update($data);
-
-        if($ok){
-            return ['info'=>'禁用成功','code'=>'000'];
-        }else{
-            return ['error'=>'禁用失败','code'=>'200'];
-        }
+        $id = $_GET['rid'];
+        Db::name('teacher_work')->field('Flag,createtime')->where("id='$id'")->delete();
+        return ['info'=>'删除成功','code'=>'000'];//改为删除
     }
 
     public function upload(){
@@ -252,9 +245,13 @@ class Teacherinfo extends Base{
                 'createuserid'=>session('admin_uid'),
                 'createTime'=>date('Y-m-d H:i:s',time())
             ];
+            if(!empty($info['id'])){
+                $ok = Db::table('teacher_work')->where('id',$info['id'])->update($data);
+            }else{
+                $ok = Db::table('teacher_work')->insert($data);
+            }
 
-            $ok = Db::table('teacher_work')->insert($data);
-            if($ok){
+            if($ok || $ok==0){
 
                 return ['info'=>'添加成功','code'=>'000'];
             }else{
@@ -266,17 +263,22 @@ class Teacherinfo extends Base{
 
             $list = Db::table('teacher_work a')
                 ->join('teacher_info b','a.teacherid=b.id','LEFT')
-                ->field('a.id,a.teacherid,a.unit,a.depart,b.realname')
-                ->where('teacherid='.$tid)->paginate(20);
+                ->field('a.id,a.teacherid,a.unit,a.depart,b.realname,a.createTime,a.starttime,a.endtime,a.title,a.position')
+                ->where('teacherid='.$tid)->order('createTime desc')->paginate(20);
 
             $this->assign('list',$list);
             $this->assign('page',$list->render());
             $this->assign('typename','添加教师工作信息');
             return $this->fetch();
         }
-
-
     }
+        //查询修改时默认显示的数据
+    public function editunit(){
+        $id=$this->request->param('id');
+        $list=Db::table('teacher_work')->where('id', $id)->find();
+        return ['data'=>$list];
+    }
+
 
 
 
