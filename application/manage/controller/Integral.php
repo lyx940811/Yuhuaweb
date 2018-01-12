@@ -34,8 +34,23 @@ class Integral extends Base{
     }
     //积分规则添加
     public function add(){
-        $info = input('get.');
-        $time=date('YmdHis');
+        $info = input('post.');
+        $msg  =   [
+            'title.require' => '请输入动作名称',
+            'daymax.require' => '请输入每日上限',
+        ];
+        $validate = new Validate([
+            'title'  => 'require',
+            'daymax'   => 'require',
+        ],$msg);
+
+        $validate->check($info);
+
+        $error = $validate->getError();//打印错误规则
+
+        if(is_string($error)){
+            return ['error'=>$error,'code'=>'200'];
+        }
         $data['title']=$info['title'];
         $data['point']=$info['point'];
        
@@ -47,10 +62,10 @@ class Integral extends Base{
             $data['createdTime']=date('Y-m-d H:i:s');
             $type=DB::table('reward_point_rule')->insert($data);
         }
-        if($type || $type==0){
-            echo 1;
+        if(is_numeric($type)){
+            return ['info'=>'编辑成功','code'=>'000'];
         }else{
-            echo 2;
+            return ['error'=>'编辑失败','code'=>'200'];
         }
 
     }
@@ -93,9 +108,30 @@ class Integral extends Base{
     }
     //添加/修改积分等级w
     public function gradeAdd(){
-        $info = input('get.');
+        $info = input('post.');
+        $msg  =   [
+            'name.require' => '请输入等级积分',
+            'point.require' => '请输入积分下限',
+            'maxpoint.require' => '请输入积分上限',
+            'icon.require' => '请上传图片',
+        ];
+        $validate = new Validate([
+            'name'  => 'require',
+            'point'   => 'require',
+            'maxpoint'  => 'require',
+            'icon'   => 'require',
+        ],$msg);
+
+        $validate->check($info);
+
+        $error = $validate->getError();//打印错误规则
+
+        if(is_string($error)){
+            return ['error'=>$error,'code'=>'200'];
+        }
         $data['name']=$info['name'];
         $data['point']=$info['point'];
+        $data['maxpoint']=$info['maxpoint'];
         $data['icon']=$info['icon'];
         $data['flag']=$info['flag'];
         $data['code']='1111';
@@ -105,10 +141,10 @@ class Integral extends Base{
             $data['createTime']=date('YmdHis');
             $type=DB::table('reward_point_level')->insert($data);
         }
-         if($type || $type==0){
-            echo 1;
+        if(is_numeric($type)){
+            return ['info'=>'编辑成功','code'=>'000'];
         }else{
-            echo 2;
+            return ['error'=>'编辑失败','code'=>'200'];
         }
     }
 
@@ -208,6 +244,26 @@ class Integral extends Base{
     //积分商品添加
     public function shopAdd(){
         $info = input('get.');
+        $msg  =   [
+            'name.require' => '请输入等级积分',
+            'point.require' => '请输入积分下限',
+            'maxpoint.require' => '请输入积分上限',
+            'icon.require' => '请上传图片',
+        ];
+        $validate = new Validate([
+            'name'  => 'require',
+            'point'   => 'require',
+            'maxpoint'  => 'require',
+            'icon'   => 'require',
+        ],$msg);
+
+        $validate->check($info);
+
+        $error = $validate->getError();//打印错误规则
+
+        if(is_string($error)){
+            return ['error'=>$error,'code'=>'200'];
+        }
         $data['userid']=session('admin_uid');
         $data['sn']=$info['sn'];
         $data['title']=$info['title'];

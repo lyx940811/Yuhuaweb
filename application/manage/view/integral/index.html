@@ -165,18 +165,29 @@ $(document).ready(function(){
         // var note=$('#note').val();
         $.ajax({
             url: "{:url('add')}?"+Math.random(),
-            type: "get",
+            type: "post",
             data:$("#myform").serialize(),
             success:function(msg){
-                if(msg==1){
-                    alert('添加成功')
-                    $('#sname').val('');
-                    $('#daymax').val('');
-                    $('#jifen').val('5');
-                    $('#myModal').modal('hide');
-                    window.location.href="{:url()}";
+                console.log(msg);
+                // if(msg==1){
+                //     alert('添加成功')
+                //     $('#sname').val('');
+                //     $('#daymax').val('');
+                //     $('#jifen').val('5');
+                //     $('#myModal').modal('hide');
+                //     window.location.href="{:url()}";
+                // }else{
+                //     alert('添加失败');
+                // }
+                if(msg.code=='000'){
+                    alert(msg.info)
+                    // $('#selfcode').val('')//必须清空
+                    //
+                    // $('#myModal').modal('hide')
+                    window.location.reload();
+
                 }else{
-                    alert('添加失败');
+                    alert(msg.error)
                 }
 
             },
