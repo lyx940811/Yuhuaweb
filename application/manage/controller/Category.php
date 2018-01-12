@@ -31,7 +31,7 @@ class Category extends Base{
         }
 
         $list = Db::name('category')
-            ->field('id,name,code,studyTimes,point,createtime,Flag,description')
+            ->field('id,name,code,parentcode,studyTimes,point,createtime,Flag,description')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
 
@@ -79,6 +79,7 @@ class Category extends Base{
         $data = [
             'name' => $info['name'],
             'code' => $info['code'],
+            'parentcode' => $info['parentcode'],
             'point'=> $info['point'],
             'studyTimes'=>$info['studyTimes'],
             'description'=>$info['description'],
@@ -86,7 +87,7 @@ class Category extends Base{
 //            'Flag'=>1,
         ];
 
-        $ok = $role_table->field('name,code,point,studyTimes,description,createtime,Flag')->insert($data);
+        $ok = $role_table->field('name,code,parentcode,point,studyTimes,description,createtime,Flag')->insert($data);
 
         if($ok){
             return ['info'=>'添加成功','code'=>'000'];
