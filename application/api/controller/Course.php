@@ -247,7 +247,7 @@ class Course extends Home
         $comment['username']       = $user->username;
         $comment['avatar']         = $this->request->domain()."/".$user->title;
         $comment['sonreviewNum']   = Db::name('course_review')->where('parentid',$comment['id'])->count();
-        $comment['likeNum']        = Db::name('like')->where('type','comments')->where('articleid',$comment['id'])->count();
+        $comment['likeNum']        = Db::name('like')->where('type','comment')->where('articleid',$comment['id'])->count();
         if(!empty($this->user)){
             if(Like::get(['userid'=>$this->user->id,'type'=>'comments','articleid'=>$commentid])){
                 $comment['is_like'] = 1;

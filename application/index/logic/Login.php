@@ -92,7 +92,6 @@ class Login extends Base
                     'type'=>'',
                 ];
                 $user = $user->toArray();
-
                 $user = array_intersect_key($user,$key);
                 return json_data(0,$this->codeMessage[0],$user);
 
