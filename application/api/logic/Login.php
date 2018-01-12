@@ -55,6 +55,7 @@ class Login extends Base
      * @return array
      */
     public function userLogin($data){
+        $user_none = (object)[];
         $allow_type = [2,3];
         if(preg_match('/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/',$data['username'])){
             $key = 'email';
@@ -68,15 +69,15 @@ class Login extends Base
         if($user = UserModel::get([ $key => $data['username'] ])){
 
             if(!in_array($user['type'],$allow_type)){
-                return json_data(150,$this->codeMessage[150],'');
+                return json_data(150,$this->codeMessage[150],$user_none );
             }
 
             if($user['status']==0){
-                return json_data(170,$this->codeMessage[170],'');
+                return json_data(170,$this->codeMessage[170],$user_none );
             }
 
             if($user['locked']==1){
-                return json_data(160,$this->codeMessage[160],'');
+                return json_data(160,$this->codeMessage[160],$user_none );
             }
 
             if(password_verify($data['password'],$user['password'])){
@@ -112,11 +113,11 @@ class Login extends Base
              //       $redis->setex($redis_key, 86400, 1);
               //  }
 
-                return json_data(140,$this->codeMessage[140],'');
+                return json_data(140,$this->codeMessage[140],$user_none );
             }
         }
         else{
-            return json_data(110,$this->codeMessage[110],'');
+            return json_data(110,$this->codeMessage[110],$user_none );
         }
     }
 

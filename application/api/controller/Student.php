@@ -276,7 +276,8 @@ class Student extends User
             ->page($page,10)
             ->select();
         foreach ( $note as &$n ){
-            $n['title'] = Db::name('course_task')->where(['courseId'=>$n['courseId'],'chapterid'=>$n['lessonid']])->value('title');
+            $n['title']   = Db::name('course_task')->where(['courseId'=>$n['courseId'],'chapterid'=>$n['lessonid']])->value('title');
+            $n['chapter'] = Db::name('course_chapter')->where(['id'=>$n['courseId']])->value('title');
         }
         return json_data(0,$this->codeMessage[0],$note);
     }

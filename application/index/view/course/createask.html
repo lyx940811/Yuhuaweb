@@ -44,6 +44,30 @@
               theme: 'snow'
             });
 
+        $('.js-btn-thread-save').click(function(){
+            {present name="user"}
+            var title = $('#thread_title').val();
+            var content = 'content';    //这里需要用jquery获取文本编辑器中的值替换
+            var courseid = {$course.id};
+            var userID = {$user.id};
+            $.post(
+                "{:url('index/course/createask')}",
+                {
+                    'title':title,
+                    'content':content,
+                    'course':courseid,
+                    'userID':userID,
+                },
+                function(data){
+                    console.log(data);
+                },
+                "json"
+            );
+            {else /}
+                alert('请先登录！');
+            {/present}
+        });
+
     })
 </script>
 {/block}

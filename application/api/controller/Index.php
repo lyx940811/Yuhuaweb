@@ -87,7 +87,7 @@ class Index extends Home
      * 得到轮播图
      */
     public function getscrollpic(){
-        $pic = Db::name('ad')->where('type','mobile')->field('img')->select();
+        $pic = Db::name('ad')->where('type','mobile')->where('flag',1)->field('img')->select();
         if($pic){
             $pic = array_column($pic,'img');
             foreach ($pic as &$item) {
@@ -122,7 +122,7 @@ class Index extends Home
             unset($c['price']);
             $c['smallPicture']  = $this->request->domain()."/".$c['smallPicture'];
         }
-        
+        if(!empty($keywords)){
         $word = Db::name('search_word')->where('keyword',$keywords)->find();
         if($word){
             $data['hit'] = $word['hit']+1;
@@ -132,6 +132,8 @@ class Index extends Home
             $data['keyword'] = $keywords;
             Db::name('search_word')->insert($data);
         }
+        }
+        
 
         return json_data(0,$this->codeMessage[0],$course);
     }

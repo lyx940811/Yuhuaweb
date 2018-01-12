@@ -240,7 +240,6 @@ class Course extends Home
         $comment = Db::name('course_review')
             ->field('id,userid,content,createdTime')
             ->order('createdTime desc')
-            ->page($page,10)
             ->find($commentid);
 
         $user = User::get($comment['userid']);
@@ -256,7 +255,7 @@ class Course extends Home
                 $comment['is_like'] = 0;
             }
         }
-        $son = Db::name('course_review')->where('parentid',$commentid)->field('id,userid,content,createdTime,touserId')->order('createdTime desc')->select();
+        $son = Db::name('course_review')->where('parentid',$commentid)->field('id,userid,content,createdTime,touserId')->order('createdTime desc')->page($page,10)->select();
         if($son){
             foreach ($son as &$s){
                 $s['username'] = Db::name('user')->where('id',$s['userid'])->value('username');
@@ -529,7 +528,8 @@ class Course extends Home
         $video_type = ['mp4','url'];
         $courseid = $this->data['courseid'];
         //为了拿顶部的title
-        $course = Db::name('course')->field('title')->find($courseid);
+        $course = Db::name('course')->field('title,categoryId')->find($courseid);
+        
         //课程下的所有任务，为了计算时间
         $task = Db::name('course_task')
             ->where('courseId',$courseid)
@@ -640,6 +640,7 @@ class Course extends Home
             $has_done = '0/'.$taskNum;
         }
         $data = [
+            'categoryId'=>  $course['categoryId'],
             'title'     =>  $course['title'],
             'plan'      =>  $plan,
             'has_done'  =>  $has_done,

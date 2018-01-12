@@ -24,7 +24,7 @@ class Apply extends Home
      * @return array
      */
     public function getadmission(){
-        $admission = Db::name('admission')->order('createdTime desc')->field('id,title')->find();
+        $admission = Db::name('admission')->order('createdTime desc')->where('status',1)->field('id,title')->find();
         return json_data(0,$this->codeMessage[0],$admission);
     }
 

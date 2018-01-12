@@ -106,6 +106,7 @@ class Ask extends Home
         }
         $answer = Db::name('ask_answer')
             ->where('askID',$askid)
+            ->order('addtime desc')
             ->page($page,10)
             ->select();
         if($answer){
@@ -113,6 +114,7 @@ class Ask extends Home
                 $user = User::get($as['answerUserID']);
                 $as['username'] = $user->username;
                 $as['avatar']   = $this->request->domain().DS.$user->title;
+                $as['is_elite']   = 0;
                 unset($as['askID'],$as['answerUserID']);
 //                $as['like']     = Db::name('like')->where('type','answer')->where('articleid',$as['id'])->count();
             }

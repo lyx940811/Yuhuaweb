@@ -449,7 +449,7 @@ class User extends Controller
                         }
                     }
                     //拿倒序排列的第一个作为最后观看时间
-                    $c['lastwatch'] = $learn_task[0]['endtime'];
+                    $c['lastwatch'] = date('Y-m-d',strtotime($learn_task[0]['endtime']));
                 }
                 //计算这个课程的完成比，换算成百分比
                 $c['plan'] = (round($has_learn_time/$all_task_num,2)*100);

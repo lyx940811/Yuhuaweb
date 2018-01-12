@@ -65,10 +65,6 @@ class Home extends Controller
 
     }
 
-    public function inn(){
-        return json_data(0,'success',(object)[]);
-    }
-
     /**
      * 验证user，通过验证后赋值全局user信息
      * @param $user_token
