@@ -4,6 +4,7 @@
 <div class="col-md-9">
   <div class="panel panel-default panel-col">
     <div class="panel-heading">基础信息</div>
+    <div class="alert alert-success" style="display:none"></div>
     <div class="panel-body">
       <form id="user-profile-form" class="form-horizontal" method="post" novalidate="novalidate">
         <div class="form-group">
@@ -137,10 +138,9 @@
         </div>
         <div class="row">
           <div class="col-md-7 col-md-offset-2">
-            <button id="profile-save-btn" data-submiting-text="正在保存" type="submit" class="btn btn-primary">保存</button>
+            <button id="testsave" data-submiting-text="正在保存" type="button" class="btn btn-primary">保存</button>
           </div>
         </div>
-        <a id="testsave">测试保存</a>
         <input type="hidden" name="_csrf_token" value="lqPsFKCSLa3fO97r0lLtJ6hPJTMiPuBV0XX5CAcUhog">
       </form>
     </div>
@@ -186,7 +186,14 @@
                 },
                 function(data){
                     if(data['code']==0){
-                        alert("success");
+                        $.Toast("", "保存成功", "success", {
+                          stack: true,
+                          has_icon:true,
+                          has_close_btn:true,
+                          fullscreen:false,
+                          timeout:1000,
+                          sticky:false,
+                        });
                     }
                     else{
                         alert("error");
