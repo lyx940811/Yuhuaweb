@@ -33,6 +33,7 @@ class Course extends Home
         //头部信息
         $courseinfo = $this->getcourseinfo($courseid);
         $this->assign('coursedata',$courseinfo);
+
         //右侧学生信息
         $student = $this->newstudent($courseid);
         $this->assign('student',$student);
@@ -237,6 +238,9 @@ class Course extends Home
         return $this->fetch();
     }
     public function evaluate(){
+        $review = $this->course->review()->paginate(10);
+        $this->assign('review',$review);
+        $this->assign('page',$review->render());
         return $this->fetch();
     }
     public function note(){
@@ -252,6 +256,14 @@ class Course extends Home
         return $this->fetch();
     }
     public function summary(){
+        return $this->fetch();
+    }
+
+    public function createask(){
+        if($this->request->isAjax()){
+            $data = $this->request->param();
+
+        }
         return $this->fetch();
     }
 

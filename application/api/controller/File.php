@@ -152,7 +152,23 @@ class File extends Controller
 
 
         if ($done) {
-            $sDestFile = './upload/'.time().'.'.$sExtension;       //合并文件地址
+//            $sDestFile = './upload/'.time().'.'.$sExtension;       //合并文件地址
+
+            $sDestFile = "./uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
+            if(!file_exists($sDestFile)){
+                mkdir($sDestFile,0775,true);
+            }
+            $sDestFile = "./uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time()).DS.time().'.'.$sExtension;
+
+            //以下if为判断不是分片上传的话直接挪缓存文件，但是没有删除
+            if($iChunks==0){
+                move_uploaded_file($p_sTmpName, iconv("utf-8","gb2312",$sDestFile));
+                @unlink(iconv("utf-8","gb2312",$p_sFilenamePath));
+                @unlink(iconv("utf-8","gb2312","{$p_sFilePath}_0.part"));
+                return json_data(0,'success',$sDestFile);
+            }
+
+
 
             if (!$out = @fopen(iconv("utf-8","gb2312",$sDestFile), "wb")) {
                 $iError  = 1;

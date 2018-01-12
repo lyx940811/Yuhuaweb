@@ -1,0 +1,70 @@
+{volist name="file" id="file"}
+<div class="col-lg-3 col-sm-4 col-xs-6 materials-list my-materials-list " data-file-id="1162">
+    <ul class="materials-ul clearfix">
+        <li class="img-li" style="position:relative;">
+            <input class="batch-item" value="1162" type="checkbox" data-role="batch-item" data-link-count="0" data-file-name="0ad5c744c1cb0489edb698fcec6089d4_1.jpg" style="display: none;">
+            <img src="__IMG__cloud_other.png">
+            <div class="mask">
+                <div class="icon-operation">
+                    <i style="display: none" class="glyphicon glyphicon-star js-collect-btn left " data-toggle="tooltip" data-placement="bottom" title="" data-url="/material/lib/my/collection/save?fileId=1162" data-original-title="收藏"></i>
+                    <i style="display: none" href="javascript:;" class="glyphicon glyphicon-option-vertical" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                    <ul style="display: none" class="dropdown-menu">
+                        <li>
+                            <a href="javascript:;" class="js-detail-btn" data-toggle="tooltip" data-placement="bottom" data-url="/material/lib/1162/detail" data-original-title="" title="">
+                                <i class="glyphicon glyphicon-pencil prm"></i>编辑
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" data-url="/materiallib/1162/download" class="js-download-btn" data-toggle="tooltip" data-placement="bottom" data-original-title="" title="">
+                                <i class="glyphicon glyphicon-save prm"></i>下载
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" class="js-share-btn" data-toggle="tooltip" data-placement="bottom" data-file-id="1162" data-url="/materials/batch/share" data-original-title="" title="">
+                                <i class="es-icon es-icon-share prm"></i>共享
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" class="js-delete-btn" data-toggle="tooltip" data-placement="bottom" data-url="/materials/delete/show" data-id="1162" data-original-title="" title="">
+                                <i class="glyphicon glyphicon-trash prm"></i>删除
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div style="display: none" class="btn-operation">选择一种状态
+                    <a class="btn btn-info" href="http://www.hnhgjx.cn:1700/material/lib/browse#modal" data-toggle="modal" data-url="/material/lib/file/1162/preview">资料预览
+                    </a>
+                </div>
+                <div class="time">{$file.type}</div>
+            </div>
+        </li>
+        <li class="caption">
+            <p class="title text-overflow" data-toggle="tooltip" data-placement="top" title="" data-original-title="{$file.filename}">{$file.filename}</p>
+            <!--<p class="status-parent">-->
+            <!--<span class="label label-default">未使用</span>-->
+            <!--</p>-->
+            <p class="color-gray text-overflow text-sm mbs" title="2017/12/28 10:58">时间：{$file.createTime}</p>
+        </li>
+    </ul>
+</div>
+{/volist}
+{$page}
+
+<script>
+    $(function(){
+        $('.pagination').find('a').removeAttr('href');
+        $('.pagination').children().on('click',function(){
+            $(this).addClass('active').siblings().removeClass('active');
+            var keyword = $('#keyword').val();
+            var type = $("[is_choose='1']").attr('data-value');
+            var page = $(this).children().text();
+            var url = "http://localhost/index/teacher/browse?page="+page+"&keyword="+keyword+"&type="+type;
+            console.log(url);
+            $.get(url,function(data){
+                $('.filelist').html("");
+                $('.filelist').append(data);
+            });
+        });
+
+    })
+</script>

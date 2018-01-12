@@ -44,10 +44,10 @@ class User extends Base
                 //需要对返回数据进行整理，这里需要改成只返回access_token
                 $user_token = [
                     'user_token'    =>  md5($user->id.time().uniqid()),
-                    'expiretime'    =>  time()+7200,
+                    'expiretime'    =>  time()+(86400*7),
                 ];
                 $user->save($user_token);
-                $user_token['expire'] = 7200;
+                $user_token['expire'] = (86400*7);
                 return json_data(0,$this->codeMessage[0],$user_token);
             }
             else{

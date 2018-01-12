@@ -1,37 +1,34 @@
 {extend name="public/courselayout"}
 {block name="title"}在教课程 - 个人主页{/block}
 {block name="navdetail"}
-    <div class="nav-filter clearfix">
-        <div class="btn-group">
-            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">发话题 <span class="caret"></span></button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#course/118/thread/create?type=discussion">发话题</a></li>
-                <li><a href="#course/118/thread/create?type=question">提问题</a></li>
-            </ul>
-        </div>
-
-
-        <ul class="nav nav-pills nav-pills-sm">
-            <li class="active"><a data-target="#thread-pane" href="#my/course/118/threads?type=all&amp;sort=posted">全部</a></li>
-
-            <!--<li><a data-target="#thread-pane" href="#my/course/118/threads?type=question&amp;sort=posted">问答</a></li>-->
-
-            <!--<li><a data-target="#thread-pane" href="#my/course/118/threads?type=elite&amp;sort=posted">精华</a></li>-->
-
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#my/course/118/threads?type=all&amp;sort=posted#">
-                    <span>排序：</span>
-                    最后回复
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu hidden-xs">
-                    <li class="active"><a class="js-nav" href="#my/course/118/threads?type=all&amp;sort=posted">最后回复</a></li>
-                    <li class=""><a href="#my/course/118/threads?type=all&amp;sort=created">最新发帖</a></li>
-                </ul>
-            </li>
+<div class="nav-filter clearfix">
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">发话题 <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+            <!--<li><a href="./create.html">发话题</a></li>-->
+            <li><a href="{:url('index/course/createask',array('course'=>$course['id']))}">提问题</a></li>
         </ul>
     </div>
+    <ul class="nav nav-pills nav-pills-sm">
+        <li class=""><a href="#tab_home" aria-controls="tab_home" role="tab" data-toggle="tab" aria-expanded="false">全部</a></li>
 
+        <!--<li class=""><a href="#tab_profile" aria-controls="tab_profile" role="tab" data-toggle="tab" aria-expanded="false">问答</a></li>-->
+
+        <!--<li class="active"><a href="#tab_messages" aria-controls="tab_messages" role="tab" data-toggle="tab" aria-expanded="true">精华</a></li>-->
+
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                <span>排序：</span>
+                最后回复
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu hidden-xs">
+                <li class="active"><a class="js-nav">最后回复</a></li>
+                <li class=""><a href="#">最新发帖</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
     <div class="topic-list">
         {volist name="asklist" id="asklist"}
         <div class="media topic-item">
@@ -87,9 +84,13 @@
     </nav>
 {/block}
 {block name="javascript"}
+<script src="__JS__bootstrap.js"></script>
 <script>
     $(function(){
         $('.nav-tabs').children().eq(1).addClass('active');
+        $('.dropdown-toggle').click(function(){
+            $(this).next().toggle();
+        });
     })
 </script>
 {/block}

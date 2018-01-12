@@ -189,8 +189,8 @@
             }
             $name        = $files[$key]['name'];
             $tmp_name    = $files[$key]['tmp_name'];
-            $uploads_dir = "uploads".DS."pictures".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
-            $date_dir    = ROOT_PATH."public".DS.$uploads_dir;
+            $uploads_dir = "uploads/pictures"."/".date('Y',time())."/".date('m',time())."/".date('d',time());
+            $date_dir    = ROOT_PATH."public"."/".$uploads_dir;
             if(!file_exists($date_dir)){
                 mkdir($date_dir,0775,true);
             }
@@ -199,9 +199,9 @@
             $name[0] = date('Ymd',time()).$userid.uniqid();
             $name = implode('.',$name);
 
-            $file_dir = ROOT_PATH."public".DS.$uploads_dir.DS.$name;
+            $file_dir = ROOT_PATH."public"."/".$uploads_dir."/".$name;
             move_uploaded_file($tmp_name, iconv("utf-8","gb2312",$file_dir));
-            $save_path[$key] = $uploads_dir.DS.$name;
+            $save_path[$key] = $uploads_dir."/".$name;
         }
         return $data= [
             'code'  =>  0,

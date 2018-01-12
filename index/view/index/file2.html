@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>FormData</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Language" content="zh-CN"/>
+</head>
+<body>
+<style>
+    #feedback {
+        width: 1200px;
+        margin: 0 auto;
+    }
+
+    #feedback img {
+        float: left;
+        width: 300px;
+        height: 300px;
+    }
+</style>
+<div>
+    <!-- 点击图片添加文件方式 -->
+    <img src="http://f7-preview.awardspace.com/zjmainstay.co.cc/jQueryExample/jquery_upload_image/files/addfile.jpg"
+         onclick="getElementById('inputfile').click()" title="点击添加图片" alt="点击添加图片">
+    <input type="file" name="image" style="opacity:0;filter:alpha(opacity=0);" id="inputfile"/>
+</div>
+<div id="feedback"></div>    <!-- 响应返回数据容器 -->
+<script type="text/javascript" src="__JS__jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+//        $.post(
+//            "http://66.112.221.116/index/login/chpassword",
+//            {
+//                'email':'MzEyODUwMzkxQHFxLmNvbQ==',
+//                'password':'123456',
+//                'repassword':'123456',
+//                'token':123456},
+//            function(data){
+//                if(data){
+//                    console.log(data);
+//                }
+//            },
+//            "json"
+//        );
+        $("#inputfile").change(function () {
+
+            //创建FormData对象
+            var data = new FormData();
+            //为FormData对象添加数据
+            //
+            data.append('userid', 2);
+            $.each($('#inputfile')[0].files, function (i, file) {
+                data.append('head_icon', file);
+            });
+            $.ajax({
+                url: 'http://localhost/index/user/chheadicon',
+                type: 'post',
+                data: data,
+                dataType:"json",
+                cache: false,
+                contentType: false,    //不可缺
+                processData: false,    //不可缺
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+
+        });
+        $.post(
+            "http://66.112.221.116/index/testpaper/delqst",
+            {
+                'id':44,
+                'token':123456},
+            function(data){
+                if(data){
+                    console.log(data);
+                }
+            },
+            "json"
+        );
+        $.post(
+            "http://localhost/index/user/getuserinfo",
+            {
+                'userid':'1',
+                'type':'base',
+                'token':123456
+            },
+            function(data){
+                if(data){
+                    console.log(data);
+                }
+            },
+            "json"
+        );
+        $.post(
+            "http://66.112.221.116/index/testpaper/getqsttype",
+            {
+                'token':123456},
+            function(data){
+                if(data){
+                    console.log(data);
+                }
+            },
+            "json"
+        );
+    });
+</script>
+</body>
+</html>

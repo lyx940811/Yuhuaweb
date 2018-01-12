@@ -1,0 +1,63 @@
+{extend name="public/studentlayout"}
+{block name="title"}{/block}
+
+{block name="container"}
+<div class="col-md-9">
+  <div class="panel panel-default panel-col">
+    <div class="panel-heading">我的话题</div>
+    <div class="panel-body">
+      <ul class="nav nav-pills">
+        <li class="active"><a href="#">课程话题</a></li>
+        <li class=""><a href="#">班级话题</a></li>
+      </ul>
+      <br>
+      <ul class="media-list">
+        <li class="media">
+          <div class="media-body">
+            <div class="mbm">
+              <a href="#"><strong>班级和课程的区别是什么？</strong></a>
+            </div>
+            <div class="color-gray text-normal">
+                        <span>来自
+                            <a href="#" class="link-primary">TEM/SEM基本操作</a>
+                            -
+                            <a href="#" class="link-primary">TEM/SEM基本操作</a>
+                        </span>
+              <span class="bullet">•</span>
+              <span>1浏览</span>
+            </div>
+          </div>
+        </li>
+        <li class="media">
+          <div class="media-body">
+            <div class="mbm">
+              <a href="#"><strong>各位同学，最近有没有什么学习活动啊？</strong></a>
+            </div>
+            <div class="color-gray text-normal">
+                        <span>来自
+                          <a href="#" class="link-primary">
+                                  在校学生基本素养
+                          </a>
+                          -
+                          <a href="#" class="link-primary">
+                            实验室管理
+                          </a>
+                        </span>
+              <span class="bullet">•</span>
+              <span>1浏览</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+        $('.list-group-item').eq(1).addClass("active");
+    })
+</script>
+{/block}
+

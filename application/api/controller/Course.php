@@ -256,7 +256,7 @@ class Course extends Home
                 $comment['is_like'] = 0;
             }
         }
-        $son = Db::name('course_review')->where('parentid',$commentid)->field('id,userid,content,createdTime,touserId')->select();
+        $son = Db::name('course_review')->where('parentid',$commentid)->field('id,userid,content,createdTime,touserId')->order('createdTime desc')->select();
         if($son){
             foreach ($son as &$s){
                 $s['username'] = Db::name('user')->where('id',$s['userid'])->value('username');
@@ -265,7 +265,7 @@ class Course extends Home
             }
         }
         $comment['son'] = $son;
-        unset($comment['id']);
+        
 
         return json_data(0,$this->codeMessage[0],$comment);
     }
@@ -379,12 +379,14 @@ class Course extends Home
             ->where('ct.courseid',$courseid)
             ->page($page,10)
             ->select();
-
-        if(!empty($this->user)){
-            foreach ($lesson as &$l){
-                if($course['type']!='url'){
+        foreach ($lesson as &$l){
+        if($course['type']!='url'){
                     $l['mediaSource'] = $this->request->domain()."/".$l['mediaSource'];
-                }
+        }
+        $l['plan'] = '0';
+        if(!empty($this->user)){
+            
+                
                 if($watch_log = Db::name('study_result')->where(['userid'=>$this->user->id,'courseid'=>$l['courseid'],'chapterid'=>$l['chapterid']])->find()){
                     if($watch_log['status']==1){
                         $l['plan'] = '100';
@@ -406,11 +408,10 @@ class Course extends Home
                 else{
                     $l['plan'] = '0';
                 }
-                unset($l['length'],$l['seq']);
-            }
+                unset($l['length'],$l['seq']); 
         }
-        return json_data(0,$this->codeMessage[0],$lesson);
-    }
+        }
+        return json_data(0,$this->codeMessage[0],$lesson);    }
 
     //abandoned , use the rebuild version
     public function getcoursetop_abandoned(){
