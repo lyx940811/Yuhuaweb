@@ -155,7 +155,7 @@ class Ad extends Base{
            path	\uploads\ad\20180112\bf712a24e928905940bbb2f2b05c6d7f.jpg
            code	0
          */
-        $file['path'] = "/".$file['newfile'.$id]['path'];
+        $file['path'] = $file['newfile'.$id]['path'];
         $file['code'] = $file['newfile'.$id]['code'];
         unset($file['newfile'.$id]);//删除键，暂时不用多图上传
         return $file;
