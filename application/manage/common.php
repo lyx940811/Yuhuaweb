@@ -176,8 +176,8 @@ function upload($filename,$path){
     $file = request() -> file($filename);
     // 验证图片,并移动图片到框架目录下。
 
-    $npath = '/uploads/'.$path;
-    $movepath = ROOT_PATH.'public/'.$npath;
+    $npath = DS.'uploads'.DS.$path;
+    $movepath = ROOT_PATH.'public'.DS.$npath;
 //  $movepath = ROOT_PATH.'public'.DS.'uploads'.DS.'certificate';
     $info = $file ->validate(['size' => 512000,'ext' => 'jpg,png,jpeg','type' => 'image/jpeg,image/png']) -> move($movepath);
     if($info){
@@ -185,7 +185,7 @@ function upload($filename,$path){
         $mes = $info->getFilename();      // 文件名
         $mes2 = $info->getSaveName();
 
-        return ['mes'=>$mes,'mes2'=>$mes2,'path'=>$npath.'/'.$mes2,'code'=>000];
+        return ['mes'=>$mes,'mes2'=>$mes2,'path'=>$npath.DS.$mes2,'code'=>000];
     }else{
         // 文件上传失败后的错误信息
         $mes = $file->getError();

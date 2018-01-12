@@ -251,11 +251,11 @@
                 alert('正在上传中...')
             }, //发送请求
             success: function(data){
-                // console.log(data);
+                console.log(data);
 
                 if(data.code=='000'){
                     $('#pic'+id).val(data.path)
-                    $('#showinfoPic'+id).html('<img class="img-rounded" src="'+data.path+'" width="100%"/>');
+                    $('#showinfoPic'+id).html('<img class="img-rounded" src="/'+data.path+'" width="100%"/>');
                     alert('上传成功');
                 }
 

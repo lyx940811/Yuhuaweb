@@ -1,6 +1,6 @@
 <?php
 
-namespace app\api\logic;
+namespace app\manage\controller;
 
 
 use think\Exception;
@@ -20,10 +20,12 @@ class Upload
                 continue;
             }
             if(!in_array($files[$key]['type'],$type)){
-                throw new Exception('wrong file type',700);
+//                throw new Exception('wrong file type',700);
+                return ['error'=>'wrong file type','code'=>700];
             }
             if(filesize($files[$key]['tmp_name'])>3145728){
-                throw new Exception('file over size',710);
+//                throw new Exception('file over size',710);
+                return ['error'=>'file over size','code'=>710];
             }
             $save_path[$key] = $this->upload($files[$key]);
         }
@@ -47,22 +49,26 @@ class Upload
         return $save_file;
     }
 
-    public function upload($file){
+    /*
+     * 广告管理用到的
+     */
+    public function upload($file,$branch='ad'){
         $name        = $file['name'];
         $tmp_name    = $file['tmp_name'];
-        $uploads_dir = "uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
-        $date_dir    = ROOT_PATH."public".DS.$uploads_dir;
+        $uploads_dir = "uploads/".$branch."/".date('Ymd',time());
+        $date_dir    = ROOT_PATH."public/".$uploads_dir;
         if(!file_exists($date_dir)){
             mkdir($date_dir,0775,true);
         }
         //rename file
         $name = explode('.',$name);
-        $name[0] = date('Ymd',time())."-".uniqid();
+        $name[0] = uniqid();
         $name = implode('.',$name);
 
-        $file_dir = ROOT_PATH."public".DS.$uploads_dir.DS.$name;
+        $file_dir = ROOT_PATH."public/".$uploads_dir.'/'.$name;
         move_uploaded_file($tmp_name, iconv("utf-8","gb2312",$file_dir));
-        return $uploads_dir.DS.$name;
+        return ['path'=>$uploads_dir.'/'.$name,'code'=>000];
+//        return $uploads_dir.'/'.$name;
     }
 
 }
