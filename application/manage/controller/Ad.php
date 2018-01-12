@@ -10,7 +10,7 @@ namespace app\manage\controller;
 use think\Db;
 use think\Validate;
 /*
- * 广告管理
+ * 广告管理1
  */
 class Ad extends Base{
 
