@@ -18,8 +18,8 @@ class Userprofile extends Base{
 
         $where = [];
 
-        if(!empty($info['username'])){
-            $where['a.realname'] = ['like',"%{$info['username']}%"];
+        if(!empty($info['realname'])){
+            $where['a.realname'] = ['like',"%{$info['realname']}%"];
         }
 
         $list = Db::table('user_profile a')
