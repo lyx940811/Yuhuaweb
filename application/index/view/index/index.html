@@ -23,41 +23,47 @@
               <div class="course-filter" id="course-filter">
                   <ul class="nav nav-pills hidden-xs" role="tablist">
                       <li role="presentation" class="active  js-course-filter" data-url="__COURSE__search?orderBy=latest" data-type="course"><a href="javascript:;">全部课程</a></li>
+                      {volist name="category" id="ca" key="key"}
+                      {if condition="$key lt 5"}
                       <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447244&amp;orderBy=latest" data-type="course"><a href="javascript:;">焊接技术</a></li>
-                      <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447245&amp;orderBy=latest" data-type="course"><a href="javascript:;">设备维修</a></li>
-                      <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447246&amp;orderBy=latest" data-type="course"><a href="javascript:;">电气自动化</a></li>
-                      <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447247&amp;orderBy=latest" data-type="course"><a href="javascript:;">仪表自动化</a></li>                                                                                                                                                                                                                                                                                                                    <li class="dropdown nav-hover">
+                      <!--<li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447245&amp;orderBy=latest" data-type="course"><a href="javascript:;">设备维修</a></li>-->
+                      <!--<li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447246&amp;orderBy=latest" data-type="course"><a href="javascript:;">电气自动化</a></li>-->
+                      <!--<li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447247&amp;orderBy=latest" data-type="course"><a href="javascript:;">仪表自动化</a></li>                                                                                                                                                                                                                                                                                                                    <li class="dropdown nav-hover">-->
+                      {/volist}
                       <li>
                           <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
                               <i class="es-icon es-icon-morehoriz"></i>
                           </a>
                           <ul class="dropdown-menu">
+                              {volist name="category" id="cate" key="key"}
                               <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447248&amp;orderBy=latest" data-type="course"><a href="javascript:;">铆管技术</a></li>
-                              <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=13&amp;orderBy=latest" data-type="course"><a href="javascript:;">经济管理系</a></li>
-                              <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=680140&amp;orderBy=latest" data-type="course"><a href="javascript:;">化学工程系</a></li>
+                              <!--<li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=13&amp;orderBy=latest" data-type="course"><a href="javascript:;">经济管理系</a></li>-->
+                              <!--<li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=680140&amp;orderBy=latest" data-type="course"><a href="javascript:;">化学工程系</a></li>-->
+                              {/volist}
                           </ul>
                       </li>
+
                   </ul>
-                  <div class="btn-group visible-xs">
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">全部课程 <span class="caret"></span></button>
-                      <ul class="dropdown-menu" role="menu">
-                          <li role="presentation" class="js-course-filter active " data-url="__COURSE__search?orderBy=latest" data-type="course"><a href="javascript:;">全部课程</a></li>
-                          <li role="presentation" class="js-course-filter " data-url="__COURSE__search?categoryId=36447244&amp;orderBy=latest" data-type="course"><a href="javascript:;">焊接技术</a></li>
-                          <li role="presentation" class="js-course-filter " data-url="__COURSE__search?categoryId=36447245&amp;orderBy=latest" data-type="course"><a href="javascript:;">设备维修</a></li>
-                          <li role="presentation" class="js-course-filter " data-url="__COURSE__search?categoryId=36447246&amp;orderBy=latest" data-type="course"><a href="javascript:;">电气自动化</a></li>
-                          <li role="presentation" class="js-course-filter " data-url="__COURSE__search?categoryId=36447247&amp;orderBy=latest" data-type="course"><a href="javascript:;">仪表自动化</a></li>
-                      </ul>
-                  </div>
+                  <!--<div class="btn-group visible-xs">-->
+                      <!--<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">全部课程 <span class="caret"></span></button>-->
+                      <!--<ul class="dropdown-menu" role="menu">-->
+                          <!--<li role="presentation" class="js-course-filter active " data-url="__COURSE__search?orderBy=latest" data-type="course"><a href="javascript:;">全部课程</a></li>-->
+                          <!--<li role="presentation" class="js-course-filter " data-url="__COURSE__search?categoryId=36447244&amp;orderBy=latest" data-type="course"><a href="javascript:;">焊接技术</a></li>-->
+                          <!--<li role="presentation" class="js-course-filter " data-url="__COURSE__search?categoryId=36447245&amp;orderBy=latest" data-type="course"><a href="javascript:;">设备维修</a></li>-->
+                          <!--<li role="presentation" class="js-course-filter " data-url="__COURSE__search?categoryId=36447246&amp;orderBy=latest" data-type="course"><a href="javascript:;">电气自动化</a></li>-->
+                          <!--<li role="presentation" class="js-course-filter " data-url="__COURSE__search?categoryId=36447247&amp;orderBy=latest" data-type="course"><a href="javascript:;">仪表自动化</a></li>-->
+                      <!--</ul>-->
+                  <!--</div>-->
                   <div class="course-sort btn-group">
                       <a href="javascript:;" class="btn btn-default  active js-course-filter" data-url="__COURSE__search?categoryId=0&amp;orderBy=latest" data-type="course">
                           最新
                       </a>
-                      <a href="javascript:;" class="btn btn-default js-course-filter" data-url="__COURSE__search?categoryId=0&amp;orderBy=studentNum" data-type="course">
-                          最热
-                      </a>
-                      <a href="javascript:;" class="btn btn-default js-course-filter" data-url="__COURSE__search?categoryId=0&amp;orderBy=recommendedSeq" data-type="course">
-                          推荐
-                      </a>
+                      <!--<a href="javascript:;" class="btn btn-default js-course-filter" data-url="__COURSE__search?categoryId=0&amp;orderBy=studentNum" data-type="course">-->
+                          <!--最热-->
+                      <!--</a>-->
+                      <!--<a href="javascript:;" class="btn btn-default js-course-filter" data-url="__COURSE__search?categoryId=0&amp;orderBy=recommendedSeq" data-type="course">-->
+                          <!--推荐-->
+                      <!--</a>-->
                   </div>
               </div>
               <div class="course-list">
@@ -133,6 +139,10 @@
 //            },
 //            "json"
 //        );
+
+        $('.dropdown-toggle').click(function(){
+            $(this).next().toggle();
+        });
     })
 </script>
 {/block}

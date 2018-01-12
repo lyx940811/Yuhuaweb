@@ -4,6 +4,7 @@ namespace app\index\controller;
 use think\Controller;
 use think\Config;
 use think\Loader;
+use think\Db;
 use think\Request;
 use app\index\model\Course;
 use app\index\model\User as UserModel;
@@ -21,6 +22,9 @@ class Index extends Home
         $courseModel = new Course();
         $course = $courseModel->where('is_new',1)->limit(12)->order('createdTime desc')->select();
         $this->assign('course',$course);
+
+        $category = Db::name('category')->field('name,code')->where('grade',3)->limit(3)->select();
+        $this->assign('category',$category);
 
         return $this->fetch();
     }
@@ -73,25 +77,25 @@ class Index extends Home
             }
             else{
                 //密码错误，次数+1，到达3的时候锁定
-                $redis_key = 'wrongpwd'.$user['id'];
-                $redis = new \Redis();
-                $redis->connect('127.0.0.1', 6379);
-                if($redis->exists($redis_key)){
-                    $num = $redis->get($redis_key);
-                    $num = $num+1;
-                    if($num == 3){
-                        //locked
-                        $user->locked = 1;
-                        $user->save();
-                        $redis->delete($redis_key);
-                    }
-                    else{
-                        $redis->setex($redis_key, 86400, $num);
-                    }
-                }
-                else{
-                    $redis->setex($redis_key, 86400, 1);
-                }
+//                $redis_key = 'wrongpwd'.$user['id'];
+//                $redis = new \Redis();
+//                $redis->connect('127.0.0.1', 6379);
+//                if($redis->exists($redis_key)){
+//                    $num = $redis->get($redis_key);
+//                    $num = $num+1;
+//                    if($num == 3){
+//                        //locked
+//                        $user->locked = 1;
+//                        $user->save();
+//                        $redis->delete($redis_key);
+//                    }
+//                    else{
+//                        $redis->setex($redis_key, 86400, $num);
+//                    }
+//                }
+//                else{
+//                    $redis->setex($redis_key, 86400, 1);
+//                }
 
                 return json_data(140,$this->codeMessage[140],'');
             }
