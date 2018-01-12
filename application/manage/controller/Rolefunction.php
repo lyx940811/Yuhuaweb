@@ -81,7 +81,7 @@ class Rolefunction extends Base{
         $data = [
             'name' =>$info['name'],
             'data' =>$info['name'],
-            'flag' =>1,
+//            'flag' =>1,
             'createdUserId'=>session('admin_uid'),
             'createdTime'=>date('Y-m-d H:i:s',time()),
         ];

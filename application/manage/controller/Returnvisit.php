@@ -67,22 +67,22 @@ class Returnvisit extends Base{
         }
 
 
-        $role_table = Db::name('category');
+        $role_table = Db::name('return_visit');
 
-        $is_have = $role_table->field('id')->where(['code'=>['eq',$info['code']]])->find();
-
-        if($is_have){//如果这个code有
-            return ['error'=>'已经有此代码','code'=>'300'];
-        }
+//        $is_have = $role_table->field('id')->where(['code'=>['eq',$info['code']]])->find();
+//
+//        if($is_have){//如果这个code有
+//            return ['error'=>'已经有此代码','code'=>'300'];
+//        }
 
         $data = [
-            'name' => $info['name'],
-            'code' => $info['code'],
-            'point'=> $info['point'],
-            'studyTimes'=>$info['studyTimes'],
-            'description'=>$info['description'],
-            'createtime'=>date('Y-m-d H:i:s',time()),
-            'Flag'=>1,
+//            'name' => $info['name'],
+//            'code' => $info['code'],
+//            'point'=> $info['point'],
+//            'studyTimes'=>$info['studyTimes'],
+//            'description'=>$info['description'],
+//            'createtime'=>date('Y-m-d H:i:s',time()),
+//            'Flag'=>1,
         ];
 
         $ok = $role_table->field('name,code,point,studyTimes,description,createtime,Flag')->insert($data);

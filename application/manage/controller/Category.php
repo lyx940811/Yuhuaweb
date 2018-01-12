@@ -83,7 +83,7 @@ class Category extends Base{
             'studyTimes'=>$info['studyTimes'],
             'description'=>$info['description'],
             'createtime'=>date('Y-m-d H:i:s',time()),
-            'Flag'=>1,
+//            'Flag'=>1,
         ];
 
         $ok = $role_table->field('name,code,point,studyTimes,description,createtime,Flag')->insert($data);

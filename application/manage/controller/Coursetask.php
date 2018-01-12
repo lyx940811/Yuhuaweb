@@ -85,7 +85,7 @@ class Coursetask extends Base{
             'courseId'=>$info['courseId']+0,
             'createdUserId'=>session('admin_uid'),
             'createdTime'=>date('Y-m-d H:i:s',time()),
-            'status'=>1,
+//            'status'=>1,
         ];
 
         $ok = $role_table->field('title,startTime,endTime,isFree,isOptional,mode,type,length,mediaSource,maxOnlineNum,maxPoint,courseId,createdUserId,createdTime,status')->insert($data);

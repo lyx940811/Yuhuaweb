@@ -60,7 +60,7 @@ class Course extends Base{
             'tags'          => $info['tags'],
             'categoryId'    => $info['categoryId'],
             'serializeMode' => $info['serializeMode'],
-            'status'=> 1,
+//            'status'=> 1,
             'smallPicture'  => $info['pic'],
             'userid'        => session('admin_uid'),
             'about'        => $info['about'],

@@ -62,7 +62,7 @@ class Dormitory extends Base{
         $data = [
             'name' => $info['name'],
             'code' => $info['code'],
-            'Flag'=>1,
+//            'Flag'=>1,
         ];
 
         $ok = $role_table->field('name,code,Flag')->insert($data);
