@@ -6,19 +6,18 @@
     {php}
     $uid = session('admin_uid');
     {/php}
+
     <ul class="nav nav-tabs">
-        <li role="presentation" class="active"><a href="#">列表</a></li>
-        <li role="presentation">
-            {php}
-            if(check($uid,'/manage/role/add')){
-                echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">添加角色</a>';
-            }
-
-            {/php}
-        </li>
+        <li class="active"><a href="{:url('')}" style="cursor: pointer">回首页</a></li>
     </ul>
+    <div class="pull-right">
+        {php}
+        if(check($uid,'/manage/userprofile/add')){
+        echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">添加角色</a>';
+        }
+        {/php}
 
-
+    </div>
     <table class="table table-striped table-hover">
         <thead>
         <tr>
