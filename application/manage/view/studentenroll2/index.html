@@ -37,7 +37,7 @@
         </form>
     </div>
     <ul class="nav nav-tabs">
-        <li class="active"><a href="{:url('')}" style="cursor: pointer">回首页</a></li>
+        <li class="active"><a href="{:url('')}" style="cursor: pointer">刷新列表</a></li>
     </ul>
     <table class="table table-striped table-hover">
         <thead>
@@ -62,7 +62,7 @@
             <td>{if condition="$vo['sex'] eq 1"}男{elseif condition="$vo['sex'] eq 2"}女{else}保密{/if}</td>
             <td>{$vo.age}</td>
             <td>{$vo.name}</td>
-            <td>{$vo.phone}</td>
+            <td>{$vo.telephone}</td>
             <td>{$vo.promotMan}</td>
             <td>{$vo.school}</td>
             <td>{$vo.address}</td>
@@ -75,12 +75,8 @@
             {/if}
             <td>
                 {php}
-                if(check($uid,'/manage/studentenroll2/edit')){
-                    echo '<a href="#" onclick="add_edit(\'edit\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal">编辑</a>';
-                    echo '<strong>/</strong>';
-                }
                 if(check($uid,'/manage/studentenroll2/accept')){
-                    echo '<a href="#" onclick="add_edit(\'acceptShow\','.$vo['id'].');"  data-toggle="modal" data-target="#myModal_accept'.$vo['id'].'">查看</a>';
+                    echo '<a href="#"  data-toggle="modal" data-target="#myModal_accept'.$vo['id'].'">查看</a>';
                 }
                 {/php}
                 <!--查看开始-->
@@ -97,16 +93,18 @@
                             <!-- 模态框主体 -->
                             <div class="modal-body">
                                 <table class="table table-bordered table-hover">
-                                    <form id="form2">
+                                    <form id="form{$vo.id}">
                                     <tr><td>姓名</td><td>{$vo.realname}<input type="hidden" name="realname" value="{$vo.realname}"/></td></tr>
                                     <tr><td>性别</td><td>{if condition="$vo['sex'] eq 1"}男{elseif condition="$vo['sex'] eq 2"}女{else}保密{/if}<input type="hidden" name="sex" value="{$vo.sex}"/></td></tr>
                                     <tr><td>年龄</td><td>{$vo.age}<input type="hidden" name="age" value="{$vo.age}"/></td></tr>
-                                    <tr><td>报名批次</td><td>{$vo.admissionID}<input type="hidden" name="admissionID" value="{$vo.admissionID}"/></td></tr>
+                                    <tr><td>报名批次</td><td>{$vo.title}<input type="hidden" name="admissionID" value="{$vo.admissionID}"/></td></tr>
                                     <tr><td>专业</td><td>{$vo.name}<input type="hidden" name="name" value="{$vo.name}"/></td></tr>
-                                    <tr><td>电话</td><td>{$vo.phone}<input type="hidden" name="phone" value="{$vo.phone}"/></td></tr>
+                                    <tr><td>电话</td><td>{$vo.telephone}<input type="hidden" name="telephone" value="{$vo.telephone}"/></td></tr>
                                     <tr><td>推荐人</td><td>{$vo.promotMan}<input type="hidden" name="promotMan" value="{$vo.promotMan}"/></td></tr>
                                     <tr><td>毕业院校</td><td>{$vo.school}<input type="hidden" name="school" value="{$vo.school}"/></td></tr>
                                     <tr><td>家庭地址</td><td>{$vo.address}<input type="hidden" name="address" value="{$vo.address}"/></td></tr>
+                                        <input type="hidden" name="categoryID" value="{$vo.categoryID}"/>
+                                        <input type="hidden" name="nation" value="{$vo.nation}"/>
                                         <input type="hidden" name="cardsn" value="{$vo.cardsn}"/>
                                     </form>
                                 </table>
@@ -150,48 +148,14 @@ $(".form_datetime").datepicker({
     language:"zh-CN",
     format:"yyyy-mm-dd"
 });
-    function add_edit(type,id,parentcode) {
 
-        switch (type){
-            case 'add':
-
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#add_role').show()
-                $('#edit_role').hide()
-
-                break;
-            case 'edit':
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#selfcode').val(id)//如果是修改,id是自己
-                $('#add_role').hide()
-                $('#edit_role').show()
-                $.get("{:url('edit')}?do=get&rid="+id,function (data) {
-                    $('#role_name').val(data.info.name)
-                    $('#role_code').val(data.info.code)
-                    $('#selfcode').val(data.info.id)
-                    $('#studyTimes').val(data.info.studyTimes)
-                    $('#point').val(data.info.point)
-                    $('#description').val(data.info.description)
-                });
-                
-                break;
-            case 'acceptShow':
-                $('#acceptStatus').show()
-
-                break;
-            default:
-                alert('error')
-        }
-
-    }
 
     function accept(id,type) {
-        $.post("{:url('accept')}?rid="+id+"&type="+type,$("#form2").serialize(),function (data) {
+        $.post("{:url('accept')}?rid="+id+"&type="+type,$("#form"+id).serialize(),function (data) {
             if(data.code=='000'){
                 alert(data.info)
-                $('#myModal_accept'+id).modal('hide')
+                // $('#myModal_accept'+id).modal('hide')
+                window.location.reload()
             }else{
 
             }

@@ -80,6 +80,7 @@ class Certificate extends Base{
         $ok = $role_table->field('profileid,certificateid,pic,createtime,Flag')->insert($data);
 
         if($ok){
+            manage_log('106','003','添加证书',serialize($data),0);
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
@@ -146,6 +147,7 @@ class Certificate extends Base{
         $ok = $role_table->field('profileid,certificateid,pic,createtime')->where('id',$id)->update($data);
 
         if($ok){
+            manage_log('106','004','修改证书',serialize($data),0);
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'400'];

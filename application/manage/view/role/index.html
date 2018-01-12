@@ -8,12 +8,12 @@
     {/php}
 
     <ul class="nav nav-tabs">
-        <li class="active"><a href="{:url('')}" style="cursor: pointer">回首页</a></li>
+        <li class="active"><a href="{:url('')}" style="cursor: pointer">刷新列表</a></li>
     </ul>
     <div class="pull-right">
         {php}
         if(check($uid,'/manage/userprofile/add')){
-        echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">添加角色</a>';
+        echo '<a class="btn btn-primary" data-toggle="modal" onclick="addSon(0)" data-target="#myModal">添加角色</a>';
         }
         {/php}
 
@@ -51,7 +51,7 @@
                     }
                     if(check($uid,'/manage/role/add')){
                         echo '<strong>/</strong>';
-                        echo '<a href="#" onclick="add_edit(\'addSon\','.$vo['id'].','.$vo['code'].')" data-toggle="modal" data-target="#myModal">添加子角色</a>';
+                        echo '<a href="#" onclick="addSon(\''.$vo['code'].'\')" data-toggle="modal" data-target="#myModal">添加子角色</a>';
                     }
                 {/php}
                 <!--修改-->
@@ -84,9 +84,7 @@
                                                    placeholder="请输入角色代码">
                                         </div>
                                     </div>
-                                    <input type="hidden" name="parentcode" value="{$vo.parentcode}" />
                                     <input type="hidden" name="rid" value="{$vo.id}"  />
-                                    <!--<input type="hidden" name="__token__" value="{$Request.token}" />-->
                                     <!-- 模态框底部 -->
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" onclick="dopost('edit',{$vo.id})">修改</button>
@@ -118,8 +116,8 @@
 
                 <!-- 模态框头部 -->
                 <div class="modal-header">
-                    <h4 class="modal-title">添加角色</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">添加角色</h4>
                 </div>
 
                 <!-- 模态框主体 -->
@@ -180,42 +178,12 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
-    /*添加子类*/
-
-    function add_edit(type,id,parentcode) {
-
-        switch (type){
-            case 'add':
-
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#add_role').show()
-                $('#edit_role').hide()
-                break;
-            case 'addSon':
-
-                $(" input[ type='text' ] ").val('')
-                $(" input[ type='hidden' ] ").val('')
-                $('#parentcode').val(parentcode)
-                $('#add_role').show()
-                $('#edit_role').hide()
-                break;
-            case 'edit':
-                $('#selfcode').val(id)//如果是修改,id是自己
-                $('#parentcode').val('')
-                $('#add_role').hide()
-                $('#edit_role').show()
-                $.get("{:url('edit')}?do=get&rid="+id,function (data) {
-                    $('#role_name').val(data.info.name)
-                    $('#role_code').val(data.info.code)
-                    $('#selfcode').val(data.info.id)
-                });
-                
-                break;
-            default:
-                alert('error')
+    function addSon(code){
+        if(code==0){
+            $('#parentcode').val('')
+        }else{
+            $('#parentcode').val(code)
         }
-
 
     }
 

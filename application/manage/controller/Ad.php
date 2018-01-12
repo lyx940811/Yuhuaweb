@@ -32,13 +32,11 @@ class Ad extends Base{
 
         $type = [['id'=>1,'name'=>'mobile'],['id'=>2,'name'=>'pc']];
 
-//        print_r($type);exit;
         $this->assign('list',$list);
         $this->assign('page',$list->render());
 
         $this->assign('type',$type);
         $this->assign('typename','广告管理');
-
         return $this->fetch();
     }
 
@@ -80,6 +78,7 @@ class Ad extends Base{
         $ok = $role_table->insert($data);
 
         if($ok){
+            manage_log('105','003','添加广告',serialize($data),0);
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
@@ -133,6 +132,7 @@ class Ad extends Base{
         $ok = $role_table->where('id',$id)->update($data);
 
         if($ok){
+            manage_log('105','003','修改广告',serialize($data),0);
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];

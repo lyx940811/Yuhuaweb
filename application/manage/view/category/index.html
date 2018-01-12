@@ -26,14 +26,14 @@
     <div class="pull-right">
         {php}
         if(check($uid,'/manage/category/add')){
-            echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增专业</a>';
+            echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="addSon(0)">新增专业</a>';
         }
         {/php}
 
     </div>
     <ul class="nav nav-tabs">
-        <li role="presentation" class="active"><a href="{:url('')}" style="cursor: pointer">回首页</a></li>
-        <li role="presentation"><a href="{:url('category/index')}">专业管理</a></li>
+        <li role="presentation"><a href="{:url('')}" style="cursor: pointer">刷新专业管理列表</a></li>
+        <li role="presentation"  class="active"><a href="{:url('category/index')}">专业管理</a></li>
         <li role="presentation"><a href="{:url('categorycourse/index')}">专业课程</a></li>
         <li role="presentation"><a href="{:url('studentenroll/index')}">专业报名数据查询</a></li>
         <li role="presentation"><a href="{:url('categorycertificate/index')}">专业证书</a></li>
@@ -72,6 +72,10 @@
 
                         $flag = $vo['Flag']?'禁用':'启用';
                         echo '<a href="#" onclick="enable('.$vo['id'].');">'.$flag.'</a>';
+                        echo '<strong>/</strong>';
+                    }
+                    if(check($uid,'/manage/category/addson')){
+                        echo '<a href="#" onclick="addSon(\''.$vo['code'].'\')" data-toggle="modal" data-target="#myModal">添加子专业</a>';
                     }
                 {/php}
 
@@ -91,7 +95,7 @@
                             <div class="modal-body">
                                 <form class="form-horizontal" role="form" id="form{$vo.id}" method="post" action="{:url('edit')}">
                                     <div class="form-group">
-                                        <label for="role_code" class="col-sm-2 control-label">专业代码</label>
+                                        <label for="code" class="col-sm-2 control-label">专业代码</label>
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" name="code" value="{$vo.code}"
                                                    placeholder="请输入专业代码">
@@ -164,9 +168,9 @@
                 <div class="modal-body">
                     <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
                         <div class="form-group">
-                            <label for="role_code" class="col-sm-2 control-label">专业代码</label>
+                            <label for="code" class="col-sm-2 control-label">专业代码</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="role_code" name="code"
+                                <input type="text" class="form-control" id="code" name="code"
                                        placeholder="请输入专业代码">
                             </div>
                         </div>
@@ -197,6 +201,7 @@
                                 <textarea cols="30" rows="10" class="form-control" name="description" id="description"></textarea>
                             </div>
                         </div>
+                        <input type="hidden" name="parentcode" id="parentcode"/>
                         <input type="hidden" name="rid" value="" id="selfcode"/>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
@@ -237,7 +242,15 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
+    function addSon(code){
+        // alert(code)
+        if(code==0){
+            $('#parentcode').val('')
+        }else{
+            $('#parentcode').val(code)
+        }
 
+    }
     function dopost($url,formid) {
         $url=='add'?"{:url('add')}":"{:url('edit')}";
 
@@ -270,7 +283,8 @@
             $.get("{:url('enable')}?rid="+id,function (data) {
                 if(data.code=='000'){
                     alert(data.info)
-                    $('#myModal2').modal('hide')
+                    // $('#myModal2').modal('hide')
+                    window.location.reload()
                 }else{
 
                 }

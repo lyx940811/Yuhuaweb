@@ -19,7 +19,7 @@
         </form>
     </div>
     <ul class="nav nav-tabs">
-        <li class="active"><a href="{:url('')}" style="cursor: pointer">回首页</a></li>
+        <li class="active"><a href="{:url('course/index')}" style="cursor: pointer">刷新列表</a></li>
     </ul>
     <div class="pull-right">
         {php}
@@ -280,7 +280,7 @@
                             </div>
                         </div>
                         <input type="hidden" name="rid" value="" id="selfcode"/>
-                        <input type="hidden" name="courseId" value="" id="courseId"/>
+                        <input type="hidden" name="courseId" value="{$Think.get.cid}" id="courseId"/>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add',0);">添加</button>
@@ -430,7 +430,8 @@ console.log(file);
             $.get("{:url('delete')}?rid="+id,function (data) {
                 if(data.code=='000'){
                     alert(data.info)
-                    $('#myModal2').modal('hide')
+                    // $('#myModal2').modal('hide')
+                    window.location.reload()
                 }else{
                     alert(data.error)
                 }

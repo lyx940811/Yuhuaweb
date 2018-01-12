@@ -79,6 +79,7 @@ class Classroom extends Base{
         $ok = $role_table->field('title,categoryId,teacherIds,about,createdTime,status')->insert($data);
 
         if($ok){
+            manage_log('107','003','添加班级',serialize($data),0);
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
@@ -129,6 +130,7 @@ class Classroom extends Base{
         $ok = $role_table->field('title,categoryId,teacherIds,about,status')->where('id',$id)->update($data);
 
         if($ok){
+            manage_log('107','004','修改班级',serialize($data),0);
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];

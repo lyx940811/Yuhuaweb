@@ -70,6 +70,7 @@ class Course extends Base{
         $ok = $role_table->field('title,subtitle,tags,categoryId,serializeMode,status,smallPicture,userid,about,createdTime')->insert($data);
 
         if($ok){
+            manage_log('108','003','添加课程',serialize($data),0);
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
@@ -127,6 +128,7 @@ class Course extends Base{
         $ok = $role_table->field('title,subtitle,tags,categoryId,serializeMode,smallPicture,userid,about')->where('id',$id)->update($data);
 
         if($ok){
+            manage_log('108','004','修改课程',serialize($data),0);
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];
@@ -140,6 +142,7 @@ class Course extends Base{
         $ok = Db::name('course')->where("id='$id'")->delete();
 
         if($ok){
+            manage_log('108','005','删除课程',serialize(['id'=>$id]),0);
             return ['info'=>'删除成功','code'=>'000'];
         }else{
             return ['error'=>'删除失败','code'=>'200'];

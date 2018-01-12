@@ -266,4 +266,8 @@ class Course extends Home
         return $this->fetch();
     }
 
+    public function taskDetail(){
+        return $this->fetch();
+    }
+
 }

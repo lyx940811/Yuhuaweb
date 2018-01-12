@@ -31,7 +31,7 @@ class Category extends Base{
         }
 
         $list = Db::name('category')
-            ->field('id,name,code,studyTimes,point,createtime,Flag,description')
+            ->field('id,name,code,parentcode,studyTimes,point,createtime,Flag,description')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
 
@@ -79,6 +79,7 @@ class Category extends Base{
         $data = [
             'name' => $info['name'],
             'code' => $info['code'],
+            'parentcode' => $info['parentcode'],
             'point'=> $info['point'],
             'studyTimes'=>$info['studyTimes'],
             'description'=>$info['description'],
@@ -86,9 +87,11 @@ class Category extends Base{
 //            'Flag'=>1,
         ];
 
-        $ok = $role_table->field('name,code,point,studyTimes,description,createtime,Flag')->insert($data);
+        $ok = $role_table->field('name,code,parentcode,point,studyTimes,description,createtime,Flag')->insert($data);
 
         if($ok){
+
+            manage_log('104','003','添加广告',serialize($data),0);
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
@@ -151,6 +154,7 @@ class Category extends Base{
         $ok = $role_table->field('name,code,point,studyTimes,description,createtime')->where('id',$id)->update($data);
 
         if($ok){
+            manage_log('104','004','修改专业',serialize($data),0);
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];

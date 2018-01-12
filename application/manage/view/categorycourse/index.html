@@ -33,14 +33,14 @@
     </div>
     <div class="pull-right">
         {php}
-        if(check($uid,'/manage/studentenroll/add')){
-        echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增专业</a>';
+        if(check($uid,'/manage/categorycourse/add')){
+        echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">添加课程</a>';
         }
         {/php}
 
     </div>
     <ul class="nav nav-tabs">
-        <li role="presentation"><a href="{:url('')}" style="cursor: pointer">回首页</a></li>
+        <li role="presentation"><a href="{:url('')}" style="cursor: pointer">刷新专业课程列表</a></li>
         <li role="presentation"><a href="{:url('category/index')}">专业管理</a></li>
         <li role="presentation" class="active"><a href="{:url('categorycourse/index')}">专业课程</a></li>
         <li role="presentation"><a href="{:url('studentenroll/index')}">专业报名数据查询</a></li>
@@ -142,7 +142,7 @@
         {$page}
     </ul>
 
-    <!--新增专业-->
+    <!--添加开始-->
     <!-- 模态框 -->
     <div class="modal fade" id="myModal">
         <div class="modal-dialog">
@@ -160,7 +160,7 @@
                         <div class="form-group">
                             <label for="code" class="col-sm-2 control-label">课程名称</label>
                             <div class="col-sm-10">
-                                <select name="code" id="code">
+                                <select name="code" id="code" class="form-control">
                                     {volist name='courselist' id='c'}
                                     <option value="{$c.id}">{$c.title}</option>
                                     {/volist}
@@ -170,7 +170,7 @@
                         <div class="form-group">
                             <label for="category" class="col-sm-2 control-label">所属专业</label>
                             <div class="col-sm-10">
-                                <select name="category" id="category">
+                                <select name="category" id="category" class="form-control">
                                     {volist name='categorylist' id='c'}
                                     <option value="{$c.code}">{$c.name}</option>
                                     {/volist}
@@ -190,7 +190,7 @@
             </div>
         </div>
     </div>
-    <!--添加专业结束-->
+    <!--添加结束-->
     <!--删除专业提示-->
     <div class="modal fade" id="myModal2">
         <div class="modal-dialog">
