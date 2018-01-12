@@ -3,7 +3,7 @@
 namespace app\manage\controller;
 
 
-class Upload extends Base
+class Upload
 {
     /**
      * 图片上传（多图）
