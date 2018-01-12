@@ -20,7 +20,7 @@ class Index extends Home
      */
     public function index(){
         $courseModel = new Course();
-        $course = $courseModel->where('is_new',1)->limit(12)->order('createdTime desc')->select();
+        $course = $courseModel->limit(12)->order('createdTime desc')->select();
         $this->assign('course',$course);
 
         $category = Db::name('category')->field('name,code')->where('grade',3)->select();
@@ -32,6 +32,30 @@ class Index extends Home
      * 全部课程
      */
     public function allcourse(){
+        if($this->request->isAjax()){
+
+            $cate = $this->request->param('category');
+            if(empty($cate)){
+                $course = Course::order('createdTime desc')->paginate(20);
+            }
+            else{
+                $course = Course::where('categoryId',$cate)->order('createdTime desc')->paginate(20);
+            }
+
+            $this->assign('course',$course);
+            $this->assign('page',$course->render());
+
+            return $this->fetch('allcourseajax');
+        }
+
+        $category = Db::name('category')->field('name,code')->where('grade',3)->select();
+        $this->assign('category',$category);
+
+        $course = Course::order('createdTime desc')->paginate(20);
+
+        $this->assign('course',$course);
+        $this->assign('page',$course->render());
+
         return $this->fetch();
     }
 
@@ -49,13 +73,19 @@ class Index extends Home
 
         return $this->fetch();
     }
+
     public function categoryajax(){
         $category = $this->request->param('category');
-        $orderby="CONVERT( title USING gbk ) COLLATE gbk_chinese_ci ASC";
-        $course = Db::name('course')->where('categoryId',$category)->order($orderby)->limit(8)->select();
+        if(empty($category)){
+            $course = Db::name('course')->order('createdTime desc')->limit(8)->select();
+        }
+        else{
+            $course = Db::name('course')->where('categoryId',$category)->order('createdTime desc')->limit(8)->select();
+        }
         $this->assign('course',$course);
         return $this->fetch('categoryajax');
     }
+
     public function loginajax(){
         $data = $this->request->param();
 

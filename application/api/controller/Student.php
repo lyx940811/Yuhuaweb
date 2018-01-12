@@ -228,14 +228,14 @@ class Student extends User
         if(!$validate->check($data)){
             return json_data(130,$validate->getError(),'');
         }
-        if(empty($id)){
+        if(!CourseNote::get(['courseId'  =>  $this->data['courseId'],'lessonid'  =>  $this->data['lessonid']])){
             CourseNote::create($data);
         }
         else{
             $note = new CourseNote;
             $note->data($data)
                 ->isUpdate(true)
-                ->save(['id' => $id]);
+                ->save(['courseId'  =>  $this->data['courseId'],'lessonid'  =>  $this->data['lessonid']]);
         }
 
         return json_data(0,$this->codeMessage[0],'');

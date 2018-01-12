@@ -228,8 +228,8 @@ p{word-wrap:break-word}
                 </ul>
             </div>
             {/volist}
-            {$page}
         </div>
+        {$page}
 </div>
   </div>
 </form>
@@ -563,8 +563,8 @@ p{word-wrap:break-word}
             var url = "http://localhost/index/teacher/browse?&keyword="+keyword+"&type="+type;
             $.get(url,function(data){
                 console.log(data);
-                $('.filelist').html("");
-                $('.filelist').append(data);
+                $('.material-list-container').html("");
+                $('.material-list-container').append(data);
             });
         });
 
@@ -577,8 +577,8 @@ p{word-wrap:break-word}
 
             $.get(url,function(data){
                 console.log(data);
-                $('.filelist').html("");
-                $('.filelist').append(data);
+                $('.material-list-container').html("");
+                $('.material-list-container').append(data);
             });
         });
 
@@ -590,8 +590,8 @@ p{word-wrap:break-word}
             var url = "http://localhost/index/teacher/browse?page="+page+"&keyword="+keyword+"&type="+type;
             console.log(url);
             $.get(url,function(data){
-                $('.filelist').html("");
-                $('.filelist').append(data);
+                $('.material-list-container').html("");
+                $('.material-list-container').append(data);
             });
         });
     })

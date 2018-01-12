@@ -15,31 +15,34 @@
         <div class="tabs-group">
             <div class="title">分类:</div>
             <ul class="content clearfix">
-                <li class="active"><a class="nav-link" href="#">全部</a></li>
-                <li class=""><a class="nav-link" href="#">焊接技术系</a></li>
-                <li class=""><a class="nav-link" href="#">设备维修系</a></li>
-                <li class=""><a class="nav-link" href="#">电气自动化系</a></li>
-                <li class=""><a class="nav-link" href="#">仪表自动化系</a></li>
-                <li class=""><a class="nav-link" href="#">铆管技术系</a></li>
-                <li class=""><a class="nav-link" href="#">经济管理系</a></li>
-                <li class=""><a class="nav-link" href="#">化学工程系</a></li>
-                <li class=""><a class="nav-link" href="#">电气自动化系</a></li>
-                <li class=""><a class="nav-link" href="#">自动控制工程系</a></li>
-                <li class=""><a class="nav-link" href="#">机械工程系</a></li>
-                <li class=""><a class="nav-link" href="#">工业分析系</a></li>
-                <li class=""><a class="nav-link" href="#">信息工程系</a></li>
-                <li class=""><a class="nav-link" href="#">基础教学部</a></li>
-                <li class=""><a class="nav-link" href="#">体育教研室</a></li>
-                <li class=""><a class="nav-link" href="#">学前教育系</a></li>
-                <li class=""><a class="nav-link" href="#">实验技术学院</a></li>
+
+                <li class="active" category=""><a class="nav-link" href="#">全部</a></li>
+                {volist name="category" id="ca"}
+                <li class="" category="{$ca.code}"><a class="nav-link" href="#">{$ca.name}</a></li>
+                {/volist}
+                <!--<li class=""><a class="nav-link" href="#">设备维修系</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">电气自动化系</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">仪表自动化系</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">铆管技术系</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">经济管理系</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">化学工程系</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">电气自动化系</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">自动控制工程系</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">机械工程系</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">工业分析系</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">信息工程系</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">基础教学部</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">体育教研室</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">学前教育系</a></li>-->
+                <!--<li class=""><a class="nav-link" href="#">实验技术学院</a></li>-->
             </ul>
         </div>
     </div>
     <div class="es-filter">
         <ul class="nav clearfix nav-pills mb15">
             <li  class="active"><a href="#" aria-controls="tab_messages" role="tab" data-toggle="tab">最新</a></li>
-            <li><a href="#"  aria-controls="tab_messages" role="tab" data-toggle="tab">最热</a></li>
-            <li><a href="#"  aria-controls="tab_messages" role="tab" data-toggle="tab">推荐</a></li>
+            <!--<li><a href="#"  aria-controls="tab_messages" role="tab" data-toggle="tab">最热</a></li>-->
+            <!--<li><a href="#"  aria-controls="tab_messages" role="tab" data-toggle="tab">推荐</a></li>-->
         </ul>
         <div class="filter hidden-xs">
             <!--<label class="checkbox-inline">-->
@@ -52,29 +55,32 @@
     </div>
     <div class="course-list">
         <div class="row">
+            {volist name="course" id="course"}
             <div class="col-lg-3 col-md-4 col-xs-6">
                 <div class="course-item">
                     <div class="course-img">
-                        <a href="/course/168">
+                        <a href="{:url('index/course/catalogue',array('course'=>$course['id']))}">
                             <span class="tags"><span class="tag-finished"></span></span>
-                            <img src="http://localhost/uploads/pictures/c1.jpg" alt="化学基础" class="img-responsive">
+                            <img src="http://localhost/{$course.smallPicture}" alt="化学基础" class="img-responsive">
                         </a>
                     </div>
                     <div class="course-info">
                         <div class="title">
-                            <a class="link-dark" href="/course/168" target="_blank">化学基础</a>
+                            <a class="link-dark" href="{:url('index/course/catalogue',array('course'=>$course['id']))}" target="_blank">{$course.title}</a>
                         </div>
                         <div class="metas clearfix">
-                            <span class="num"><i class="es-icon es-icon-people"></i>3</span>
-                            <span class="comment"><i class="es-icon es-icon-textsms"></i>0</span>
+                            <span class="num"><i class="es-icon es-icon-people"></i>{$course->studyresult()->group('userid')->count()}</span>
+                            <span class="comment"><i class="es-icon es-icon-textsms"></i>{$course->review()->count()}</span>
                             <span class="course-price-widget">
-                                        <span class="free">免费</span>
-                                    </span>
+                                <span class="free">免费</span>
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
+            {/volist}
         </div>
+        {$page}
     </div>
 </div>
 {/block}
@@ -88,6 +94,19 @@
 
         $(".nav-pills").children('li').click(function(){
             $(this).addClass('active').siblings().removeClass('active');
+        });
+
+        $('.content').children('li').click(function(){
+            var category = $(this).attr('category');
+            $.post(
+                "{:url('index/index/allcourse')}",
+                {'category':category},
+                function(data){
+                    $('.course-list').html("");
+                    $('.course-list').html(data);
+                },
+                "json"
+            );
         });
     })
 </script>
