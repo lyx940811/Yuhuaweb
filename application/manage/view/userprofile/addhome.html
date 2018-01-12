@@ -5,7 +5,7 @@
 <body>
 <div class="container-fluid">
     <div class="pull-right">
-        <a class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增家庭信息</a>
+        <a class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="add">新增家庭信息</a>
     </div>
 
     <table class="table table-striped table-hover">
@@ -46,7 +46,7 @@
                 <!-- 模态框头部 -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">新增家庭信息</h4>
+                    <h4 class="modal-title" id="titlebt">新增家庭信息</h4>
                 </div>
 
                 <!-- 模态框主体 -->
@@ -119,6 +119,8 @@
             $('#name').val('');
             $('#phone').val('');
             $('#relation').val('');
+            $("#titlebt").html('新增家庭信息');
+            $("#save").html('添加家庭信息');
         });
     });
     $('#save').click(function(){
@@ -204,6 +206,8 @@
     }
 
     function workedit(id){
+        $("#titlebt").html('修改家庭信息');
+        $("#save").html('修改家庭信息');
         $('#editid').val(id);
         $.ajax({
             url: "{:url('editstudenthome')}?" + Math.random(),

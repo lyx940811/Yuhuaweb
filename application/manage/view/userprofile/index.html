@@ -53,7 +53,16 @@
                 <td>{$vo.majors}</td>
                 <td>{$vo.title}</td>
                 <td>{$vo.style}</td>
-                <td>{$vo.studentstatus}</td>
+                {if condition="$vo.style == 0"}
+                <td>全日制</td>
+                {elseif condition="$vo.style == 1"/}
+                <td>非全日制</td>
+                {/if}
+                {if condition="$vo.studentstatus == 0"}
+                <td>在籍</td>
+                {elseif condition="$vo.studentstatus == 1"/}
+                <td>毕业</td>
+                {/if}
                 <td>
                     {php}
                     if(check($uid,'/manage/userprofile/edit')){
