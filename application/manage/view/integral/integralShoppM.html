@@ -21,6 +21,7 @@
 
     </div>
     <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="{:url('')}" style="cursor: pointer">回首页</a></li>
         <li role="presentation"><a href="{:url('integral/index')}">积分规则</a></li>
         <li role="presentation"><a href="{:url('integral/integralGrade')}">积分等级</a></li>
         <li role="presentation"><a href="{:url('integral/integralList')}">积分列表</a></li>
@@ -101,6 +102,7 @@
                                 <label for="aname1" class="col-sm-3 control-label">商品类型</label>
                                 <div class="col-sm-5">
                                     <select name='type' class="form-control input-sm" id="type" placeholder="">
+                                        <option value="">--请选择--</option>
                                         {volist name="type" id="vo"}
                                              <option value="{$vo.name}">{$vo.name}</option>
                                         {/volist}
@@ -182,11 +184,21 @@ $(document).ready(function(){
             contentType:false,
             processDate:false,
             success:function(msg){
-                if(msg==1){
-                    alert('添加成功');
-                    window.location.href="{:url()}";
+                // if(msg==1){
+                //     alert('添加成功');
+                //     window.location.href="{:url()}";
+                // }else{
+                //     alert('添加失败');
+                // }
+                if(msg.code=='000'){
+                    alert(msg.info)
+                    // $('#selfcode').val('')//必须清空
+                    //
+                    // $('#myModal').modal('hide')
+                    window.location.reload();
+
                 }else{
-                    alert('添加失败');
+                    alert(msg.error)
                 }
 
             },
