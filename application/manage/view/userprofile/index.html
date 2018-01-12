@@ -62,6 +62,8 @@
                         echo '<strong>/</strong>';
                     }
                     {/php}
+                    <a href="{:url('Manage/studyresult/index')}?id={$vo.userid}">学习记录</a><strong>/</strong>
+                    <a href="{:url('Manage/integral/integrallist')}?id={$vo.userid}">积分记录</a>
                     <!--修改开始-->
                     <!-- 模态框 -->
                     {include file="userprofile/edit"/}

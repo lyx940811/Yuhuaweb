@@ -164,7 +164,7 @@
                     //
                     // $('#myModal').modal('hide')
                     // $('#myModal_edit'+formid).modal('hide')
-                    window.location.href="{:url('addunit')}?tid=1";//刷新页面
+                    window.location.href="{:url('addunit')}?tid={$tid}";//刷新页面
 
                 }else{
                     alert(data.error)
@@ -222,7 +222,7 @@
                 console.log(data.code);
                 if(data.code=='000'){
                     alert(data.info)
-                    window.location.href="{:url('addunit')}?tid=1";//刷新页面
+                    window.location.href="{:url('addunit')}?tid={$tid}";//刷新页面
                 }else{
 
                 }

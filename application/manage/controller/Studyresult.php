@@ -14,6 +14,7 @@ class Studyresult extends Base{
 
     public function index(){
 
+        $userid=$this->request->param('id')+0;//在学生列表跳转到本列表是使用
         $info = input('get.');
 
         $where = [];
@@ -21,12 +22,14 @@ class Studyresult extends Base{
 
             $where['d.realname'] = ['like',"%{$info['realname']}%"];
         }
-
+        if($userid){
+            $where['a.userid']=$userid;
+        }
         $list = Db::table('study_result a')
             ->field('a.id,b.title,c.title ctit,d.realname')
             ->join('course b','a.courseid=b.id','LEFT')
             ->join('course_chapter c','a.chapterid=c.id','LEFT')
-            ->join('user_profile d','a.userid=d.id','LEFT')
+            ->join('user_profile d','a.userid=d.userid','LEFT')
             ->where($where)
             ->paginate(20,['query'=>$info]);
 

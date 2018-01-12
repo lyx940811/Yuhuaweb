@@ -27,7 +27,7 @@ class Classroom extends Base{
 
         $list = Db::name('classroom a')
             ->join('category b','a.categoryId=b.code','LEFT')
-            ->join('teacher_info c','a.teacherIds=c.userid','LEFT')
+            ->join('teacher_info c','a.teacherIds=c.id','LEFT')
             ->field('a.id,a.about,a.title,a.status,a.categoryId,a.teacherIds,a.hitNum,a.studentNum,a.createdTime,c.id as cid,c.realname,b.name,b.code')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
@@ -138,10 +138,8 @@ class Classroom extends Base{
     public function delete(){
 
         $id = $_GET['rid']+0;
-
         $ok = Db::name('classroom')->where("id='$id'")->delete();
-
-        if($ok){
+        if(is_numeric($ok)){
             return ['info'=>'删除成功','code'=>'000'];
         }else{
             return ['error'=>'删除失败','code'=>'200'];

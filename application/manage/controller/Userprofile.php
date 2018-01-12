@@ -212,14 +212,8 @@ class Userprofile extends Base{
     public function delete(){
 
         $id = $_GET['rid']+0;
-
-        $ok = Db::name('user_profile')->where("id='$id'")->delete();
-
-        if($ok){
-            return ['info'=>'删除成功','code'=>'000'];
-        }else{
-            return ['error'=>'删除失败','code'=>'200'];
-        }
+        Db::name('student_home')->field('Flag,createtime')->where("id='$id'")->delete();
+        return ['info'=>'删除成功','code'=>'000'];//改为删除
     }
 
     public function addhome(){
@@ -237,8 +231,13 @@ class Userprofile extends Base{
                 'createTime'=>date('Y-m-d H:i:s',time())
             ];
 
-            $ok = Db::table('student_home')->insert($data);
-            if($ok){
+            if(!empty($info['id'])){
+                $ok = Db::table('student_home')->where('id',$info['id'])->update($data);
+            }else{
+                $ok = Db::table('student_home')->insert($data);
+            }
+
+            if($ok || $ok==0){
 
                 return ['info'=>'添加成功','code'=>'000'];
             }else{
@@ -254,12 +253,20 @@ class Userprofile extends Base{
                 ->where('b.id='.$tid)->paginate(20);
 
             $this->assign('list',$list);
+            $this->assign('tid',$tid);
             $this->assign('page',$list->render());
             $this->assign('typename','添加家庭信息');
             return $this->fetch();
         }
 
 
+    }
+
+
+    public function editstudenthome(){
+        $id=$this->request->param('id');
+        $list=Db::table('student_home')->where('id', $id)->find();
+        return ['data'=>$list];
     }
 
 }
