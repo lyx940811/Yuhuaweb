@@ -2,6 +2,7 @@
 namespace app\manage\controller;
 use think\Controller;
 use think\Db;
+use think\Loader;
 
 /**
  * Created by phpstorm.
