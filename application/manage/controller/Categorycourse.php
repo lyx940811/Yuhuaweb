@@ -41,7 +41,7 @@ class Categorycourse extends Base{
             ->paginate(20,false,['query'=>request()->get()]);
 
         $category = Db::table('category')->field('code,name')->where('Flag','eq',1)->select();
-        $course = Db::table('course')->field('id,title')->where('status','eq',0)->select();
+        $course = Db::table('course')->field('id,title')->where('status','eq',1)->select();
 
         $this->assign('typename','专业课程');
         $this->assign('list',$list);

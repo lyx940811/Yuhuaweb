@@ -41,7 +41,7 @@
             <td>{$vo.price}</td>
             <td>{if condition="$vo['serializeMode'] eq 'none'"}非连载课程{elseif condition="$vo['serializeMode'] eq 'serialized'"/}连载课程{else/}已完结{/if}</td>
             <td>{$vo.studentNum}</td>
-            <td>{$vo.status}</td>
+            <td>{$vo.status?'启用':'禁用'}</td>
             <td>{$vo.userid|getUserinfo}</td>
             <td><a href="{:url('coursetask/index')}?cid={$vo.id}">添加任务</a>|<a href="{:url('coursechapter/index')}?cid={$vo.id}">添加章</a></td>
             <td>
@@ -55,6 +55,7 @@
                     }
 
                 {/php}
+                <!-- 修改开始-->
                 <!-- 模态框 -->
                 <div class="modal fade" id="myModal_edit{$vo.id}">
                     <div class="modal-dialog">
@@ -148,6 +149,7 @@
         {$page}
     </ul>
 
+    <!-- 添加开始-->
     <!-- 模态框 -->
     <div class="modal fade" id="myModal">
         <div class="modal-dialog">

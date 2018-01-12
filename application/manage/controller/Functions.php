@@ -74,7 +74,7 @@ class Functions extends Base{
         ])->whereOr([
             'url' =>['eq',$info['url']]
         ])->field('id')->find();
-
+//echo $role_table->getLastSql();exit;
         if($is_have){//如果这个code有
             return ['error'=>'已经有此代码','code'=>'300'];
         }
