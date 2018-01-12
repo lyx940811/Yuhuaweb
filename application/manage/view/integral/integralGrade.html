@@ -173,8 +173,6 @@ $(document).ready(function(){
             url: "{:url('gradeAdd')}?"+Math.random(),
             type: "post",
             data:$("#myform").serialize(),
-            contentType:false,
-            processDate:false,
             success:function(msg){
                 // if(msg==1){
                 //     alert('添加成功');

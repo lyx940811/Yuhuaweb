@@ -110,7 +110,7 @@ class Integral extends Base{
     public function gradeAdd(){
         $info = input('post.');
         $msg  =   [
-            'name.require' => '请输入等级积分',
+            'name.require' => '请输入等级名称',
             'point.require' => '请输入积分下限',
             'maxpoint.require' => '请输入积分上限',
             'icon.require' => '请上传图片',
@@ -245,16 +245,16 @@ class Integral extends Base{
     public function shopAdd(){
         $info = input('get.');
         $msg  =   [
-            'name.require' => '请输入等级积分',
-            'point.require' => '请输入积分下限',
-            'maxpoint.require' => '请输入积分上限',
-            'icon.require' => '请上传图片',
+            'sn.require' => '请输入商品编号',
+            'title.require' => '请输入商品名称',
+            'price.require' => '请输入商品积分',
+            'img.require' => '请上传图片',
         ];
         $validate = new Validate([
-            'name'  => 'require',
-            'point'   => 'require',
-            'maxpoint'  => 'require',
-            'icon'   => 'require',
+            'sn'  => 'require',
+            'title'   => 'require',
+            'price'  => 'require',
+            'img'   => 'require',
         ],$msg);
 
         $validate->check($info);
@@ -277,10 +277,10 @@ class Integral extends Base{
             $data['createdTime']=date('YmdHis');
              $type=DB::table('reward_point_product')->insert($data);
         }
-        if($type || $type==0){
-            echo 1;
+        if(is_numeric($type)){
+            return ['info'=>'编辑成功','code'=>'000'];
         }else{
-            echo 2;
+            return ['error'=>'编辑失败','code'=>'200'];
         }
     }
     //积分商品修改显示默认值查询
