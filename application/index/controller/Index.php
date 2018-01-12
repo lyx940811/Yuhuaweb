@@ -42,9 +42,19 @@ class Index extends Home
 
         return $this->fetch();
     }
+    /**
+     * 注册
+     */
     public function regist(){
 
         return $this->fetch();
+    }
+    public function categoryajax(){
+        $category = $this->request->param('category');
+        $orderby="CONVERT( title USING gbk ) COLLATE gbk_chinese_ci ASC";
+        $course = Db::name('course')->where('categoryId',$category)->order($orderby)->limit(8)->select();
+        $this->assign('course',$course);
+        return $this->fetch('categoryajax');
     }
     public function loginajax(){
         $data = $this->request->param();
