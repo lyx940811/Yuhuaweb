@@ -248,13 +248,15 @@ class Integral extends Base{
             'sn.require' => '请输入商品编号',
             'title.require' => '请输入商品名称',
             'price.require' => '请输入商品积分',
-            'img.require' => '请上传图片',
+            'icon.require' => '请上传图片',
+            'type.require' => '请选择商品类型',
         ];
         $validate = new Validate([
             'sn'  => 'require',
             'title'   => 'require',
             'price'  => 'require',
-            'img'   => 'require',
+            'icon'   => 'require',
+            'type'   => 'require',
         ],$msg);
 
         $validate->check($info);
