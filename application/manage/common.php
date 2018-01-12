@@ -234,4 +234,9 @@ function getVideoInfo($file) {
 }
 
 
+function manage_log($message,$data,$level){
+    $event = controller('Index/Log', 'logic');
+    $event->createLog(session('admin_uid'),request()->module(),request()->action(),$message,$data,$level);
+}
+
 

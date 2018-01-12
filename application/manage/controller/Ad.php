@@ -16,6 +16,8 @@ class Ad extends Base{
 
     public function index(){
 
+        manage_log('广告管理',['index'],1);
+
         $info = input('get.');
 
         $where = [];
