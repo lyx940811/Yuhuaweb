@@ -48,19 +48,26 @@ class Questionanswers extends Base{
 
 	// 问卷 答列表
 	public function answers(){
+        $info = input('get.');
+        $search='';
+        $where=[];
+        if(!empty($info['name'])){
+            $search=$info['name'];
+            $where['u.username'] = ['like',"%{$info['name']}%"];
+        }
 		$id=$this->request->param('id');
-		$where=[];
-		$where['askid']=$id;
+		$where['aa.askid']=$id;
 		$list = DB::table('ask_answer')
 			->alias('aa')
-			->join('user u','aa.answerUserID=u.id')
+			->join('user u','aa.answerUserID=u.id','LEFT')
 			->join('asklist a','aa.askid=a.id')
 			->field('aa.*,u.username,a.title,a.content as askcontent')
 			->where($where)
 			->order('addtime')
             ->paginate(20,false,['query'=>request()->get()]);//查找积分规则列表数据
         $this->assign('list',$list);
-        // $this->assign('search',$search);
+        $this->assign('search',$search);
+        $this->assign('id',$id);
         $this->assign('page',$list->render());
         return $this->fetch();
 		

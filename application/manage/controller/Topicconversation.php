@@ -15,15 +15,23 @@ class Topicconversation extends Base{
 
 	//问卷 问列表
 	public function index(){
-		
+        $info = input('get.');
+        $search='';
+        $where=[];
+        if(!empty($info['name'])){
+            $search=$info['name'];
+            $where['u.username'] = ['like',"%{$info['name']}%"];
+        }
+
         $list = DB::table('article')
         	->alias('a')
         	->join('user u','a.createUserID=u.id')
         	->field('a.*,u.username')
+            ->where($where)
         	->order('createtime')
             ->paginate(20,false,['query'=>request()->get()]);//查找积分规则列表数据
         $this->assign('list',$list);
-        // $this->assign('search',$search);
+        $this->assign('search',$search);
         $this->assign('page',$list->render());
         return $this->fetch();
 	}
