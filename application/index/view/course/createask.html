@@ -1,5 +1,8 @@
 {extend name="public/courselayout"}
 {block name="title"}在教课程 - 个人主页{/block}
+{block name="link"}
+<link rel="stylesheet" href="__CSS__student/quill.snow.css">
+{/block}
 {block name="navdetail"}
 
     <div role="tabpanel" class="tab-pane">
@@ -14,9 +17,7 @@
         </div>
         <div class="adjoined-bottom">
             <div class="grid-container">
-                <div id="editor">
-
-                </div>
+                <div id="editor-containers" style="height:300px;"></div>
             </div>
         </div>
         <div class="checkbox clearfix">
@@ -35,32 +36,13 @@
 <script src="__JS__ckeditor.js"></script>
 <script src="__JS__student/ckeditor.js"></script>
 <script src="__JS__student/sample.js"></script>
+<script src="__JS__student/quill.js"></script>
 <script>
     $(function(){
-        initSample();
-        $('.js-btn-thread-save').click(function(){
-            {present name="user"}
-            var title = $('#thread_title').val();
-            var content = 'content';    //这里需要用jquery获取文本编辑器中的值替换
-            var courseid = {$course.id};
-            var userID = {$user.id};
-                $.post(
-                    "{:url('index/course/createask')}",
-                    {
-                        'title':title,
-                        'content':content,
-                        'course':courseid,
-                        'userID':userID,
-                    },
-                    function(data){
-                        console.log(data);
-                    },
-                    "json"
-                );
-            {else /}
-                alert('请先登录！');
-            {/present}
-        });
+            var quill = new Quill('#editor-containers', {
+              placeholder: '欢迎来到讨论区...',
+              theme: 'snow'
+            });
 
     })
 </script>

@@ -3,6 +3,7 @@
 {block name="link"}
 <link rel="stylesheet" href="__CSS__base.css">
 <link rel="stylesheet" href="__CSS__bootstrapValidator.min.css">
+<link rel="stylesheet" href="__CSS__student/toast.style.css">
 {/block}
 {block name="style"}
 <style>
@@ -72,7 +73,6 @@
         </div>
 
         <div class="login-main">
-            <form id="register-form" method="post" action="">
                 <div class="form-group mbl">
                     <label class="control-label required" for="register_email">邮箱地址</label>
                     <div class="controls y_relative">
@@ -95,8 +95,7 @@
                                class="form-control input-lg" placeholder="5-20位英文、数字、符号，区分大小写">
                     </div>
                 </div>
-                <p id="register_nickname-error" class="form-error-message jq-validate-error"></p>
-                <p class="help-block"></p>
+                <p class="help-block form-error-message jq-validate-error"></p>
                 <!-- <div class="form-group mbl js-captcha">
                     <label class="control-label required" for="captcha_code">验证码</label>
                     <div class="controls row">
@@ -122,7 +121,7 @@
 
                 <div class="form-group mbl">
                     <div class="controls">
-                        <button type="submit" id="register-btn" data-submiting-text="正在提交"
+                        <button type="button" id="register-btn" data-submiting-text="正在提交"
                                 class="btn btn-primary btn-lg btn-block">注册
                         </button>
                     </div>
@@ -130,8 +129,6 @@
 
                 <input type="hidden" name="captcha_enabled" value="1"/>
                 <input type="hidden" name="_csrf_token" value="ylttzTNkVFNLzndLu6bQf7KulKk77mmCWa2xhV8Sm0I">
-
-            </form>
 
         </div>
     </div>
@@ -142,7 +139,6 @@
 {block name="javascript"}
 <script src="__JS__bootstrap.min.js"></script>
 <script src="__JS__bootstrapValidator.min.js"></script>
-<script src="__JS__login.js"></script>
 <script>
     $(function(){
         $('#register-btn').click(function(){
@@ -159,37 +155,20 @@
                     },
                     function(data){
                         if(data['code']==0){
-                            alert("success");
+                            $.Toast("", "注册成功正在为您跳转...", "success", {
+                                stack: true,
+                                has_icon:true,
+                                has_close_btn:true,
+                                fullscreen:false,
+                                timeout:1500,
+                                sticky:false,
+                            });
+                            setTimeout(function(){
+                                window.location.href="{:url('index/index/index')}";
+                            },2000)
                         }
                         else{
-                            alert(data['message']);
-                        }
-                    },
-                    "json"
-                );
-            }
-
-        });
-
-        $('.js-btn-login').click(function(){
-            console.log();
-            var login_username = $('#login_username').val();
-            var login_password = $('#login_password').val();
-            if(login_username!=''&&login_password!=''){
-                $.post(
-                    "{:url('index/index/loginajax')}",
-                    {
-                        'username':login_username,
-                        'password':login_password
-                    },
-                    function(data){
-                        console.log(data);
-                        if(data['code']==0){
-                            alert("success");
-                            window.location.href="{:url('index/index/index')}";
-                        }
-                        else{
-                            alert(data['message']);
+                            $(".help-block").html(data['message']);
                         }
                     },
                     "json"

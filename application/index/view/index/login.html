@@ -3,6 +3,7 @@
 {block name="link"}
 <link rel="stylesheet" href="__CSS__base.css">
 <link rel="stylesheet" href="__CSS__bootstrapValidator.min.css">
+<link rel="stylesheet" href="__CSS__student/toast.style.css">
 {/block}
 {block name="style"}
 <style>
@@ -71,7 +72,6 @@
             <a href="{:url('index/index/regist')}">注册帐号</a>
         </div>
         <div class="login-main">
-            <form id="login-form" class="form-vertical" method="post">
                 <div class="form-group mbl">
                     <label class="control-label" for="login_username">帐号</label>
                     <div class="controls y_relative">
@@ -94,10 +94,8 @@
                     </div>
                 </div>
                 <div class="form-group mbl">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block js-btn-login">登录</button>
+                    <button type="buttom" class="btn btn-primary btn-lg btn-block js-btn-login">登录</button>
                 </div>
-            </form>
-
             <div class="mbl">
                 <a class="link-primary" href="./password/reset.html">找回密码</a>
                 <span class="color-gray mhs">|</span>
@@ -114,7 +112,6 @@
 {block name="javascript"}
 <script src="__JS__bootstrap.min.js"></script>
 <script src="__JS__bootstrapValidator.min.js"></script>
-<script src="__JS__login.js"></script>
 <script>
     $(function(){
         $('#register-btn').click(function(){
@@ -155,13 +152,21 @@
                         'password':login_password
                     },
                     function(data){
-                        console.log(data);
                         if(data['code']==0){
-                            alert("success");
-                            window.location.href="{:url('index/index/index')}";
+                            $.Toast("", "登录成功正在为您跳转...", "success", {
+                                stack: true,
+                                has_icon:true,
+                                has_close_btn:true,
+                                fullscreen:false,
+                                timeout:1500,
+                                sticky:false,
+                            });
+                            setTimeout(function(){
+                                window.location.href="{:url('index/index/index')}";
+                            },2000)
                         }
                         else{
-                            alert(data['message']);
+                            $(".help-block").html(data['message']);
                         }
                     },
                     "json"
