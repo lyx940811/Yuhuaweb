@@ -3,9 +3,7 @@
 namespace app\manage\controller;
 
 
-use think\Exception;
-
-class Upload
+class Upload extends Base
 {
     /**
      * 图片上传（多图）
