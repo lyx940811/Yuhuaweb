@@ -62,7 +62,7 @@ class StudentEnroll2 extends Base{
         $rand = rand(0,199);
         $data = [
             'username' => $info['telephone'],
-            'nickname'=> '云工社0'.$rand,
+            'nickname'=> $info['realname'],//'云工社0'.$rand
             'password' => password_hash('123456',PASSWORD_DEFAULT),
             'mobile'=> $info['telephone'],
             'type'=>3,

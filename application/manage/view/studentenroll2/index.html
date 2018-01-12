@@ -97,7 +97,7 @@
                             <!-- 模态框主体 -->
                             <div class="modal-body">
                                 <table class="table table-bordered table-hover">
-                                    <form id="form2">
+                                    <form id="form{$vo.id}">
                                     <tr><td>姓名</td><td>{$vo.realname}<input type="hidden" name="realname" value="{$vo.realname}"/></td></tr>
                                     <tr><td>性别</td><td>{if condition="$vo['sex'] eq 1"}男{elseif condition="$vo['sex'] eq 2"}女{else}保密{/if}<input type="hidden" name="sex" value="{$vo.sex}"/></td></tr>
                                     <tr><td>年龄</td><td>{$vo.age}<input type="hidden" name="age" value="{$vo.age}"/></td></tr>
@@ -155,10 +155,11 @@ $(".form_datetime").datepicker({
 
 
     function accept(id,type) {
-        $.post("{:url('accept')}?rid="+id+"&type="+type,$("#form2").serialize(),function (data) {
+        $.post("{:url('accept')}?rid="+id+"&type="+type,$("#form"+id).serialize(),function (data) {
             if(data.code=='000'){
                 alert(data.info)
-                $('#myModal_accept'+id).modal('hide')
+                // $('#myModal_accept'+id).modal('hide')
+                window.location.reload()
             }else{
 
             }
