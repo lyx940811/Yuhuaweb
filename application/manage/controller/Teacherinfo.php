@@ -268,6 +268,7 @@ class Teacherinfo extends Base{
 
             $this->assign('list',$list);
             $this->assign('page',$list->render());
+            $this->assign('tid',$tid);
             $this->assign('typename','添加教师工作信息');
             return $this->fetch();
         }

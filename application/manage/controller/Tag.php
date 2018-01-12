@@ -14,7 +14,7 @@ class Tag extends Base{
 
     public function index(){
 
-        $list = Db::table('tag')->field('id,name,code,roles,Flag,userid')->paginate(20);
+        $list = Db::table('tag')->field('id,name,code,roles,Flag,userid')->order('createdTime desc')->paginate(20);
 
         $this->assign('list',$list);
         $this->assign('typename','标签');
@@ -113,9 +113,9 @@ class Tag extends Base{
             'roles'=>$info['role'],
         ];
 
-        $ok = $role_table->field('name,code,role')->where('id',$id)->update($data);
+        $ok = $role_table->where('id',$id)->update($data);
 
-        if($ok){
+        if(is_numeric($ok)){
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];
@@ -128,7 +128,7 @@ class Tag extends Base{
 
         $ok = Db::name('tag')->where("id='$id'")->delete();
 
-        if($ok){
+        if(is_numeric($ok)){
             return ['info'=>'删除成功','code'=>'000'];
         }else{
             return ['error'=>'删除失败','code'=>'200'];

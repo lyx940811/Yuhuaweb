@@ -139,13 +139,18 @@ class Integral extends Base{
         }
     }
     //积分列表
-    public function integralList(){ 
+    public function integralList(){
+        //接收从学生列表传过来的userid
+        $userid=$this->request->param('id')+0;
         $info = input('get.');
         $search='';
         $where = [];
         if(!empty($info['name'])){
             $search=$info['name'];
             $where['u.username'] = ['like',"%{$info['name']}%"];
+        }
+        if($userid){
+            $where['u.id']=$userid;
         }
         $where['rpf.type'] = 'outflow';
         $list = DB::table('user')
