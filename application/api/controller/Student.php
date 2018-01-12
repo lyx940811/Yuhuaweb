@@ -270,12 +270,14 @@ class Student extends User
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $note = Db::name('course_note')
             ->alias('cn')
-            ->join('course_lesson cl','cn.lessonid=cl.id')
             ->where($map)
-            ->order('lessonid')
-            ->field('cn.content,cn.id,cn.lessonid,cn.courseId,cn.createdTime,cl.title')
+            ->order('cn.lessonid')
+            ->field('cn.content,cn.id,cn.lessonid,cn.courseId,cn.createdTime')
             ->page($page,10)
             ->select();
+        foreach ( $note as &$n ){
+            $n['title'] = Db::name('course_task')->where(['courseId'=>$n['courseId'],'chapterid'=>$n['lessonid']])->value('title');
+        }
         return json_data(0,$this->codeMessage[0],$note);
     }
     /**
