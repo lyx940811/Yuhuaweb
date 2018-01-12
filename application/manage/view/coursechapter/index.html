@@ -226,7 +226,8 @@
             $.get("{:url('delete')}?rid="+id,function (data) {
                 if(data.code=='000'){
                     alert(data.info)
-                    $('#myModal2').modal('hide')
+                    // $('#myModal2').modal('hide')
+                    window.location.reload()
                 }else{
 
                 }
