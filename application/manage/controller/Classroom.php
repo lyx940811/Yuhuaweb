@@ -87,19 +87,6 @@ class Classroom extends Base{
 
 
     public function edit(){
-        //前台先获取资料
-        if(isset($_GET['do'])=='get'){
-            $id = $_GET['rid']+0;
-
-            $have = Db::name('classroom')->field('id,title,categoryId,teacherIds,about')->where("id='$id'")->find();
-
-            if(!$have){//如果这个code有
-                return ['error'=>'没有此班级','code'=>'300'];
-            }else{
-                return ['info'=>$have,'code'=>'000'];
-            }
-
-        }
 
         $info = input('post.');
 
