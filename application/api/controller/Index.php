@@ -103,10 +103,12 @@ class Index extends Home
     public function searchcourse(){
         $keywords = $this->data['keywords'];
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $orderby="CONVERT( title USING gbk ) COLLATE gbk_chinese_ci ASC";
         $course = Db::name('course')
             ->where('title','like','%'.$keywords.'%')
             ->where('status',1)
             ->field('id,title,smallPicture,price')
+            ->order($orderby)
             ->page($page,6)
             ->select();
 

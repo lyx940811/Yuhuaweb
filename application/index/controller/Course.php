@@ -247,7 +247,6 @@ class Course extends Home
         return $this->fetch();
     }
     public function material(){
-
         $file = $this->course->file()->paginate(10);
         $page = $file->render();
         $this->assign('file',$file);
@@ -262,7 +261,7 @@ class Course extends Home
     public function createask(){
         if($this->request->isAjax()){
             $data = $this->request->param();
-
+            return $data;
         }
         return $this->fetch();
     }

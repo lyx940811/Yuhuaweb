@@ -1,0 +1,69 @@
+{extend name="public/courselayout"}
+{block name="title"}在教课程 - 个人主页{/block}
+{block name="navdetail"}
+
+    <div role="tabpanel" class="tab-pane">
+        <ul class="breadcrumb">
+            <li><a href="#">讨论区</a></li>
+            <li class="active">发表话题</li>
+        </ul>
+        <div class="form-group">
+            <div class="controls">
+                <input type="text" id="thread_title" name="thread[title]" required="required" class="form-control" placeholder="标题" data-display="标题" />
+            </div>
+        </div>
+        <div class="adjoined-bottom">
+            <div class="grid-container">
+                <div id="editor">
+
+                </div>
+            </div>
+        </div>
+        <div class="checkbox clearfix">
+            <div class="controls pull-right">
+                <a href="#" class="btn btn-link">取消</a>
+                <button type="button" class="btn btn-primary js-btn-thread-save" data-jifen-eng="tishi" data-loading-text="正在提交...">发表</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="text-center">
+    </nav>
+{/block}
+{block name="javascript"}
+<script src="__JS__bootstrap.js"></script>
+<script src="__JS__ckeditor.js"></script>
+<script src="__JS__student/ckeditor.js"></script>
+<script src="__JS__student/sample.js"></script>
+<script>
+    $(function(){
+        initSample();
+        $('.js-btn-thread-save').click(function(){
+            {present name="user"}
+            var title = $('#thread_title').val();
+            var content = 'content';    //这里需要用jquery获取文本编辑器中的值替换
+            var courseid = {$course.id};
+            var userID = {$user.id};
+                $.post(
+                    "{:url('index/course/createask')}",
+                    {
+                        'title':title,
+                        'content':content,
+                        'course':courseid,
+                        'userID':userID,
+                    },
+                    function(data){
+                        console.log(data);
+                    },
+                    "json"
+                );
+            {else /}
+                alert('请先登录！');
+            {/present}
+        });
+
+    })
+</script>
+{/block}
+
+
