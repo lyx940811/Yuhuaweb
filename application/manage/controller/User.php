@@ -63,7 +63,7 @@ class User extends Base{
         $data['nickname'] = $info['user_name'];
         $data['email'] = $info['user_email'];
         $data['type'] = 3;
-        $data['roles'] = $info['user_roles'];
+        $data['roles'] = isset($info['user_roles'])?$info['user_roles']:0;
         $data['locked'] = $info['user_locked'];
         $data['title'] = 'static\index\images\avatar.png';
         $data['createdIp'] = request()->ip();
