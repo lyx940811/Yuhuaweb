@@ -234,10 +234,11 @@
 
                     alert(data.info)
 
-                    $('#selfcode').val('')//必须清空
-
-                    $('#myModal').modal('hide')
-                    $('#myModal_edit'+formid).modal('hide')
+                    // $('#selfcode').val('')//必须清空
+                    //
+                    // $('#myModal').modal('hide')
+                    // $('#myModal_edit'+formid).modal('hide')
+                    window.location.reload();
 
                 }else{
                     alert(data.error)

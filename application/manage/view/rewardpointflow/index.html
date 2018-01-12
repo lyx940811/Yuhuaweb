@@ -230,9 +230,10 @@
 
                     alert(data.info)
 
-                    $('#selfcode').val('')//必须清空
-
-                    $('#myModal').modal('hide')
+                    // $('#selfcode').val('')//必须清空
+                    //
+                    // $('#myModal').modal('hide')
+                    window.location.reload();
 
                 }else{
                     alert(data.error)

@@ -196,11 +196,12 @@
 
                     alert(data.info)
 
-                    $(" input[ type='text' ] ").val('')
-                    $(" input[ type='hidden' ] ").val('')
-
-                    $('#myModal_edit'+formid).modal('hide')
-                    $('#myModal').modal('hide')
+                    // $(" input[ type='text' ] ").val('')
+                    // $(" input[ type='hidden' ] ").val('')
+                    //
+                    // $('#myModal_edit'+formid).modal('hide')
+                    // $('#myModal').modal('hide')
+                    window.location.reload();
 
                 }else{
                     alert(data.error)
