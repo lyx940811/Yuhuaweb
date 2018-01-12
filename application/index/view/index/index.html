@@ -25,7 +25,8 @@
                       <li role="presentation" class="active  js-course-filter" data-url="__COURSE__search?orderBy=latest" data-type="course"><a href="javascript:;">全部课程</a></li>
                       {volist name="category" id="ca" key="key"}
                       {if condition="$key lt 5"}
-                      <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447244&amp;orderBy=latest" data-type="course"><a href="javascript:;">焊接技术</a></li>
+                      <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447244&amp;orderBy=latest" data-type="course"><a href="javascript:;">{$ca.name}</a></li>
+                      {/if}
                       <!--<li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447245&amp;orderBy=latest" data-type="course"><a href="javascript:;">设备维修</a></li>-->
                       <!--<li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447246&amp;orderBy=latest" data-type="course"><a href="javascript:;">电气自动化</a></li>-->
                       <!--<li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447247&amp;orderBy=latest" data-type="course"><a href="javascript:;">仪表自动化</a></li>                                                                                                                                                                                                                                                                                                                    <li class="dropdown nav-hover">-->
@@ -35,11 +36,13 @@
                               <i class="es-icon es-icon-morehoriz"></i>
                           </a>
                           <ul class="dropdown-menu">
-                              {volist name="category" id="cate" key="key"}
-                              <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447248&amp;orderBy=latest" data-type="course"><a href="javascript:;">铆管技术</a></li>
+                              {volist name="category" id="cate" key="k"}
+                              {if condition="$k gt 5"}
+                              <li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447248&amp;orderBy=latest" data-type="course"><a href="javascript:;">{$cate.name}</a></li>
+                              {/if}
+                              {/volist}
                               <!--<li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=13&amp;orderBy=latest" data-type="course"><a href="javascript:;">经济管理系</a></li>-->
                               <!--<li role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=680140&amp;orderBy=latest" data-type="course"><a href="javascript:;">化学工程系</a></li>-->
-                              {/volist}
                           </ul>
                       </li>
 

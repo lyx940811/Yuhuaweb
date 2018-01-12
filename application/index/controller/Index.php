@@ -23,7 +23,7 @@ class Index extends Home
         $course = $courseModel->where('is_new',1)->limit(12)->order('createdTime desc')->select();
         $this->assign('course',$course);
 
-        $category = Db::name('category')->field('name,code')->where('grade',3)->limit(3)->select();
+        $category = Db::name('category')->field('name,code')->where('grade',3)->select();
         $this->assign('category',$category);
 
         return $this->fetch();
@@ -39,6 +39,10 @@ class Index extends Home
      * 登陆
      */
     public function login(){
+
+        return $this->fetch();
+    }
+    public function regist(){
 
         return $this->fetch();
     }
