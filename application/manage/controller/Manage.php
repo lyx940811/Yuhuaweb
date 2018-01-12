@@ -73,9 +73,12 @@ class Manage extends Base{
             ],
             ['typename'=>'学生管理','url'=>'/manage/userprofile/index','children'=>[
                     ['url'=>'/manage/userprofile/index','name'=>'学生列表'],
-                    ['url'=>'/manage/studyresult/index','name'=>'学习记录'],
-                    ['url'=>'/manage/integral/index','name'=>'积分记录'],
+//                    ['url'=>'/manage/studyresult/index','name'=>'学习记录'],
                 ]
+            ],
+            ['typename'=>'积分管理','url'=>'/manage/userprofile/index','children'=>[
+                ['url'=>'/manage/integral/index','name'=>'积分记录'],
+            ]
             ],
             ['typename'=>'宿舍列表','url'=>'/manage/dormitory/index','children'=>[
                     ['url'=>'/manage/dormitory/index','name'=>'宿舍管理'],

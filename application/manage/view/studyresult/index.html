@@ -26,6 +26,7 @@
             <th>课程</th>
             <th>章</th>
             <th>状态</th>
+            <th>操作</th>
         </tr>
         </thead>
         <tbody>
@@ -36,6 +37,18 @@
             <td>{$vo.title}</td>
             <td>{$vo.ctit}</td>
             <td>{$vo.status?'完成':'未完成'}</td>
+            <td>
+                {php}
+                    if(check($uid,'/manage/studyresult/edit')){
+                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
+                        echo '<strong>/</strong>';
+                    }
+                    if(check($uid,'/manage/studyresult/delete')){
+                        echo '<a href="#" onclick="deleteR('.$vo['id'].');">删除</a>';
+                    }
+                {/php}
+
+            </td>
         </tr>
         {/volist}
         </tbody>

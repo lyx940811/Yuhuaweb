@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+{include file="manage/header" /}
+<body>
+<div class="container-fluid">
+    {php}
+    $uid = session('admin_uid');
+    {/php}
+
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>用户</th>
+            <th>课程</th>
+            <th>章</th>
+            <th>状态</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {volist name="list" id="vo"}
+        <tr>
+            <td>{$vo.realname}</td>
+            <td>{$vo.title}</td>
+            <td>{$vo.ctit}</td>
+            <td>{$vo.status?'完成':'未完成'}</td>
+
+        </tr>
+        {/volist}
+        </tbody>
+
+    </table>
+    <ul class="pagination">
+        {$page}
+    </ul>
+
+</div>
+{include file='manage/bottom'}
+<script type="text/javascript">
+
+
+    function deleteR(id) {
+        $.get("{:url('delete')}?rid="+id,function (data) {
+            if(data.code=='000'){
+                alert(data.info)
+                $('#myModal2').modal('hide')
+            }else{
+                alert(data.error)
+            }
+        });
+    }
+
+
+</script>
+</body>
+</html>

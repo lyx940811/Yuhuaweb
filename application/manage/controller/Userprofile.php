@@ -269,4 +269,63 @@ class Userprofile extends Base{
         return ['data'=>$list];
     }
 
+
+    public function studyresult(){
+
+        $userid=$this->request->param('id')+0;//在学生列表跳转到本列表是使用
+        $info = input('get.');
+
+        $where = [];
+
+        if($userid){
+            $where['a.userid']=$userid;
+        }
+        $list = Db::table('study_result a')
+            ->field('a.id,b.title,c.title ctit,d.realname')
+            ->join('course b','a.courseid=b.id','LEFT')
+            ->join('course_chapter c','a.chapterid=c.id','LEFT')
+            ->join('user_profile d','a.userid=d.userid','LEFT')
+            ->where($where)
+            ->paginate(20,['query'=>$info]);
+
+        $course = Db::table('course')->field('id,title')->select();
+
+        $this->assign('list',$list);
+        $this->assign('course',$course);
+        $this->assign('typename','学习记录');
+        $this->assign('page',$list->render());
+        return $this->fetch();
+
+
+    }
+
+    public function integrallist(){
+        //接收从学生列表传过来的userid
+        $userid=$this->request->param('id')+0;
+        $info = input('get.');
+        $search='';
+        $where = [];
+        if(!empty($info['name'])){
+            $search=$info['name'];
+            $where['u.username'] = ['like',"%{$info['name']}%"];
+        }
+        if($userid){
+            $where['u.id']=$userid;
+        }
+        $where['rpf.type'] = 'outflow';
+        $list = DB::table('user')
+            ->alias('u')
+            ->join('user_profile up','u.id=up.userid')
+            ->join('reward_point_flow rpf','u.id=rpf.userid')
+            ->join('reward_point rp','u.id=rp.userid')
+            ->field('rp.*,u.username,up.sn,sum(rpf.point) as point')
+            ->group('rpf.userid')
+            ->where($where)
+            ->paginate(20,false,['query'=>request()->get()]);//查找积分规则列表数据
+        $this->assign('list',$list);
+        $this->assign('search',$search);
+        $this->assign('page',$list->render());
+        return $this->fetch();
+    }
+
 }
