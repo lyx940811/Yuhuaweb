@@ -116,7 +116,7 @@ class Userprofile extends Base{
             ];
             Db::table('student_school')->insert($sdata);
 
-
+            manage_log('101','003','添加学员',serialize($info),0);
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
@@ -195,7 +195,7 @@ class Userprofile extends Base{
             ];
             Db::table('student_school')->where('userid='.$id)->update($sdata);
 
-
+            manage_log('101','004','修改学员',serialize($info),0);
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];

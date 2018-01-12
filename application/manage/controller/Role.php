@@ -83,6 +83,7 @@ class Role extends Base{
         $ok = $role_table->field('name,code,data,createdUserId,createdTime,flag,parentcode')->insert($data);
 
         if($ok){
+            manage_log('103','003','添加角色',serialize($data),0);
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
@@ -146,6 +147,7 @@ class Role extends Base{
 
 
         if($ok){
+            manage_log('103','004','修改角色',serialize($info),0);
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];

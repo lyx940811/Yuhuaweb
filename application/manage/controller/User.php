@@ -73,6 +73,7 @@ class User extends Base{
         $ok = $user_table->field('nickname,username,email,roles,type,locked,title,createdIp,createdTime,createUserID')->insert($data);
 
         if($ok){
+            manage_log('101','003','添加用户',serialize($info),0);
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
@@ -123,6 +124,7 @@ class User extends Base{
         $ok = $user_table->field('nickname,email,roles,type,locked')->where('id',$id)->update($data);
 
         if($ok){
+            manage_log('101','004','修改用户',serialize($info),0);
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];
