@@ -33,7 +33,7 @@
     </div>
     <div class="pull-right">
         {php}
-        if(check($uid,'/manage/studentenroll/add')){
+        if(check($uid,'/manage/categorycourse/add')){
         echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增专业</a>';
         }
         {/php}
@@ -160,7 +160,7 @@
                         <div class="form-group">
                             <label for="code" class="col-sm-2 control-label">课程名称</label>
                             <div class="col-sm-10">
-                                <select name="code" id="code">
+                                <select name="code" id="code" class="form-control">
                                     {volist name='courselist' id='c'}
                                     <option value="{$c.id}">{$c.title}</option>
                                     {/volist}
@@ -170,7 +170,7 @@
                         <div class="form-group">
                             <label for="category" class="col-sm-2 control-label">所属专业</label>
                             <div class="col-sm-10">
-                                <select name="category" id="category">
+                                <select name="category" id="category" class="form-control">
                                     {volist name='categorylist' id='c'}
                                     <option value="{$c.code}">{$c.name}</option>
                                     {/volist}

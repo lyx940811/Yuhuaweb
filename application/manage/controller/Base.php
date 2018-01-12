@@ -17,10 +17,14 @@ class Base extends Controller{
         //判断登陆没登陆
         $this->uid = session('admin_uid');
 
-        $info = Db::name('user')->field('id')->where('id','=',$this->uid)->find();
+        $info = Db::name('user')->field('id,roles')->where('id','=',$this->uid)->find();
 
         if(!$info){
             $this->error('请先登陆',url('Manage/login/index'));
+        }
+
+        if(empty($info['roles'])){
+            $this->error('还没授权权限',url('Manage/login/index'));
         }
 
         $role = check($this->uid);

@@ -1,0 +1,203 @@
+{extend name="public/layout"}
+{block name="title"}登陆{/block}
+{block name="link"}
+<link rel="stylesheet" href="__CSS__base.css">
+<link rel="stylesheet" href="__CSS__bootstrapValidator.min.css">
+{/block}
+{block name="style"}
+<style>
+    .lt-ie9 {
+        overflow: hidden;
+    }
+
+    .ie-mask {
+        z-index: 999999;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        filter: alpha(opacity=50);
+        opacity: 0.5;
+        background: #000;
+    }
+
+    .ie-alert-wrap {
+        position: absolute;
+        z-index: 1000000;
+        margin: -200px auto 0;
+        top: 50%;
+        left: 0;
+        right: 0;
+        text-align: center;
+    }
+
+    .ie-alert {
+        width: 514px;
+        height: 397px;
+        margin: 0 auto;
+    }
+
+    .ie-alert__chrome,
+    .ie-alert__firefox {
+        position: absolute;
+        z-index: 1000001;
+        display: block;
+        bottom: 48px;
+        width: 60px;
+        height: 80px;
+    }
+
+    .ie-alert__chrome {
+        left: 50%;
+        margin-left: -80px;
+    }
+
+    .ie-alert__firefox {
+        right: 50%;
+        margin-right: -80px;
+    }
+</style>
+{/block}
+{block name="script"}
+<script src="__JS__fix-ie.js?version=8.0.6"></script>
+{/block}
+
+{block name="container"}
+<div id="content-container" class="container">
+    <div class="es-section login-section">
+        <div class="logon-tab clearfix">
+            <a href="{:url('index/index/login')}">登录帐号</a>
+            <a class="active" href="{:url('index/index/regist')}">注册帐号</a>
+        </div>
+
+        <div class="login-main">
+            <form id="register-form" method="post" action="">
+                <div class="form-group mbl">
+                    <label class="control-label required" for="register_email">邮箱地址</label>
+                    <div class="controls y_relative">
+                        <input type="email" id="register_email" name="email" class="form-control input-lg"  placeholder="填写你常用的邮箱作为登录帐号">
+                    </div>
+                </div>
+                <div class="form-group mbl">
+                    <label class="control-label required" for="register_nickname">用户名</label>
+                    <div class="controls y_relative">
+                        <input type="text" id="register_nickname" name="username" required="required"
+                               class="form-control input-lg"
+                               placeholder="中、英文均可，最长18个英文或9个汉字">
+                    </div>
+                </div>
+
+                <div class="form-group mbl">
+                    <label class="control-label required" for="register_password">密码</label>
+                    <div class="controls y_relative">
+                        <input type="password" id="register_password" name="password" required="required"
+                               class="form-control input-lg" placeholder="5-20位英文、数字、符号，区分大小写">
+                    </div>
+                </div>
+                <p id="register_nickname-error" class="form-error-message jq-validate-error"></p>
+                <p class="help-block"></p>
+                <!-- <div class="form-group mbl js-captcha">
+                    <label class="control-label required" for="captcha_code">验证码</label>
+                    <div class="controls row">
+                        <div class="col-xs-7">
+                            <input type="text" class="form-control input-lg" id="captcha_code" name="captcha_code"
+                                   maxlength="5" placeholder="验证码" data-url="/register/captcha/check">
+                            <p class="help-block"></p>
+                        </div>
+                        <div class="col-xs-5">
+                        </div>
+
+                    </div>
+                </div> -->
+
+                <div class="form-group mbl">
+                    <div class="controls">
+                        <label>
+                            <input type="checkbox" id="user_terms" checked="checked" name="gender"> 我已阅读并同意<a
+                                href="/userterms" target="_blank">《服务协议》</a>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group mbl">
+                    <div class="controls">
+                        <button type="submit" id="register-btn" data-submiting-text="正在提交"
+                                class="btn btn-primary btn-lg btn-block">注册
+                        </button>
+                    </div>
+                </div>
+
+                <input type="hidden" name="captcha_enabled" value="1"/>
+                <input type="hidden" name="_csrf_token" value="ylttzTNkVFNLzndLu6bQf7KulKk77mmCWa2xhV8Sm0I">
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{/block}
+
+{block name="javascript"}
+<script src="__JS__bootstrap.min.js"></script>
+<script src="__JS__bootstrapValidator.min.js"></script>
+<script src="__JS__login.js"></script>
+<script>
+    $(function(){
+        $('#register-btn').click(function(){
+            var username = $('#register_nickname').val();
+            var email    = $('#register_email').val();
+            var password = $('#register_password').val();
+            if(username!=''&&email!=''&&password!=''){
+                $.post(
+                    "{:url('index/index/register')}",
+                    {
+                        'username':username,
+                        'email':email,
+                        'password':password,
+                    },
+                    function(data){
+                        if(data['code']==0){
+                            alert("success");
+                        }
+                        else{
+                            alert(data['message']);
+                        }
+                    },
+                    "json"
+                );
+            }
+
+        });
+
+        $('.js-btn-login').click(function(){
+            console.log();
+            var login_username = $('#login_username').val();
+            var login_password = $('#login_password').val();
+            if(login_username!=''&&login_password!=''){
+                $.post(
+                    "{:url('index/index/loginajax')}",
+                    {
+                        'username':login_username,
+                        'password':login_password
+                    },
+                    function(data){
+                        console.log(data);
+                        if(data['code']==0){
+                            alert("success");
+                            window.location.href="{:url('index/index/index')}";
+                        }
+                        else{
+                            alert(data['message']);
+                        }
+                    },
+                    "json"
+                );
+            }
+
+        });
+
+    })
+</script>
+{/block}

@@ -63,7 +63,7 @@ class User extends Base{
         $data['nickname'] = $info['user_name'];
         $data['email'] = $info['user_email'];
         $data['type'] = 3;
-        $data['roles'] = $info['user_roles'];
+        $data['roles'] = isset($info['user_roles'])?$info['user_roles']:0;
         $data['locked'] = $info['user_locked'];
         $data['title'] = 'static\index\images\avatar.png';
         $data['createdIp'] = request()->ip();
@@ -83,32 +83,7 @@ class User extends Base{
 
     public function edit(){
 
-        //前端先获取资料
-        if(isset($_GET['do'])=='get'){
-            $id = $_GET['rid']+0;
-
-            $user_table = Db::name('user');
-            $user = $user_table->field('id,nickname,email,type,roles,locked')->where("id='$id'")->find();
-
-            if(!$user){//如果这个用户有
-                return ['error'=>'没有此用户','code'=>'300'];
-            }else{
-
-                if($user['roles']){//如果权限组里有相应权限，给前端返回，循环
-                    $rolecode = $user['roles'];
-                    $user['groups'] = Db::name('role')->where("id =$rolecode")->find();
-                }
-
-                return ['info'=>$user,'code'=>'000'];
-            }
-
-        }
-        //前端获取资料结束
-
-
-
         $info = input('post.');
-
 
         $msg  =   [
             'user_name.require' => '用户名称不能为空',
@@ -142,7 +117,7 @@ class User extends Base{
         $data['nickname'] = $info['user_name'];
         $data['type'] = $info['user_type'];
         $data['email'] = $info['user_email'];
-        $data['roles'] = $info['user_roles'];
+        $data['roles'] = isset($info['user_roles'])?$info['user_roles']:0;
         $data['locked'] = isset($info['user_locked'])?$info['user_locked']:0;
 
         $ok = $user_table->field('nickname,email,roles,type,locked')->where('id',$id)->update($data);

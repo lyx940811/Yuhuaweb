@@ -31,7 +31,7 @@ class StudentEnroll2 extends Base{
             ->join('category b','a.categoryID=b.code','LEFT')
             ->join('admission c','a.admissionID=c.id','LEFT')
             ->where($where)
-            ->field('a.id,a.realname,a.sex,a.telephone as phone,b.name,a.createTime,a.age,a.promotMan,a.admissionID,a.cardsn,a.school,a.address,a.status,c.title')->paginate(20,false,['query'=>request()->get()]);
+            ->field('a.*,b.name,c.title')->paginate(20,false,['query'=>request()->get()]);
 
 
         $category = Db::table('category')->field('code,name')->where('Flag','eq',1)->select();
@@ -61,10 +61,10 @@ class StudentEnroll2 extends Base{
          */
         $rand = rand(0,199);
         $data = [
-            'username' => $info['phone'],
-            'nickname'=> '云工社0'.$rand,
+            'username' => $info['telephone'],
+            'nickname'=> $info['realname'],//'云工社0'.$rand
             'password' => password_hash('123456',PASSWORD_DEFAULT),
-            'mobile'=> $info['phone'],
+            'mobile'=> $info['telephone'],
             'type'=>3,
             'roles'=>5,//5为学员
             'createdIp'=>request()->ip(),
@@ -83,7 +83,7 @@ class StudentEnroll2 extends Base{
             'userid' => $userid,
             'idcard'=> $info['cardsn'],
             'birthday'=>$day-$info['age'].':00:00 00:00:00',
-            'mobile'=> $info['phone'],
+            'mobile'=> $info['telephone'],
             'sex'=>$info['sex'],
             'age'=>$info['age'],
             'school'=>$info['school'],
