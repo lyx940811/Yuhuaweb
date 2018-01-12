@@ -72,7 +72,7 @@ class Admission extends Base{
             'telephone'=>$info['telephone'],
             'endtime'=>$info['endtime'],
             'createdTime'=>date('Y-m-d H:i:s',time()),
-            'status'=>1,
+//            'status'=>1,
         ];
 
         $ok = $role_table->field('title,userid,price,num,content,linker,telephone,endtime,createdTime,status')->insert($data);

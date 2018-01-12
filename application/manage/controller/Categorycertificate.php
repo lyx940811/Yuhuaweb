@@ -74,7 +74,7 @@ class Categorycertificate extends Base{
             'unit'=> $info['unit'],
             'userid'=>session('admin_uid'),
             'createtime'=>date('Y-m-d H:i:s',time()),
-            'Flag'=>1,
+//            'Flag'=>1,
         ];
 
         $ok = $role_table->field('categoryID,name,unit,userid,createtime,Flag')->insert($data);

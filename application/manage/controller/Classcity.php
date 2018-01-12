@@ -56,7 +56,7 @@ class Classcity extends Base{
             'classname' => $info['name'],
             'code' => $info['code'],
             'parentCode' => $info['parentcode'],
-            'Flag'=>1,
+//            'Flag'=>1,
         ];
 
         $ok = $role_table->field('classname,code,parentCode,Flag')->insert($data);

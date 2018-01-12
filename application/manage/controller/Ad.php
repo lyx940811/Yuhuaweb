@@ -74,7 +74,7 @@ class Ad extends Base{
             'type'=> $info['type'],
             'createdTime'=>date('Y-m-d H:i:s',time()),
             'userid'=>session('admin_uid'),
-            'flag'=>1,
+//            'flag'=>1,
         ];
 
         $ok = $role_table->insert($data);

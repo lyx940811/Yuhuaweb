@@ -74,7 +74,7 @@ class Certificate extends Base{
             'certificateid' => $info['category'],
             'pic' => $info['pic'],
             'createtime'=>date('Y-m-d H:i:s',time()),
-            'Flag'=>1,
+//            'Flag'=>1,
         ];
 
         $ok = $role_table->field('profileid,certificateid,pic,createtime,Flag')->insert($data);
