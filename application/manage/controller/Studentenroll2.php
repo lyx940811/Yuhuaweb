@@ -31,6 +31,7 @@ class StudentEnroll2 extends Base{
             ->join('category b','a.categoryID=b.code','LEFT')
             ->join('admission c','a.admissionID=c.id','LEFT')
             ->where($where)
+            ->order('id desc')
             ->field('a.*,b.name,c.title')->paginate(20,false,['query'=>request()->get()]);
 
 

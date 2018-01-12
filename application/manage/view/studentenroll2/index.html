@@ -75,10 +75,6 @@
             {/if}
             <td>
                 {php}
-                if(check($uid,'/manage/studentenroll2/edit')){
-                    echo '<a href="#"  data-toggle="modal" data-target="#myModal">编辑</a>';
-                    echo '<strong>/</strong>';
-                }
                 if(check($uid,'/manage/studentenroll2/accept')){
                     echo '<a href="#"  data-toggle="modal" data-target="#myModal_accept'.$vo['id'].'">查看</a>';
                 }
