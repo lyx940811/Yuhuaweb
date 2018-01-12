@@ -36,6 +36,7 @@
             <th>截止日期</th>
             <th>联系人</th>
             <th>联系电话</th>
+            <th>是否发布</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -50,6 +51,11 @@
             <td>{$vo.endtime}</td>
             <td>{$vo.linker}</td>
             <td>{$vo.telephone}</td>
+            {if condition="$vo.status == 0"}
+            <td>未发布</td>
+            {elseif condition="$vo.status == 1"/}
+            <td>发布</td>
+            {/if}
             <td>
                 {php}
                     if(check($uid,'/manage/admission/edit')){

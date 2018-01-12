@@ -14,7 +14,7 @@ class Functions extends Base{
 
     public function index(){
 
-        $lists = Db::name('function')->field('id,name,code,parentcode,url,Flag')->where('flag=1')->order('id asc')->select();
+        $lists = Db::name('function')->field('id,name,code,parentcode,url,Flag')->order('id asc')->select();
 
         $treeL = tree($lists);
 
@@ -83,10 +83,10 @@ class Functions extends Base{
         $data['code'] = $info['code'];
         $data['parentcode'] = empty($info['parentcode'])?0:$info['parentcode'];
         $data['grade'] = 1;
-        $data['flag'] = 1;
+        $data['flag'] =$info['flag'];
         $data['url'] = $info['url'];
 
-        $ok = $role_table->field('name,code,flag,parentcode,grade,url')->insert($data);
+        $ok = $role_table->field('name,code,flag,parentcode,grade,url,Flag')->insert($data);
 
         if($ok){
             return ['info'=>'添加成功','code'=>'000'];
@@ -142,16 +142,16 @@ class Functions extends Base{
             return ['error'=>'已经有此代码','code'=>'300'];
         }
 
-        $ok = $role_table->field('name,code,url,parentcode')->where('id',$id)->update(
+        $ok = $role_table->field('name,code,url,parentcode,Flag')->where('id',$id)->update(
             [
                 'name' => $info['name'],
                 'code'=>$info['code'],
                 'url'=>$info['url'],
                 'parentcode'=>$info['parentcode'],
+                'Flag'=>$info['flag'],
             ]
         );
-
-        if($ok){
+        if($ok || $ok==0){
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];

@@ -28,7 +28,7 @@
             <th>类型</th>
             <th>邮箱</th>
             <th>IP</th>
-            <th>注册时间</th>
+            <th>是否禁用</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -43,6 +43,12 @@
             <td>{$vo.type}</td>
             <td>{$vo.email}</td>
             <td>{$vo.createdIp}</td>
+            {if condition="$vo.locked == 0"}
+                <td>启用</td>
+                {elseif condition="$vo.locked == 1"/}
+                <td>禁用</td>
+            {/if}
+            <td>{$vo.locked}</td>
             <td>{$vo.createdTime}</td>
             <td>
                 {php}
@@ -89,7 +95,7 @@
                                             <select class="form-control" name="user_type">
                                                 <option value="">--请选择--</option>
                                                 {volist name='types' id='t'}
-                                                <option value="{$t.id}" {if condition="$vo['id'] eq $t['id']"}selected{/if}>{$t.name}</option>
+                                                <option value="{$t.id}" {if condition="$vo['type'] eq $t['id']"}selected{/if}>{$t.name}</option>
                                                 {/volist}
                                             </select>
                                         </div>
@@ -259,6 +265,7 @@
 
                     $('#myModal_edit'+formid).modal('hide')
                     $('#myModal').modal('hide')
+                    window.location.href="{:url()}"
 
                 }else{
                     alert(data.error)

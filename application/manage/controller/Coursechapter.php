@@ -16,6 +16,7 @@ class Coursechapter extends Base{
         $info = input('get.',NULL,'htmlspecialchars');
 
         $where = [];
+        $where['b.id']= $this->request->param('cid');
         if(!empty($info['title'])){
 
             $where['a.title'] = ['like',"%{$info['title']}%"];
