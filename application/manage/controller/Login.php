@@ -49,13 +49,16 @@ class Login extends Controller{
 
         $user = User::get(['username'=>$info['username']]);//取出的数据
 
+        $userrole = !empty($user->roles)?$user->roles:0;
+
+
         if($user){
 
             if(password_verify($info['password'],$user->password)){
                 //success
                 session('admin_uid',$user->id);
                 session('admin_name',$user->username);
-                $role = Db::table('role')->field('name')->where('id='.$user->roles)->find();
+                $role = Db::table('role')->field('name')->where('id='.$userrole)->find();
 
                 session('admin_role',!empty($role['name'])?$role['name']:'其他');
 
