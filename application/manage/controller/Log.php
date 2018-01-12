@@ -8,7 +8,6 @@
 namespace app\manage\controller;
 
 use think\Db;
-
 class Log extends Base{
 
     public function index(){
@@ -18,7 +17,8 @@ class Log extends Base{
         $wheredata = [];
 
         if(!empty($info['user_id'])){
-            $wheredata['userid'] = ['=',$info['user_id']];
+//            dump($info);die;
+            $wheredata['u.nickname'] = ['like',"%{$info['user_id']}%"];;
         }
         if(!empty($info['user_module'])){
             $wheredata['module'] = ['=',$info['user_module']];
@@ -27,12 +27,13 @@ class Log extends Base{
             $wheredata['action'] = ['eq',$info['user_action']];
         }
         if(!empty($info['user_mes'])){
-            $wheredata['message'] = ['eq',"%{$info['user_mes']}%"];
+            $wheredata['message'] = ['like',"%{$info['user_mes']}%"];
         }
 
         $list = Db::name('log a')
             ->join('classmodule b','a.module=b.id','LEFT')
             ->join('classaction c','a.action=c.code','LEFT')
+            ->join('user u','a.userid=u.id')
             ->field('a.id,a.userid,b.classname bname,c.classname cname,a.message,a.createdTime,a.data')
             ->where($wheredata)
             ->paginate(20,false,['query' => request()->get()]);

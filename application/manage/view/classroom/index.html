@@ -56,7 +56,7 @@
                         echo '<strong>/</strong>';
                     }
                     if(check($uid,'/manage/classroom/delete')){
-                        echo '<a href="#" onclick="enable('.$vo['id'].');">删除</a>';
+                        echo '<a href="#" onclick="deleteR('.$vo['id'].');">删除</a>';
                     }
                 {/php}
                 <!--修改开始-->
@@ -250,12 +250,13 @@
         });
     }
 
-    function enable(id) {
-        if(confirm('确定要禁用吗')){
-            $.get("{:url('enable')}?rid="+id,function (data) {
+    function deleteR(id) {
+        if(confirm('确定要删除吗')){
+            $.get("{:url('delete')}?rid="+id,function (data) {
                 if(data.code=='000'){
                     alert(data.info)
                     $('#myModal2').modal('hide')
+                    window.location.reload();
                 }else{
 
                 }

@@ -5,7 +5,7 @@
 <body>
 <div class="container-fluid">
     <div class="pull-right">
-        <a class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增工作信息</a>
+        <a class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="addjs">新增工作信息</a>
     </div>
 
     <table class="table table-striped table-hover">
@@ -14,6 +14,10 @@
             <th>教师名称</th>
             <th>工作单位</th>
             <th>部门</th>
+            <th>职称</th>
+            <th>职位</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -24,8 +28,12 @@
             <td>{$vo.realname}</td>
             <td>{$vo.unit}</td>
             <td>{$vo.depart}</td>
+            <td>{$vo.title}</td>
+            <td>{$vo.position}</td>
+            <td>{$vo.starttime}</td>
+            <td>{$vo.endtime}</td>
             <td>
-                <a href="#" data-toggle="modal" data-target="#myModal_edit{$vo.id}">编辑</a>
+                <a href="#" onclick="workedit({$vo.id})" data-toggle="modal" data-target="#myModal">编辑</a>
                 <a href="#"  onclick="enable({$vo.id});">删除</a>
             </td>
         </tr>
@@ -56,36 +64,37 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-inline">工作单位</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" name="unit"
+                                <input type="text" class="form-control" name="unit" value="" id="unit"
                                        placeholder="请输入工作单位">
                             </div>
+                            <input type="hidden" name="id" value="" id="editid" />
                             <label class="col-sm-2 control-label form-inline">部门</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" name="depart"
+                                <input type="text" class="form-control" name="depart" value="" id="depart"
                                        placeholder="请输入部门">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-inline">职位</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" name="position"
+                                <input type="text" class="form-control" name="position" value="" id="position"
                                        placeholder="请输入职位">
                             </div>
                             <label class="col-sm-2 control-label form-inline">职称</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" name="title"
+                                <input type="text" class="form-control" name="title" value="" id="title"
                                        placeholder="请输入职称">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-inline">开始时间</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control form-time" name="starttime"
+                                <input type="text" class="form-control form-time" name="starttime" value="" id="starttime"
                                        placeholder="请输入开始时间">
                             </div>
                             <label class="col-sm-2 control-label form-inline">结束时间</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control form-time" name="endtime"
+                                <input type="text" class="form-control form-time" name="endtime" value="" id="endtime"
                                        placeholder="请输入结束时间">
                             </div>
                         </div>
@@ -93,7 +102,7 @@
                         <input type="hidden" name="add" value="unit"/>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="dopost('addunit',0);">添加教师工作信息</button>
+                            <button type="button" class="btn btn-primary" id="save">添加教师工作信息</button>
                         </div>
                     </form>
 
@@ -129,6 +138,44 @@
 {include file='manage/bottom'}
 <script type="text/javascript" src="__MANAGE_JS__datetimepicker/bootstrap-datetimepicker.min.js"></script>
 <script type="text/javascript">
+    $(document).ready(function() {
+        $("#add").click(function () {
+            $('#id').val('');
+            $('#unit').val('');
+            $('#depart').val('');
+            $('#position').val('');
+            $('#title').val('');
+            $('#starttime').val('');
+            $('#endtime').val('');
+        });
+    });
+    $('#save').click(function(){
+        $.ajax({
+            url: "{:url('addunit')}?"+Math.random(),
+            type:"post",
+            data:$('#form0').serialize(),
+            success:function(data){
+
+                if(data.code=='000'){
+
+                    alert(data.info)
+
+                    // $('#selfcode').val('')//必须清空
+                    //
+                    // $('#myModal').modal('hide')
+                    // $('#myModal_edit'+formid).modal('hide')
+                    window.location.href="{:url('addunit')}?tid=1";//刷新页面
+
+                }else{
+                    alert(data.error)
+                }
+
+            },
+            error:function(e){
+                alert("添加信息错误");
+            }
+        });
+    })
     $(".form-time").datetimepicker({
         weekStart: 1,
         todayBtn:  1,
@@ -140,43 +187,42 @@
         format: 'yyyy-mm-dd'
 
     });
-
-
-    function dopost($url,formid) {
-        $url=='addunit'?"{:url('addunit')}":"{:url('editunit')}";
-
-        $.ajax({
-            url: $url+"?"+Math.random(),
-            type:"post",
-            data:$('#form'+formid).serialize(),
-            success:function(data){
-
-                if(data.code=='000'){
-
-                    alert(data.info)
-
-                    $('#selfcode').val('')//必须清空
-
-                    $('#myModal').modal('hide')
-                    $('#myModal_edit'+formid).modal('hide')
-
-                }else{
-                    alert(data.error)
-                }
-
-            },
-            error:function(e){
-                alert("添加信息错误");
-            }
-        });
-    }
+    // function dopost($url,formid) {
+    //     $url=='addunit'?"{:url('addunit')}":"{:url('editunit')}";
+    //
+    //     $.ajax({
+    //         url: $url+"?"+Math.random(),
+    //         type:"post",
+    //         data:$('#form'+formid).serialize(),
+    //         success:function(data){
+    //
+    //             if(data.code=='000'){
+    //
+    //                 alert(data.info)
+    //
+    //                 $('#selfcode').val('')//必须清空
+    //
+    //                 $('#myModal').modal('hide')
+    //                 $('#myModal_edit'+formid).modal('hide')
+    //
+    //             }else{
+    //                 alert(data.error)
+    //             }
+    //
+    //         },
+    //         error:function(e){
+    //             alert("添加信息错误");
+    //         }
+    //     });
+    // }
 
     function enable(id) {
-        if(confirm('确定要禁用吗')){
+        if(confirm('确定要删除吗')){
             $.get("{:url('enable')}?rid="+id,function (data) {
+                console.log(data.code);
                 if(data.code=='000'){
                     alert(data.info)
-                    $('#myModal2').modal('hide')
+                    window.location.href="{:url('addunit')}?tid=1";//刷新页面
                 }else{
 
                 }
@@ -185,6 +231,29 @@
 
     }
 
+    function workedit(id){
+        $('#editid').val(id);
+        $.ajax({
+            url: "{:url('editunit')}?" + Math.random(),
+            type: "get",
+            data: '&id=' + id,
+            success: function (msg) {
+
+                $.each(msg,function (ke,val) {
+                    $('#unit').val(val.unit);
+                    $('#depart').val(val.depart);
+                    $('#position').val(val.position);
+                    $('#title').val(val.title);
+                    $('#starttime').val(val.starttime);
+                    $('#endtime').val(val.endtime);
+                });
+
+            },
+            error: function (e) {
+                alert("修改信息错误");
+            }
+        });
+    }
 
 </script>
 </body>

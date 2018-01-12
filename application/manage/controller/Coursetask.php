@@ -8,6 +8,7 @@
 namespace app\manage\controller;
 
 use think\Db;
+use request;
 use think\Validate;
 
 /*
@@ -18,10 +19,8 @@ class Coursetask extends Base{
     public function index(){
 
         $info = input('get.');
-
-
-
         $where = [];
+        $where['b.id']= $this->request->param('cid');
         if(!empty($info['title'])){
 
             $where['a.title'] = ['like',"%{$info['title']}%"];

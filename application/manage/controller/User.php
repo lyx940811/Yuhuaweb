@@ -18,7 +18,7 @@ class User extends Base{
         $lists = Db::name('user a')
             ->join('role b','a.roles=b.id','LEFT')
             ->field('a.id,a.username,a.nickname,a.title,a.locked,a.mobile,a.roles,a.type,a.email,a.createdIp,a.createdTime,b.name')
-            ->order('id asc')->paginate(20);
+            ->order('id desc')->paginate(20);
 
 
         $roles = Db::name('role')->field('id,name,code')->select();

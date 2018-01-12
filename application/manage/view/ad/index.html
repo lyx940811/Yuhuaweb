@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 {include file="manage/header" /}
-<link href="__MANAGE_JS__datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <body>
 <div class="container-fluid">
     {php}
@@ -11,16 +10,16 @@
     <div class="well clearfix">
         <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
             <div class="form-group">
-                <label>招生名称</label>
-                <input type="text" class="form-control" placeholder="招生名称" name="title">
+                <label>广告名称</label>
+                <input type="text" class="form-control" placeholder="请输入广告名称" name="title">
             </div>
             <button type="submit" class="btn btn-primary">搜索</button>
         </form>
     </div>
     <div class="pull-right">
         {php}
-        if(check($uid,'/manage/admission/add')){
-            echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">创建招生</a>';
+        if(check($uid,'/manage/ad/add')){
+            echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">添加广告</a>';
         }
         {/php}
 
@@ -29,14 +28,13 @@
     <table class="table table-striped table-hover">
         <thead>
         <tr>
-            <th>招生名称</th>
-            <th>学费</th>
-            <th>招生人数</th>
-            <th>发布日期</th>
-            <th>截止日期</th>
-            <th>联系人</th>
-            <th>联系电话</th>
-            <th>是否发布</th>
+            <th>广告名称</th>
+            <th>链接</th>
+            <th>图片</th>
+            <th>内容</th>
+            <th>创建日期</th>
+            <th>状态</th>
+            <th>类型</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -45,28 +43,24 @@
         {volist name="list" id="vo"}
         <tr>
             <td>{$vo.title}</td>
-            <td>{$vo.price}</td>
-            <td>{$vo.num}</td>
+            <td>{$vo.url}</td>
+            <td>{$vo.img}</td>
+            <td>{$vo.content}</td>
             <td>{$vo.createdTime}</td>
-            <td>{$vo.endtime}</td>
-            <td>{$vo.linker}</td>
-            <td>{$vo.telephone}</td>
-            {if condition="$vo.status == 0"}
-            <td>未发布</td>
-            {elseif condition="$vo.status == 1"/}
-            <td>发布</td>
-            {/if}
+            <td>{$vo.flag?'启用':'禁用'}</td>
+            <td>{$vo.type}</td>
             <td>
                 {php}
-                    if(check($uid,'/manage/admission/edit')){
+                    if(check($uid,'/manage/ad/edit')){
                         echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
                         echo '<strong>/</strong>';
                     }
-                    if(check($uid,'/manage/admission/delete')){
+                    if(check($uid,'/manage/ad/delete')){
                         echo '<a href="#" onclick="deleteR('.$vo['id'].');">删除</a>';
                     }
                 {/php}
                 <!--修改开始-->
+                <!-- 模态框 -->
                 <div class="modal fade" id="myModal_edit{$vo.id}">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -74,69 +68,59 @@
                             <!-- 模态框头部 -->
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">修改招生</h4>
+                                <h4 class="modal-title">修改广告</h4>
                             </div>
 
                             <!-- 模态框主体 -->
                             <div class="modal-body">
-                                <form class="form-horizontal" id="form{$vo.id}" role="form" method="post" action="{:url('edit')}">
+                                <form class="form-horizontal" role="form" id="form{$vo.id}" method="post" action="{:url('edit')}">
                                     <div class="form-group">
-                                        <label for="title" class="col-sm-2 control-label">招生名称</label>
+                                        <label for="title" class="col-sm-2 control-label">广告名称</label>
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" name="title" value="{$vo.title}"
-                                                   placeholder="请输入招生名称">
+                                                   placeholder="请输入广告名称">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="price" class="col-sm-2 control-label">学费</label>
+                                        <label for="newfile0" class="col-sm-2 control-label">链接</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="price" value="{$vo.price}"
-                                                   placeholder="请输入学费">
+                                            <input type="text" class="form-control" name="url" value="{$vo.url}"
+                                                   placeholder="请输入广告链接">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="num" class="col-sm-2 control-label">招生人数</label>
+                                        <label for="newfile{$vo.id}" class="col-sm-2 control-label">图片</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="num" value="{$vo.num}"
-                                                   placeholder="请输入招生人数">
+                                            <input type="file" id="newfile{$vo.id}" name="newfile" onchange="uploadImage({$vo.id});">
+                                            <input type="hidden" name="img" value="{$vo.img}" id="pic{$vo.id}">
+                                            <div id="showinfoPic{$vo.id}">{if condition="$vo['img']"}<img src="{$vo.img}" width="100%"/>{/if}</div>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="price" class="col-sm-2 control-label">招生简章</label>
+                                        <label for="content" class="col-sm-2 control-label">内容</label>
                                         <div class="col-sm-10">
-                                            <textarea name="content" class="form-control" cols="30" rows="10" placeholder="请输入招生简章">{$vo.content}</textarea>
+                                            <input type="text" class="form-control" name="content" value="{$vo.content}"
+                                                   placeholder="请输入广告内容">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="linker" class="col-sm-2 control-label">联系人</label>
+                                        <label for="type" class="col-sm-2 control-label">类型</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="linker" value="{$vo.linker}"
-                                                   placeholder="请输入联系人">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="telephone" class="col-sm-2 control-label">联系电话</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="telephone" value="{$vo.telephone}"
-                                                   placeholder="请输入联系电话">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="endtime" class="col-sm-2 control-label">截止时间</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="endtime" value="{$vo.endtime}"
-                                                   placeholder="请输入截止时间">
+                                            <select name="type" class="form-control">
+                                                <option>--请选择--</option>
+                                                {volist name='type' id="t"}
+                                                <option value="{$t.name}" {if condition="$vo['type'] eq $t['name']"}selected="selected"{/if}>{$t.name}</option>
+                                                {/volist}
+                                            </select>
                                         </div>
                                     </div>
                                     <input type="hidden" name="rid" value="{$vo.id}"/>
                                     <!-- 模态框底部 -->
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" id="edit_role" onclick="dopost('edit',{$vo.id})">修改</button>
+                                        <button type="button" class="btn btn-default" onclick="dopost('edit',{$vo.id});">修改</button>
                                     </div>
                                 </form>
                             </div>
-
-
 
                         </div>
                     </div>
@@ -144,7 +128,6 @@
                 <!--修改结束-->
             </td>
         </tr>
-
         {/volist}
         </tbody>
 
@@ -162,58 +145,50 @@
                 <!-- 模态框头部 -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">创建招生</h4>
+                    <h4 class="modal-title">添加广告</h4>
                 </div>
 
                 <!-- 模态框主体 -->
                 <div class="modal-body">
                     <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
                         <div class="form-group">
-                            <label for="title" class="col-sm-2 control-label">招生名称</label>
+                            <label for="title" class="col-sm-2 control-label">广告名称</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="title" name="title"
-                                       placeholder="请输入招生名称">
+                                       placeholder="请输入广告名称">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="price" class="col-sm-2 control-label">学费</label>
+                            <label for="newfile0" class="col-sm-2 control-label">链接</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="price" name="price"
-                                       placeholder="请输入学费">
+                                <input type="text" class="form-control" id="url" name="url"
+                                       placeholder="请输入广告链接">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="num" class="col-sm-2 control-label">招生人数</label>
+                            <label for="newfile0" class="col-sm-2 control-label">图片</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="num" name="num"
-                                       placeholder="请输入招生人数">
+                                <input type="file" id="newfile0" name="newfile" onchange="uploadImage(0);">
+                                <input type="hidden" name="img" value="{$vo.img}" id="pic0">
+                                <div id="showinfoPic0"></div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="price" class="col-sm-2 control-label">招生简章</label>
+                            <label for="content" class="col-sm-2 control-label">内容</label>
                             <div class="col-sm-10">
-                                <textarea name="content" id="content" class="form-control" cols="30" rows="10" placeholder="请输入招生简章"></textarea>
+                                <input type="text" class="form-control" id="content" name="content"
+                                       placeholder="请输入广告内容">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="linker" class="col-sm-2 control-label">联系人</label>
+                            <label for="type" class="col-sm-2 control-label">类型</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="linker" name="linker"
-                                       placeholder="请输入联系人">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="telephone" class="col-sm-2 control-label">联系电话</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="telephone" name="telephone"
-                                       placeholder="请输入联系电话">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="endtime" class="col-sm-2 control-label">截止时间</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="endtime" name="endtime"
-                                       placeholder="请输入截止时间">
+                                <select name="type" id="type" class="form-control">
+                                    <option>--请选择--</option>
+                                    {volist name='type' id="t"}
+                                    <option value="{$t.name}">{$t.name}</option>
+                                    {/volist}
+                                </select>
                             </div>
                         </div>
                         <input type="hidden" name="rid" value="" id="selfcode"/>
@@ -230,7 +205,6 @@
         </div>
     </div>
     <!--添加结束-->
-
     <!--删除提示-->
     <div class="modal fade" id="myModal2">
         <div class="modal-dialog">
@@ -238,12 +212,12 @@
 
                 <!-- 模态框头部 -->
                 <div class="modal-header">
-                    <h4 class="modal-title">删除成功</h4>
+                    <h4 class="modal-title">更改成功</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <!-- 模态框主体 -->
                 <div class="modal-body">
-                    删除成功！
+                    更改成功！
 
                 </div>
 
@@ -253,18 +227,45 @@
     <!--删除结束-->
 </div>
 {include file='manage/bottom'}
-<script type="text/javascript" src="__MANAGE_JS__datetimepicker/bootstrap-datetimepicker.min.js"></script>
 <script type="text/javascript">
-    $("#endtime").datetimepicker({
-        weekStart: 1,
-        todayBtn:  1,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 2,
-        minView: 0,
-        forceParse: 0
-    });
 
+    function uploadImage(id) {
+        // FormData对象，来发送二进制文件。
+        var formdata = new FormData();
+
+        // 将文件追加到 formdata对象中。
+        formdata.append("newfile"+id,document.getElementById('newfile'+id).files[0]);
+        $.ajax({
+            type: "POST",
+            url: "{:url('upload')}?id="+id,
+            data:formdata,
+            /**
+             * 必须false才会避开jQuery对 formdata 的默认处理
+             * XMLHttpRequest会对 formdata 进行正确的处理
+             */
+            processData: false,
+            // 告诉jQuery不要去设置Content-Type请求头
+            contentType: false,
+            dataType: "json",
+            beforeSend:function () {
+                alert('正在上传中...')
+            }, //发送请求
+            success: function(data){
+                console.log(data);
+
+                if(data.code=='000'){
+                    $('#pic'+id).val(data.path)
+                    $('#showinfoPic'+id).html('<img class="img-rounded" src="'+data.path+'" width="100%"/>');
+                    alert('上传成功');
+                }
+
+            },
+            error: function(jqXHR){
+                alert("发生错误：" + jqXHR.status);
+            },
+        });
+
+    }
     function dopost($url,formid) {
         $url=='add'?"{:url('add')}":"{:url('edit')}";
 
@@ -275,11 +276,14 @@
             success:function(data){
 
                 if(data.code=='000'){
-                    alert(data.info)
-                    $('#selfcode').val('')//必须清空
 
-                    $('#myModal_edit'+formid).modal('hide')
-                    $('#myModal').modal('hide')
+                    alert(data.info)
+
+                    // $('#selfcode').val('')//必须清空
+                    //
+                    // $('#myModal').modal('hide')
+                    // $('#myModal_edit'+formid).modal('hide')
+                    window.location.reload();
 
                 }else{
                     alert(data.error)
@@ -293,11 +297,12 @@
     }
 
     function deleteR(id) {
-        if(confirm('确定删除吗')){
+        if(confirm('确定要删除吗')){
             $.get("{:url('delete')}?rid="+id,function (data) {
                 if(data.code=='000'){
                     alert(data.info)
                     $('#myModal2').modal('hide')
+                    window.location.reload();
                 }else{
 
                 }
@@ -305,6 +310,7 @@
         }
 
     }
+
 
 </script>
 </body>
