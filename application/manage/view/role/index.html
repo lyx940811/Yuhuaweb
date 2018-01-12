@@ -233,12 +233,13 @@
                 if(data.code=='000'){
 
                     alert(data.info)
-                    $('#parentcode').val('')//清空
-
-                    $('#selfcode').val('')//必须清空
-
-                    $('#myModal_edit'+formid).modal('hide')
-                    $('#myModal').modal('hide')
+                    // $('#parentcode').val('')//清空
+                    //
+                    // $('#selfcode').val('')//必须清空
+                    //
+                    // $('#myModal_edit'+formid).modal('hide')
+                    // $('#myModal').modal('hide')
+                    window.location.reload();
 
                 }else{
                     alert(data.error)
