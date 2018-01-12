@@ -51,6 +51,50 @@ class Categorycourse extends Base{
         return $this->fetch();
     }
 
+    public function add(){
+
+        /*
+         * 这个表就2个关联的字段  categoryID 和课程id  所以只能修改这2个东西！！！！！！！！！！
+         */
+        $info = input('post.');
+
+        $msg  =   [
+            'code.require' => '课程名称不能为空',
+            'code.number' => '课程名称必须为数字',
+            'category.require' => '专业名称不能为空',
+        ];
+
+        $validate = new Validate([
+            'code'   => 'require|number',
+            'category'   => 'require',
+        ],$msg);
+
+        $validate->check($info);
+
+        $error = $validate->getError();//打印错误规则
+
+        if(is_string($error)){
+            return ['error'=>$error,'code'=>'200'];
+        }
+
+        $role_table = Db::name('categorycourse');
+
+        $data = [
+            'categoryID'=>$info['category'],
+            'courseID'=>$info['code'],
+        ];
+        /*
+         * 这个表就2个关联的字段  categoryID 和课程id  所以只能修改这2个东西！！！！！！！！！！
+         */
+        $ok = $role_table->insert($data);
+
+        if($ok){
+            return ['info'=>'修改成功','code'=>'000'];
+        }else{
+            return ['error'=>'修改失败','code'=>'200'];
+        }
+    }
+
     public function edit(){
 
         /*
