@@ -166,7 +166,7 @@
      * @param $userid   如果有userid的话把userid作为图片文件名的一部分，生成格式为：年月日 + userid + uniqid（）
      * @return array|mixed  以数组的方式对应返回路径,键名为上传时定义的name，键值是路径
      */
-    function uploadPic($files,$userid='',$limitSize=2097152){
+    function uploadPic($files,$userid='',$limitSize=2097152,$selfpath='pictures'){
         $save_path = array();
         $type = ['image/gif','image/jpeg','image/png'];
         foreach ($files as $key=>$value){
@@ -189,7 +189,7 @@
             }
             $name        = $files[$key]['name'];
             $tmp_name    = $files[$key]['tmp_name'];
-            $uploads_dir = "uploads/pictures"."/".date('Y',time())."/".date('m',time())."/".date('d',time());
+            $uploads_dir = "uploads/".$selfpath."/".date('Y',time())."/".date('m',time())."/".date('d',time());
             $date_dir    = ROOT_PATH."public"."/".$uploads_dir;
             if(!file_exists($date_dir)){
                 mkdir($date_dir,0775,true);

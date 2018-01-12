@@ -161,6 +161,16 @@ class Mediaupload extends Controller
                 mkdir($path2,0777,true);
             }
 
+            //以下if为判断不是分片上传的话直接挪缓存文件，但是没有删除
+            if($iChunks==0){
+                move_uploaded_file($p_sTmpName, iconv("utf-8","gb2312",$sDestFile));
+                @unlink(iconv("utf-8","gb2312",$p_sFilenamePath));
+                @unlink(iconv("utf-8","gb2312","{$p_sFilePath}_0.part"));
+//                return json_data(0,'success',$sDestFile);
+                return ['code'=>000,'message'=>'success','fileinfo'=>['name'=>$sDestFile,'type'=>$sExtension]];
+            }
+
+
             if (!$out = @fopen(iconv("utf-8","gb2312",$sDestFile), "wb")) {
                 $iError  = 1;
                 $mReturn = "1Failed to open output stream.";
