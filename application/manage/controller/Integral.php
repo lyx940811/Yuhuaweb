@@ -73,6 +73,7 @@ class Integral extends Base{
     }
     //积分等级方法
     public function integralGrade(){
+
         $info = input('get.');
         $search='';
         $where = [];
