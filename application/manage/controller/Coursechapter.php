@@ -66,7 +66,7 @@ class Coursechapter extends Base{
             'title'         => $info['title'],
             'number'        => $info['number'],
             'seq'           => $info['seq'],
-            'flag'=> 1,
+//            'flag'=> 1,
             'userid'        => session('admin_uid'),
             'createTime'   =>date('Y-m-d H:i:s',time()),
         ];

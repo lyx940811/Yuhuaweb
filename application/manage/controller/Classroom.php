@@ -73,7 +73,7 @@ class Classroom extends Base{
             'teacherIds'=> $info['teacherIds'],
             'about'=>$info['about'],
             'createdTime'=>date('Y-m-d H:i:s',time()),
-            'status'=>1,
+//            'status'=>1,
         ];
 
         $ok = $role_table->field('title,categoryId,teacherIds,about,createdTime,status')->insert($data);

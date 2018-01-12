@@ -77,7 +77,7 @@ class Role extends Base{
         $data['data'] = $info['name'];
         $data['createdUserId'] = session('admin_uid');
         $data['createdTime'] = date('Y-m-d H:i:s',time());
-        $data['flag'] = 1;
+//        $data['flag'] = 1;
         $data['parentcode'] = empty($info['parentcode'])?0:$info['parentcode'];
 
         $ok = $role_table->field('name,code,data,createdUserId,createdTime,flag,parentcode')->insert($data);
