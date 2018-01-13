@@ -127,7 +127,7 @@ class Userprofile extends Base{
 
     public function edit(){
 
-        $info = input('get.');
+        $info = input('post.');
 
         $msg  =   [
             'sn.require' => '请输入学号',
