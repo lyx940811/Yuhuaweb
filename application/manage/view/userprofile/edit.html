@@ -13,6 +13,7 @@
             <!-- 模态框主体 -->
             <div class="modal-body">
                 <form class="form-horizontal" role="form" id="form{$vo.id}" method="post" action="{:url('edit')}">
+                   <input type="hidden" value="{$vo.userid}" name="rid"/>
                     <div class="form-group">
                         <label class="col-sm-2 control-label form-inline">学号</label>
                         <div class="col-sm-4">
