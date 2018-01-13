@@ -159,6 +159,16 @@ class Coursetask extends Base{
         }
     }
 
+    public function delete(){
+            $id = $_GET['rid']+0;
+            $ok=Db::name('course_task')->where("id='$id'")->delete();
+            if(is_numeric($ok)){
+                return ['info'=>'删除成功','code'=>'000'];//改为删除
+            }else{
+                return ['info'=>'删除失败','code'=>'400'];//改为删除
+            }
+
+    }
     public function upload(){
 
         $mediafile = new Mediaupload();
@@ -175,8 +185,6 @@ class Coursetask extends Base{
 
         echo json_encode($all);
         exit;
-
-
 
     }
 
