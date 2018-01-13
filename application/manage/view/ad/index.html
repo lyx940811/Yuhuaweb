@@ -107,7 +107,7 @@
                                         <label for="type" class="col-sm-2 control-label">类型</label>
                                         <div class="col-sm-10">
                                             <select name="type" class="form-control">
-                                                <option>--请选择--</option>
+                                                <option value="">--请选择--</option>
                                                 {volist name='type' id="t"}
                                                 <option value="{$t.name}" {if condition="$vo['type'] eq $t['name']"}selected="selected"{/if}>{$t.name}</option>
                                                 {/volist}
@@ -184,7 +184,7 @@
                             <label for="type" class="col-sm-2 control-label">类型</label>
                             <div class="col-sm-10">
                                 <select name="type" id="type" class="form-control">
-                                    <option>--请选择--</option>
+                                    <option value="">--请选择--</option>
                                     {volist name='type' id="t"}
                                     <option value="{$t.name}">{$t.name}</option>
                                     {/volist}
