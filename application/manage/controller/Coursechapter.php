@@ -26,6 +26,7 @@ class Coursechapter extends Base{
             ->field('a.*,b.title as btit')
             ->join('course b','a.courseid=b.id','LEFT')
             ->where($where)
+            ->order('createTime desc')
             ->paginate(20);
 //echo Db::table('course_chapter a')->getLastSql();exit;
         $this->assign('list',$list);
@@ -66,7 +67,7 @@ class Coursechapter extends Base{
             'title'         => $info['title'],
             'number'        => $info['number'],
             'seq'           => $info['seq'],
-//            'flag'=> 1,
+            'flag'          => $info['flag'],
             'userid'        => session('admin_uid'),
             'createTime'   =>date('Y-m-d H:i:s',time()),
         ];
@@ -119,6 +120,7 @@ class Coursechapter extends Base{
             'title'         => $info['title'],
             'number'        => $info['number'],
             'seq'           => $info['seq'],
+            'flag'          => $info['flag'],
 //            'userid'        => session('admin_uid'),
 //            'createTime'   =>date('Y-m-d H:i:s',time()),
         ];

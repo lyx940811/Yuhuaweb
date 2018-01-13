@@ -20,7 +20,8 @@ class Coursetask extends Base{
 
         $info = input('get.');
         $where = [];
-        $where['b.id']= $this->request->param('cid');
+        $id=$this->request->param('cid');
+        $where['b.id']= $id;
         if(!empty($info['title'])){
 
             $where['a.title'] = ['like',"%{$info['title']}%"];
@@ -33,7 +34,7 @@ class Coursetask extends Base{
             ->paginate(20,['query'=>$info]);
 
         $course = Db::table('course')->field('id,title')->select();
-        $chapter = Db::table('course_chapter')->field('id,title')->select();
+        $chapter = Db::table('course_chapter')->field('id,title')->where('courseid',$id)->select();
 
         $this->assign('list',$list);
         $this->assign('course',$course);
