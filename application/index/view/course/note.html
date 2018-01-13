@@ -2,37 +2,40 @@
 {block name="title"}在教课程 - 个人主页{/block}
 {block name="navdetail"}
 <div class="note-list" id="note-list">
+    {present name="note"}
+    {volist name="note" id="note"}
     <div class="media note-item">
         <div class="media-left">
             <a class=" js-user-card" href="#user/1" data-card-url="/user/1/card/show" data-user-id="1">
-                <img class="avatar-sm" src="../../img/100205dc0389099998.jpg">
+                <img class="avatar-sm" src="http://localhost/{$note->user->title}">
             </a>
         </div>
         <div class="media-body">
             <div class="content">
                 <div class="editor-text">
-                    <p>11111111</p>
-
+                    <p>{$note.content}</p>
                 </div>
             </div>
             <a href="javascript:;" class="more js-more-show">[展开全文]</a>
             <div class="metas clearfix">
-                <a class="link-dark name" href="#user/1">admin</a>
-                · <span>1天前</span>
-                ·               <a href="#course/118/task/702/show" class="period" target="_blank">
+                <a class="link-dark name" href="#user/1">{$note->user->username}</a>
+                · <span>{$note.createdTime|time_tran}</span>·
+                <a href="#course/118/task/702/show" class="period" target="_blank">
                 化学试剂
-            </a>
+                </a>
                 <span class="metas-sns">
-                        <span class="icon-favour">
-                          <a href="javascript:;" class="js-like " data-like-url="/note/25/like" data-cancel-like-url="/note/25/cancel_like">
-                            <i class="es-icon es-icon-thumbup"></i>
-                            <span class="js-like-num">0</span>
-                          </a>
-                        </span>
-                      </span>
+                    <span class="icon-favour">
+                        <a href="javascript:;" class="js-like " data-like-url="/note/25/like" data-cancel-like-url="/note/25/cancel_like">
+                            <!--<i class="es-icon es-icon-thumbup"></i>-->
+                            <!--<span class="js-like-num">0</span>-->
+                        </a>
+                    </span>
+                </span>
             </div>
         </div>
     </div>
+    {/volist}
+    {/present}
 </div>
 {/block}
 {block name="javascript"}

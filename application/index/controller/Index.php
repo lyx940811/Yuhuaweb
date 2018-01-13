@@ -14,7 +14,6 @@ class Index extends Home
     {
         parent::__construct();
     }
-
     /**
      * 首页
      */

@@ -37,6 +37,7 @@ class Teacher extends User
             ->where('c.userid',UID)
             ->field('a.*,c.userid')
             ->paginate(10);
+
         $this->assign('asklist',$asklist);
         $page = $asklist->render();
         $this->assign('page', $page);
@@ -126,6 +127,22 @@ class Teacher extends User
         $page = $file->render();
         $this->assign('page', $page);
 
+        $this->assign('courseid',$map['courseid']);
         return $this->fetch();
+    }
+
+    public function savecoursefile(){
+        $data = $this->request->param();
+        $data['filesize'] = filesize($data['filepath']);
+        $data['filename'] = basename($data['filepath']);
+        $data['type']     = explode('.',$data['filename']);
+        $data['type']     = $data['type'][1];
+        $data['createTime']     = date('Y-m-d H:i:s',time());
+        if(CourseFile::create($data)){
+            return 1;
+        }
+        else{
+            return 0;
+        }
     }
 }

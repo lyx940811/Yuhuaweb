@@ -69,6 +69,7 @@
                 function(data){
                     if(data==1){
                         alert("提问成功！");
+                        window.location.href = "{:url('index/course/discussion',array('course'=>$course['id']))}"
                     }
                     else{
                         alert("提问失败！");

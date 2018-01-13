@@ -485,6 +485,25 @@ p{word-wrap:break-word}
 
 
             console.log(response);
+            $.post(
+                "{:url('index/teacher/savecoursefile')}",
+                {
+                    'filepath':response['data'],
+                    'courseid':0
+                },
+                function(data){
+                    if(data==1){
+                        alert("上传成功！");
+                        window.location.href = window.location.href;
+                    }
+                    else{
+                        alert("上传失败！");
+                        window.location.href = window.location.href;
+                    }
+                },
+                "json"
+            );
+
         });
         uploader.on('uploadError', function (file) {
             $('#' + file.id).find('p.state').text('上传出错');

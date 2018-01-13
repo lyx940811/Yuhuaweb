@@ -122,12 +122,12 @@ p{word-wrap:break-word}
   <div class="toolbar hidden-xs">
     
         
-          <div class="btn-group">
-        <a class="btn btn-default btn-sm" target="_blank" href="http://www.hnhgjx.cn:1700/course/154?previewAs=guest">预览</a>
-      </div>
-      <div class="btn-group">
-        <button class="btn btn-success btn-sm course-publish-btn" data-url="/course_set/152/manage/publish">发布课程</button>
-      </div>
+          <!--<div class="btn-group">-->
+        <!--<a class="btn btn-default btn-sm" target="_blank" href="http://www.hnhgjx.cn:1700/course/154?previewAs=guest">预览</a>-->
+      <!--</div>-->
+      <!--<div class="btn-group">-->
+        <!--<button class="btn btn-success btn-sm course-publish-btn" data-url="/course_set/152/manage/publish">发布课程</button>-->
+      <!--</div>-->
       </div>
 </div>
 
@@ -473,6 +473,24 @@ $("#modal").on("shown.bs.modal",function(){
 
 
                 console.log(response);
+                $.post(
+                    "{:url('index/teacher/savecoursefile')}",
+                    {
+                        'filepath':response['data'],
+                        'courseid':{$courseid}
+                    },
+                    function(data){
+                        if(data==1){
+                            alert("上传成功！");
+                            window.location.href = window.location.href;
+                        }
+                        else{
+                            alert("上传失败！");
+                            window.location.href = window.location.href;
+                        }
+                    },
+                    "json"
+                );
             });
             uploader.on('uploadError', function (file) {
                 $('#' + file.id).find('p.state').text('上传出错');

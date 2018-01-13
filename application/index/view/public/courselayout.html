@@ -114,8 +114,18 @@
                         </ul>
                     </div>
                     <div class="col-md-2 hidden-xs hidden-sm">
-                        <a class="btn btn-primary btn-lg mt10" href="#course/118/task/703/show">继续学习
+                        {switch name="coursedata.next_task_id"}
+                        {case value="0"}
+                        <a class="btn btn-primary btn-lg mt10">
+                            没有新课程
                         </a>
+                        {/case}
+                        {default /}
+                        <a class="btn btn-primary btn-lg mt10" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">
+                            继续学习
+                        </a>
+                        {/switch}
+
                     </div>
                 </div>
                 <div class="course-detail-section-responsive visible-xs visible-sm clearfix">
@@ -139,9 +149,18 @@
                 </div>
                 <div class="text-right buy-btn-group visible-xs visible-sm">
                     <span class="mr20">完成任务：1 / 11</span>
-                    <a class="btn btn-primary btn-lg " href="#course/118/task/703/show">
+                    {switch name="coursedata.next_task_id"}
+                    {case value="0"}
+                    <a class="btn btn-primary btn-lg ">
+                        没有新课程
+                    </a>
+                    {/case}
+                    {default /}
+                    <a class="btn btn-primary btn-lg " href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">
                         继续学习
                     </a>
+                    {/switch}
+
                 </div>
             </section>
         </div>
@@ -156,7 +175,7 @@
                         <ul class="nav nav-tabs " role="tablist">
                             <li role="presentation" id="tasks" class=""><a href="{:url('index/course/catalogue',array('course'=>$course['id']))}">目录</a></li>
                             <li role="presentation" id="threads" class=""><a href="{:url('index/course/discussion',array('course'=>$course['id']))}">讨论区<small>({$course->ask()->count()})</small></a></li>
-                            <li role="presentation" id="notes" class=""><a href="{:url('index/course/note',array('course'=>$course['id']))}">笔记<small>(1)</small></a></li>
+                            <li role="presentation" id="notes" class=""><a href="{:url('index/course/note',array('course'=>$course['id']))}">笔记<small>{present name="user"}({$course->note()->where('userid',$user['id'])->count()}){/present}</small></a></li>
                             <li role="presentation" id="material" class=""><a href="{:url('index/course/material',array('course'=>$course['id']))}">资料区<small>({$course->file()->count()})</small></a></li>
                             <li role="presentation" id="reviews" class=""><a href="{:url('index/course/evaluate',array('course'=>$course['id']))}">评价<small>({$course->review()->count()})</small></a></li>
                             <li role="presentation" id="summary" class=""><a href="{:url('index/course/summary',array('course'=>$course['id']))}">介绍</a></li>
@@ -168,30 +187,30 @@
 
                     {/block}
                 </section>
-                <div class="panel panel-default hidden-xs pt10">
-                    <div class="course-list">
-                        <div class="row">
-                            <div class="col-lg-3 col-md-4 col-xs-6">
-                                <div class="course-item">
-                                    <div class="course-img">
-                                        <a href="#course/135?ref=relatedCourseSets" target="_blank">
-                                            <img src="__IMG__courseSet.png" alt="基础化学" class="img-responsive">
-                                        </a>
-                                    </div>
-                                    <div class="course-info">
-                                        <div class="title">
-                                            <a class="link-dark" href="#course/135?ref=relatedCourseSets" target="_blank">基础化学</a>
-                                        </div>
-                                        <div class="metas clearfix">
-                                            <span class="num"><i class="es-icon es-icon-people"></i>3</span>
-                                            <span class="comment"><i class="es-icon es-icon-textsms"></i>0</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!--<div class="panel panel-default hidden-xs pt10">-->
+                    <!--<div class="course-list">-->
+                        <!--<div class="row">-->
+                            <!--<div class="col-lg-3 col-md-4 col-xs-6">-->
+                                <!--<div class="course-item">-->
+                                    <!--<div class="course-img">-->
+                                        <!--<a href="#course/135?ref=relatedCourseSets" target="_blank">-->
+                                            <!--<img src="__IMG__courseSet.png" alt="基础化学" class="img-responsive">-->
+                                        <!--</a>-->
+                                    <!--</div>-->
+                                    <!--<div class="course-info">-->
+                                        <!--<div class="title">-->
+                                            <!--<a class="link-dark" href="#course/135?ref=relatedCourseSets" target="_blank">基础化学</a>-->
+                                        <!--</div>-->
+                                        <!--<div class="metas clearfix">-->
+                                            <!--<span class="num"><i class="es-icon es-icon-people"></i>3</span>-->
+                                            <!--<span class="comment"><i class="es-icon es-icon-textsms"></i>0</span>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
             </div>
 
             <div class="col-lg-3 col-md-4 course-sidebar">

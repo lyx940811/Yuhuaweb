@@ -17,12 +17,9 @@ use think\Model as ThinkModel;
  * 用户模型
  * @package app\cms\model
  */
-class CourseNote extends ThinkModel
+class CourseChapter extends ThinkModel
 {
     // 自动写入时间戳
 //    protected $autoWriteTimestamp = true;
-    public function user()
-    {
-        return $this->hasOne('User','id','userid');
-    }
+
 }

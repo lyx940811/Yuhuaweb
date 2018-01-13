@@ -16,17 +16,17 @@
 
         <!--<li class="active"><a href="#tab_messages" aria-controls="tab_messages" role="tab" data-toggle="tab" aria-expanded="true">精华</a></li>-->
 
-        <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-                <span>排序：</span>
-                最后回复
-                <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu hidden-xs">
-                <li class="active"><a class="js-nav">最后回复</a></li>
-                <li class=""><a href="#">最新发帖</a></li>
-            </ul>
-        </li>
+        <!--<li class="dropdown">-->
+            <!--<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">-->
+                <!--<span>排序：</span>-->
+                <!--最后回复-->
+                <!--<span class="caret"></span>-->
+            <!--</a>-->
+            <!--<ul class="dropdown-menu hidden-xs">-->
+                <!--<li class="active"><a class="js-nav">最后回复</a></li>-->
+                <!--<li class=""><a href="#">最新发帖</a></li>-->
+            <!--</ul>-->
+        <!--</li>-->
     </ul>
 </div>
     <div class="topic-list">
@@ -40,7 +40,7 @@
             <div class="media-body">
                 <div class="title">
                     <i class="es-icon es-icon-help color-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="问答"></i>
-                    <a href="#course/118/thread/1">{$asklist.title}</a>
+                    <a href="{:url('index/course/askdetail',array('course'=>$course['id'],'askid'=>$asklist['id']))}">{$asklist.title}</a>
                 </div>
                 <div class="metas text-sm">
                     <a href="#user/1" class="color-gray">{$asklist->user->username}</a>
