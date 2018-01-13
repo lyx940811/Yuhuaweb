@@ -29,4 +29,14 @@ class Asklist extends ThinkModel
     public function answer(){
         return $this->hasMany('AskAnswer','askID','id');
     }
+
+    public function course()
+    {
+        return $this->hasOne('Course','id','courseid');
+    }
+    public function category()
+    {
+        return $this->hasOne('Category','code','category_id');
+    }
+
 }
