@@ -29,6 +29,7 @@ class Teacherinfo extends Base{
             ->join('teacher_level b','a.id=b.teacherid','LEFT')
             ->where($where)
             ->field('a.*,b.education,b.degree,b.topeducation,b.topdegree')
+            ->order('a.id desc')
             ->paginate(20,false,['query'=>request()->get()]);
 
         $newlist = [];
