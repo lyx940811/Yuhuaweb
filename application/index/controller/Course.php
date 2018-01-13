@@ -261,7 +261,18 @@ class Course extends Home
     public function createask(){
         if($this->request->isAjax()){
             $data = $this->request->param();
-            return $data;
+            $course = CourseModel::get($data['course']);
+            $data['category_id'] = $course->category->code;
+            $data['courseid'] = $data['course'];
+            $data['addtime'] = date('Y-m-d H:i:s',time());
+            unset($data['course']);
+            if(Asklist::create($data)){
+                return 1;
+            }
+            else{
+                return 0;
+            }
+
         }
         return $this->fetch();
     }

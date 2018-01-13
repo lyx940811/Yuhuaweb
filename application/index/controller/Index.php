@@ -19,10 +19,15 @@ class Index extends Home
      * 首页
      */
     public function index(){
+        //轮播图
+        $ad = Db::name('ad')->where(['flag'=>1,'type'=>'pc'])->select();
+        $this->assign('ad',$ad);
+
+        //最新课程
         $courseModel = new Course();
         $course = $courseModel->limit(12)->order('createdTime desc')->select();
         $this->assign('course',$course);
-
+        //分类
         $category = Db::name('category')->field('name,code')->where('grade',3)->select();
         $this->assign('category',$category);
 

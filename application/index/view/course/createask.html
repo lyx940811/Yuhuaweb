@@ -47,9 +47,17 @@
         $('.js-btn-thread-save').click(function(){
             {present name="user"}
             var title = $('#thread_title').val();
-            var content = 'content';    //这里需要用jquery获取文本编辑器中的值替换
+            var content = $('#editor-containers').text();    //这里需要用jquery获取文本编辑器中的值替换
             var courseid = {$course.id};
             var userID = {$user.id};
+            if(title==""){
+                alert("请输入标题");
+                return false;
+            }
+            if(content==""){
+                alert("请输入标题");
+                return false;
+            }
             $.post(
                 "{:url('index/course/createask')}",
                 {
@@ -59,7 +67,12 @@
                     'userID':userID,
                 },
                 function(data){
-                    console.log(data);
+                    if(data==1){
+                        alert("提问成功！");
+                    }
+                    else{
+                        alert("提问失败！");
+                    }
                 },
                 "json"
             );

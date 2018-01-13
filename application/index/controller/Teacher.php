@@ -21,8 +21,9 @@ class Teacher extends User
     }
 
     public function teacherclass(){
-        $course = Db::name('course')->where('userid',UID)->page(1,10)->select();
+        $course = Course::where('userid',UID)->paginate(5);
         $this->assign('course',$course);
+        $this->assign('page',$course->render());
         return $this->fetch();
     }
     public function teachroom(){
@@ -117,10 +118,9 @@ class Teacher extends User
 
     public function classfiles(){
         $map['courseid'] = $this->request->param('courseid');
-        $file = Db::name('course_file')
-            ->where($map)
+        $file = CourseFile::where($map)
             ->order('createTime desc')
-            ->paginate(10);
+            ->paginate(5);
         $this->assign('file',$file);
 
         $page = $file->render();

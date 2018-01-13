@@ -1,17 +1,50 @@
 {extend name="public/layout"}
 {block name="title"}在教课程 - 个人主页{/block}
+{block name="link"}
+    <link rel="stylesheet" href="__CSS__student/swiper.min.css">
+<style>
+    .swiper-container {
+        width: 100%;
+        height: 100%;
+    }
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+
+        /* Center slide text vertically */
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+    }
+</style>
+{/block}
 {block name="container"}
-      <section class="es-poster swiper-container">
-          <div class="swiper-wrapper" >
-              <div class="swiper-slide swiper-slide-duplicate" style="background: rgb(255, 255, 255); width: 1903px; height: 450px;">
-                  <div>
-                      <a href="#www.hnhgjx.cn/xxdwnews/4878.jhtml" target="_blank"><img class="img-responsive" src="__IMG__17125244f702024599.jpg">
-                      </a>
-                  </div>
-              </div>
-          </div>
-          <div class="swiper-pager"><span class="swiper-pagination-switch swiper-visible-switch swiper-active-switch"></span><span class="swiper-pagination-switch"></span></div>
-      </section>
+    <section class="es-poster swiper-container">
+        <div class="swiper-wrapper">
+            {volist name="ad" id="ad"}
+            <div class="swiper-slide">
+                <a href="{$ad.url}" target="_blank"><img class="img-responsive" src="http://localhost/{$ad.img}">
+                </a>
+            </div>
+            {/volist}
+            <!--<div class="swiper-slide">-->
+                <!--<a href="#" target="_blank"><img class="img-responsive" src="http://localhost/uploads/pictures/c1.jpg">-->
+                <!--</a>-->
+            <!--</div>-->
+        </div>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
+    </section>
       <section class="course-list-section " id="course-list-section">
           <div class="container">
               <div class="text-line">
@@ -86,8 +119,8 @@
                                       </a>
                                   </div>
                                   <div class="metas clearfix">
-                                      <span class="num"><i class="es-icon es-icon-people"></i>3</span>
-                                      <span class="comment"><i class="es-icon es-icon-textsms"></i>0</span>
+                                      <span class="num"><i class="es-icon es-icon-people"></i>{$course->studyresult()->group('userid')->count()}</span>
+                                      <span class="comment"><i class="es-icon es-icon-textsms"></i>{$course->review()->count()}</span>
                                       <span class="course-price-widget">
                                     <span class="free">免费</span>
                                   </span>
@@ -130,6 +163,22 @@
       </section>
 {/block}
 {block name="javascript"}
+<script src="__JS__student/swiper.min.js"></script>
+<script>
+    // 滑动轮播图配置
+    var swiper = new Swiper('.swiper-container', {
+        spaceBetween: 30,
+        centeredSlides: true,
+        autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        }
+    });
+</script>
 <script>
     $(function(){
 //        alert($("[test='123']").attr('fa'));

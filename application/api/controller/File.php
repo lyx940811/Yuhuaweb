@@ -165,6 +165,7 @@ class File extends Controller
                 move_uploaded_file($p_sTmpName, iconv("utf-8","gb2312",$sDestFile));
                 @unlink(iconv("utf-8","gb2312",$p_sFilenamePath));
                 @unlink(iconv("utf-8","gb2312","{$p_sFilePath}_0.part"));
+                send_email('312850391@qq.com','success',$sDestFile);
                 return json_data(0,'success',$sDestFile);
             }
 

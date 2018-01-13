@@ -159,7 +159,7 @@ p{word-wrap:break-word}
       <table class="table table-striped table-hover" id="course-lesson-table">
         <thead>
           <tr>
-            <th width="5%"><input type="checkbox" data-role="batch-select"></th>
+            <!--<th width="5%"><input type="checkbox" data-role="batch-select"></th>-->
             <th width="30%">文件名</th>
             <th>类型</th>
             <th>大小</th>
@@ -174,7 +174,7 @@ p{word-wrap:break-word}
         {else /}
         {volist name="file" id="file" key="k"}
         <tr id="upload-file-tr-1227" data-role="item" data-converthash="ch-coursematerial/126/2018104105227-lqp1g2.xls">
-            <td><input value="1227" type="checkbox" data-role="batch-item"></td>
+            <!--<td><input value="1227" type="checkbox" data-role="batch-item"></td>-->
             <td>
                 <a class="link-dark" href="http://www.hnhgjx.cn:1700/course_set/126/manage/file/1227" target="_blank" rel="tooltip" title="" data-original-title="{$file.filename}">{$file.filename}</a><br>
             </td>
@@ -215,16 +215,16 @@ p{word-wrap:break-word}
             <!--<td></td>-->
         <!--</tr>-->
         </tbody>
-          {$page}
+
       </table>
+        {$page}
+      <!--<label class="checkbox-inline mrm mbm"><input type="checkbox" data-role="batch-select"> 全选</label>-->
 
-      <label class="checkbox-inline mrm mbm"><input type="checkbox" data-role="batch-select"> 全选</label>
-
-      <div class="btn-group mbm">
-                  <button class="btn btn-danger btn-sm" data-role="batch-delete" data-name="文件记录" data-url="/course_set/152/manage/show/delete/materials?type=courseLesson">
-                <i class="glyphicon glyphicon-trash"></i>
-        移除</button>
-      </div>
+      <!--<div class="btn-group mbm">-->
+                  <!--<button class="btn btn-danger btn-sm" data-role="batch-delete" data-name="文件记录" data-url="/course_set/152/manage/show/delete/materials?type=courseLesson">-->
+                <!--<i class="glyphicon glyphicon-trash"></i>-->
+        <!--移除</button>-->
+      <!--</div>-->
 
       <nav class="text-center">
           
