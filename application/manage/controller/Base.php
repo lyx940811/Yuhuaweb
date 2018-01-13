@@ -38,7 +38,7 @@ class Base extends Controller{
 
     }
 
-    public function bbbb(){}
+    public function sss(){}
 
 
 }

@@ -89,14 +89,15 @@
                                     <div class="form-group">
                                         <div class="center-block" style="width: 200px">
                                             <label class="radio-inline">
-                                                <input type="radio" name="flag" value="1"  {if condition="$vo['Flag'] eq 1"}checked{/if}> 启用
+                                                <input type="radio" name="flag" value="0"  {if condition="$vo['Flag'] eq 0"}checked{/if}> 启用
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="flag" value="0"  {if condition="$vo['Flag'] eq 0"}checked{/if}> 禁用
+                                                <input type="radio" name="flag" value="1"  {if condition="$vo['Flag'] eq 1"}checked{/if}> 禁用
                                             </label>
                                         </div>
                                     </div>
                                     <input type="hidden" name="rid" value="{$vo.id}" />
+                                    <input type="hidden" name="parentcode" value="" id="parentcode"/>
                                     <!-- 模态框底部 -->
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" onclick="dopost('edit',{$vo.id})">修改</button>
@@ -158,10 +159,10 @@
                         <div class="form-group">
                             <div class="center-block" style="width: 200px">
                                 <label class="radio-inline">
-                                    <input type="radio" name="flag" value="1"  {if condition="$vo['Flag'] eq 1"}checked{/if}> 启用
+                                    <input type="radio" name="flag" value="0"> 启用
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="flag" value="0"  {if condition="$vo['Flag'] eq 0"}checked{/if}> 禁用
+                                    <input type="radio" name="flag" value="1" checked> 禁用
                                 </label>
                             </div>
                         </div>
@@ -219,7 +220,7 @@
 
         $.ajax({
             url: $url+"?"+Math.random(),
-            type:"POST",
+            type:"post",
             data:$('#form'+formid).serialize(),
             success:function(data){
 

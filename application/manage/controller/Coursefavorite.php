@@ -17,6 +17,7 @@ class Coursefavorite extends Base{
             ->alias('a')
             ->field('a.id,a.url,a.createTime,a.userid,b.title')
             ->join('course b','a.courseid=b.id','LEFT')
+            ->order('a.id desc')
             ->paginate(20);
 
         $this->assign('list',$list);
