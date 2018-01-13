@@ -61,7 +61,11 @@
                     <div class="course-img">
                         <a href="{:url('index/course/catalogue',array('course'=>$course['id']))}">
                             <span class="tags"><span class="tag-finished"></span></span>
+                            {notempty name="course.smallPicture"}
                             <img src="http://localhost/{$course.smallPicture}" alt="化学基础" class="img-responsive">
+                            {else /}
+                            <img src="http://localhost/__IMG__courseSet.png" alt="化学基础" class="img-responsive">
+                            {/notempty}
                         </a>
                     </div>
                     <div class="course-info">
