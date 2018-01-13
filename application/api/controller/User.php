@@ -269,11 +269,17 @@ class User extends Controller
      * APP-得到个人信息
      */
     public function getmyinfo(){
+        if(!empty($this->user->stuclass->classname->title)){
+            $class = $this->user->stuclass->classname->title;
+        }
+        else{
+            $class = '还未分配班级';
+        }
         $data = [
             'username'  =>  $this->user->username,
             'avatar'    =>  $this->request->domain()."/".$this->user->title,
             'mobile'    =>  $this->user->mobile,
-            'classname' =>  '电气化1702班',
+            'classname' =>  $class,
         ];
         return json_data(0,$this->codeMessage[0],$data);
     }
@@ -531,6 +537,7 @@ class User extends Controller
             ->alias('sr')
             ->join('course c','sr.courseid=c.id')
             ->field('sr.courseid as id,c.title,c.smallPicture')
+            ->where('sr.userid',$this->user->id)
             ->group('sr.courseid')
             ->page($page,10)
             ->select();
@@ -612,6 +619,7 @@ class User extends Controller
             ->alias('sr')
             ->join('course c','sr.courseid=c.id')
             ->field('sr.courseid as id,c.title,c.smallPicture')
+            ->where('sr.userid',$this->user->id)
             ->group('sr.courseid')
             ->page($page,10)
             ->select();

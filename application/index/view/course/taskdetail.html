@@ -410,6 +410,45 @@
                 alert('请先登录！');
                 {/present}
                 });
+
+        $('.dashboard-body').click(function(){
+            {present name="user"}
+                var courseid = {$task.courseId};
+                var chapterid = {$task.chapterid};
+                $.post(
+                    "{:url('index/user/startwatch')}",
+                    {'courseid':courseid,'chapterid':chapterid},
+                    function(data){
+                        console.log(data);
+                        if(data['code']!=0){
+                            alert('记录学习时间出错，请重新进入');
+                        }
+                    },
+                    "json"
+                );
+            {/present}
+
+        });
+
+        window.onbeforeunload = function(e){
+            {present name="user"}
+            var courseid = {$task.courseId};
+            var chapterid = {$task.chapterid};
+            $.post(
+                "{:url('index/user/endwatch')}",
+                {'courseid':courseid,'chapterid':chapterid},
+                function(data){
+                    console.log(data);
+                    if(data['code']!=0){
+                        alert('记录学习时间出错，请重新进入');
+                    }
+                },
+                "json"
+            );
+            {/present}
+        };
+
+
     })
 </script>
 </body>

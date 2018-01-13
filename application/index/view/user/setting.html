@@ -24,7 +24,7 @@
           <label class="col-md-2 control-label">性别</label>
           <div class="col-md-7 controls radios">
             <div id="profile_gender">
-              {switch name="$profile.sex" }
+              {switch name="profile.sex" }
               {case value="0"}
               <input type="radio" id="profile_gender_1" name="profile[gender]" value="0" checked="true">
               <label for="profile_gender_0">男</label>
@@ -49,7 +49,7 @@
               <input type="radio" id="profile_gender_0" name="profile[gender]" value="2" checked="true">
               <label for="profile_gender_1">保密</label>
               {/case}
-              {default /}默认情况
+              {default /}
               {/switch}
             </div>
           </div>
