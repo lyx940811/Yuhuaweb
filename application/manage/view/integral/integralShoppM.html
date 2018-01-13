@@ -118,6 +118,7 @@
                                 <div class="col-sm-2 file">
                                     <input id="inputfile" type="file" accept="image/png,image/gif,image/jpg,image/jpeg">浏览
                                     <input type='hidden' name='icon' value="" id='icon'>
+                                    <div id="showpic"></div>
                                 </div>
 
                             </div>
@@ -258,6 +259,10 @@ function edit(id){
                 html=' <img src=http://localhost/'+val.img+' alt="" style="width:50px;height:60px;">'
                 $('#appendimg').html('');
                 $('#appendimg').append(html);
+                if(val.img){
+                    $('#showpic').html('<img src="/'+val.img+'"/>')
+                }
+
             });
         },
         error:function(){
