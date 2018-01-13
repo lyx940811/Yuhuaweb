@@ -16,7 +16,7 @@ class Role extends Base{
 
     public function index(){
 
-        $lists = Db::name('role')->field('id,name,code,parentcode,createdUserId,createdTime')->order('id asc')->select();
+        $lists = Db::name('role')->field('id,name,code,parentcode,createdUserId,createdTime,flag')->order('id asc')->select();
 
         $treeL = tree($lists);
 
@@ -75,6 +75,7 @@ class Role extends Base{
         $data['name'] = $info['name'];
         $data['code'] = $info['code'];
         $data['data'] = $info['name'];
+        $data['flag'] = $info['flag'];
         $data['createdUserId'] = session('admin_uid');
         $data['createdTime'] = date('Y-m-d H:i:s',time());
 //        $data['flag'] = 1;
@@ -130,7 +131,7 @@ class Role extends Base{
 
         if($have['code']==$info['code']){
 
-            $ok = $role_table->field('name,data')->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name']]);
+            $ok = $role_table->field('name,data,flag')->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name'],'flag'=>$info['flag']]);
         }else{
 
             $where['id'] = ['neq',$id];
@@ -142,7 +143,7 @@ class Role extends Base{
                 return ['error'=>'已经有此代码','code'=>'300'];
             }
 
-            $ok = $role_table->field('name,data,code')->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name'],'code'=>$info['code']]);
+            $ok = $role_table->field('name,data,code,flag')->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name'],'code'=>$info['code'],'flag'=>$info['flag']]);
         }
 
 

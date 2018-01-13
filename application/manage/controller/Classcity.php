@@ -15,7 +15,6 @@ class Classcity extends Base{
     public function index(){
 
         $list = Db::table('classcity')->field('id,classname,classname as name,parentCode,code,Flag')->paginate(20);
-
         $this->assign('list',$list);
         $this->assign('page',$list->render());
         $this->assign('typename','区域列表');
@@ -56,7 +55,7 @@ class Classcity extends Base{
             'classname' => $info['name'],
             'code' => $info['code'],
             'parentCode' => $info['parentcode'],
-//            'Flag'=>1,
+            'Flag'=>$info['flag'],
         ];
 
         $ok = $role_table->field('classname,code,parentCode,Flag')->insert($data);
@@ -104,11 +103,12 @@ class Classcity extends Base{
         $data = [
             'classname' => $info['name'],
             'code' => $info['code'],
+            'Flag'=>$info['flag'],
         ];
 
-        $ok = $role_table->field('classname,code')->where('id',$id)->update($data);
+        $ok = $role_table->field('classname,code,Flag')->where('id',$id)->update($data);
 
-        if($ok){
+        if(is_numeric($ok)){
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];

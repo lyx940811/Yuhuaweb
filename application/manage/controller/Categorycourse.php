@@ -82,6 +82,7 @@ class Categorycourse extends Base{
         $data = [
             'categoryID'=>$info['category'],
             'courseID'=>$info['code'],
+            'Flag'=>$info['flag'],
         ];
         /*
          * 这个表就2个关联的字段  categoryID 和课程id  所以只能修改这2个东西！！！！！！！！！！
@@ -130,6 +131,7 @@ class Categorycourse extends Base{
         $data = [
             'categoryID'=>$info['category'],
             'courseID'=>$info['code'],
+            'Flag'=>$info['flag'],
         ];
         /*
          * 这个表就2个关联的字段  categoryID 和课程id  所以只能修改这2个东西！！！！！！！！！！
