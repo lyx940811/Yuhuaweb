@@ -311,10 +311,19 @@ class Course extends Home
 
         $user = User::get($course['userid']);
 
+        if(!empty($course->teacherinfo->realname)){
+            $teacher_realname = $course->teacherinfo->realname;
+            $teacher_avatar = $course->teacherinfo->user->title;
+        }
+        else{
+            $teacher_realname = '还未分配老师';
+            $teacher_avatar = 'static/index/images/avatar.png';
+        }
+
         $data = [
             'about'         =>  $course->about,
-            'teacher_name'  =>  $user->username,
-            'avatar'        =>  $this->request->domain()."/".$user->title,
+            'teacher_name'  =>  $teacher_realname,
+            'avatar'        =>  $this->request->domain()."/".$teacher_avatar,
             'achivement'    =>  '教师成就'
         ];
         return json_data(0,$this->codeMessage[0],$data);

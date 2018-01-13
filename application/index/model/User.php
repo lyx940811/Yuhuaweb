@@ -25,4 +25,9 @@ class User extends ThinkModel
     {
         return $this->hasOne('UserProfile','userid','id');
     }
+
+    public function stuclass()
+    {
+        return $this->hasOne('StudentSchool','userid','id');
+    }
 }

@@ -17,14 +17,12 @@ use think\Model as ThinkModel;
  * 用户模型
  * @package app\cms\model
  */
-class StudyResult extends ThinkModel
+class StudentSchool extends ThinkModel
 {
-    public function user()
+    // 自动写入时间戳
+//    protected $autoWriteTimestamp = true;
+    public function classname()
     {
-        return $this->hasOne('User','id','userid');
-    }
-    public function course()
-    {
-        return $this->hasOne('Course','id','courseid');
+        return $this->hasOne('Classroom','id','class');
     }
 }

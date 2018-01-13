@@ -51,8 +51,6 @@
                 <td>{if condition="$vo['sex'] eq 0"}男{elseif condition="$vo['sex'] eq 1"}女{else/}保密{/if}</td>
                 <td>{$vo.depart}</td>
                 <td>{$vo.majors}</td>
-                <td>{$vo.title}</td>
-                <td>{$vo.style}</td>
                 {if condition="$vo.style == 0"}
                 <td>全日制</td>
                 {elseif condition="$vo.style == 1"/}

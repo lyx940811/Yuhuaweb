@@ -145,4 +145,18 @@ class Teacher extends User
             return 0;
         }
     }
+
+    public function deletefile(){
+        $fileid = $this->request->param('fileid');
+        $file = CourseFile::get($fileid);
+        if(file_exists($file['filepath'])){
+            unlink(iconv("utf-8","gb2312",$file['filepath']));
+            CourseFile::destroy($fileid);
+            return 1;
+        }
+        else{
+            CourseFile::destroy($fileid);
+            return 1;
+        }
+    }
 }

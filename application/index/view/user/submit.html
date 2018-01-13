@@ -7,16 +7,18 @@
         <div class="panel-body">
             <form id="approval-form" action="{:url('index/user/attention')}" class="form-horizontal" method="post" enctype="multipart/form-data" novalidate="novalidate">
                 <input type="hidden" name="__token__" value="{$Request.token}" />
+                {empty name="profile.realname"}
                 <div class="help-block approval">
                     <label class="col-md-2 control-label"></label>
                     <div class="alert alert-warning" role="alert">您尚未实名认证。</div>
                 </div>
+                {/empty}
                 <div class="form-group">
                     <div class="col-md-2 control-label">
                         <label for="truename">真实姓名</label>
                     </div>
                     <div class="col-md-8 controls">
-                        <input type="text" id="truename" name="truename" class="form-control" value="">
+                        <input type="text" id="truename" name="truename" class="form-control" value="{$profile.realname}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -24,7 +26,7 @@
                         <label for="idcard">身份证号</label>
                     </div>
                     <div class="col-md-8 controls">
-                        <input type="text" id="idcard" name="idcard" class="form-control" value="">
+                        <input type="text" id="idcard" name="idcard" class="form-control" value="{$profile.idcard}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -40,7 +42,7 @@
                         <label for="faceImg">身份证正面照</label>
                     </div>
                     <div class="col-md-8 form-control-static">
-                        <input type="file" id="faceImg" name="faceImg" accept="image/bmp,image/jpeg,image/png">
+                        <input type="file" id="faceImg" name="front_pic" accept="image/bmp,image/jpeg,image/png">
                     </div>
                 </div>
                 <div class="form-group">
@@ -48,7 +50,7 @@
                         <label for="backImg">身份证反面照</label>
                     </div>
                     <div class="col-md-8 form-control-static">
-                        <input type="file" id="backImg" name="backImg" accept="image/bmp,image/jpeg,image/png">
+                        <input type="file" id="backImg" name="behind_pic" accept="image/bmp,image/jpeg,image/png">
                     </div>
                 </div>
                 <div class="row">

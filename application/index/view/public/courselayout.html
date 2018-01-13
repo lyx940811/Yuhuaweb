@@ -222,12 +222,20 @@
                         <div class="media media-default">
                             <div class="media-left">
                                 <a class="js-user-card" href="#user/7855" data-card-url="/user/7855/card/show" data-user-id="7855" data-original-title="" title="">
-                                    <img class="avatar-md" src="http://localhost/{$course->teacher->title}">
+                                    {present name="course.teacherinfo.user.title"}
+                                    <img class="avatar-md" src="http://localhost/{$course->teacherinfo->user->title}">
+                                    {else /}
+                                    <img class="avatar-md" src="http://localhost/static\index\images\avatar.png">
+                                    {/present}
                                 </a>
                             </div>
                             <div class="media-body">
                                 <div class="title">
-                                    <a class="link-dark link-dark" href="#user/7855">{$course->teacher->username}</a>
+                                    {present name="course.teacherinfo.user.title"}
+                                    <a class="link-dark link-dark" href="#user/7855">{$course->teacherinfo->realname}</a>
+                                    {else /}
+                                    <a class="link-dark link-dark">还未分配教师</a>
+                                    {/present}
                                 </div>
                                 <div class="content"></div>
                             </div>

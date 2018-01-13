@@ -190,7 +190,7 @@ p{word-wrap:break-word}
                 <br>
                 <span class="color-gray text-sm">{$file.createTime}</span>
             </td>
-            <td>删除</td>
+            <td class="deletefile" fileid="{$file.id}">删除</td>
         </tr>
         {/volist}
         {/empty}
@@ -555,6 +555,24 @@ $('#modal').on('hide.bs.modal', function () {
     $("#responeseText").text("");
     uploader.destroy();
     $('.item').remove();
+});
+
+$('.deletefile').click(function(){
+    $.post(
+        "{:url('index/teacher/deletefile')}",
+        {'fileid':$(this).attr('fileid')},
+        function(data){
+            if(data==1){
+                alert("删除成功！");
+                window.location.href = window.location.href;
+            }
+            else{
+                alert("删除失败！");
+                window.location.href = window.location.href;
+            }
+        },
+        "json"
+    );
 });
 
 

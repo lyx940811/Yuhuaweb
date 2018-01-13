@@ -31,6 +31,10 @@ class Course extends ThinkModel
         return $this->hasOne('User','id','userid');
     }
 
+    public function teacherinfo(){
+        return $this->hasOne('TeacherInfo','id','teacherIds');
+    }
+
     public function ask()
     {
         return $this->hasMany('Asklist','courseid','id');
