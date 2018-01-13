@@ -167,6 +167,16 @@
                                             <div id="showinfoPic{$vo.id}"><img src="{$vo.smallPicture}"/></div>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <div class="center-block" style="width: 200px">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="status" value="1"  {if condition="$vo['status'] eq 1"}checked{/if}> 启用
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="status" value="0"  {if condition="$vo['status'] eq 0"}checked{/if}> 禁用
+                                            </label>
+                                        </div>
+                                    </div>
                                     <input type="hidden" name="rid" value="{$vo.id}" />
                                     <!-- 模态框底部 -->
                                     <div class="modal-footer">
@@ -261,6 +271,16 @@
                                 <div id="showinfoPic"></div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="center-block" style="width: 200px">
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="1" > 启用
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="0" checked > 禁用
+                                </label>
+                            </div>
+                        </div>
                         <input type="hidden" name="rid" value="" id="selfcode"/>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
@@ -345,7 +365,7 @@
 
         $.ajax({
             url: $url+"?"+Math.random(),
-            type:"post",
+            type:"get",
             data:$('#form'+formid).serialize(),
             success:function(data){
 
