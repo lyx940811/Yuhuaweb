@@ -147,7 +147,7 @@ class Functions extends Base{
                 'name' => $info['name'],
                 'code'=>$info['code'],
                 'url'=>$info['url'],
-                'parentcode'=>$info['parentcode'],
+//                'parentcode'=>$info['parentcode'],
                 'Flag'=>$info['flag'],
             ]
         );

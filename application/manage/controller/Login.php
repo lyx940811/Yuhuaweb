@@ -52,7 +52,9 @@ class Login extends Controller{
         $userrole = !empty($user->roles)?$user->roles:0;
 
 
-        if($user){
+        if($user['status']==0){
+            return ['error'=>'未审核用户','code'=>500];
+        }elseif($user){
 
             if(password_verify($info['password'],$user->password)){
                 //success
@@ -70,7 +72,7 @@ class Login extends Controller{
 
             }
         }else{
-            return ['error'=>'请输入正确的用户名','code'=>500];
+            return ['error'=>'请输入正确的用户名','code'=>600];
         }
 
 
