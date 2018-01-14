@@ -39,10 +39,12 @@ class Userprofile extends Base{
 
 
         $classroom = Db::table('classroom')->field('id,title')->select();
+        $depart = Db::table('category')->field('code,name')->where('parentcode=0')->select();
 
         $this->assign('list',$newlist);
         $this->assign('typename','学生列表');
         $this->assign('classroom',$classroom);
+        $this->assign('depart',$depart);
         $this->assign('page',$list->render());
         return $this->fetch();
     }
