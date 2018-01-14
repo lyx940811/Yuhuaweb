@@ -219,7 +219,7 @@ p{word-wrap:break-word}
                         </div>
                     </li>
                     <li class="caption">
-                        <p class="title text-overflow" data-toggle="tooltip" data-placement="top" title="" data-original-title="{$file.filename}">{$file.filename}</p>
+                        <a href="{:url('index/teacher/down',array('fileid'=>$file['id']))}"><p class="title text-overflow" data-toggle="tooltip" data-placement="top" title="" data-original-title="{$file.filename}">{$file.filename}</p></a>
                         <!--<p class="status-parent">-->
                         <!--<span class="label label-default">未使用</span>-->
                         <!--</p>-->
@@ -375,7 +375,7 @@ p{word-wrap:break-word}
             //swf文件路径
             swf: 'static/webuploader/Uploader.swf',
             // 文件接收服务端。
-            server: 'http://localhost/api/file/getfile',
+            server: '/api/file/getfile',
             // 选择文件的按钮。可选。
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
             pick: '#picker',
@@ -579,12 +579,26 @@ p{word-wrap:break-word}
             $('.js-type-btn').eq(0).addClass('active').siblings().removeClass('active');
             $('.js-type-btn').eq(0).attr('is_choose',1).siblings().attr('is_choose',"");
             var type = $("[is_choose='1']").attr('data-value');
-            var url = "http://localhost/index/teacher/browse?&keyword="+keyword+"&type="+type;
-            $.get(url,function(data){
-                console.log(data);
-                $('.material-list-container').html("");
-                $('.material-list-container').append(data);
-            });
+//            var url = "http://localhost/index/teacher/browse?&keyword="+keyword+"&type="+type;
+//            var url = "{:url('index/teacher/browse',array('keyword'=>'"+keyword+"','type'=>'"+type+"'))}";
+//            $.get(url,function(data){
+//                console.log(data);
+//                $('.material-list-container').html("");
+//                $('.material-list-container').append(data);
+//            },"json");
+
+            $.post(
+                "{:url('index/teacher/browse')}",
+                {
+                    'keyword':keyword,
+                    'type':type
+                },
+                function(data){
+                    $('.material-list-container').html("");
+                    $('.material-list-container').append(data);
+                },
+                "json"
+            );
         });
 
         $('.js-type-btn').click(function(){
@@ -592,13 +606,26 @@ p{word-wrap:break-word}
             $(this).attr('is_choose',1).siblings().attr('is_choose',"");
             var keyword = $('#keyword').val();
             var type = $("[is_choose='1']").attr('data-value');
-            var url = "http://localhost/index/teacher/browse?&keyword="+keyword+"&type="+type;
-
-            $.get(url,function(data){
-                console.log(data);
-                $('.material-list-container').html("");
-                $('.material-list-container').append(data);
-            });
+//            var url = "http://localhost/index/teacher/browse?&keyword="+keyword+"&type="+type;
+//            var url = "{:url('index/teacher/browse',array('keyword'=>'"+keyword+"','type'=>'"+type+"'))}";
+//            console.log(url);
+//            $.get(url,function(data){
+//                console.log(data);
+//                $('.material-list-container').html("");
+//                $('.material-list-container').append(data);
+//            },"json");
+            $.post(
+                "{:url('index/teacher/browse')}",
+                {
+                    'keyword':keyword,
+                    'type':type
+                },
+                function(data){
+                    $('.material-list-container').html("");
+                    $('.material-list-container').append(data);
+                },
+                "json"
+            );
         });
 
         $('.pagination').children().on('click',function(){
@@ -606,12 +633,26 @@ p{word-wrap:break-word}
             var keyword = $('#keyword').val();
             var type = $("[is_choose='1']").attr('data-value');
             var page = $(this).children().text();
-            var url = "http://localhost/index/teacher/browse?page="+page+"&keyword="+keyword+"&type="+type;
-            console.log(url);
-            $.get(url,function(data){
-                $('.material-list-container').html("");
-                $('.material-list-container').append(data);
-            });
+//            var url = "http://localhost/index/teacher/browse?page="+page+"&keyword="+keyword+"&type="+type;
+//            var url = "{:url('index/teacher/browse',array('keyword'=>'"+keyword+"','type'=>'"+type+"','page'=>'"+page+"'))}";
+//            console.log(url);
+//            $.get(url,function(data){
+//                $('.material-list-container').html("");
+//                $('.material-list-container').append(data);
+//            },"json");
+            $.post(
+                "{:url('index/teacher/browse')}",
+                {
+                    'keyword':keyword,
+                    'type':type,
+                    'page':page
+                },
+                function(data){
+                    $('.material-list-container').html("");
+                    $('.material-list-container').append(data);
+                },
+                "json"
+            );
         });
     })
 </script>

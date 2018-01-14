@@ -159,4 +159,30 @@ class Teacher extends User
             return 1;
         }
     }
+
+    public function down(){
+        $fileid = $this->request->param('fileid');
+        $file = CourseFile::get($fileid);
+        if(file_exists($file['filepath'])){
+            $fp=fopen($file['filepath'],"r");
+            $file_size=filesize($file['filepath']);
+            //下载文件需要用到的头
+            Header("Content-type: application/octet-stream");
+            Header("Accept-Ranges: bytes");
+            Header("Accept-Length:".$file_size);
+            Header("Content-Disposition: attachment; filename=".iconv("utf-8","gb2312",$file['filename']));
+            $buffer=1024;
+            $file_count=0;
+            //向浏览器返回数据
+            while(!feof($fp) && $file_count<$file_size){
+                $file_con=fread($fp,$buffer);
+                $file_count+=$buffer;
+                echo $file_con;
+            }
+            fclose($fp);
+        }
+        else{
+            $this->error('文件不存在');
+        }
+    }
 }

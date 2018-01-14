@@ -40,7 +40,7 @@
                 </div>
             </li>
             <li class="caption">
-                <p class="title text-overflow" data-toggle="tooltip" data-placement="top" title="" data-original-title="{$file.filename}">{$file.filename}</p>
+                <a href="{:url('index/teacher/down',array('fileid'=>$file['id']))}"><p class="title text-overflow" data-toggle="tooltip" data-placement="top" title="" data-original-title="{$file.filename}">{$file.filename}</p></a>
                 <!--<p class="status-parent">-->
                 <!--<span class="label label-default">未使用</span>-->
                 <!--</p>-->
