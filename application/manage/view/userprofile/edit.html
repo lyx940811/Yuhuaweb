@@ -118,7 +118,7 @@
                             <select name="depart"  class="form-control" >
                                 <option value="">--请选择--</option>
                                 {volist name="depart" id="c"}
-                                <option value="{$c.code}" {if condition="$vo['depart'] eq $c['code']"}selected="selected"{/if}>{$c.name}</option>
+                                <option value="{$c.code}" onclick="sec_depart({$c.id},'{$c.code}',{$vo.id})" {if condition="$vo['depart'] eq $c['code']"}selected="selected"{/if}>{$c.name}</option>
                                 {/volist}
                             </select>
                         </div>
@@ -126,8 +126,9 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label form-inline">专业</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" name="majors" value="{$vo.majors}"
-                                   placeholder="请输入专业">
+                            <select name="majors"  class="form-control" id="select_sec{$vo.id}">
+                                <option value="">--请选择--</option>
+                            </select>
                         </div>
                         <label class="col-sm-2 control-label form-inline">班级</label>
                         <div class="col-sm-4">

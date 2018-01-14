@@ -39,11 +39,13 @@ class Userprofile extends Base{
 
 
         $classroom = Db::table('classroom')->field('id,title')->select();
-        $depart = Db::table('category')->field('code,name')->where('parentcode=0')->select();
+        $depart = Db::table('category')->field('id,code,name')->where('parentcode=0')->select();
+        $category = Db::table('category')->field('code,name')->select();
 
         $this->assign('list',$newlist);
         $this->assign('typename','学生列表');
         $this->assign('classroom',$classroom);
+        $this->assign('category',$category);
         $this->assign('depart',$depart);
         $this->assign('page',$list->render());
         return $this->fetch();
@@ -106,13 +108,13 @@ class Userprofile extends Base{
                 'depart'=>$info['depart'],
                 'majors'=>$info['majors'],
                 'class'=>$info['class'],
-                'culture'=>$info['culture'],
-                'style'=>$info['style'],
-                'academic'=>$info['academic'],
-                'starttime'=>$info['starttime'],
-                'quarter'=>$info['quarter'],
-                'studentstatus'=>$info['studentstatus'],
-                'level'=>$info['level'],
+                'culture'=>isset($info['culture'])?$info['culture']:'',
+                'style'=>isset($info['style'])?$info['style']:'',
+                'academic'=>isset($info['academic'])?$info['academic']:'',
+                'starttime'=>isset($info['starttime'])?$info['starttime']:'',
+                'quarter'=>isset($info['quarter'])?$info['quarter']:'',
+                'studentstatus'=>isset($info['studentstatus'])?$info['studentstatus']:'',
+                'level'=>isset($info['level'])?$info['level']:'',
 //                'createTime'=>date('Y-m-d H:i:s',time()),
                 'createuserid'=>session('admin_uid'),
 
@@ -332,6 +334,22 @@ class Userprofile extends Base{
         $this->assign('search',$search);
         $this->assign('page',$list->render());
         return $this->fetch();
+    }
+
+    public function selectcategory(){
+        $info = input('get.');
+        $category = Db::table('category')->field('code,name')->where(['parentcode'=>$info['code']])->select();
+
+        if ($category){
+
+            return ['info'=>$category,'code'=>000];
+        }else{
+
+            return ['error'=>'没有此数据','code'=>100];
+
+        }
+
+
     }
 
 }
