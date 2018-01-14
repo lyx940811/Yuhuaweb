@@ -113,10 +113,10 @@
                                     <div class="form-group">
                                         <div class="center-block" style="width: 200px">
                                             <label class="radio-inline">
-                                                <input type="radio" name="user_locked" value="0"  {if condition="$vo['locked'] eq 0"}checked{/if}> 启用
+                                                <input type="radio" name="status" value="0"  {if condition="$vo['status'] eq 0"}checked{/if}> 禁用
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="user_locked" value="1"  {if condition="$vo['locked'] eq 1"}checked{/if}> 禁用
+                                                <input type="radio" name="status" value="1"  {if condition="$vo['status'] eq 1"}checked{/if}> 启用
                                             </label>
                                         </div>
                                     </div>
@@ -198,10 +198,10 @@
                         <div class="form-group">
                             <div class="center-block" style="width: 200px">
                                 <label class="radio-inline">
-                                    <input type="radio" name="user_locked" value="0" checked="checked"> 启用
+                                    <input type="radio" name="status" value="0" checked="checked"> 禁用
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="user_locked" value="1"> 禁用
+                                    <input type="radio" name="status" value="1"> 启用
                                 </label>
                             </div>
                         </div>

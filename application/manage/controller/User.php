@@ -65,12 +65,13 @@ class User extends Base{
         $data['type'] = 3;
         $data['roles'] = isset($info['user_roles'])?$info['user_roles']:0;
         $data['locked'] = $info['user_locked'];
+        $data['status'] = $info['status'];
         $data['title'] = 'static\index\images\avatar.png';
         $data['createdIp'] = request()->ip();
         $data['createdTime'] = date('Y-m-d H:i:s' ,time());
         $data['createUserID'] = session('admin_uid');
 
-        $ok = $user_table->field('nickname,username,email,roles,type,locked,title,createdIp,createdTime,createUserID')->insert($data);
+        $ok = $user_table->field('nickname,username,email,roles,type,locked,status,title,createdIp,createdTime,createUserID')->insert($data);
 
         if($ok){
             manage_log('101','003','添加用户',serialize($info),0);
@@ -119,9 +120,10 @@ class User extends Base{
         $data['type'] = $info['user_type'];
         $data['email'] = $info['user_email'];
         $data['roles'] = isset($info['user_roles'])?$info['user_roles']:0;
+        $data['status'] = isset($info['status'])?$info['status']:0;
         $data['locked'] = isset($info['user_locked'])?$info['user_locked']:0;
 
-        $ok = $user_table->field('nickname,email,roles,type,locked')->where('id',$id)->update($data);
+        $ok = $user_table->field('nickname,email,roles,type,locked,status')->where('id',$id)->update($data);
 
         if($ok){
             manage_log('101','004','修改用户',serialize($info),0);
