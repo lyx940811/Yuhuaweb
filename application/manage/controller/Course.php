@@ -19,7 +19,9 @@ class Course extends Base{
             ->paginate(20);
 
 
-        $category = Db::table('category')->field('code,name')->order('grade desc')->select();
+//        $category = Db::table('category')->field('code,name')->order('grade desc')->select();
+        $category=$this->subtree(0);
+
         $tags = Db::table('tag')->select();
         $teacher = Db::table('teacher_info')->field('id,realname')->select();
 
@@ -32,6 +34,20 @@ class Course extends Base{
         return $this->fetch();
     }
 
+    //递归查找无线分类
+    public function subtree($id=0) {
+        $arr = Db::table('category')->field('code,name,parentcode,grade')->where('parentcode',$id)->select();
+        $subs = array(); // 子孙数组
+        foreach($arr as $v) {
+            if($v['parentcode'] == $id) {
+//                $v['lev'] = $lev;
+                $subs[] = $v; // 举例说找到array('id'=>1,'name'=>'安徽','parent'=>0),
+//                dump($v['parentcode']);
+                $subs = array_merge($subs,$this->subtree($v['code']));
+            }
+        }
+        return $subs;
+    }
 
     public function add(){
         $info = input('post.');
@@ -81,7 +97,7 @@ class Course extends Base{
 
     public function edit(){
 
-        $info = input('get.');
+        $info = input('post.');
 
         $msg  =   [
             'title.require' => '课程名称不能为空',
