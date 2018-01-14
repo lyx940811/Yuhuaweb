@@ -176,7 +176,7 @@ p{word-wrap:break-word}
         <tr id="upload-file-tr-1227" data-role="item" data-converthash="ch-coursematerial/126/2018104105227-lqp1g2.xls">
             <!--<td><input value="1227" type="checkbox" data-role="batch-item"></td>-->
             <td>
-                <a class="link-dark" href="http://www.hnhgjx.cn:1700/course_set/126/manage/file/1227" target="_blank" rel="tooltip" title="" data-original-title="{$file.filename}">{$file.filename}</a><br>
+                <a class="link-dark" href="{:url('index/course/down',array('course'=>$file['courseid'],'fileid'=>$file['id']))}" target="_blank" rel="tooltip" title="" data-original-title="{$file.filename}">{$file.filename}</a><br>
             </td>
             <td>文档</td>
             <td>{$file.filesize|attrFilesize}</td>
@@ -363,7 +363,7 @@ $("#modal").on("shown.bs.modal",function(){
                 //swf文件路径
                 swf: 'static/webuploader/Uploader.swf',
                 // 文件接收服务端。
-                server: 'http://localhost/api/file/getfile',
+                server: '/api/file/getfile',
                 // 选择文件的按钮。可选。
                 // 内部根据当前运行是创建，可能是input元素，也可能是flash.
                 pick: '#picker',

@@ -28,17 +28,21 @@ class Coursetask extends Base{
         }
 
         $list = Db::table('course_task a')
-            ->field('a.id,a.title,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.chapterid,a.type,a.mediaSource,a.mediaSource,a.startTime,a.endTime,b.title btit')
+            ->field('a.id,a.title,a.mode,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.chapterid,a.type,a.mediaSource,a.mediaSource,a.startTime,a.endTime,b.title btit')
             ->join('course b','a.courseId=b.id','LEFT')
             ->where($where)
             ->paginate(20,['query'=>$info]);
 
         $course = Db::table('course')->field('id,title')->select();
+        //这里冲突了
         $chapter = Db::table('course_chapter')->field('id,title')->where('courseid',$id)->select();
+        //$chapter = Db::table('course_chapter')->field('id,title')->where('courseid='.request()->get('cid'))->select();
+        $taskmode = Db::table('task_mode')->field('id,name')->select();
 
         $this->assign('list',$list);
         $this->assign('course',$course);
         $this->assign('chapter',$chapter);
+        $this->assign('taskmode',$taskmode);
         $this->assign('typename','课程任务');
         $this->assign('page',$list->render());
         return $this->fetch();

@@ -48,11 +48,13 @@ class Ad extends Base{
             'title.require' => '名称不能为空',
             'title.length' => '名称长度太短',
             'img.require' => '图片不能为空',
+            'type.require' => '类型不能为空',
         ];
 
         $validate = new Validate([
             'title'  => 'require|length:2,100',
             'img'  => 'require',
+            'type'  => 'require',
         ],$msg);
 
         $validate->check($info);
