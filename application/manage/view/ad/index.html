@@ -114,6 +114,16 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <div class="center-block" style="width: 200px">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="flag" value="1"  {if condition="$vo['flag'] eq 1"}checked{/if}> 启用
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="flag" value="0"  {if condition="$vo['flag'] eq 0"}checked{/if}> 禁用
+                                            </label>
+                                        </div>
+                                    </div>
                                     <input type="hidden" name="rid" value="{$vo.id}"/>
                                     <!-- 模态框底部 -->
                                     <div class="modal-footer">
@@ -189,6 +199,16 @@
                                     <option value="{$t.name}">{$t.name}</option>
                                     {/volist}
                                 </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="center-block" style="width: 200px">
+                                <label class="radio-inline">
+                                    <input type="radio" name="flag" value="1"  {if condition="$vo['flag'] eq 1"}checked{/if}> 启用
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="flag" value="0"  {if condition="$vo['flag'] eq 0"}checked{/if}> 禁用
+                                </label>
                             </div>
                         </div>
                         <input type="hidden" name="rid" value="" id="selfcode"/>

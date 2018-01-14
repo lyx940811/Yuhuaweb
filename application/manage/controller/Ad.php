@@ -27,6 +27,7 @@ class Ad extends Base{
 
         $list = Db::name('ad a')
             ->where($where)
+            ->order('createdTime desc')
             ->paginate(20,false,['query'=>request()->get()]);
 
 
@@ -72,7 +73,7 @@ class Ad extends Base{
             'type'=> $info['type'],
             'createdTime'=>date('Y-m-d H:i:s',time()),
             'userid'=>session('admin_uid'),
-//            'flag'=>1,
+            'flag'=>$info['flag'],
         ];
 
         $ok = $role_table->insert($data);
@@ -125,6 +126,7 @@ class Ad extends Base{
             'img'=> $info['img'],
             'content'=>$info['content'],
             'type'=> $info['type'],
+            'flag'=>$info['flag'],
 //            'createdTime'=>date('Y-m-d H:i:s',time()),
 //            'userid'=>session('admin_uid'),
         ];

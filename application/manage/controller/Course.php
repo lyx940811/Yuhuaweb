@@ -62,7 +62,7 @@ class Course extends Base{
             'tags'          => $info['tags'],
             'categoryId'    => $info['categoryId'],
             'serializeMode' => $info['serializeMode'],
-//            'status'=> 1,
+            'status'=>$info['status'],
             'smallPicture'  => $info['pic'],
             'userid'        => session('admin_uid'),
             'about'        => $info['about'],
@@ -81,7 +81,7 @@ class Course extends Base{
 
     public function edit(){
 
-        $info = input('post.');
+        $info = input('get.');
 
         $msg  =   [
             'title.require' => '课程名称不能为空',
@@ -124,10 +124,11 @@ class Course extends Base{
             'serializeMode' => $info['serializeMode'],
             'userid'        => session('admin_uid'),
             'about'        => $info['about'],
+            'status'=>$info['status'],
 //            'createdTime'   =>date('Y-m-d H:i:s',time()),
         ];
 
-        $ok = $role_table->field('title,subtitle,tags,categoryId,serializeMode,smallPicture,userid,about')->where('id',$id)->update($data);
+        $ok = $role_table->field('title,subtitle,tags,categoryId,serializeMode,smallPicture,userid,about,status')->where('id',$id)->update($data);
 
         if($ok){
             manage_log('108','004','修改课程',serialize($data),0);
