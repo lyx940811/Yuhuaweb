@@ -29,13 +29,14 @@ class Login extends Base
         if(UserModel::get(['email'=>$data['email']])){
             return json_data(120,$this->codeMessage[120],'');
         }
-        if(UserModel::get(['username'=>$data['username']])){
+        else if(UserModel::get(['username'=>$data['username']])){
             return json_data(120,$this->codeMessage[120],'');
         }
-        if(UserModel::get(['mobile'=>$data['mobile']])){
+        else if(UserModel::get(['mobile'=>$data['username']])){
             return json_data(120,$this->codeMessage[120],'');
         }
         else{
+
             //verified data
             $validate = Loader::validate('User');
             if(!$validate->check($data)){
