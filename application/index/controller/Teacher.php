@@ -127,7 +127,7 @@ class Teacher extends User
         $page = $file->render();
         $this->assign('page', $page);
 
-        $this->assign('courseid',$map['courseid']);
+        $this->assign('course',Course::get($map['courseid']));
         return $this->fetch();
     }
 

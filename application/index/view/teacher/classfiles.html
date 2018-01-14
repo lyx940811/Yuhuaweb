@@ -106,17 +106,22 @@ p{word-wrap:break-word}
               
 
 <div class="es-section course-manage-header clearfix">
-    <a href="http://www.hnhgjx.cn:1700/course/154">
-      <img class="picture" src="./teacher_classfiles_files/courseSet.png"> <!-- courseSet.largePicture -->
+    <a href="{:url('index/course/catalogue',array('course'=>$course['id']))}">
+        {notempty name="course.smallPicture"}
+            <img class="picture" src="/{$course->smallPicture}"> <!-- courseSet.largePicture -->
+        {else /}
+        <img class="picture" src="/static/index/img/courseSet.png">
+        {/notempty}
     </a>
   <h1 class="title">
-        <a class="link-dark" href="http://www.hnhgjx.cn:1700/course/154">11111</a>
+        <a class="link-dark" href="">{$course->title}</a>
           <span class="label label-warning ">未发布</span>
       </h1>
 
   <div class="teachers">
-          教师：
-                      <a href="http://www.hnhgjx.cn:1700/user/1">admin</a>
+          教师：       {notempty name="course.teacherinfo.realname"}
+                      <a href="">{$course->teacherinfo->realname}</a>
+                        {/notempty}
             </div>
 
   <div class="toolbar hidden-xs">
@@ -477,7 +482,7 @@ $("#modal").on("shown.bs.modal",function(){
                     "{:url('index/teacher/savecoursefile')}",
                     {
                         'filepath':response['data'],
-                        'courseid':{$courseid}
+                        'courseid':{$course->id}
                     },
                     function(data){
                         if(data==1){

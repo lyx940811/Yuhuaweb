@@ -33,7 +33,9 @@
     <div class="container">
         <ol class="breadcrumb breadcrumb-o">
             <li><a href="#">首页</a></li>
+            {notempty name="course.category.name"}
             <li><a>{$course->category->name}</a></li>
+            {/notempty}
             <!--<li><a href="#course/explore/gongyefenxiyujianyan">工业分析与检验</a></li>-->
             <!--<li><a href="#course/118">化学分析基本操作技能 </a></li>-->
             <!--<li class="active">默认教学计划 </li>-->

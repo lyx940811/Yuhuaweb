@@ -53,7 +53,7 @@ class Usercenter extends Home
      * @return mixed
      */
     public function collect(){
-        $course = CourseFavorite::where('userid',$this->user->id)
+        $course = CourseFavorite::where('userid',$this->user->id)->where('courseid!=0')
             ->paginate(8);
         $this->assign('course',$course);
         $this->assign('page',$course->render());
@@ -120,7 +120,7 @@ class Usercenter extends Home
 //            $c['commentsNum']   = Db::name('course_review')->where('courseid',$c['id'])->count();
 //        }
 
-        $course = StudyResult::where('userid',$this->user->id)->group('courseid')->paginate(8);
+        $course = StudyResult::where('userid',$this->user->id)->where('courseid!=0')->group('courseid')->paginate(8);
         $this->assign('course',$course);
 
         $page = $course->render();

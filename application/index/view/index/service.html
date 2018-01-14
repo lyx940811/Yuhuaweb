@@ -1,0 +1,145 @@
+{extend name="public/layout"}
+{block name="title"}服务协议{/block}
+{block name="link"}
+<link rel="stylesheet" href="__CSS__base.css">
+<link rel="stylesheet" href="__CSS__bootstrapValidator.min.css">
+<link rel="stylesheet" href="__CSS__student/toast.style.css">
+{/block}
+{block name="style"}
+<style>
+    .lt-ie9 {
+        overflow: hidden;
+    }
+
+    .ie-mask {
+        z-index: 999999;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        filter: alpha(opacity=50);
+        opacity: 0.5;
+        background: #000;
+    }
+
+    .ie-alert-wrap {
+        position: absolute;
+        z-index: 1000000;
+        margin: -200px auto 0;
+        top: 50%;
+        left: 0;
+        right: 0;
+        text-align: center;
+    }
+
+    .ie-alert {
+        width: 514px;
+        height: 397px;
+        margin: 0 auto;
+    }
+
+    .ie-alert__chrome,
+    .ie-alert__firefox {
+        position: absolute;
+        z-index: 1000001;
+        display: block;
+        bottom: 48px;
+        width: 60px;
+        height: 80px;
+    }
+
+    .ie-alert__chrome {
+        left: 50%;
+        margin-left: -80px;
+    }
+
+    .ie-alert__firefox {
+        right: 50%;
+        margin-right: -80px;
+    }
+</style>
+{/block}
+{block name="script"}
+<script src="__JS__fix-ie.js?version=8.0.6"></script>
+{/block}
+
+{block name="container"}
+<div id="content-container" class="container">
+    <div class="es-section">
+        <div class="section-header"><h1>服务协议</h1></div>
+        <p>服务条款</p>
+
+    </div>
+</div>
+{/block}
+
+{block name="javascript"}
+<script src="__JS__bootstrap.min.js"></script>
+<script src="__JS__bootstrapValidator.min.js"></script>
+<script>
+    $(function(){
+        $('#register-btn').click(function(){
+            var username = $('#register_nickname').val();
+            var email    = $('#register_email').val();
+            var password = $('#register_password').val();
+            if(username!=''&&email!=''&&password!=''){
+                $.post(
+                    "{:url('index/index/register')}",
+                    {
+                        'username':username,
+                        'email':email,
+                        'password':password,
+                    },
+                    function(data){
+                        if(data['code']==0){
+                            alert("success");
+                        }
+                        else{
+                            alert(data['message']);
+                        }
+                    },
+                    "json"
+                );
+            }
+
+        });
+
+        $('.js-btn-login').click(function(){
+            console.log();
+            var login_username = $('#login_username').val();
+            var login_password = $('#login_password').val();
+            if(login_username!=''&&login_password!=''){
+                $.post(
+                    "{:url('index/index/loginajax')}",
+                    {
+                        'username':login_username,
+                        'password':login_password
+                    },
+                    function(data){
+                        if(data['code']==0){
+                            $.Toast("", "登录成功正在为您跳转...", "success", {
+                                stack: true,
+                                has_icon:true,
+                                has_close_btn:true,
+                                fullscreen:false,
+                                timeout:1500,
+                                sticky:false,
+                            });
+                            setTimeout(function(){
+                                window.location.href="{:url('index/index/index')}";
+                            },2000)
+                        }
+                        else{
+                            $(".help-block").html(data['message']);
+                        }
+                    },
+                    "json"
+                );
+            }
+
+        });
+
+    })
+</script>
+{/block}

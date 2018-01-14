@@ -170,6 +170,9 @@ class Index extends Home
         return $result;
     }
 
+    public function service(){
+        return $this->fetch();
+    }
     /**
      * 找回密码
      */

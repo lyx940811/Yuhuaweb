@@ -13,7 +13,13 @@
         <div class="course-item">
           <div class="course-img">
             <a href="{:url('index/course/catalogue',array('course'=>$course['courseid']))}">
-              <img src="/{$course->course->smallPicture}" alt="{$course->course->title}" class="img-responsive">
+              {present name="course.course.smallPicture"}
+              {notempty name="course.course.smallPicture"}
+              <img src="/{$course->course->smallPicture}" alt="" class="img-responsive"> <!-- courseSet.largePicture -->
+              {else /}
+              <img src="/static/index/img/courseSet.png" class="img-responsive">
+              {/notempty}
+              {/present}
             </a>
           </div>
           <div class="course-info">
