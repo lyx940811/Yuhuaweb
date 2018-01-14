@@ -123,8 +123,9 @@
                                         <div class="col-sm-10">
                                             <select name="mode" class="form-control">
                                                 <option value="">--请选择--</option>
-                                                <option value="0">模式一</option>
-                                                <option value="1">模式二</option>
+                                                {volist name="taskmode" id="t"}
+                                                <option value="{$t.id}" {if condition="$t['id'] eq $vo['mode']"}selected="selected"{/if}>{$t.name}</option>
+                                                {/volist}
                                             </select>
                                         </div>
                                     </div>
@@ -256,8 +257,9 @@
                             <div class="col-sm-10">
                                 <select name="mode" id="mode" class="form-control">
                                     <option value="">--请选择--</option>
-                                    <option value="0">模式一</option>
-                                    <option value="1">模式二</option>
+                                    {volist name="taskmode" id="t"}
+                                    <option value="{$t.id}">{$t.name}</option>
+                                    {/volist}
                                 </select>
                             </div>
                         </div>
