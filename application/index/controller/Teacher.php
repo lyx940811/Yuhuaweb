@@ -35,7 +35,7 @@ class Teacher extends User
             ->join('course c','a.courseid=c.id')
             ->join('category ca','a.category_id=ca.code')
             ->where('c.userid',UID)
-            ->field('a.*,c.userid')
+            ->field('a.*,c.userid,c.title as coursename,ca.name as catename')
             ->paginate(10);
 
         $this->assign('asklist',$asklist);

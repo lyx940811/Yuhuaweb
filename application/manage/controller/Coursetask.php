@@ -34,7 +34,9 @@ class Coursetask extends Base{
             ->paginate(20,['query'=>$info]);
 
         $course = Db::table('course')->field('id,title')->select();
+        //这里冲突了
         $chapter = Db::table('course_chapter')->field('id,title')->where('courseid',$id)->select();
+        //$chapter = Db::table('course_chapter')->field('id,title')->where('courseid='.request()->get('cid'))->select();
 
         $this->assign('list',$list);
         $this->assign('course',$course);

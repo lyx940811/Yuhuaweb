@@ -59,14 +59,10 @@
                             <div class="modal-body">
                                 <form class="form-horizontal" role="form" id="form{$vo.id}" method="post" action="{:url('edit')}">
                                     <div class="form-group">
-                                        <label for="rolecode" class="col-sm-2 control-label">权限组名称</label>
+                                        <label for="name" class="col-sm-2 control-label">权限组名称</label>
                                         <div class="col-sm-5">
-                                            <select name="rolecode" class="form-control">
-                                                <option value="">--请选择--</option>
-                                                {volist name="roles" id="r"}
-                                                <option value="{$r.id}" {if condition="$vo['rolecode'] eq $r['id']"}selected="selected"{/if}>{$r.name}</option>
-                                                {/volist}
-                                            </select>
+                                            <input type="text" class="form-control" name="name" value="{$vo.name}"
+                                                   placeholder="请输入权限组名称">
                                         </div>
                                     </div>
                                     <div class="form-group">

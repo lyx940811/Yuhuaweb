@@ -110,12 +110,12 @@ class Rolefunction extends Base{
         $info = input('post.');
 
         $msg  =   [
-            'rolecode.require' => '权限组code不能为空',
-            'rolecode.require' => '角色名称不能为空',
+            'name.require' => '权限组名称不能为空',
+            'name.require' => '权限组名称太短',
         ];
 
         $validate = new Validate([
-            'rolecode'  => 'require|length:1,20',
+            'name'  => 'require|length:1,20',
         ],$msg);
 
         $validate->check($info);
@@ -131,16 +131,19 @@ class Rolefunction extends Base{
 
         $id = $info['rid']+0;
 
-        $have = $role_table->field('id')->where("id='$id'")->find();
+        $have = $role_table->field('id,rolecode')->where("id='$id'")->find();
 
         if(!$have){//如果没这个code
             return ['error'=>'没有此角色','code'=>'300'];
         }
         $funcs = isset($info['functioncode'])?implode(',',$info['functioncode']):'';
 
-        $ok = $role_table->field('rolecode,functioncode')->where('id',$id)->update(['rolecode' => $info['rolecode'],'functioncode'=>$funcs]);
+        $ok = $role_table->field('functioncode')->where('id',$id)->update(['functioncode'=>$funcs]);
 
         if($ok){
+
+            Db::table('role')->where('id='.$have['rolecode'])->update(['name'=>$info['name'],'data'=>$info['name']]);
+
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];
