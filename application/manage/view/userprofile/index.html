@@ -215,19 +215,19 @@
     //     //     });
     //     // })
     // })
-    function sec_depart(id,code) {
+    function sec_depart(id,code,mainid) {
         $.get("{:url('selectcategory')}?code="+code,function (data) {
 
             if(data.code=='000'){
                // console.log(data.info)
-                var html = '';
+                var html = '<option value="">--请选择--</option>';
                 $.each(data.info,function (id,item) {
                     // console.log(item.)
                     html +='<option value="'+item.code+'">'+item.name+'</option>'
                 })
 
-                console.log($('#select_sec{$vo.id}'))
-                $('#select_sec{$vo.id}').appendTo(1)
+                // console.log(html)
+                $('#select_sec'+mainid).html(html)
                 // alert(data.info)
                 // $('#myModal2').modal('hide')
                 // window.location.reload();

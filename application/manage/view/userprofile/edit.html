@@ -118,7 +118,7 @@
                             <select name="depart"  class="form-control" >
                                 <option value="">--请选择--</option>
                                 {volist name="depart" id="c"}
-                                <option value="{$c.code}" onclick="sec_depart({$c.id},'{$c.code}')" {if condition="$vo['depart'] eq $c['code']"}selected="selected"{/if}>{$c.name}</option>
+                                <option value="{$c.code}" onclick="sec_depart({$c.id},'{$c.code}',{$vo.id})" {if condition="$vo['depart'] eq $c['code']"}selected="selected"{/if}>{$c.name}</option>
                                 {/volist}
                             </select>
                         </div>

@@ -44,7 +44,7 @@
             <td>{$vo.status?'启用':'禁用'}</td>
             <td>
                 {if condition="$vo.locked == 0"}
-                未锁定
+                已解锁
                 {elseif condition="$vo.locked == 1"/}
                 已锁定
                 {/if}
