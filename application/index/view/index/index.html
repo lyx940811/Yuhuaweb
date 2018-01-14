@@ -33,12 +33,12 @@
         <div class="swiper-wrapper">
             {volist name="ad" id="ad"}
             <div class="swiper-slide">
-                <a href="{$ad.url}" target="_blank"><img class="img-responsive" src="http://localhost/{$ad.img}">
+                <a href="{$ad.url}" target="_blank"><img class="img-responsive" src="/{$ad.img}">
                 </a>
             </div>
             {/volist}
             <!--<div class="swiper-slide">-->
-                <!--<a href="#" target="_blank"><img class="img-responsive" src="http://localhost/uploads/pictures/c1.jpg">-->
+                <!--<a href="#" target="_blank"><img class="img-responsive" src="uploads/pictures/c1.jpg">-->
                 <!--</a>-->
             <!--</div>-->
         </div>
@@ -110,9 +110,9 @@
                               <div class="course-img">
                                   <a href="{:url('index/course/catalogue',array('course'=>$course['id']))}">
                                       {notempty name="course.smallPicture"}
-                                      <img src="http://localhost/{$course.smallPicture}" alt="化学基础" class="img-responsive">
+                                      <img src="/{$course.smallPicture}" alt="化学基础" class="img-responsive">
                                       {else /}
-                                      <img src="http://localhost/__IMG__courseSet.png" alt="化学基础" class="img-responsive">
+                                      <img src="__IMG__courseSet.png" alt="化学基础" class="img-responsive">
                                       {/notempty}
                                   </a>
                               </div>

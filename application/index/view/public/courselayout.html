@@ -223,9 +223,9 @@
                             <div class="media-left">
                                 <a class="js-user-card" href="#user/7855" data-card-url="/user/7855/card/show" data-user-id="7855" data-original-title="" title="">
                                     {present name="course.teacherinfo.user.title"}
-                                    <img class="avatar-md" src="http://localhost/{$course->teacherinfo->user->title}">
+                                    <img class="avatar-md" src="/{$course->teacherinfo->user->title}">
                                     {else /}
-                                    <img class="avatar-md" src="http://localhost/static\index\images\avatar.png">
+                                    <img class="avatar-md" src="/static\index\images\avatar.png">
                                     {/present}
                                 </a>
                             </div>
@@ -252,7 +252,7 @@
                             {volist name="student" id="stu"}
                             <li>
                                 <a class=" js-user-card" href="#user/1" data-card-url="/user/1/card/show" data-user-id="1" data-original-title="" title="">
-                                    <img class="avatar-sm" src="http://localhost/{$stu.title}">
+                                    <img class="avatar-sm" src="/{$stu.title}">
                                 </a>
                             </li>
                             {/volist}
