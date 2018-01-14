@@ -51,16 +51,20 @@
                 <td>{if condition="$vo['sex'] eq 0"}男{elseif condition="$vo['sex'] eq 1"}女{else/}保密{/if}</td>
                 <td>{$vo.depart}</td>
                 <td>{$vo.majors}</td>
-                {if condition="$vo.style == 0"}
-                <td>全日制</td>
-                {elseif condition="$vo.style == 1"/}
-                <td>非全日制</td>
-                {/if}
-                {if condition="$vo.studentstatus == 0"}
-                <td>在籍</td>
-                {elseif condition="$vo.studentstatus == 1"/}
-                <td>毕业</td>
-                {/if}
+                <td>{$vo.class}</td>
+                <td>
+                    {if condition="$vo.style == 0"}
+                    全日制
+                    {elseif condition="$vo.style == 1"/}
+                    非全日制
+                    {/if}
+                    {if condition="$vo.studentstatus == 0"}
+                    在籍
+                    {elseif condition="$vo.studentstatus == 1"/}
+                    毕业
+                    {/if}
+                </td>
+                <td>{$vo.studentstatus?'在籍':'毕业';}</td>
                 <td>
                     {php}
                     if(check($uid,'/manage/userprofile/edit')){
