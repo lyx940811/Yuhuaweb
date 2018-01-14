@@ -217,6 +217,9 @@
     // })
     function sec_depart(id,code,mainid) {
         $.get("{:url('selectcategory')}?code="+code,function (data) {
+            if(data.data.code==120){
+                alert(data.msg)
+            }
 
             if(data.code=='000'){
                // console.log(data.info)
