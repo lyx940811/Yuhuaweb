@@ -199,6 +199,43 @@
             }
         });
     }
+    
+    // $('select[name="depart"]').change(function () {
+    //     console.log($(this).children())
+    //     // $.each($(this).children(),function (e,item) {
+    //     //     $.get("{:url('selectcategory')}?code="+$(item).val(),function (data) {
+    //     //         console.log(data)
+    //     //         if(data.code=='000'){
+    //     //             // alert(data.info)
+    //     //             // $('#myModal2').modal('hide')
+    //     //             // window.location.reload();
+    //     //         }else{
+    //     //
+    //     //         }
+    //     //     });
+    //     // })
+    // })
+    function sec_depart(id,code) {
+        $.get("{:url('selectcategory')}?code="+code,function (data) {
+
+            if(data.code=='000'){
+               // console.log(data.info)
+                var html = '';
+                $.each(data.info,function (id,item) {
+                    // console.log(item.)
+                    html +='<option value="'+item.code+'">'+item.name+'</option>'
+                })
+
+                console.log($('#select_sec{$vo.id}'))
+                $('#select_sec{$vo.id}').appendTo(1)
+                // alert(data.info)
+                // $('#myModal2').modal('hide')
+                // window.location.reload();
+            }else{
+                alert(data.error)
+            }
+        });
+    }
 </script>
 </body>
 </html>

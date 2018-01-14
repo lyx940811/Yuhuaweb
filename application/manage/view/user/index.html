@@ -25,7 +25,8 @@
             <th>类型</th>
             <th>邮箱</th>
             <th>IP</th>
-            <th>是否禁用</th>
+            <th>启用状态</th>
+            <th>锁定状态</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -37,14 +38,15 @@
             <td><img src="__ROOT__/{$vo.title}" title="用户头像" width="20px"/></td>
             <td>{$vo.mobile}</td>
             <td>{$vo.name}</td>
-            <td>{if condition="$vo['type'] eq '0'"}超级管理员{elseif condition="$vo['type'] eq '1'"}管理员{elseif condition="$vo['type'] eq '2'"}教师{elseif condition="$vo['type'] eq '3'"}学员{elseif condition="$vo['type'] eq '4'"}企业{/if}</td>
+            <td>{if condition="$vo['type'] eq '0'"}超级管理员{elseif condition="$vo['type'] eq '1'"}管理员{elseif condition="$vo['type'] eq '2'"}教师{elseif condition="$vo['type'] eq '3'"}学员{elseif condition="$vo['type'] eq '3'"}企业{/if}</td>
             <td>{$vo.email}</td>
             <td>{$vo.createdIp}</td>
+            <td>{$vo.status?'启用':'禁用'}</td>
             <td>
                 {if condition="$vo.locked == 0"}
-                启用
+                未锁定
                 {elseif condition="$vo.locked == 1"/}
-                禁用
+                已锁定
                 {/if}
             </td>
             <td>
