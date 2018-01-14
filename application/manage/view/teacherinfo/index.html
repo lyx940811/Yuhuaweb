@@ -187,11 +187,10 @@
                                             <div class="col-sm-2">
                                                 <select name="degree" class="form-control">
                                                     <option value="">--请选择--</option>
-                                                    <option value="0" {if condition="$vo['degree'] eq 0"}selected{/if}>初中</option>
-                                                    <option value="1" {if condition="$vo['degree'] eq 1"}selected{/if}>高中</option>
-                                                    <option value="2" {if condition="$vo['degree'] eq 2"}selected{/if}>中专</option>
-                                                    <option value="3" {if condition="$vo['degree'] eq 3"}selected{/if}>专科</option>
-                                                    <option value="4" {if condition="$vo['degree'] eq 4"}selected{/if}>本科及以上</option>
+                                                    <option value="0" {if condition="$vo['degree'] eq 0"}selected{/if}>学士</option>
+                                                    <option value="1" {if condition="$vo['degree'] eq 1"}selected{/if}>硕士</option>
+                                                    <option value="2" {if condition="$vo['degree'] eq 2"}selected{/if}>博士</option>
+                                                    <option value="3" {if condition="$vo['degree'] eq 3"}selected{/if}>博士后</option>
 
                                                 </select>
                                             </div>
@@ -199,8 +198,11 @@
                                             <div class="col-sm-2">
                                                 <select name="topeducation" class="form-control">
                                                     <option value="">--请选择--</option>
-                                                    <option value="0" {if condition="$vo['topeducation'] eq 0"}selected{/if}>第一学历</option>
-                                                    <option value="1" {if condition="$vo['topeducation'] eq 1"}selected{/if}>第二学历</option>
+                                                    <option value="0" {if condition="$vo['topeducation'] eq 0"}selected{/if}>初中</option>
+                                                    <option value="1" {if condition="$vo['topeducation'] eq 1"}selected{/if}>高中</option>
+                                                    <option value="2" {if condition="$vo['topeducation'] eq 2"}selected{/if}>中专</option>
+                                                    <option value="3" {if condition="$vo['topeducation'] eq 3"}selected{/if}>专科</option>
+                                                    <option value="4" {if condition="$vo['topeducation'] eq 4"}selected{/if}>本科及以上</option>
 
                                                 </select>
                                             </div>
@@ -208,8 +210,10 @@
                                             <div class="col-sm-2">
                                                 <select name="topdegree" class="form-control">
                                                     <option value="">--请选择--</option>
-                                                    <option value="0" {if condition="$vo['topdegree'] eq 0"}selected{/if}>第一学位</option>
-                                                    <option value="1" {if condition="$vo['topdegree'] eq 1"}selected{/if}>第二学位</option>
+                                                    <option value="0" {if condition="$vo['topdegree'] eq 0"}selected{/if}>学士</option>
+                                                    <option value="1" {if condition="$vo['topdegree'] eq 1"}selected{/if}>硕士</option>
+                                                    <option value="2" {if condition="$vo['topdegree'] eq 2"}selected{/if}>博士</option>
+                                                    <option value="3" {if condition="$vo['topdegree'] eq 3"}selected{/if}>博士后</option>
 
                                                 </select>
                                             </div>
@@ -375,6 +379,17 @@
                                 <div class="col-sm-2">
                                     <select name="degree" class="form-control">
                                         <option value="">--请选择--</option>
+                                        <option value="0">学士</option>
+                                        <option value="1">硕士</option>
+                                        <option value="2">博士</option>
+                                        <option value="3">博士后</option>
+
+                                    </select>
+                                </div>
+                                <label class="col-sm-1 control-label form-inline">最高学历</label>
+                                <div class="col-sm-2">
+                                    <select name="topeducation" class="form-control">
+                                        <option value="">--请选择--</option>
                                         <option value="0">初中</option>
                                         <option value="1">高中</option>
                                         <option value="2">中专</option>
@@ -383,21 +398,13 @@
 
                                     </select>
                                 </div>
-                                <label class="col-sm-1 control-label form-inline">最高学历</label>
-                                <div class="col-sm-2">
-                                    <select name="topeducation" class="form-control">
-                                        <option value="">--请选择--</option>
-                                        <option value="0">第一学历</option>
-                                        <option value="1">第二学历</option>
-
-                                    </select>
-                                </div>
                                 <label class="col-sm-1 control-label form-inline">最高学位</label>
                                 <div class="col-sm-2">
                                     <select name="topdegree" class="form-control">
-                                        <option value="">--请选择--</option>
-                                        <option value="0">第一学位</option>
-                                        <option value="1">第二学位</option>
+                                        <option value="0">学士</option>
+                                        <option value="1">硕士</option>
+                                        <option value="2">博士</option>
+                                        <option value="3">博士后</option>
 
                                     </select>
                                 </div>
