@@ -15,7 +15,7 @@ class Companysize extends Base{
 
     public function index(){
 
-        $list = Db::table('companysize')->field('id,classname,code,Flag')->paginate(20);
+        $list = Db::table('companysize')->field('id,classname,code,flag')->paginate(20);
 
         $this->assign('list',$list);
         $this->assign('page',$list->render());
