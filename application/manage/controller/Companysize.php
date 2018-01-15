@@ -8,6 +8,8 @@
 namespace app\manage\controller;
 
 use think\Db;
+use think\Validate;
+
 
 class Companysize extends Base{
 
@@ -25,7 +27,7 @@ class Companysize extends Base{
         $info = input('get.');
 
         $msg  =   [
-            'name.require' => '区域名称不能为空',
+            'name.require' => '名称不能为空',
             'code.require' => '代码不能为空',
         ];
         $validate = new Validate([
@@ -42,7 +44,7 @@ class Companysize extends Base{
         }
 
 
-        $role_table = Db::name('companynature');
+        $role_table = Db::name('companysize');
 
         $is_have = $role_table->field('id')->where(['code'=>['eq',$info['code']]])->find();
 
@@ -60,7 +62,7 @@ class Companysize extends Base{
 
         if($ok){
 
-            manage_log('104','003','添加广告',serialize($data),0);
+            manage_log('104','003','添加企业规模',serialize($data),0);
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
@@ -71,7 +73,7 @@ class Companysize extends Base{
         $info = input('post.');
 
         $msg  =   [
-            'name.require' => '区域名称不能为空',
+            'name.require' => '名称不能为空',
             'code.require' => '代码不能为空',
         ];
         $validate = new Validate([
@@ -88,7 +90,7 @@ class Companysize extends Base{
         }
 
 
-        $role_table = Db::name('companynature');
+        $role_table = Db::name('companysize');
         $id = $info['rid']+0;
         $is_have = $role_table->field('id')->where("id <> $id AND code={$info['code']}")->find();
 
@@ -104,7 +106,7 @@ class Companysize extends Base{
         $ok = $role_table->where('id',$id)->update($data);
         if(is_numeric($ok)){
 
-            manage_log('104','003','添加广告',serialize($data),0);
+            manage_log('104','003','添加企业规模',serialize($data),0);
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
