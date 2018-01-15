@@ -13,7 +13,7 @@ class Tasktype extends Base{
 
     public function index(){
 
-        $list = Db::table('task_type')->field('id,name,code,Flag')->paginate(20);
+        $list = Db::table('task_type')->field('id,name,code,Flag,seq')->paginate(20);
 
         $this->assign('list',$list);
         $this->assign('page',$list->render());

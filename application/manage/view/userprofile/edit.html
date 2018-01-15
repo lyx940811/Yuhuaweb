@@ -50,7 +50,7 @@
                                 {php}
                                 $pic = unserialize($vo['cardpic']);
                                 {/php}
-                                {if condition="$pic['front_pic']"}
+                                {if condition="isset($pic['front_pic'])"}
                                 <img src="{$pic.front_pic}" width="100%">
                                 {/if}
                             </div>
