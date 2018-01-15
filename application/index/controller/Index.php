@@ -17,7 +17,8 @@ class Index extends Home
     /**
      * 首页
      */
-    public function index(){
+    public function index()
+    {
         //轮播图
         $ad = Db::name('ad')->where(['flag'=>1,'type'=>'pc'])->select();
         $this->assign('ad',$ad);
@@ -35,7 +36,8 @@ class Index extends Home
     /**
      * 全部课程
      */
-    public function allcourse(){
+    public function allcourse()
+    {
         if($this->request->isAjax()){
 
             $cate = $this->request->param('category');
@@ -66,19 +68,22 @@ class Index extends Home
     /**
      * 登陆
      */
-    public function login(){
+    public function login()
+    {
 
         return $this->fetch();
     }
     /**
      * 注册
      */
-    public function regist(){
+    public function regist()
+    {
 
         return $this->fetch();
     }
 
-    public function categoryajax(){
+    public function categoryajax()
+    {
         $category = $this->request->param('category');
         if(empty($category)){
             $course = Db::name('course')->order('createdTime desc')->limit(8)->select();
@@ -90,7 +95,8 @@ class Index extends Home
         return $this->fetch('categoryajax');
     }
 
-    public function loginajax(){
+    public function loginajax()
+    {
         $data = $this->request->param();
 
         $allow_type = [2,3];
@@ -153,7 +159,8 @@ class Index extends Home
         }
     }
 
-    public function logout(){
+    public function logout()
+    {
         session('userid',null);
         $this->redirect('index/index/index');
     }
@@ -161,7 +168,8 @@ class Index extends Home
     /**
      * 注册
      */
-    public function register(){
+    public function register()
+    {
         $data = $this->request->param();
         $data['createdIp'] = $this->request->ip();
 
@@ -170,7 +178,8 @@ class Index extends Home
         return $result;
     }
 
-    public function service(){
+    public function service()
+    {
         return $this->fetch();
     }
     /**
@@ -186,53 +195,61 @@ class Index extends Home
     public function layout(){
         return $this->fetch();
     }
-    public function loginnew(){
+    public function loginnew()
+    {
         return $this->fetch();
     }
 
 
 
-    public function space(){
+    public function space()
+    {
         return $this->fetch();
     }
     /**
      * 我的证书
      * @return mixed
      */
-    public function certificate(){
+    public function certificate()
+    {
         return $this->fetch();
     }
     /**
      * @return mixed
      */
-    public function conversion(){
+    public function conversion()
+    {
         return $this->fetch();
     }
     /**关注/粉丝
      * @return mixed
      */
-    public function fans(){
+    public function fans()
+    {
         return $this->fetch();
     }
     /**
      * 收藏课程
      * @return mixed
      */
-    public function collect(){
+    public function collect()
+    {
         return $this->fetch();
     }
     /**
      * 我的小组
      * @return mixed
      */
-    public function group(){
+    public function group()
+    {
         return $this->fetch();
     }
     /**
      * 我的积分
      * @return mixed
      */
-    public function integral(){
+    public function integral()
+    {
         return $this->fetch();
     }
 
@@ -240,29 +257,33 @@ class Index extends Home
      * 课程表
      * @return mixed
      */
-    public function timetable(){
+    public function timetable()
+    {
         return $this->fetch();
     }
     /**
      * 在学班级
      * @return mixed
      */
-    public function learning(){
+    public function learning()
+    {
         return $this->fetch();
     }
     /**
      * 在学课程
      * @return mixed
      */
-    public function curriculum(){
+    public function curriculum()
+    {
         return $this->fetch();
     }
 
-    public function testajax(){
+    public function testajax()
+    {
         if($this->request->isAjax()){
             return 1;
         }
-        else{
+        else {
             return 0;
         }
     }

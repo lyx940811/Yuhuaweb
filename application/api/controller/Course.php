@@ -328,8 +328,6 @@ class Course extends Home
         ];
         return json_data(0,$this->codeMessage[0],$data);
     }
-
-
     /**
      * 获得课程目录(加了进度),abandoned use rebuild version
      */
@@ -388,8 +386,8 @@ class Course extends Home
             ->page($page,10)
             ->select();
         foreach ($lesson as &$l){
-        if($course['type']!='url'){
-                    $l['mediaSource'] = $this->request->domain()."/".$l['mediaSource'];
+        if($l['type']!='url'){
+            $l['mediaSource'] = $this->request->domain()."/".$l['mediaSource'];
         }
         $l['plan'] = '0';
         if(!empty($this->user)){
