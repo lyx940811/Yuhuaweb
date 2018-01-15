@@ -10,7 +10,7 @@ namespace app\manage\controller;
 use think\Db;
 use think\Validate;
 /*
- * 班级管理2
+ * 班级管理
  */
 class Classroom extends Base{
 
