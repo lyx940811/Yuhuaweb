@@ -58,10 +58,10 @@ class Tag extends Base{
             'roles'=> $info['role'],
             'userid'=> session('admin_uid'),
             'createdTime'=>date('Y-m-d H:i:s',time()),
-//            'Flag'=>1,
+            'Flag'=>$info['Flag'],
         ];
 
-        $ok = $role_table->field('name,code,roles,userid,createdTime')->insert($data);
+        $ok = $role_table->field('name,code,roles,userid,createdTime,Flag')->insert($data);
 
         if($ok){
             return ['info'=>'添加成功','code'=>'000'];
@@ -111,6 +111,7 @@ class Tag extends Base{
             'name'=>$info['name'],
             'code'=>$info['code'],
             'roles'=>$info['role'],
+            'Flag'=>$info['Flag'],
         ];
 
         $ok = $role_table->where('id',$id)->update($data);

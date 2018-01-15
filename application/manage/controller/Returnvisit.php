@@ -47,15 +47,13 @@ class Returnvisit extends Base{
         $info = input('post.');
 
         $msg  =   [
-            'name.require' => '专业名称不能为空',
-            'name.length' => '专业名称长度太短',
-            'code.require' => '代码不能为空',
-            'point.number' => '学分必须为数字',
+            'username.require' => '被回访人名不能为空',
+            'username.length' => '被回访人名长度太短',
+            'phone.require' => '手机不能为空',
         ];
         $validate = new Validate([
-            'name'  => 'require|length:2,20',
-            'code'   => 'require',
-            'point'  => 'number'
+            'username'  => 'require|length:2,20',
+            'phone'   => 'require',
         ],$msg);
 
         $validate->check($info);
@@ -66,26 +64,19 @@ class Returnvisit extends Base{
             return ['error'=>$error,'code'=>'200'];
         }
 
-
         $role_table = Db::name('return_visit');
 
-//        $is_have = $role_table->field('id')->where(['code'=>['eq',$info['code']]])->find();
-//
-//        if($is_have){//如果这个code有
-//            return ['error'=>'已经有此代码','code'=>'300'];
-//        }
-
         $data = [
-//            'name' => $info['name'],
-//            'code' => $info['code'],
-//            'point'=> $info['point'],
-//            'studyTimes'=>$info['studyTimes'],
-//            'description'=>$info['description'],
-//            'createtime'=>date('Y-m-d H:i:s',time()),
-//            'Flag'=>1,
+            'username'=>$info['username'],
+            'phone'=>$info['phone'],
+            'content'=>$info['content'],
+            'result'=>$info['result'],
+            'fromUserID'=>session('admin_uid'),
+            'type'=>isset($info['type'])?$info['type']:'',
+            'createdTime'=>date('Y-m-d H:i:s',time())
         ];
 
-        $ok = $role_table->field('name,code,point,studyTimes,description,createtime,Flag')->insert($data);
+        $ok = $role_table->insert($data);
 
         if($ok){
             return ['info'=>'添加成功','code'=>'000'];
@@ -100,19 +91,16 @@ class Returnvisit extends Base{
         $info = input('post.');
 
         $msg  =   [
-            'rid.require' => '专业名称rid不能为空',
-            'name.require' => '专业名称不能为空',
-            'name.length' => '专业名称长度太短',
-            'code.require' => '代码不能为空',
-            'code.number' => '代码必须为数字',
-            'point.number' => '学分必须为数字',
+            'rid.require' => '被回访人名rid不能为空',
+            'username.require' => '被回访人名不能为空',
+            'username.length' => '被回访人名长度太短',
+            'phone.length' => '手机必须填写',
         ];
 
         $validate = new Validate([
             'rid'    => 'require',
-            'name'   => 'require|length:2,20',
-            'code'   => 'require|number',
-            'point'  => 'number'
+            'username'   => 'require|length:2,20',
+            'phone'    => 'require',
         ],$msg);
 
         $validate->check($info);
@@ -123,31 +111,21 @@ class Returnvisit extends Base{
             return ['error'=>$error,'code'=>'200'];
         }
 
-        $role_table = Db::name('category');
+        $role_table = Db::name('return_visit');
 
         $id = $info['rid']+0;
-        $have = $role_table->field('id')->where("id='$id'")->find();
-
-        if(!$have){//如果没这个code
-            return ['error'=>'没有此专业','code'=>'300'];
-        }
-
-        $have = $role_table->field('id,code')->where("id <> $id AND code={$info['code']}")->find();
-
-        if($have){
-            return ['error'=>'已经有此代码','code'=>'300'];
-        }
 
         $data = [
-            'name'=>$info['name'],
-            'code'=>$info['code'],
-            'point'=>$info['point'],
-            'studyTimes'=>$info['studyTimes'],
-            'description'=>$info['description'],
-//            'createtime'=>date('Y-m-d H:i:s',time())
+            'username'=>$info['username'],
+            'phone'=>$info['phone'],
+            'content'=>$info['content'],
+            'result'=>$info['result'],
+            'fromUserID'=>session('admin_uid'),
+            'type'=>isset($info['type'])?$info['type']:'',
+            'createdTime'=>date('Y-m-d H:i:s',time())
         ];
 
-        $ok = $role_table->field('name,code,point,studyTimes,description,createtime')->where('id',$id)->update($data);
+        $ok = $role_table->where('id',$id)->update($data);
 
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];
@@ -160,8 +138,8 @@ class Returnvisit extends Base{
 
         $id = $_GET['rid']+0;
 
-        $data = ['Flag'=>0,'createtime'=>date('Y-m-d H:i:s',time())];
-        $ok = Db::name('category')->field('Flag,createtime')->where("id='$id'")->update($data);
+        $data = ['Flag'=>0];
+        $ok = Db::name('return_visit')->where("id='$id'")->update($data);
 
         if($ok){
             return ['info'=>'禁用成功','code'=>'000'];
