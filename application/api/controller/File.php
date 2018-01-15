@@ -14,6 +14,7 @@ class File extends Controller
 {
 
     public function getfile(){
+        
         $aFiles = $this->getUploadFiles();
         if(isset($aFiles[0])){
             $res = $this->saveMultiFiles($aFiles[0]);
@@ -71,6 +72,7 @@ class File extends Controller
         if(!file_exists($tmp_file_path)){
             mkdir($tmp_file_path,0777,true);
         }
+        
         $p_sName         = $aFile['name'];
         $p_sNameFilename = pathinfo($p_sName, PATHINFO_FILENAME);
         $p_sFilePath     = $tmp_file_path.DIRECTORY_SEPARATOR.$p_sNameFilename;
@@ -105,6 +107,7 @@ class File extends Controller
         }
 
         $oFInfo    = finfo_open();
+        
         $sMimeType = finfo_file($oFInfo, $p_sTmpName, FILEINFO_MIME_TYPE);
 
         finfo_close($oFInfo);
@@ -154,18 +157,17 @@ class File extends Controller
         if ($done) {
 //            $sDestFile = './upload/'.time().'.'.$sExtension;       //合并文件地址
 
-            $sDestFile = "uploads"."/".date('Y',time())."/".date('m',time())."/".date('d',time());
+            $sDestFile = "./uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
             if(!file_exists($sDestFile)){
                 mkdir($sDestFile,0775,true);
             }
-            $sDestFile = "uploads"."/".date('Y',time())."/".date('m',time())."/".date('d',time())."/".time().'.'.$sExtension;
+            $sDestFile = "./uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time()).DS.time().'.'.$sExtension;
 
             //以下if为判断不是分片上传的话直接挪缓存文件，但是没有删除
             if($iChunks==0){
                 move_uploaded_file($p_sTmpName, iconv("utf-8","gb2312",$sDestFile));
                 @unlink(iconv("utf-8","gb2312",$p_sFilenamePath));
                 @unlink(iconv("utf-8","gb2312","{$p_sFilePath}_0.part"));
-                send_email('312850391@qq.com','success',$sDestFile);
                 return json_data(0,'success',$sDestFile);
             }
 

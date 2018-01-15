@@ -30,9 +30,6 @@ class Login extends Base
         if(UserModel::get(['username'=>$data['username']])){
             return json_data(120,$this->codeMessage[120],'');
         }
-        if(UserModel::get(['mobile'=>$data['mobile']])){
-            return json_data(120,$this->codeMessage[120],'');
-        }
         else{
             //verified data
             $validate = Loader::validate('User');

@@ -45,7 +45,8 @@ class Course extends Home
 
     }
 
-    protected function newstudent($courseid){
+    protected function newstudent($courseid)
+    {
         $student = Db::name('study_result')
             ->alias('sr')
             ->join('user u','u.id=sr.userid')
@@ -62,7 +63,8 @@ class Course extends Home
         return $student;
     }
 
-    protected function getcourseinfo($courseid){
+    protected function getcourseinfo($courseid)
+    {
         //course top begin
         $video_type = ['mp4','url'];
         //为了拿顶部的title
@@ -176,17 +178,19 @@ class Course extends Home
             $plan = '0';
             $has_done = 0;
         }
+
         return $data = [
             'title'     =>  $course['title'],
             'plan'      =>  $plan,
             'has_done'  =>  $has_done,
             'task_num'  =>  $taskNum,
             'next_task' =>  $next_task,
-            'next_task_id'  =>  $learn_taskid,
+            'next_task_id'    =>  $learn_taskid,
         ];
     }
 
-    public function catalogue(){
+    public function catalogue()
+    {
         $video_type = ['mp4','url'];
         $courseid = $this->course['id'];
         if(!$course = CourseModel::get($courseid)){
@@ -234,20 +238,23 @@ class Course extends Home
         $this->assign('task',$lesson);
         return $this->fetch();
     }
-    public function discussion(){
+    public function discussion()
+    {
         $asklist = Asklist::where('courseid',$this->course['id'])->order('addtime desc')->paginate(10);
         $page = $asklist->render();
         $this->assign('page',$page);
         $this->assign('asklist',$asklist);
         return $this->fetch();
     }
-    public function evaluate(){
+    public function evaluate()
+    {
         $review = $this->course->review()->where('parentid',0)->order('createdTime desc')->paginate(10);
         $this->assign('review',$review);
         $this->assign('page',$review->render());
         return $this->fetch();
     }
-    public function note(){
+    public function note()
+    {
         if($this->user){
             $note = $this->course->note()->where('userid',$this->user->id)->paginate(10);
             $this->assign('note',$note);
@@ -255,7 +262,8 @@ class Course extends Home
         }
         return $this->fetch();
     }
-    public function material(){
+    public function material()
+    {
         $file = $this->course->file()->order('createTime desc')->paginate(10);
         $page = $file->render();
         $this->assign('file',$file);
@@ -264,7 +272,8 @@ class Course extends Home
         return $this->fetch();
     }
 
-    public function down(){
+    public function down()
+    {
         $fileid = $this->request->param('fileid');
         $file = CourseFile::get($fileid);
         if(file_exists($file['filepath'])){
@@ -291,10 +300,12 @@ class Course extends Home
 
 
     }
-    public function summary(){
+    public function summary()
+    {
         return $this->fetch();
     }
-    public function askdetail(){
+    public function askdetail()
+    {
         $askid = $this->request->param('askid');
         $ask = Asklist::get($askid);
         $this->assign('ask',$ask);
@@ -306,7 +317,8 @@ class Course extends Home
         Asklist::update($data,['id'=>$ask['id']]);
         return $this->fetch();
     }
-    public function createask(){
+    public function createask()
+    {
         if($this->request->isAjax()){
             $data = $this->request->param();
             $course = CourseModel::get($data['course']);
@@ -325,7 +337,8 @@ class Course extends Home
         return $this->fetch();
     }
 
-    public function taskdetail(){
+    public function taskdetail()
+    {
         $taskid = $this->request->param('taskid');
         $task = CourseTask::get($taskid);
         $this->assign('task',$task);
@@ -380,7 +393,8 @@ class Course extends Home
         return $this->fetch();
     }
 
-    public function downtaskfile(){
+    public function downtaskfile()
+    {
         $taskid = $this->request->param('taskid');
         $task = CourseTask::get($taskid);
         if(!file_exists($task['mediaSource'])){
@@ -421,7 +435,8 @@ class Course extends Home
 
     }
 
-    public function savenote(){
+    public function savenote()
+    {
         $data = $this->request->param();
         $data['courseId'] = $data['course'];
         $data['createdTime'] = date('Y-m-d H:i:s',time());
@@ -435,7 +450,8 @@ class Course extends Home
 
     }
 
-    public function saveanswer(){
+    public function saveanswer()
+    {
 
         $data = $this->request->param();
         $data['addtime'] = date('Y-m-d H:i:s',time());
@@ -448,7 +464,8 @@ class Course extends Home
         }
     }
 
-    public function savereview(){
+    public function savereview()
+    {
         $data = $this->request->param();
         $data['createdTime'] = date('Y-m-d H:i:s',time());
         $data['courseid'] = $data['course'];
