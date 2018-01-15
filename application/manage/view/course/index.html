@@ -41,7 +41,7 @@
             <td>{$vo.title}</td>
             <td>{$vo.price}</td>
             <td>{if condition="$vo['serializeMode'] eq 'none'"}非连载课程{elseif condition="$vo['serializeMode'] eq 'serialized'"/}连载课程{else/}已完结{/if}</td>
-            <td>{$vo.studentNum}</td>
+            <td>{$vo.num}</td>
             <td>{$vo.status?'启用':'禁用'}</td>
             <td>{$vo.userid|getUserinfo}</td>
             <td>{$vo.realname}</td>
