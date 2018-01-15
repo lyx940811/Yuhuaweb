@@ -15,8 +15,10 @@ class Course extends Base{
     public function index(){
 
         $list = Db::table('course c')
-            ->field('c.*,tf.realname')
+            ->field('c.*,tf.realname,count(d.id) as num')
+            ->join('study_result d','d.courseid=c.id','LEFT')
             ->join('teacher_info tf','c.teacherIds=tf.id','LEFT')
+            ->group('c.id')
             ->paginate(20);
 
 
