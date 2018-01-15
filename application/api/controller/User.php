@@ -410,7 +410,7 @@ class User extends Controller
                 //拼上域名
                 $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
                 //算课程总数，算法为完成的课程数/课程总数，pdf和ppt直接为整个的课程数1，视频的话按看过的时间/该课程总时间，得到一个完成的比例，当作小数用
-                $all_task_num = Db::name('course_task')->where('courseId',$c['courseid'])->count();
+                $all_task_num = Db::name('course_task')->where('courseId',$c['courseid'])->where('status',1)->count();
                 
                 //一共学的时间
                 //先赋值一个基底防止没有数据
@@ -548,7 +548,7 @@ class User extends Controller
                 //拼上域名
                 $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
                 //算课程总数，算法为完成的课程数/课程总数，pdf和ppt直接为整个的课程数1，视频的话按看过的时间/该课程总时间，得到一个完成的比例，当作小数用
-                $all_task_num = Db::name('course_task')->where('courseId',$c['id'])->count();
+                $all_task_num = Db::name('course_task')->where('courseId',$c['id'])->where('status',1)->count();
                 //一共学的时间
                 //先赋值一个基底防止没有数据
                 $c['lastwatch'] = '';
@@ -630,7 +630,7 @@ class User extends Controller
                 //拼上域名
                 $c['smallPicture'] = $this->request->domain()."/".$c['smallPicture'];
                 //算课程总数，算法为完成的课程数/课程总数，pdf和ppt直接为整个的课程数1，视频的话按看过的时间/该课程总时间，得到一个完成的比例，当作小数用
-                $all_task_num = Db::name('course_task')->where('courseId',$c['id'])->count();
+                $all_task_num = Db::name('course_task')->where('courseId',$c['id'])->where('status',1)->count();
                 //一共学的时间
                 //先赋值一个基底防止没有数据
                 $c['lastwatch'] = '';

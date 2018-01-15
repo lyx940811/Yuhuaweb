@@ -7,7 +7,7 @@
         {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
         <li class="task-item task-content mouse-control">
             <i class="es-icon es-icon-undone-check color-gray left-menu"></i>
-            <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$task['taskid']))}">
+            <a class="title"> <!--href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$task['taskid']))}"-->
                 {$task.chapter}： {$task.title}
             </a>
             <span class="right-menu color-gray ">09:11<i class="es-icon es-icon es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i></span>
@@ -16,7 +16,7 @@
         {else /}
         <li class="task-item task-content mouse-control">
             <i class="es-icon es-icon-undone-check color-gray left-menu"></i>
-            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$task['taskid']))}">
+            <a class="title"><!--href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$task['taskid']))}"-->
                 {$task.chapter}： {$task.title}
             </a>
             <span class="right-menu color-gray ">09:11<i class="es-icon es-icon es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i></span>

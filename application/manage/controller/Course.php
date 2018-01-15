@@ -14,8 +14,9 @@ class Course extends Base{
 
     public function index(){
 
-        $list = Db::table('course')
-            ->field('id,title,subtitle,categoryId,teacherIds,tags,about,smallPicture,price,serializeMode,studentNum,status,userid')
+        $list = Db::table('course c')
+            ->field('c.*,tf.realname')
+            ->join('teacher_info tf','c.teacherIds=tf.id','LEFT')
             ->paginate(20);
 
 
@@ -178,7 +179,7 @@ class Course extends Base{
     }
 
     public function select(){
-       $info = input('post.');
+       $info = input('get.');
 
 
         $ok = Db::name('course')->where("id='{$info['id']}'")->update(['teacherIds'=>$info['teacherIds']]);

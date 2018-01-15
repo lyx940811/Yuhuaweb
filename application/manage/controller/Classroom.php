@@ -148,6 +148,24 @@ class Classroom extends Base{
         }
     }
 
+    //添加班级教师
+    public function addteacher(){
+        $id=$this->request->param('id')+0;
+        if($id){
+            $where['a.id']=$id;
+            $where['b.classid']=$id;
+        }
+
+        $list = Db::name('classroom a')
+            ->join('category b','a.categoryId=b.code','LEFT')
+            ->join('teacher_info c','a.teacherIds=c.id','LEFT')
+            ->join('classTeacher ct','a.id=ct.classid','LEFT')
+            ->field('a.id,a.about,a.title,a.status,a.categoryId,a.teacherIds,a.hitNum,a.studentNum,a.createdTime,c.id as cid,c.realname,b.name,b.code')
+            ->where($where)
+            ->paginate(20,false,['query'=>request()->get()]);
+
+        $teacher = Db::table('teacher_info')->field('id,realname')->select();
+    }
 
 
 }

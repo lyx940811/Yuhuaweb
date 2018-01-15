@@ -36,14 +36,27 @@
         {$task->chapter->title}：{$task->title}
       </div>
       <div class="dashboard-body">
-            <video id="my-video" class="video-js" controls preload="auto" style="width:100%;height:100%"
-            poster="m.png" data-setup="{}">
-              <source src="{$domain}/uploads/2018/01/13/1515227245.mp4" type="video/mp4">
+          {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
+          <!--视频-->
+          <video id="my-video" class="video-js" controls preload="auto" style="width:100%;height:100%"
+                 poster="m.png" data-setup="{}">
+              <source src="{$task->mediaSource}" type="video/mp4">
               <p class="vjs-no-js">
-                To view this video please enable JavaScript, and consider upgrading to a web browser that
-                <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                  To view this video please enable JavaScript, and consider upgrading to a web browser that
+                  <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
               </p>
-            </video>
+          </video>
+          {else /}
+          <!-- 列表 -->
+          <ul class="download-activity-list">
+              <li>
+                  <a class="link-darker" data-file-id="583" data-url="/course/123/activiy/816/download?materialId=583" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$task['id']))}">点击下载课程文件：{$task->chapter->title}：{$task->title}
+                      <i class="es-icon es-icon-filedownload download-icon"></i>
+                      <div class="text-xs color-gray mts"></div>
+                  </a>
+              </li>
+          </ul>
+          {/if}
       </div>
 
       <div class="dashboard-footer">
