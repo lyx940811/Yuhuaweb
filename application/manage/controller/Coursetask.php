@@ -28,7 +28,7 @@ class Coursetask extends Base{
         }
 
         $list = Db::table('course_task a')
-            ->field('a.id,a.title,a.mode,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.chapterid,a.type,a.mediaSource,a.mediaSource,a.startTime,a.endTime,b.title btit')
+            ->field('a.id,a.title,a.mode,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.chapterid,a.type,a.mediaSource,a.mediaSource,a.status,a.startTime,a.endTime,b.title btit')
             ->join('course b','a.courseId=b.id','LEFT')
             ->where($where)
             ->paginate(20,['query'=>$info]);
@@ -96,10 +96,10 @@ class Coursetask extends Base{
             'courseId'=>$info['courseId']+0,
             'createdUserId'=>session('admin_uid'),
             'createdTime'=>date('Y-m-d H:i:s',time()),
-//            'status'=>1,
+            'status'=>$info['status'],
         ];
 
-        $ok = $role_table->field('title,startTime,endTime,chapterid,isFree,isOptional,mode,type,length,mediaSource,maxOnlineNum,maxPoint,courseId,createdUserId,createdTime,status')->insert($data);
+        $ok = $role_table->insert($data);
 
         if($ok){
             return ['info'=>'添加成功','code'=>'000'];
@@ -162,9 +162,10 @@ class Coursetask extends Base{
             'maxOnlineNum'=>$info['maxOnlineNum']+0,
             'maxPoint'=>$info['maxPoint']+0,
             'courseId'=>$info['courseId']+0,
+            'status'=>$info['status']
         ];
 
-        $ok = $role_table->field('title,startTime,endTime,chapterid,isFree,isOptional,mode,type,length,mediaSource,maxOnlineNum,maxPoint,courseId')->where('id',$id)->update($data);
+        $ok = $role_table->where('id',$id)->update($data);
 
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];
