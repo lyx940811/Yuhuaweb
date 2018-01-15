@@ -23,8 +23,8 @@ class Userprofile extends Base{
         }
 
         $list = Db::table('user_profile a')
-            ->join('student_school b','a.id=b.userid','LEFT')
-            ->join('student_class c','a.id=c.userid','LEFT')
+            ->join('student_school b','a.userid=b.userid','LEFT')
+            ->join('student_class c','a.userid=c.userid','LEFT')
             ->join('classroom d','c.classid=d.id','LEFT')
             ->field('a.*,b.grade,b.starttime,b.depart,b.majors,b.class,b.style,b.studentstatus,d.title')
             ->where($where)
