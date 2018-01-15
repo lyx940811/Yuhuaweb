@@ -15,8 +15,9 @@ class Coursefavorite extends Base{
 
         $list = Db::table('course_favorite')
             ->alias('a')
-            ->field('a.id,a.url,a.createTime,a.userid,b.title')
+            ->field('a.id,a.url,a.createTime,a.userid,b.title,u.username')
             ->join('course b','a.courseid=b.id','LEFT')
+            ->join('user u','a.userid=u.id')
             ->order('a.id desc')
             ->paginate(20);
 
