@@ -13,7 +13,6 @@
             <!-- 模态框主体 -->
             <div class="modal-body">
                 <form class="form-horizontal" role="form" id="form{$vo.id}" method="post" action="{:url('edit')}">
-                   <input type="hidden" value="{$vo.userid}" name="rid"/>
                     <div class="form-group">
                         <label class="col-sm-2 control-label form-inline">学号</label>
                         <div class="col-sm-4">
@@ -147,15 +146,17 @@
                         <label class="col-sm-2 control-label form-inline">入学前文化程度</label>
                         <div class="col-sm-4">
                             <select name="culture"  class="form-control" >
-                                <option value="0">初中</option>
-                                <option value="1">高中</option>
+                                <option value="">--请选择--</option>
+                                <option value="0" {if condition="$vo['culture'] eq 0"}selected="selected"{/if}>初中</option>
+                                <option value="1" {if condition="$vo['culture'] eq 0"}selected="selected"{/if}>高中</option>
                             </select>
                         </div>
                         <label class="col-sm-2 control-label form-inline">学习方式</label>
                         <div class="col-sm-4">
                             <select name="style"  class="form-control" >
-                                <option value="0">非全日制</option>
-                                <option value="1">全日制</option>
+                                <option value="">--请选择--</option>
+                                <option value="0" {if condition="$vo['style'] eq 0"}selected="selected"{/if}>非全日制</option>
+                                <option value="1" {if condition="$vo['style'] eq 1"}selected="selected"{/if}>全日制</option>
                             </select>
                         </div>
                     </div>
@@ -163,13 +164,14 @@
                         <label class="col-sm-2 control-label form-inline">学制</label>
                         <div class="col-sm-4">
                             <select name="academic"  class="form-control" >
-                                <option value="0">2+2</option>
-                                <option value="1">2+3</option>
-                                <option value="2">1</option>
-                                <option value="3">2</option>
-                                <option value="4">3</option>
-                                <option value="5">3+1（1）</option>
-                                <option value="6">2+1（1）</option>
+                                <option value="">--请选择--</option>
+                                <option value="0" {if condition="$vo['academic'] eq 0"}selected="selected"{/if}>2+2</option>
+                                <option value="1" {if condition="$vo['academic'] eq 1"}selected="selected"{/if}>2+3</option>
+                                <option value="2" {if condition="$vo['academic'] eq 2"}selected="selected"{/if}>1</option>
+                                <option value="3" {if condition="$vo['academic'] eq 3"}selected="selected"{/if}>2</option>
+                                <option value="4" {if condition="$vo['academic'] eq 4"}selected="selected"{/if}>3</option>
+                                <option value="5" {if condition="$vo['academic'] eq 5"}selected="selected"{/if}>3+1（1）</option>
+                                <option value="6" {if condition="$vo['academic'] eq 6"}selected="selected"{/if}>2+1（1）</option>
                             </select>
                         </div>
                         <label class="col-sm-2 control-label form-inline">入学日期</label>
@@ -182,15 +184,17 @@
                         <label class="col-sm-2 control-label form-inline">招生季度</label>
                         <div class="col-sm-4">
                             <select name="quarter"  class="form-control" >
-                                <option value="0">春季</option>
-                                <option value="1">夏季</option>
+                                <option value="">--请选择--</option>
+                                <option value="0" {if condition="$vo['quarter'] eq 0"}selected="selected"{/if}>春季</option>
+                                <option value="1" {if condition="$vo['quarter'] eq 1"}selected="selected"{/if}>夏季</option>
                             </select>
                         </div>
                         <label class="col-sm-2 control-label form-inline">学籍状态</label>
                         <div class="col-sm-4">
                             <select name="studentstatus"  class="form-control" >
-                                <option value="0">在籍</option>
-                                <option value="1">毕业</option>
+                                <option value="">--请选择--</option>
+                                <option value="0" {if condition="$vo['studentstatus'] eq 0"}selected="selected"{/if}>在籍</option>
+                                <option value="1" {if condition="$vo['studentstatus'] eq 1"}selected="selected"{/if}>毕业</option>
                             </select>
                         </div>
                     </div>
@@ -198,9 +202,10 @@
                         <label class="col-sm-2 control-label form-inline">培养状态</label>
                         <div class="col-sm-4">
                             <select name="level"  class="form-control" >
-                                <option value="0">中级工</option>
-                                <option value="1">高级工</option>
-                                <option value="2">预备技师</option>
+                                <option value="">--请选择--</option>
+                                <option value="0" {if condition="$vo['level'] eq 0"}selected="selected"{/if}>中级工</option>
+                                <option value="1" {if condition="$vo['level'] eq 1"}selected="selected"{/if}>高级工</option>
+                                <option value="2" {if condition="$vo['level'] eq 2"}selected="selected"{/if}>预备技师</option>
                             </select>
                         </div>
                     </div>

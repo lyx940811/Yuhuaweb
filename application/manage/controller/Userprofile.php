@@ -26,7 +26,7 @@ class Userprofile extends Base{
             ->join('student_school b','a.userid=b.userid','LEFT')
             ->join('student_class c','a.userid=c.userid','LEFT')
             ->join('classroom d','c.classid=d.id','LEFT')
-            ->field('a.*,b.grade,b.starttime,b.depart,b.majors,b.class,b.style,b.studentstatus,d.title')
+            ->field('a.*,b.grade,b.starttime,b.depart,b.majors,b.culture,b.academic,b.quarter,b.level,b.class,b.style,b.studentstatus,d.title')
             ->where($where)
             ->order('createdTime desc')
             ->paginate(20,false,['query'=>request()->get()]);
@@ -93,7 +93,6 @@ class Userprofile extends Base{
         ];
 
         $ok = Db::table('user')->insert($data);
-
 
         if($ok){
             $userid = Db::table('user')->getLastInsID();
@@ -195,9 +194,15 @@ class Userprofile extends Base{
 
         $ok = $role_table->where('id',$id)->update($data);
 
+
         if(is_numeric($ok)){
 
-            Db::table('user')->where('id='.$userprofile['userid'])->update(['nickname'=>$info['mobile'],'username'=>$info['mobile'],'mobile'=>$info['mobile']]);
+            Db::table('user')->where('id='.$userprofile['userid'])->update(
+                [
+//                    'nickname'=>$info['mobile'],
+//                    'username'=>$info['mobile'],
+                    'mobile'=>$info['mobile']]
+            );
 
             $isHave = Db::table('student_school')->where('userid='.$userprofile['userid'])->find();
 
@@ -218,6 +223,7 @@ class Userprofile extends Base{
                 ];
                 Db::table('student_school')->where('userid',$userprofile['userid'])->update($sdata);
 
+//                echo Db::table('student_school')->getLastSql();exit;
 
             }else{
                 //如果没有这条在校信息，就重新添加一条
@@ -331,7 +337,7 @@ class Userprofile extends Base{
             $where['a.userid']=$userid;
         }
         $list = Db::table('study_result a')
-            ->field('a.id,b.title,c.title ctit,d.realname')
+            ->field('a.id,a.status,b.title,c.title ctit,d.realname')
             ->join('course b','a.courseid=b.id','LEFT')
             ->join('course_chapter c','a.chapterid=c.id','LEFT')
             ->join('user_profile d','a.userid=d.userid','LEFT')

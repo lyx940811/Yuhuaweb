@@ -54,17 +54,12 @@
                 <td>{$vo.class}</td>
                 <td>
                     {if condition="$vo.style == 0"}
-                    全日制
-                    {elseif condition="$vo.style == 1"/}
                     非全日制
-                    {/if}
-                    {if condition="$vo.studentstatus == 0"}
-                    在籍
-                    {elseif condition="$vo.studentstatus == 1"/}
-                    毕业
+                    {elseif condition="$vo.style == 1"/}
+                    全日制
                     {/if}
                 </td>
-                <td>{$vo.studentstatus?'在籍':'毕业';}</td>
+                <td>{$vo.studentstatus?'毕业':'在籍';}</td>
                 <td>
                     {php}
                     if(check($uid,'/manage/userprofile/edit')){
