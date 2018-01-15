@@ -135,6 +135,15 @@ class Userprofile extends Base{
             ];
             Db::table('student_school')->insert($sdata);
 
+            Db::table('student_class')->insert(
+                [
+                   'userid'=>$userid,
+                    'classid'=>$info['class']
+                ]
+
+            );
+
+
             manage_log('101','003','添加学员',serialize($info),0);
 
             return ['info'=>'添加成功','code'=>'000'];
@@ -246,6 +255,28 @@ class Userprofile extends Base{
                 ];
                 Db::table('student_school')->insert($sdata);
             }
+
+            $isHave_class = Db::table('student_class')->where('userid='.$userprofile['userid'])->find();
+
+            if($isHave_class){//如果存在这个人对应的这个班级，直接修改
+
+                Db::table('student_class')->where('userid='.$userprofile['userid'])->update(
+                    [
+//                        'userid'=>$userprofile['userid'],
+                        'classid'=>$info['class']
+                    ]
+                );
+            }else{//如果没有这个人对应的班级，直接创建
+                Db::table('student_class')->insert(
+                    [
+                        'userid'=>$userprofile['userid'],
+                        'classid'=>$info['class']
+                    ]
+
+                );
+            }
+
+
             manage_log('101','004','修改学员',serialize($info),0);
 
             return ['info'=>'修改成功','code'=>'000'];

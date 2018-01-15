@@ -51,7 +51,7 @@
                 <td>{if condition="$vo['sex'] eq 0"}男{elseif condition="$vo['sex'] eq 1"}女{else/}保密{/if}</td>
                 <td>{$vo.depart}</td>
                 <td>{$vo.majors}</td>
-                <td>{$vo.class}</td>
+                <td>{$vo.title}</td>
                 <td>
                     {if condition="$vo.style == 0"}
                     非全日制
@@ -152,7 +152,14 @@
                 alert('正在上传中...')
             }, //发送请求
             success: function(data){
+                if(typeof(data.data)!= "undefined"){
+                    //120base里无权限
+                    if(data.data.code==120){
+                        alert(data.msg)
+                        return;
+                    }
 
+                }
                 if(data.code=='000'){
                     $('#pic'+id).val(data.path)
                     $('#showinfoPic'+id).html('<img class="img-rounded" src="'+data.path+'" width="100%"/>');
