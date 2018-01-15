@@ -10,14 +10,14 @@
             <th>课程名称</th>
             <th>评论内容</th>
             <th>点赞人数</th>
-            <th>点赞时间</th>
+            <th>添加时间</th>
         </tr>
         </thead>
         <tbody>
 
         {volist name="list" id="vo"}
             <tr>
-                <td>{$vo.userid|getUserinfo}</td>
+                <td>{$vo.username}</td>
                 <td>{$vo.title}</td>
                 <td>{$vo.content}</td>
                 <td>{$vo.likeNum}</td>

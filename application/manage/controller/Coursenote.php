@@ -16,7 +16,8 @@ class Coursenote extends Base{
 
         $list = Db::table('course_note a')
             ->join('course b','a.courseId=b.id','LEFT')
-            ->field('a.id,a.userid,a.courseId,a.content,a.likeNum,a.createdTime,b.title')->paginate(20);
+            ->join('user u','a.userid=u.id','LEFT')
+            ->field('a.id,a.userid,a.courseId,a.content,a.likeNum,a.createdTime,b.title,u.username')->order('createdTime desc')->paginate(20);
 
 
         $this->assign('list',$list);

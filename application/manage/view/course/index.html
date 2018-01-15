@@ -28,6 +28,7 @@
             <th>学员数</th>
             <th>状态</th>
             <th>创建者</th>
+            <th>课程教师</th>
             <th>设置</th>
             <th>操作</th>
         </tr>
@@ -43,6 +44,7 @@
             <td>{$vo.studentNum}</td>
             <td>{$vo.status?'启用':'禁用'}</td>
             <td>{$vo.userid|getUserinfo}</td>
+            <td>{$vo.realname}</td>
             <td><a href="{:url('coursetask/index')}?cid={$vo.id}">添加任务</a>|<a href="{:url('coursechapter/index')}?cid={$vo.id}">添加章</a>|<a href="#"  data-toggle="modal" data-target="#myModal_select{$vo.id}">选择教师</a></td>
             <td>
                 {php}
@@ -393,7 +395,7 @@
     function select(id) {
         $.ajax({
             url: "{:url('select')}?"+Math.random(),
-            type:"post",
+            type:"get",
             data:$('#form_select'+id).serialize(),
             success:function(data){
 
