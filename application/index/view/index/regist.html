@@ -149,6 +149,21 @@
             var username = $('#register_nickname').val();
             var email    = $('#register_email').val();
             var password = $('#register_password').val();
+            var retUsername =/^[\u4e00-\u9fa5_a-zA-Z0-9_]{4,10}$/;
+            var retEmail =/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/;
+            var retPassword =/^[a-zA-Z][a-zA-Z0-9_]{5,20}$/;
+            if(!retEmail.test(email)){
+                $(".help-block").html("邮箱格式有误，请重新输入");
+                return false;
+            }
+            if(!retUsername.test(username)){
+                $(".help-block").html("用户名输入有误（中、英文均可，长度为4-10位）");
+                return false;
+            }
+            if(!retPassword.test(password)){
+                $(".help-block").html("密码格式有误，（5-20位英文、数字、符号，区分大小写）");
+                return false;
+            }
             if(username!=''&&email!=''&&password!=''){
                 $.post(
                     "{:url('index/index/register')}",
@@ -177,6 +192,9 @@
                     },
                     "json"
                 );
+            }else{
+                $(".help-block").html("请完善您的注册信息");
+                return false;
             }
 
         });
