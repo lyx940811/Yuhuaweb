@@ -72,7 +72,8 @@ class Course extends Home
         //课程下的所有任务，为了计算时间
         $task = Db::name('course_task')
             ->where('courseId',$courseid)
-            ->field('id,courseId,chapterid,length,title')
+            ->where('status',1)
+            ->field('id,courseId,chapterid,length,title,status')
             ->order('chapterid asc')
             ->select();
 
@@ -196,13 +197,14 @@ class Course extends Home
         if(!$course = CourseModel::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
-        $fields = 'ct.id as taskid,ct.courseid,ct.length,ct.type,ct.chapterid,ct.title,cc.title as chapter,cc.seq,ct.mediaSource';
+        $fields = 'ct.id as taskid,ct.courseid,ct.length,ct.type,ct.chapterid,ct.title,cc.title as chapter,cc.seq,ct.mediaSource,ct.status';
         $lesson = Db::name('course_task')
             ->alias('ct')
             ->join('course_chapter cc','ct.chapterid = cc.id')
             ->field($fields)
             ->order('cc.seq')
             ->where('ct.courseid',$courseid)
+            ->where('ct.status',1)
             ->select();
 
         if(!empty($this->user)){
@@ -341,6 +343,9 @@ class Course extends Home
     {
         $taskid = $this->request->param('taskid');
         $task = CourseTask::get($taskid);
+        if($task['type']!='url'){
+            $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
+        }
         $this->assign('task',$task);
         //课程目录
         $video_type = ['mp4','url'];
@@ -348,13 +353,14 @@ class Course extends Home
         if(!$course = CourseModel::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
-        $fields = 'ct.id as taskid,ct.courseid,ct.length,ct.type,ct.chapterid,ct.title,cc.title as chapter,cc.seq,ct.mediaSource';
+        $fields = 'ct.id as taskid,ct.courseid,ct.length,ct.type,ct.chapterid,ct.title,cc.title as chapter,cc.seq,ct.mediaSource,ct.status';
         $lesson = Db::name('course_task')
             ->alias('ct')
             ->join('course_chapter cc','ct.chapterid = cc.id')
             ->field($fields)
             ->order('cc.seq')
             ->where('ct.courseid',$courseid)
+            ->where('ct.status',1)
             ->select();
 
         if(!empty($this->user)){

@@ -376,12 +376,13 @@ class Course extends Home
         if(!$course = CourseModel::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
-        $fields = 'ct.id as taskid,ct.courseid,ct.length,ct.type,ct.chapterid,ct.title,cc.title as chapter,cc.seq,ct.mediaSource';
+        $fields = 'ct.id as taskid,ct.courseid,ct.length,ct.type,ct.chapterid,ct.title,cc.title as chapter,cc.seq,ct.mediaSource,ct.status';
         $lesson = Db::name('course_task')
             ->alias('ct')
             ->join('course_chapter cc','ct.chapterid = cc.id')
             ->field($fields)
             ->order('cc.seq')
+            ->where('ct.status',1)
             ->where('ct.courseid',$courseid)
             ->page($page,10)
             ->select();
@@ -540,7 +541,8 @@ class Course extends Home
         //课程下的所有任务，为了计算时间
         $task = Db::name('course_task')
             ->where('courseId',$courseid)
-            ->field('id,courseId,chapterid,length,title')
+            ->field('id,courseId,chapterid,length,title,status')
+            ->where('status',1)
             ->order('chapterid asc')
             ->select();
 
