@@ -104,7 +104,7 @@ class Manage extends Base{
                 ]
             ],
             ['typename'=>'问答管理','url'=>'/manage/questionanswers/index','children'=>[
-                    ['url'=>'/manage/questionanswers/index','name'=>'问答列表'],
+                    ['url'=>'/manage/questionanswers/question','name'=>'问答列表'],
                 ]
             ],
             ['typename'=>'话题管理','url'=>'/manage/topicconversation/index','children'=>[
