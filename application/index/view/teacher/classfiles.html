@@ -106,28 +106,33 @@ p{word-wrap:break-word}
               
 
 <div class="es-section course-manage-header clearfix">
-    <a href="http://www.hnhgjx.cn:1700/course/154">
-      <img class="picture" src="./teacher_classfiles_files/courseSet.png"> <!-- courseSet.largePicture -->
+    <a href="{:url('index/course/catalogue',array('course'=>$course['id']))}">
+        {notempty name="course.smallPicture"}
+            <img class="picture" src="/{$course->smallPicture}"> <!-- courseSet.largePicture -->
+        {else /}
+        <img class="picture" src="/static/index/img/courseSet.png">
+        {/notempty}
     </a>
   <h1 class="title">
-        <a class="link-dark" href="http://www.hnhgjx.cn:1700/course/154">11111</a>
+        <a class="link-dark" href="">{$course->title}</a>
           <span class="label label-warning ">未发布</span>
       </h1>
 
   <div class="teachers">
-          教师：
-                      <a href="http://www.hnhgjx.cn:1700/user/1">admin</a>
+          教师：       {notempty name="course.teacherinfo.realname"}
+                      <a href="">{$course->teacherinfo->realname}</a>
+                        {/notempty}
             </div>
 
   <div class="toolbar hidden-xs">
     
         
-          <div class="btn-group">
-        <a class="btn btn-default btn-sm" target="_blank" href="http://www.hnhgjx.cn:1700/course/154?previewAs=guest">预览</a>
-      </div>
-      <div class="btn-group">
-        <button class="btn btn-success btn-sm course-publish-btn" data-url="/course_set/152/manage/publish">发布课程</button>
-      </div>
+          <!--<div class="btn-group">-->
+        <!--<a class="btn btn-default btn-sm" target="_blank" href="http://www.hnhgjx.cn:1700/course/154?previewAs=guest">预览</a>-->
+      <!--</div>-->
+      <!--<div class="btn-group">-->
+        <!--<button class="btn btn-success btn-sm course-publish-btn" data-url="/course_set/152/manage/publish">发布课程</button>-->
+      <!--</div>-->
       </div>
 </div>
 
@@ -176,7 +181,7 @@ p{word-wrap:break-word}
         <tr id="upload-file-tr-1227" data-role="item" data-converthash="ch-coursematerial/126/2018104105227-lqp1g2.xls">
             <!--<td><input value="1227" type="checkbox" data-role="batch-item"></td>-->
             <td>
-                <a class="link-dark" href="http://www.hnhgjx.cn:1700/course_set/126/manage/file/1227" target="_blank" rel="tooltip" title="" data-original-title="{$file.filename}">{$file.filename}</a><br>
+                <a class="link-dark" href="{:url('index/course/down',array('course'=>$file['courseid'],'fileid'=>$file['id']))}" target="_blank" rel="tooltip" title="" data-original-title="{$file.filename}">{$file.filename}</a><br>
             </td>
             <td>文档</td>
             <td>{$file.filesize|attrFilesize}</td>
@@ -190,7 +195,7 @@ p{word-wrap:break-word}
                 <br>
                 <span class="color-gray text-sm">{$file.createTime}</span>
             </td>
-            <td>删除</td>
+            <td class="deletefile" fileid="{$file.id}">删除</td>
         </tr>
         {/volist}
         {/empty}
@@ -363,7 +368,7 @@ $("#modal").on("shown.bs.modal",function(){
                 //swf文件路径
                 swf: 'static/webuploader/Uploader.swf',
                 // 文件接收服务端。
-                server: 'http://localhost/api/file/getfile',
+                server: '/api/file/getfile',
                 // 选择文件的按钮。可选。
                 // 内部根据当前运行是创建，可能是input元素，也可能是flash.
                 pick: '#picker',
@@ -473,6 +478,24 @@ $("#modal").on("shown.bs.modal",function(){
 
 
                 console.log(response);
+                $.post(
+                    "{:url('index/teacher/savecoursefile')}",
+                    {
+                        'filepath':response['data'],
+                        'courseid':{$course->id}
+                    },
+                    function(data){
+                        if(data==1){
+                            alert("上传成功！");
+                            window.location.href = window.location.href;
+                        }
+                        else{
+                            alert("上传失败！");
+                            window.location.href = window.location.href;
+                        }
+                    },
+                    "json"
+                );
             });
             uploader.on('uploadError', function (file) {
                 $('#' + file.id).find('p.state').text('上传出错');
@@ -537,6 +560,24 @@ $('#modal').on('hide.bs.modal', function () {
     $("#responeseText").text("");
     uploader.destroy();
     $('.item').remove();
+});
+
+$('.deletefile').click(function(){
+    $.post(
+        "{:url('index/teacher/deletefile')}",
+        {'fileid':$(this).attr('fileid')},
+        function(data){
+            if(data==1){
+                alert("删除成功！");
+                window.location.href = window.location.href;
+            }
+            else{
+                alert("删除失败！");
+                window.location.href = window.location.href;
+            }
+        },
+        "json"
+    );
 });
 
 

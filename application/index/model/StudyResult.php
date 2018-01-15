@@ -23,4 +23,8 @@ class StudyResult extends ThinkModel
     {
         return $this->hasOne('User','id','userid');
     }
+    public function course()
+    {
+        return $this->hasOne('Course','id','courseid');
+    }
 }

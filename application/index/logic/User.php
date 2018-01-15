@@ -208,9 +208,9 @@ class User extends Base
         $data['cardpic'] = serialize($res['path']);
 
         $validate = new Validate([
-            'realname' => 'require',
-            'idcard'   => 'require|length:1,18',
-            'cardpic'  => 'require'
+            'realname|真实姓名' => 'require',
+            'idcard|身份证号'   => 'require|length:1,18',
+            'cardpic|身份证照片'  => 'require'
         ]);
         if(!$validate->check($data)){
             return json_data(130,$validate->getError(),'');

@@ -29,6 +29,7 @@ class Teacherinfo extends Base{
             ->join('teacher_level b','a.id=b.teacherid','LEFT')
             ->where($where)
             ->field('a.*,b.education,b.degree,b.topeducation,b.topdegree')
+            ->order('a.id desc')
             ->paginate(20,false,['query'=>request()->get()]);
 
         $newlist = [];
@@ -53,9 +54,9 @@ class Teacherinfo extends Base{
         $info = input('post.',NULL,'htmlspecialchars');
 
         $msg  =   [
-            'sn.require' => '专业名称不能为空',
-            'sn.length' => '专业名称长度太短',
-            'realname.require' => '代码不能为空',
+            'sn.require' => '工号不能为空',
+            'sn.length' => '工号长度太短',
+            'realname.require' => '真实姓名能为空',
             'sex.require' => '性别不能为空',
             'nation.require' => '民族不能为空',
             'birthday.require' => '生日不能为空',
@@ -90,31 +91,25 @@ class Teacherinfo extends Base{
             return ['error'=>'已经有此身份证号','code'=>'300'];
         }
 
-
         $data = [
-            'userid'=>session('admin_uid'),
-            'sn' => $info['sn'],
-            'realname' => $info['realname'],
-            'sex'=> $info['sex'],
-            'nation'=>$info['nation'],
-            'birthday'=>$info['birthday'],
-            'card'=>$info['card'],
-            'policy'=>$info['policy'],
-            'phone'=>$info['phone'],
-            'province'=>$info['province'],
-            'household'=>$info['household'],
-            'address'=>$info['address'],
-            'maritalstatus'=>$info['maritalstatus'],
-            'cardpic'=>$info['cardpic'],
+            'nickname'=>$info['realname'],
+            'username' => $info['phone'],
+            'password' => password_hash('123456',PASSWORD_DEFAULT),
+            'type'=> 2,
+            'roles'=>0,
+            'mobile'=>$info['phone'],
+            'createdIp'=>request()->ip(),
+            'createdTime'=>$info['policy'],
             'createdTime'=>date('Y-m-d H:i:s',time()),
         ];
 
-        $ok = $role_table->insert($data);
+        $ok = Db::table('user')->insert($data);
 
         if($ok){
+            $userid = Db::table('user')->getLastInsID();
             //成功了添加学历信息表
             $leveldata = [
-                'teacherid'=>$role_table->getLastInsID(),
+                'teacherid'=>$userid,
                 'education'=>$info['education'],
                 'degree'=>$info['degree'],
                 'topeducation'=>$info['topeducation'],
@@ -123,6 +118,26 @@ class Teacherinfo extends Base{
                 'createuserid'=>session('admin_uid'),
             ];
             Db::table('teacher_level')->insert($leveldata);
+
+
+            $sdata = [
+                'userid'=> $userid,
+                'sn' => $info['sn'],
+                'realname' => $info['realname'],
+                'sex'=> $info['sex'],
+                'nation'=>$info['nation'],
+                'birthday'=>$info['birthday'],
+                'card'=>$info['card'],
+                'policy'=>$info['policy'],
+                'phone'=>$info['phone'],
+                'province'=>$info['province'],
+                'household'=>$info['household'],
+                'address'=>$info['address'],
+                'maritalstatus'=>$info['maritalstatus'],
+                'cardpic'=>$info['cardpic'],
+                'createdTime'=>date('Y-m-d H:i:s',time()),
+            ];
+            $role_table->insert($sdata);
 
             return ['info'=>'添加成功','code'=>'000'];
         }else{
@@ -135,9 +150,9 @@ class Teacherinfo extends Base{
 
         $info = input('post.');
         $msg  =   [
-            'sn.require' => '专业名称不能为空',
-            'sn.length' => '专业名称长度太短',
-            'realname.require' => '代码不能为空',
+            'sn.require' => '工号不能为空',
+            'sn.length' => '工号长度太短',
+            'realname.require' => '真实姓名不能为空',
             'sex.require' => '性别不能为空',
             'nation.require' => '民族不能为空',
             'birthday.require' => '生日不能为空',
@@ -168,14 +183,13 @@ class Teacherinfo extends Base{
 
         $id = $info['rid']+0;
 
-        $have = $role_table->field('id,cardpic')->where("id='$id'")->find();
+        $have = $role_table->field('id,cardpic,userid')->where("id='$id'")->find();
 
         if(!$have){//如果没这个code
             return ['error'=>'没有此教师','code'=>'300'];
         }
 
-        $data = [
-            'userid'=>session('admin_uid'),
+        $sdata = [
             'sn' => $info['sn'],
             'realname' => $info['realname'],
             'sex'=> $info['sex'],
@@ -191,8 +205,7 @@ class Teacherinfo extends Base{
             'cardpic'=>!empty($info['cardpic'])?$info['cardpic']:$have['cardpic'],
 //            'createdTime'=>date('Y-m-d H:i:s',time()),
         ];
-
-        $ok = $role_table->where('id',$id)->update($data);
+        $ok = $role_table->where('id',$id)->update($sdata);
 
         if($ok){
 
@@ -206,6 +219,14 @@ class Teacherinfo extends Base{
 //                'createuserid'=>session('admin_uid'),
             ];
             Db::table('teacher_level')->where('teacherid='.$id)->update($leveldata);
+
+            $data = [
+                'nickname'=>$info['realname'],
+                'username' => $info['phone'],
+                'mobile'=>$info['phone'],
+            ];
+
+            Db::table('user')->where('id',$have['userid'])->update($data);
 
             return ['info'=>'修改成功','code'=>'000'];
         }else{

@@ -287,3 +287,8 @@
         }
     }
 
+    function video_time_trans($video_time){
+        $time = explode('.',$video_time);
+        return $time[0];
+    }
+

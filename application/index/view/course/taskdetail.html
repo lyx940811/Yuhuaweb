@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>任务学习 - 豫化在线课堂 - 豫化在线课堂 - Powered By EduSoho</title>
+    <meta name="keywords" content="豫化在线网络课堂,在线教育,在线教学,开源教学软件">
+    <meta name="description" content="豫化在线是面向个人、学校、培训机构及企业用户的友好、开源、高性价比的在线教育建站系统。Edusoho提供在线教学、网校管理、云视频点播、直播、移APP等功能，为使教育机构能够以最低成本开展在线教学活动，EduSoho也提供云服务器，云视频、云直播和移动APP定制服务，并配备相应的技术支持服务，让客户搭建自有品牌网校和搭积木一样简单。EduSoho产品及服务大大降低了传统教育培训机构进入在线教育行业的门槛。与其他在线教育产品相比，EduSoho具有完整，高自由度，高性价比的产品体验，使用其搭建在线教学网站是快速进入在线教育的最佳选择方案。EduSoho开源并免费提供给非商业用途用户使用，用户可在3分钟内搭建功能完备的在线教育网站。">
+    <meta content="ML9Jb6sbzOAzIHPAL82343S0p6Zgf_oJq-zOzW_y3EM" name="csrf-token">
+    <meta content="1" name="is-login">
+    <meta content="0" name="is-open">                 
+    <link href="__CSS__vendor.css" rel="stylesheet">
+    <link href="__CSS__app-bootstrap.css" rel="stylesheet">
+    <link href="__CSS__main.css" rel="stylesheet">
+    <link rel="stylesheet" href="__CSS__student/student-index.css">
+    <link rel="stylesheet" href="__CSS__student/quill.snow.css">
+    <link rel="stylesheet" href="__CSS__video-js.css">
+</head>
+<body class="es-main-default es-nav-default ">
+  <div id="js-hidden-data">
+    <input type="hidden" name="course-id" value="127">
+    <input type="hidden" name="task-id" value="747">
+    <input type="hidden" name="task-result-status" value="start">
+    <input type="hidden" name="mode" value="learn">
+    <input type="hidden" name="plugins_url" value="/course/127/task/747/show/plugins">
+  </div>
+
+  <div class="task-dashboard-page js-task-dashboard-page">
+    <div class="dashboard-content" id="dashboard-content" style="right: 35px;">
+      <div class="dashboard-header">
+        <a class="back-link" href="javascript:history.back();">
+          <i class="es-icon es-icon-chevronleft"></i>返回课程
+        </a>
+        {$task->chapter->title}：{$task->title}
+      </div>
+      <div class="dashboard-body">
+            <video id="my-video" class="video-js" controls preload="auto" style="width:100%;height:100%"
+            poster="m.png" data-setup="{}">
+              <source src="{$domain}/uploads/2018/01/13/1515227245.mp4" type="video/mp4">
+              <p class="vjs-no-js">
+                To view this video please enable JavaScript, and consider upgrading to a web browser that
+                <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+              </p>
+            </video>
+      </div>
+
+      <div class="dashboard-footer">
+        <div class="btn-group pull-left visible-xs js-mobile-btn" role="group">
+          <a class="btn btn-default  " href="#/course/127/task/663/show"><strong class="es-icon es-icon-chevronleft text-xlg"></strong></a>
+                   <a class="btn btn-default js-next-mobile-btn  " href="#/course/127/task/748/show"><strong class="es-icon es-icon-chevronright text-xlg"></strong></a>
+        </div>
+        <div class="state-opration js-state-opration" data-learnmode="freeMode">
+          <a class="btn btn-gray text-sm  hidden-xs js-learn-prompt open" href="javascript:;" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="满足以下条件:  学习到最后。" data-original-title="" title="">
+            <i class="es-icon es-icon-help mrs text-md"></i>任务完成条件
+          </a>
+          <span class="btn text-sm hidden-xs js-learned-prompt color-primary " href="javascript:;" data-toggle="popover" data-trigger="hover" data-placement="top" data-container=".js-learned-prompt" data-content="&lt;div class=&quot;task-state-modal task-state-modal-xs&quot;&gt;
+                &lt;div class=&quot;title&quot;&gt;
+                    &lt;i class=&quot;es-icon es-icon-iccheckcircleblack24px color-success&quot;&gt;&lt;/i&gt;完成任务
+                &lt;/div&gt;
+                &lt;div class=&quot;content&quot;&gt;
+                    &lt;div class=&quot;content-title&quot;&gt;《 任务：焊工识图1-1 》&lt;/div&gt;
+                    学习进度
+                    &lt;div class=&quot;content-progress&quot;&gt;
+                    &lt;div class=&quot;progress progress-radius mts mb0&quot;&gt;
+                        &lt;div class=&quot;progress-bar  progress-bar-success&quot; role=&quot;progressbar&quot; aria-valuenow=&quot;0&quot; aria-valuemin=&quot;0&quot; aria-valuemax=&quot;100&quot; style=&quot;width:0%;min-width: 20%&quot;&gt;0%&lt;/div&gt;
+                    &lt;/div&gt;
+
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                    &lt;div class=&quot;text-right mt20&quot;&gt;
+                    &lt;a class=&quot;btn btn-primary btn-sm&quot;
+                    href=&quot;/course/127/task/748/show&quot;
+                    &gt;下一任务&lt;/a&gt;
+                &lt;/div&gt;
+                &lt;/div&gt;
+                " data-url="/course/127/task/747/finished_prompt" data-original-title="" title="">
+              <i class="es-icon es-icon-iccheckcircleblack24px mrs text-md"></i>任务完成
+          </span>
+        </div>
+            <!--<button type="button" class="btn btn-transparent btn-learn js-btn-learn" id="learn-btn" data-toggle="modal" data-target="#myModal">-->
+                <!--<i class="es-icon es-icon&#45;&#45;check-circle done"></i>-->
+                <!--<i class="es-icon es-icon-undone-check doing"></i>-->
+                <!--学过了-->
+            <!--</button>-->
+      </div>
+    </div>
+    <div class="dashboard-sidebar hidden-xs spread" id="dashboard-sidebar" style="display: block; right: -360px;">
+        <div class="dashboard-toolbar">
+            <ul class="dashboard-toolbar-nav" id="dashboard-toolbar-nav">
+                <li><a href="#task-list" aria-controls="tab_home" role="tab" data-toggle="tab"><div class="mbs es-icon es-icon-menu"></div>目录</a></li>
+                <li><a href="#note" aria-controls="tab_home" role="tab" data-toggle="tab"><div class="mbs es-icon es-icon-edit"></div>笔记</a></li>
+                <li><a href="#question" aria-controls="tab_home" role="tab" data-toggle="tab"><div class="mbs es-icon es-icon-help"></div>问答</a></li>
+            </ul>
+        </div>
+        <div class="topic-list tab-content tab-main-content">
+            <div  id="task-list" role="tabpanel" class=" tab-pane active media topic-item" >
+                <div class="task-list-pane-body js-sidebar-pane-body">
+                    <ul class="task-list task-show">
+                        {volist name="tasklist" id="tl"}
+                        {if condition="$tl['type'] eq 'mp4' or $tl['type'] eq 'url'"}
+                        {present name="tl.plan"}
+                        {switch name="tl.plan" }
+                        {case value="100"}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
+                            <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">{$tl.chapter}: {$tl.title}</a>
+
+                            <span class="right-menu">
+                                {notempty name="tl.length"}
+                                {$tl.length|video_time_trans}
+                                {/notempty}
+                                <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
+                            </span>
+                        </li>
+                        {/case}
+                        {default /}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                            <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
+                                {$tl.chapter}: {$tl.title}
+                            </a>
+                            <span class="right-menu">
+                                {notempty name="tl.length"}
+                                {$tl.length|video_time_trans}
+                                {/notempty}
+                                    <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
+                            </span>
+                        </li>
+                        {/switch}
+                        {else /}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                            <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
+                                {$tl.chapter}: {$tl.title}
+                            </a>
+                            <span class="right-menu">23:10
+                                    <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
+                            </span>
+                        </li>
+                        {/present}
+                        {else /}
+                        {present name="tl.plan"}
+                        {switch name="tl.plan" }
+                        {case value="100"}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
+                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">{$tl.chapter}: {$tl.title}</a>
+                            <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
+                        </li>
+                        {/case}
+                        {default /}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
+                                {$tl.chapter}: {$tl.title}
+                            </a>
+                            <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
+                        </li>
+                        {/switch}
+                        {else /}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                            <a class="title" href="/course/127/task/749/show">
+                                {$tl.chapter}: {$tl.title}
+                            </a>
+                            <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
+                        </li>
+                        {/present}
+                        {/if}
+                        {/volist}
+
+
+
+                    </ul>
+                </div>
+                <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 3px; width: 360px; display: none;">
+                    <div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div>
+                </div>
+                <div class="ps-scrollbar-y-rail" style="top: 0px; right: 3px; height: 925px; display: inherit;">
+                    <div class="ps-scrollbar-y" style="top: 0px; height: 201px;"></div>
+                </div>
+            </div>
+            <div  id="note" role="tabpanel" class=" tab-pane media topic-item" >
+                <div class="note-pane-body js-sidebar-pane-body">
+                    <form id="task-note-plugin-form" method="post" action="#/course/127/task/747/note/save">
+                        <div id="editor-container"></div>
+                        <div class="col-md-7 col-md-offset-2">
+                            <button id="testsave" data-submiting-text="正在保存" type="button" class="btn btn-primary">保存</button>
+                        </div>
+                        <input type="hidden" name="_csrf_token" value="ML9Jb6sbzOAzIHPAL82343S0p6Zgf_oJq-zOzW_y3EM">
+                        </form>
+                </div>
+                <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 3px; width: 360px; display: none;">
+                    <div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div>
+                </div>
+                <div class="ps-scrollbar-y-rail" style="top: 0px; right: 3px; height: 925px; display: none;">
+                    <div class="ps-scrollbar-y" style="top: 0px; height: 0px;"></div>
+                </div>
+            </div>
+            <div id="question" role="tabpanel" class=" tab-pane media topic-item" >
+                <div class="question-pane-body js-sidebar-pane-body">
+                    <div class="question-list-block">
+
+                        <form class="task-question-plugin-form" id="task-question-plugin-form" method="post" action="#/course/127/task/747/plugin/thread/create" novalidate="novalidate">
+                            <div class="form-group">
+                                <div class="controls">
+                                    <input type="text" id="question_title" name="question[title]" required="required" class="form-control expand-form-trigger" placeholder="我要提问" data-display="标题" aria-required="true">
+                                </div>
+                            </div>
+                            <div id="editor-container-two"></div>
+                            <div class="form-group js-detail-form-group mtm hide">
+                                <div class="controls clearfix">
+                                <button class="btn btn-primary btn-sm pull-right" type="submit">提问</button>
+                                <button class="btn btn-link btn-sm collapse-form-btn pull-right" type="button">取消</button>
+                                </div>
+                            </div>
+                                <input type="hidden" id="question_courseId" name="question[courseId]" value="127">
+                                <input type="hidden" id="question_taskId" name="question[taskId]" value="747">
+                                <input type="hidden" id="question__token" name="question[_token]" value="G4NAAcoVH4NNVw7otFZCkj3FqG7qLMkqmHNRlhi-iv0">
+                            <input type="hidden" name="_csrf_token" value="ML9Jb6sbzOAzIHPAL82343S0p6Zgf_oJq-zOzW_y3EM">
+                        </form>
+                        <div class="checkbox clearfix">
+                            <div class="controls pull-right">
+                                <a href="#" class="btn btn-link">取消</a>
+                                <button type="button" class="btn btn-primary js-btn-thread-save" data-jifen-eng="tishi" data-loading-text="正在提交...">发表</button>
+                            </div>
+                        </div>
+                        <ul class="media-list thread-list-small" data-role="list">
+                            <li class="media thread-item" data-id="23">
+                                <div class="media-body thread-item-body">
+                                    <div class="mbm">
+                                    <a href="javascript:;" class="js-redirect-question-detail" data-url="/course/127/task/747/plugin/thread/23">
+                                        <span class="title-icon"><i class="es-icon es-icon-help mrm"></i></span>
+                                        11111111111
+                                    </a>
+                                    </div>
+                                    <div class="metas">
+                                        <a class="link-dark link-dark mll" href="#/user/23328">深木</a>
+                                        发表于刚刚
+                                    <span class="bullet">•</span>
+                                    <a href="#/course/127/task/747/show#">0回答</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="media thread-item" data-id="16">
+                                <div class="media-body thread-item-body">
+                                    <div class="mbm">
+                                        <a href="javascript:;" class="js-redirect-question-detail" data-url="/course/127/task/747/plugin/thread/16">
+                                            <span class="title-icon"><i class="es-icon es-icon-help mrm"></i></span>
+                                            阿斯蒂芬
+                                        </a>
+                                    </div>
+                                    <div class="metas">
+                                        <a class="link-dark link-dark mll" href="#/user/23303">ceshi002</a>
+                                        发表于23天前
+                                        <span class="bullet">•</span>
+                                        <a href="#/course/127/task/747/show#">0回答</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="media thread-item" data-id="2">
+                                <div class="media-body thread-item-body">
+                                    <div class="mbm">
+                                    <a href="javascript:;" class="js-redirect-question-detail" data-url="/course/127/task/747/plugin/thread/2">
+                                        <span class="title-icon"><i class="es-icon es-icon-help mrm"></i></span>
+                                        我可以当一个电焊工吗
+                                    </a>
+                                    </div>
+                                    <div class="metas">
+                                        <a class="link-dark link-dark mll" href="#/user/1">admin</a>
+                                        发表于27天前
+                                    <span class="bullet">•</span>
+                                    <a href="#/course/127/task/747/show#">0回答</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>  
+                    </div>
+                    <div class="question-detail-block" style="display: none">
+                    </div>
+                </div>
+                <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 3px; width: 360px; display: none;">
+                    <div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div>
+                </div>
+                <div class="ps-scrollbar-y-rail" style="top: 0px; right: 3px; height: 925px; display: none;">
+                    <div class="ps-scrollbar-y" style="top: 0px; height: 0px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+    <div id="myModal" class="modal in fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog  modal-message task-state-modal modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">  <i class="es-icon es-icon-iccheckcircleblack24px color-success mrs"></i>完成任务</h4>
+                </div>
+                <div class="modal-body">  
+                    <div class="content">
+                        <div class="content-title">
+                        恭喜完成
+                        <b class="mlm">《 焊工识图3-3 》</b>
+                        </div>
+                        <div class="progress progress-radius progress-md content-progress">
+                        <div class="progress-bar progress-bar-left progress-bar-success " role="progressbar" aria-valuenow="7" aria-valuemin="0" aria-valuemax="100" style="width:7%;min-width: 15%;">7%</div>
+                        </div>
+                        <span class="color-success">已完成了整个课程的7%，加油吧！</span>
+                    </div>
+                </div>
+                <div class="modal-footer">  
+                    <div class="es-share top">
+                        <a class="btn btn-info dropdown-toggle" href="" data-toggle="dropdown">
+                        <i class="es-icon es-icon-share mr5"></i>分享
+                        </a>
+                        <div class="dropdown-menu  js-social-share-params" data-title="焊工识图">
+                            <a href="javascript:;" class="js-social-share" data-cmd="weixin" title="分享到微信" data-share="weixin" data-qrcode-url="/common/qrcode?text=http%3A//www.hnhgjx.cn%3A1700/course/127"><i class="es-icon es-icon-weixin"></i></a>
+                            <a href="javascript:;" class="js-social-share" data-cmd="tsina" title="分享到新浪微博" data-share="weibo"><i class="es-icon es-icon-weibo"></i></a>
+                            <a href="javascript:;" class="js-social-share" data-cmd="qq" title="分享到QQ好友" data-share="qq"><i class="es-icon es-icon-qq"></i></a>
+                            <a href="javascript:;" class="js-social-share" data-cmd="qzone" title="分享到QQ空间" data-share="qzone"><i class="es-icon es-icon-qzone"></i></a>
+                        </div>
+                    </div>
+                    <a class="btn btn-primary" href="#">下一任务</a>
+                </div>
+            </div>
+        </div>
+    </div>
+  <script src="__JS__jquery-1.11.3.min.js"></script>
+  <script src="__JS__bootstrap.js"></script>
+  <script src="__JS__student/quill.js"></script>
+  <script src="__JS__course.js"></script>
+  <script src="__JS__video.min.js"></script>
+<script>
+    $(function(){
+
+        $("button").unbind("click");
+        $("[taskid='{$task.id}']").addClass(' active');
+        $('#testsave').click(function(){
+            {present name="user"}
+            var content = $('#editor-container').text();    //这里需要用jquery获取文本编辑器中的值替换
+            var courseid = {$course.id};
+            var userID = {$user.id};
+            var lessonid = {$task.chapterid};
+            if(content==""){
+                alert("内容不能为空");
+                return false;
+            }
+            $.post(
+                "{:url('index/course/savenote')}",
+                {
+                    'content':content,
+                    'course':courseid,
+                    'userid':userID,
+                    'lessonid':lessonid,
+                },
+                function(data){
+                    if(data==1){
+                        alert("保存成功！");
+                    }
+                    else{
+                        alert("保存失败！");
+                    }
+                },
+                "json"
+            );
+            {else /}
+                alert('请先登录！');
+                {/present}
+        });
+
+
+        $('.js-btn-thread-save').click(function(){
+
+
+            {present name="user"}
+            var title = $('#question_title').val();
+            var content = $('#editor-container-two').text();    //这里需要用jquery获取文本编辑器中的值替换
+            var courseid = {$course.id};
+            var userID = {$user.id};
+            if(title==""){
+                alert("请输入标题");
+                return false;
+            }
+            if(content==""){
+                alert("请输入标题");
+                return false;
+            }
+            $.post(
+                "{:url('index/course/createask')}",
+                {
+                    'title':title,
+                    'content':content,
+                    'course':courseid,
+                    'userID':userID,
+                },
+                function(data){
+                    if(data==1){
+                        alert("提问成功！");
+                    }
+                    else{
+                        alert("提问失败！");
+                    }
+                },
+                "json"
+            );
+            {else /}
+                alert('请先登录！');
+                {/present}
+                });
+
+        $('.dashboard-body').click(function(){
+            {present name="user"}
+                var courseid = {$task.courseId};
+                var chapterid = {$task.chapterid};
+                $.post(
+                    "{:url('index/user/startwatch')}",
+                    {'courseid':courseid,'chapterid':chapterid},
+                    function(data){
+                        console.log(data);
+                        if(data['code']!=0){
+                            alert('记录学习时间出错，请重新进入');
+                        }
+                    },
+                    "json"
+                );
+            {/present}
+
+        });
+
+        window.onbeforeunload = function(e){
+            {present name="user"}
+            var courseid = {$task.courseId};
+            var chapterid = {$task.chapterid};
+            $.post(
+                "{:url('index/user/endwatch')}",
+                {'courseid':courseid,'chapterid':chapterid},
+                function(data){
+                    console.log(data);
+                    if(data['code']!=0){
+                        alert('记录学习时间出错，请重新进入');
+                    }
+                },
+                "json"
+            );
+            {/present}
+        };
+
+
+    })
+</script>
+</body>
+</html>

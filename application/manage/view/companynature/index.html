@@ -62,7 +62,7 @@
                                     <div class="form-group">
                                         <label for="name" class="col-sm-2 control-label">区域名称</label>
                                         <div class="col-sm-5">
-                                            <input type="text" class="form-control" name="name" value="$vo.name"
+                                            <input type="text" class="form-control" name="name" value="{$vo.classname}"
                                                    placeholder="请输入区域名称">
                                         </div>
                                     </div>
@@ -73,6 +73,16 @@
                                                 <input type="text" class="form-control" name="code" value="{$vo.code}"
                                                        placeholder="请输入区域代码">
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="center-block" style="width: 200px">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="flag" value="0"  {if condition="$vo['flag'] eq 1"}checked{/if}> 启用
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="flag" value="1"  {if condition="$vo['flag'] eq 0"}checked{/if}> 禁用
+                                            </label>
                                         </div>
                                     </div>
                                     <input type="hidden" name="rid" value="{$vo.id}" />
@@ -128,10 +138,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="center-block" style="width: 200px">
+                                <label class="radio-inline">
+                                    <input type="radio" name="flag" value="0" checked > 启用
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="flag" value="1" checked> 禁用
+                                </label>
+                            </div>
+                        </div>
                         <input type="hidden" name="rid" value="" id="selfcode"/>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add0',0);">添加</button>
+                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add',0);">添加</button>
                         </div>
                     </form>
                 </div>
@@ -173,7 +193,7 @@
 
         $.ajax({
             url: $url+"?"+Math.random(),
-            type:"post",
+            type:"get",
             data:$('#form'+formid).serialize(),
             success:function(data){
 

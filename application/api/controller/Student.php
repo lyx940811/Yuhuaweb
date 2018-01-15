@@ -228,14 +228,24 @@ class Student extends User
         if(!$validate->check($data)){
             return json_data(130,$validate->getError(),'');
         }
-        if(!CourseNote::get(['courseId'  =>  $this->data['courseId'],'lessonid'  =>  $this->data['lessonid']])){
+        //还没定用不用注释中的
+//        if(!$note = CourseNote::get(['userid'=>$this->user->id,'courseId'=>$this->data['courseId'],'lessonid'=>$this->data['lessonid']])){
+//            CourseNote::create($data);
+//            return json_data(0,$this->codeMessage[0],'');
+//        }
+//        else{
+//            $data['content'] = $note['content'].$data['content'];
+//            CourseNote::update($data,['userid'=>$this->user->id,'courseId'=>$this->data['courseId'],'lessonid'=>$this->data['lessonid']]);
+//            return json_data(0,$this->codeMessage[0],'');
+//        }
+        if(empty($id)){
             CourseNote::create($data);
         }
         else{
             $note = new CourseNote;
             $note->data($data)
                 ->isUpdate(true)
-                ->save(['courseId'  =>  $this->data['courseId'],'lessonid'  =>  $this->data['lessonid']]);
+                ->save(['id' => $id]);
         }
 
         return json_data(0,$this->codeMessage[0],'');

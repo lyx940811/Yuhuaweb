@@ -20,5 +20,8 @@ use think\Model as ThinkModel;
 class CourseFavorite extends ThinkModel
 {
     // 自动写入时间戳
-
+    public function course()
+    {
+        return $this->hasOne('Course','id','courseid');
+    }
 }

@@ -25,7 +25,8 @@
             <th>类型</th>
             <th>邮箱</th>
             <th>IP</th>
-            <th>是否禁用</th>
+            <th>启用状态</th>
+            <th>锁定状态</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -37,16 +38,17 @@
             <td><img src="__ROOT__/{$vo.title}" title="用户头像" width="20px"/></td>
             <td>{$vo.mobile}</td>
             <td>{$vo.name}</td>
-            <td>{$vo.type}</td>
+            <td>{if condition="$vo['type'] eq '0'"}超级管理员{elseif condition="$vo['type'] eq '1'"}管理员{elseif condition="$vo['type'] eq '2'"}教师{elseif condition="$vo['type'] eq '3'"}学员{elseif condition="$vo['type'] eq '3'"}企业{/if}</td>
             <td>{$vo.email}</td>
             <td>{$vo.createdIp}</td>
-            {if condition="$vo.locked == 0"}
-                <td>启用</td>
+            <td>{$vo.status?'启用':'禁用'}</td>
+            <td>
+                {if condition="$vo.locked == 0"}
+                已解锁
                 {elseif condition="$vo.locked == 1"/}
-                <td>禁用</td>
-            {/if}
-            <td>{$vo.locked}</td>
-            <td>{$vo.createdTime}</td>
+                已锁定
+                {/if}
+            </td>
             <td>
                 {php}
                     if(check($uid,'/manage/user/edit')){
@@ -111,10 +113,10 @@
                                     <div class="form-group">
                                         <div class="center-block" style="width: 200px">
                                             <label class="radio-inline">
-                                                <input type="radio" name="user_locked" value="0"  {if condition="$vo['locked'] eq 0"}checked{/if}> 启用
+                                                <input type="radio" name="status" value="0"  {if condition="$vo['status'] eq 0"}checked{/if}> 禁用
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="user_locked" value="1"  {if condition="$vo['locked'] eq 1"}checked{/if}> 禁用
+                                                <input type="radio" name="status" value="1"  {if condition="$vo['status'] eq 1"}checked{/if}> 启用
                                             </label>
                                         </div>
                                     </div>
@@ -196,10 +198,10 @@
                         <div class="form-group">
                             <div class="center-block" style="width: 200px">
                                 <label class="radio-inline">
-                                    <input type="radio" name="user_locked" value="0" checked="checked"> 启用
+                                    <input type="radio" name="status" value="0" checked="checked"> 禁用
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="user_locked" value="1"> 禁用
+                                    <input type="radio" name="status" value="1"> 启用
                                 </label>
                             </div>
                         </div>

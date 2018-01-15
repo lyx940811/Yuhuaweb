@@ -15,21 +15,39 @@ class Course extends Base{
     public function index(){
 
         $list = Db::table('course')
-            ->field('id,title,subtitle,categoryId,tags,about,smallPicture,price,serializeMode,studentNum,status,userid')
+            ->field('id,title,subtitle,categoryId,teacherIds,tags,about,smallPicture,price,serializeMode,studentNum,status,userid')
             ->paginate(20);
 
 
-        $category = Db::table('category')->field('code,name')->order('grade desc')->select();
+//        $category = Db::table('category')->field('code,name')->order('grade desc')->select();
+        $category=$this->subtree(0);
+
         $tags = Db::table('tag')->select();
+        $teacher = Db::table('teacher_info')->field('id,realname')->select();
 
         $this->assign('list',$list);
         $this->assign('typename','课程列表');
         $this->assign('category',$category);
+        $this->assign('teacher',$teacher);
         $this->assign('tags',$tags);
         $this->assign('page',$list->render());
         return $this->fetch();
     }
 
+    //递归查找无线分类
+    public function subtree($id=0) {
+        $arr = Db::table('category')->field('code,name,parentcode,grade')->where('parentcode',$id)->select();
+        $subs = array(); // 子孙数组
+        foreach($arr as $v) {
+            if($v['parentcode'] == $id) {
+//                $v['lev'] = $lev;
+                $subs[] = $v; // 举例说找到array('id'=>1,'name'=>'安徽','parent'=>0),
+//                dump($v['parentcode']);
+                $subs = array_merge($subs,$this->subtree($v['code']));
+            }
+        }
+        return $subs;
+    }
 
     public function add(){
         $info = input('post.');
@@ -60,7 +78,7 @@ class Course extends Base{
             'tags'          => $info['tags'],
             'categoryId'    => $info['categoryId'],
             'serializeMode' => $info['serializeMode'],
-//            'status'=> 1,
+            'status'=>$info['status'],
             'smallPicture'  => $info['pic'],
             'userid'        => session('admin_uid'),
             'about'        => $info['about'],
@@ -122,10 +140,11 @@ class Course extends Base{
             'serializeMode' => $info['serializeMode'],
             'userid'        => session('admin_uid'),
             'about'        => $info['about'],
+            'status'=>$info['status'],
 //            'createdTime'   =>date('Y-m-d H:i:s',time()),
         ];
 
-        $ok = $role_table->field('title,subtitle,tags,categoryId,serializeMode,smallPicture,userid,about')->where('id',$id)->update($data);
+        $ok = $role_table->field('title,subtitle,tags,categoryId,serializeMode,smallPicture,userid,about,status')->where('id',$id)->update($data);
 
         if($ok){
             manage_log('108','004','修改课程',serialize($data),0);
@@ -156,5 +175,19 @@ class Course extends Base{
         $file = upload('newfile'.$id,'course');
         return $file;
 
+    }
+
+    public function select(){
+       $info = input('post.');
+
+
+        $ok = Db::name('course')->where("id='{$info['id']}'")->update(['teacherIds'=>$info['teacherIds']]);
+
+        if($ok){
+//            manage_log('108','005','删除课程',serialize(['id'=>$id]),0);
+            return ['info'=>'选择成功','code'=>'000'];
+        }else{
+            return ['error'=>'选择失败','code'=>'200'];
+        }
     }
 }

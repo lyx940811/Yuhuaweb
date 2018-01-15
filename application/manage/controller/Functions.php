@@ -83,10 +83,10 @@ class Functions extends Base{
         $data['code'] = $info['code'];
         $data['parentcode'] = empty($info['parentcode'])?0:$info['parentcode'];
         $data['grade'] = 1;
-//        $data['flag'] =$info['flag'];
+        $data['Flag'] =$info['flag'];
         $data['url'] = $info['url'];
 
-        $ok = $role_table->field('name,code,flag,parentcode,grade,url')->insert($data);
+        $ok = $role_table->field('name,code,Flag,parentcode,grade,url')->insert($data);
 
         if($ok){
             return ['info'=>'添加成功','code'=>'000'];
@@ -147,7 +147,7 @@ class Functions extends Base{
                 'name' => $info['name'],
                 'code'=>$info['code'],
                 'url'=>$info['url'],
-                'parentcode'=>$info['parentcode'],
+//                'parentcode'=>$info['parentcode'],
                 'Flag'=>$info['flag'],
             ]
         );

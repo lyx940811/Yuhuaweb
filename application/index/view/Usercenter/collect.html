@@ -8,22 +8,29 @@
   <div class="course-list">
     <div class="row">
       <!--<div class="empty">暂无收藏课程！</div>-->
+      {volist name="course" id="course"}
       <div class="col-lg-3 col-md-4 col-xs-6">
         <div class="course-item">
           <div class="course-img">
-            <a href="#">
-              <img src="__IMG__1554317ac977773116.jpg" alt="化学基础" class="img-responsive">
+            <a href="{:url('index/course/catalogue',array('course'=>$course['courseid']))}">
+              {present name="course.course.smallPicture"}
+              {notempty name="course.course.smallPicture"}
+              <img src="/{$course->course->smallPicture}" alt="" class="img-responsive"> <!-- courseSet.largePicture -->
+              {else /}
+              <img src="/static/index/img/courseSet.png" class="img-responsive">
+              {/notempty}
+              {/present}
             </a>
           </div>
           <div class="course-info">
             <div class="title">
-              <a class="link-dark" href="/course/158" target="_blank">
-                化学基础
+              <a class="link-dark" href="{:url('index/course/catalogue',array('course'=>$course['courseid']))}" target="_blank">
+                {$course->course->title}
               </a>
             </div>
             <div class="metas clearfix">
-              <span class="num"><i class="es-icon es-icon-people"></i>22</span>
-              <span class="comment"><i class="es-icon es-icon-textsms"></i>0</span>
+              <span class="num"><i class="es-icon es-icon-people"></i>{$course->course->studyresult()->group('userid')->count()}</span>
+              <span class="comment"><i class="es-icon es-icon-textsms"></i>{$course->course->review()->count()}</span>
               <span class="course-price-widget">
                     <span class="free">免费</span>
                   </span>
@@ -31,7 +38,9 @@
           </div>
         </div>
       </div>
+      {/volist}
     </div>
+    {$page}
   </div>
   <nav class="text-center"></nav>
 </div>

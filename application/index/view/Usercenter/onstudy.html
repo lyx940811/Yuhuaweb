@@ -1,0 +1,51 @@
+{extend name="public/spacelayout"}
+{block name="title"}{/block}
+
+{block name="container"}
+{include file="../application/index/view/usercenter/public/spacetop.html" /}
+<div id="content-container" class="container">
+  {include file="../application/index/view/usercenter/public/spacenav.html" /}
+  <div class="course-list">
+    <div class="row">
+      {volist name="course" id="course"}
+      <div class="col-lg-3 col-md-4 col-xs-6">
+        <div class="course-item">
+          <div class="course-img">
+            <a href="{:url('index/course/catalogue',array('course'=>$course['courseid']))}" target="_blank">
+              {present name="course.course.smallPicture"}
+              {notempty name="course.course.smallPicture"}
+              <img src="/{$course->course->smallPicture}" alt="" class="img-responsive"> <!-- courseSet.largePicture -->
+              {else /}
+              <img src="/static/index/img/courseSet.png" class="img-responsive">
+              {/notempty}
+              {/present}
+              <!--<img src="/{$course->course->smallPicture}" alt="" class="img-responsive">-->
+            </a>
+          </div>
+          <div class="course-info">
+            <div class="title">
+              <a class="link-dark" href="{:url('index/course/catalogue',array('course'=>$course['courseid']))}" target="_blank">
+                {$course->course->title}
+              </a>
+            </div>
+            <div class="metas clearfix">
+              <span class="num"><i class="es-icon es-icon-people"></i>{$course->course->studyresult()->group('userid')->count()}</span>
+              <span class="comment"><i class="es-icon es-icon-textsms"></i>{$course->course->review()->count()}</span>
+              <span class="course-price-widget">
+                    <span class="price">
+                      <span class="color-success">免费</span>
+                    </span>
+                  </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/volist}
+
+
+    </div>
+    {$page}
+  </div>
+  <nav class="text-center"></nav>
+</div>
+{/block}

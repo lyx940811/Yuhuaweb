@@ -154,11 +154,11 @@ class File extends Controller
         if ($done) {
 //            $sDestFile = './upload/'.time().'.'.$sExtension;       //合并文件地址
 
-            $sDestFile = "./uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time());
+            $sDestFile = "uploads"."/".date('Y',time())."/".date('m',time())."/".date('d',time());
             if(!file_exists($sDestFile)){
                 mkdir($sDestFile,0775,true);
             }
-            $sDestFile = "./uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time()).DS.time().'.'.$sExtension;
+            $sDestFile = "uploads"."/".date('Y',time())."/".date('m',time())."/".date('d',time())."/".time().'.'.$sExtension;
 
             //以下if为判断不是分片上传的话直接挪缓存文件，但是没有删除
             if($iChunks==0){

@@ -43,7 +43,7 @@
             <td>{$vo.studentNum}</td>
             <td>{$vo.status?'启用':'禁用'}</td>
             <td>{$vo.userid|getUserinfo}</td>
-            <td><a href="{:url('coursetask/index')}?cid={$vo.id}">添加任务</a>|<a href="{:url('coursechapter/index')}?cid={$vo.id}">添加章</a></td>
+            <td><a href="{:url('coursetask/index')}?cid={$vo.id}">添加任务</a>|<a href="{:url('coursechapter/index')}?cid={$vo.id}">添加章</a>|<a href="#"  data-toggle="modal" data-target="#myModal_select{$vo.id}">选择教师</a></td>
             <td>
                 {php}
                     if(check($uid,'/manage/course/edit')){
@@ -55,6 +55,47 @@
                     }
 
                 {/php}
+                <!--选择教师开始-->
+                <div class="modal fade" id="myModal_select{$vo.id}">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <!-- 模态框头部 -->
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">选择教师</h4>
+                            </div>
+
+                            <!-- 模态框主体 -->
+                            <div class="modal-body">
+
+                                <form class="form-horizontal" role="form" id="form_select{$vo.id}" method="post" action="{:url('select')}">
+                                    <div class="form-group">
+                                        <label for="title" class="col-sm-2 control-label">教师</label>
+                                        <div class="col-sm-5">
+                                            <select name="teacherIds" id="teacherIds">
+                                                <option value="">--请选择--</option>
+                                                {volist name="teacher" id="t"}
+                                                <option value="{$t.id}" {if condition="$vo['teacherIds'] eq $t['id']"}selected="selected"{/if}>{$t.realname}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="id" value="{$vo.id}" />
+                                    <!-- 模态框底部 -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" onclick="select({$vo.id})">修改</button>
+                                    </div>
+                                </form>
+
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <!--选择教师结束-->
                 <!-- 修改开始-->
                 <!-- 模态框 -->
                 <div class="modal fade" id="myModal_edit{$vo.id}">
@@ -95,11 +136,12 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="categoryId" class="col-sm-2 control-label">分类</label>
+                                        <label for="categoryId" class="col-sm-2 control-label">所属专业</label>
                                         <div class="col-sm-10">
                                             <select name="categoryId" class="form-control">
+
                                                 {volist name="category" id="c"}
-                                                <option value="{$c.code}" {if condition="$vo['categoryId'] eq $c['code']"}selected{/if}>{$c.name}</option>
+                                                <option value=d"{$c.code}"  {if condition="$vo['categoryId'] eq $c['code']"}selected{/if}>{php} echo str_repeat('&nbsp;',$c['grade']*4).'|_'{/php}{$c.name}</option>
                                                 {/volist}
                                             </select>
                                         </div>
@@ -124,6 +166,16 @@
                                             <input type="file" id="newfile{$vo.id}" name="newfile" onchange="uploadImage({$vo.id});">
                                             <input type="hidden" name="pic" id="pic{$vo.id}" value="{$vo.smallPicture}">
                                             <div id="showinfoPic{$vo.id}"><img src="{$vo.smallPicture}"/></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="center-block" style="width: 200px">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="status" value="1"  {if condition="$vo['status'] eq 1"}checked{/if}> 启用
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="status" value="0"  {if condition="$vo['status'] eq 0"}checked{/if}> 禁用
+                                            </label>
                                         </div>
                                     </div>
                                     <input type="hidden" name="rid" value="{$vo.id}" />
@@ -189,11 +241,12 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="categoryId" class="col-sm-2 control-label">分类</label>
+                            <label for="categoryId" class="col-sm-2 control-label">所属专业</label>
                             <div class="col-sm-10">
                                     <select name="categoryId" id="categoryId" class="form-control">
+                                        <option>--请选择--</option>
                                         {volist name="category" id="c"}
-                                        <option value="{$c.code}">{$c.name}</option>
+                                        <option value=d"{$c.code}">{php} echo str_repeat('&nbsp;',$c['grade']*4).'|_'{/php}{$c.name}</option>
                                         {/volist}
                                     </select>
                             </div>
@@ -218,6 +271,16 @@
                                 <input type="file" id="newfile0" name="newfile" onchange="uploadImage(0);">
                                 <input type="hidden" name="pic" id="pic">
                                 <div id="showinfoPic"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="center-block" style="width: 200px">
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="1" > 启用
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="0" checked > 禁用
+                                </label>
                             </div>
                         </div>
                         <input type="hidden" name="rid" value="" id="selfcode"/>
@@ -314,6 +377,29 @@
                     //
                     // $('#myModal_edit'+formid).modal('hide')
                     // $('#myModal').modal('hide')
+                    window.location.reload();
+
+                }else{
+                    alert(data.error)
+                }
+
+            },
+            error:function(e){
+                alert("添加信息错误");
+            }
+        });
+    }
+
+    function select(id) {
+        $.ajax({
+            url: "{:url('select')}?"+Math.random(),
+            type:"post",
+            data:$('#form_select'+id).serialize(),
+            success:function(data){
+
+                if(data.code=='000'){
+                    alert(data.info)
+
                     window.location.reload();
 
                 }else{

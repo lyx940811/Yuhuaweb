@@ -28,6 +28,7 @@ class Userprofile extends Base{
             ->join('classroom d','c.classid=d.id','LEFT')
             ->field('a.*,b.grade,b.starttime,b.depart,b.majors,b.class,b.style,b.studentstatus,d.title')
             ->where($where)
+            ->order('createdTime desc')
             ->paginate(20,false,['query'=>request()->get()]);
 
         $newlist = [];
@@ -38,10 +39,14 @@ class Userprofile extends Base{
 
 
         $classroom = Db::table('classroom')->field('id,title')->select();
+        $depart = Db::table('category')->field('id,code,name')->where('parentcode=0')->select();
+        $category = Db::table('category')->field('code,name')->select();
 
         $this->assign('list',$newlist);
         $this->assign('typename','学生列表');
         $this->assign('classroom',$classroom);
+        $this->assign('category',$category);
+        $this->assign('depart',$depart);
         $this->assign('page',$list->render());
         return $this->fetch();
     }
@@ -103,14 +108,14 @@ class Userprofile extends Base{
                 'depart'=>$info['depart'],
                 'majors'=>$info['majors'],
                 'class'=>$info['class'],
-                'culture'=>$info['culture'],
-                'style'=>$info['style'],
-                'academic'=>$info['academic'],
-                'starttime'=>$info['starttime'],
-                'quarter'=>$info['quarter'],
-                'studentstatus'=>$info['studentstatus'],
-                'level'=>$info['level'],
-                'createTime'=>date('Y-m-d H:i:s',time()),
+                'culture'=>isset($info['culture'])?$info['culture']:'',
+                'style'=>isset($info['style'])?$info['style']:'',
+                'academic'=>isset($info['academic'])?$info['academic']:'',
+                'starttime'=>isset($info['starttime'])?$info['starttime']:'',
+                'quarter'=>isset($info['quarter'])?$info['quarter']:'',
+                'studentstatus'=>isset($info['studentstatus'])?$info['studentstatus']:'',
+                'level'=>isset($info['level'])?$info['level']:'',
+//                'createTime'=>date('Y-m-d H:i:s',time()),
                 'createuserid'=>session('admin_uid'),
 
             ];
@@ -169,15 +174,15 @@ class Userprofile extends Base{
             'city'=>$info['city'],
             'household'=>$info['household'],
             'address'=>$info['address'],
-            'createdTime'=>date('Y-m-d H:i:s',time()),
         ];
 
         $ok = $role_table->where('id',$id)->update($data);
 
-        if($ok){
+        if(is_numeric($ok)){
 
             //修改学员在校信息
             $sdata = [
+//                'userid'=>$role_table->getLastInsID(),
                 'grade'=>$info['grade'],
                 'depart'=>$info['depart'],
                 'majors'=>$info['majors'],
@@ -193,8 +198,7 @@ class Userprofile extends Base{
 //                'createuserid'=>session('admin_uid'),
 
             ];
-            Db::table('student_school')->where('userid='.$id)->update($sdata);
-
+            Db::table('student_school')->field('grade,depart,majors,class,culture,style,academic,starttime,quarter,studentstatus,level')->where('userid',$id)->update($sdata);
             manage_log('101','004','修改学员',serialize($info),0);
             return ['info'=>'修改成功','code'=>'000'];
         }else{
@@ -212,8 +216,12 @@ class Userprofile extends Base{
     public function delete(){
 
         $id = $_GET['rid']+0;
-        Db::name('student_home')->field('Flag,createtime')->where("id='$id'")->delete();
-        return ['info'=>'删除成功','code'=>'000'];//改为删除
+        $ok=Db::name('student_home')->field('Flag,createtime')->where("id='$id'")->delete();
+        if(is_numeric($ok)){
+            return ['info'=>'删除成功','code'=>'000'];//改为删除
+        }else{
+            return ['info'=>'删除失败','code'=>'400'];//改为删除
+        }
     }
 
     public function addhome(){
@@ -326,6 +334,22 @@ class Userprofile extends Base{
         $this->assign('search',$search);
         $this->assign('page',$list->render());
         return $this->fetch();
+    }
+
+    public function selectcategory(){
+        $info = input('get.');
+        $category = Db::table('category')->field('code,name')->where(['parentcode'=>$info['code']])->select();
+
+        if ($category){
+
+            return ['info'=>$category,'code'=>000];
+        }else{
+
+            return ['error'=>'没有此数据','code'=>100];
+
+        }
+
+
     }
 
 }

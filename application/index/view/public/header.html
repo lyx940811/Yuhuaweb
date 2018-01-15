@@ -46,7 +46,7 @@
             <ul class="nav user-nav">
                 <li class="user-avatar-li nav-hover">
                     <a href="javascript:;" class="dropdown-toggle">
-                        <img class="avatar-xs" src="http://localhost/{$user.title}">
+                        <img class="avatar-xs" src="/{$user.title}">
                     </a>
                     <ul class="dropdown-menu" role="menu">
                         <li role="presentation" class="dropdown-header">{$user.username}</li>
@@ -65,28 +65,28 @@
                 {/switch}
 
                 <li class="visible-lg nav-hover">
-                    <a><i class="es-icon es-icon-mail"></i></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li>
-                            <a href="#">
-                                <span class="pull-right num"></span>
-                                <i class="es-icon es-icon-notificationson"></i>通知
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <span class="pull-right num"></span>
-                                <i class="es-icon es-icon-mail"></i>私信
-                            </a>
-                        </li>
-                    </ul>
+                    <!--<a><i class="es-icon es-icon-mail"></i></a>-->
+                    <!--<ul class="dropdown-menu" role="menu">-->
+                        <!--<li>-->
+                            <!--<a href="#">-->
+                                <!--<span class="pull-right num"></span>-->
+                                <!--<i class="es-icon es-icon-notificationson"></i>通知-->
+                            <!--</a>-->
+                        <!--</li>-->
+                        <!--<li>-->
+                            <!--<a href="#">-->
+                                <!--<span class="pull-right num"></span>-->
+                                <!--<i class="es-icon es-icon-mail"></i>私信-->
+                            <!--</a>-->
+                        <!--</li>-->
+                    <!--</ul>-->
                 </li>
             </ul>
             {else /}
             <ul class="nav user-nav">
                 <li class="user-avatar-li nav-hover visible-xs">
                     <a href="javascript:;" class="dropdown-toggle">
-                        <img class="avatar-xs" src="http://localhost/static\index\images\avatar.png">
+                        <img class="avatar-xs" src="/static\index\images\avatar.png">
                     </a>
                     <ul class="dropdown-menu" role="menu">
                         <li class="user-nav-li-login"><a href="{:url('index/index/login')}">

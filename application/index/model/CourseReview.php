@@ -21,5 +21,8 @@ class CourseReview extends ThinkModel
 {
     // 自动写入时间戳
 //    protected $autoWriteTimestamp = true;
-
+    public function user()
+    {
+        return $this->hasOne('User','id','userid');
+    }
 }

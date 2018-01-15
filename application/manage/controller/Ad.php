@@ -27,6 +27,7 @@ class Ad extends Base{
 
         $list = Db::name('ad a')
             ->where($where)
+            ->order('createdTime desc')
             ->paginate(20,false,['query'=>request()->get()]);
 
 
@@ -47,11 +48,13 @@ class Ad extends Base{
             'title.require' => '名称不能为空',
             'title.length' => '名称长度太短',
             'img.require' => '图片不能为空',
+            'type.require' => '类型不能为空',
         ];
 
         $validate = new Validate([
             'title'  => 'require|length:2,100',
             'img'  => 'require',
+            'type'  => 'require',
         ],$msg);
 
         $validate->check($info);
@@ -72,7 +75,7 @@ class Ad extends Base{
             'type'=> $info['type'],
             'createdTime'=>date('Y-m-d H:i:s',time()),
             'userid'=>session('admin_uid'),
-//            'flag'=>1,
+            'flag'=>$info['flag'],
         ];
 
         $ok = $role_table->insert($data);
@@ -125,6 +128,7 @@ class Ad extends Base{
             'img'=> $info['img'],
             'content'=>$info['content'],
             'type'=> $info['type'],
+            'flag'=>$info['flag'],
 //            'createdTime'=>date('Y-m-d H:i:s',time()),
 //            'userid'=>session('admin_uid'),
         ];

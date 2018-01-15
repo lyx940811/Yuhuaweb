@@ -21,20 +21,21 @@
                             <div class="media-body">
                                 <div class="mbm">
                                     <span class="label label-info" title="问答帖">问</span>
-                                    <a href="teacher_course_talk.html"><strong>{$ask.title}</strong></a>
+                                    <a href="{:url('index/course/askdetail',array('course'=>$ask['courseid'],'askid'=>$ask['id']))}"><strong>{$ask.title}</strong></a>
                                     <span class="label" title="课时702">L702</span>
                                 </div>
                                 <div class="color-gray text-normal">
                                     <span>来自
-                                        <a href="teacher_course_index.html" class="link-primary">专业英语</a>-<a href="teacher_course_index.html" class="link-primary">专业英语</a>
+                                        <a class="link-primary">{notempty name="ask.catename"}{$ask.catename}{/notempty}</a>-<a href="teacher_course_index.html" class="link-primary">{notempty name="ask.coursename"}{$ask.coursename}{/notempty}</a>
                                     </span>
                                     <span class="bullet">•</span>
-                                    <span>2浏览</span>
+                                    <span>{$ask.hit}浏览</span>
                                 </div>
                             </div>
                         </li>
                         {/volist}
                     </ul>
+                    {$page}
                     {else /}
                     <div class="empty">您的课程中还没有学员提问过...</div>
                     {/notempty}

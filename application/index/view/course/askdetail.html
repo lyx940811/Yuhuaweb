@@ -1,0 +1,165 @@
+{extend name="public/courselayout"}
+{block name="title"}问题详情{/block}
+{block name="link"}
+<link rel="stylesheet" href="__CSS__student/quill.snow.css">
+{/block}
+{block name="navdetail"}
+
+
+    <ul class="breadcrumb">
+        <li><a href="#threads">讨论区</a></li>
+        <li class="active">问答</li>
+    </ul>
+    <div class="thread">
+        <div class="thread-header">
+            <a class="pull-right js-user-card" href="/user/23328" data-card-url="/user/23328/card/show" data-user-id="23328">
+                <img class="avatar-sm" src="/{$ask->user->title}">
+            </a>
+            <h2 class="thread-title">
+                <span class="label label-info">问</span>
+                {$ask.title}
+            </h2>
+            <div class="thread-metas">
+                By     <a class="link-dark link-primary">{$ask->user->username}</a>
+
+                <span class="bullet mhs">•</span>
+                {$ask.addtime|time_tran}
+                <span class="bullet mhs">•</span>
+                {$ask.hit}次浏览
+                <span class="bullet mhs">•</span>
+                <!--<a class="link-primary" href="#" title="分析化验室的清洁与管理">任务2</a>-->
+
+            </div>
+        </div>
+        <div class="thread-body"><p>{$ask.content}</p></div>
+        <!--<div class="thread-footer">-->
+            <!--<a href="/course/118/thread/22/edit" class="btn btn-link"><span class="glyphicon glyphicon-edit"></span> 编辑</a>-->
+            <!--<a href="javascript:;" class="btn btn-link" data-url="/course/118/thread/22/delete" data-after-url="#threads" data-role="confirm-btn" data-confirm-message="您真的要删除该帖吗？"><span class="glyphicon glyphicon-remove-sign"></span> 删除</a>-->
+            <!--<a href="javascript:" class="btn btn-link" data-url="/course/118/thread/22/stick" data-role="confirm-btn" data-confirm-message="您真的要置顶该帖吗？"><span class="glyphicon glyphicon-circle-arrow-up"></span> 置顶</a>-->
+            <!--<a href="javascript:" class="btn btn-link" data-url="/course/118/thread/22/elite" data-role="confirm-btn" data-confirm-message="您真的要加精该帖吗？"><span class="glyphicon glyphicon-thumbs-up"></span>  加精</a>-->
+        <!--</div>-->
+    </div>
+    <div class="thread-posts">
+        <h3 class="thread-posts-heading">
+            <span class="glyphicon glyphicon-share-alt"></span>
+            <span id="thread-post-num">{php}echo count($answer){/php}</span> 所有答案
+        </h3>
+        <ul class="thread-post-list media-list">
+            {volist name="answer" id="answer"}
+            <li id="post-6" name="post-6" class="thread-post media clearfix">
+                <a class="pull-left media-object js-user-card" href="#" data-card-url="/user/23298/card/show" data-user-id="23298">
+                    <img class="avatar-sm" src="/{$answer->user->title}">
+                </a>
+                <div class="thread-post-dropdown">
+                    <a href="javascript:" class="dropdown-toggle color-gray" data-toggle="dropdown"><i class="glyphicon glyphicon-collapse-down"></i></a>
+                    <ul class="dropdown-menu pull-right">
+                        <li><a href="/course/118/thread/22/post/6/edit"><i class="glyphicon glyphicon-edit"></i> 编辑</a></li>
+                        <li><a href="javascript:" data-action="post-delete" data-url="/course/118/thread/22/post/6/delete" data-for="#post-6"><i class="glyphicon glyphicon-remove"></i> 删除</a></li>
+                    </ul>
+                </div>
+                <div class="thread-post-body media-body" style="word-break:break-all;">
+                    <div class="media-heading">
+                        <a href="javascript:">{$answer->user->username}</a>
+                        <span class="bullet">•</span>
+                        <span class="color-gray">{$answer.addtime|time_tran}</span>
+                    </div>
+                    <div class="editor-text"><p>{$answer.content}</p></div>
+                    <!--<div class="thread-post-action" data-user="hori"><a href="#thread-post-form">回复</a></div>-->
+                </div>
+            </li>
+            {/volist}
+            <!--<li id="post-7" name="post-6" class="thread-post media clearfix">-->
+                <!--<a class="pull-left media-object js-user-card" href="#" data-card-url="/user/23298/card/show" data-user-id="23298">-->
+                    <!--<img class="avatar-sm" src="/files/default/2017/12-13/1208011225a3435412.jpg">-->
+                <!--</a>-->
+                <!--<div class="thread-post-dropdown">-->
+                    <!--<a href="javascript:" class="dropdown-toggle color-gray" data-toggle="dropdown"><i class="glyphicon glyphicon-collapse-down"></i></a>-->
+                    <!--<ul class="dropdown-menu pull-right">-->
+                        <!--<li><a href="/course/118/thread/22/post/6/edit"><i class="glyphicon glyphicon-edit"></i> 编辑</a></li>-->
+                        <!--<li><a href="javascript:" data-action="post-delete" data-url="/course/118/thread/22/post/6/delete" data-for="#post-6"><i class="glyphicon glyphicon-remove"></i> 删除</a></li>-->
+                    <!--</ul>-->
+                <!--</div>-->
+                <!--<div class="thread-post-body media-body" style="word-break:break-all;">-->
+                    <!--<div class="media-heading">-->
+                        <!--<a href="javascript:">hori</a>-->
+                        <!--<span class="bullet">•</span>-->
+                        <!--<span class="color-gray">1小时前</span>-->
+                    <!--</div>-->
+                    <!--<div class="editor-text"><p>123</p></div>-->
+                    <!--<div class="thread-post-action" data-user="hori"><a href="#thread-post-form">回复</a></div>-->
+                <!--</div>-->
+            <!--</li>-->
+
+        </ul>
+        <h3 class="thread-posts-heading"><span class="glyphicon glyphicon-plus"></span> 添加答案</h3>
+        <div class="adjoined-bottom">
+            <div class="grid-container">
+                <div id="editor-containers" style="height:300px;"></div>
+            </div>
+        </div>
+        <div class="checkbox clearfix">
+            <div class="controls pull-right">
+                <a href="#" class="btn btn-link">取消</a>
+                <button type="button" class="btn btn-primary js-btn-thread-save" data-jifen-eng="tishi" data-loading-text="正在提交...">发表</button>
+            </div>
+        </div>
+    </div>
+
+
+<nav class="text-center">
+</nav>
+{/block}
+{block name="javascript"}
+<script src="__JS__bootstrap.js"></script>
+<script src="__JS__ckeditor.js"></script>
+<script src="__JS__student/ckeditor.js"></script>
+<script src="__JS__student/sample.js"></script>
+<script src="__JS__student/quill.js"></script>
+<script>
+    $(function(){
+        var quill = new Quill('#editor-containers', {
+            placeholder: '欢迎来到讨论区...',
+            theme: 'snow'
+        });
+
+        $('.js-btn-thread-save').click(function(){
+            {present name="user"}
+
+            var content = $('#editor-containers').text();    //这里需要用jquery获取文本编辑器中的值替换
+            var askID = {$ask.id};
+            var userID = {$user.id};
+            var courseid = {$course.id};
+            if(content==""){
+                alert("请输入标题");
+                return false;
+            }
+            $.post(
+                "{:url('index/course/saveanswer')}",
+                {
+                    'askID':askID,
+                    'content':content,
+                    'course':courseid,
+                    'answerUserID':userID,
+                },
+                function(data){
+                    console.log(data);
+                    if(data==1){
+                        alert("回答成功！");
+                        window.location.href = window.location.href;
+                    }
+                    else{
+                        alert("回答失败！");
+                    }
+                },
+                "json"
+            );
+            {else /}
+                alert('请先登录！');
+                {/present}
+                });
+
+    })
+</script>
+{/block}
+
+

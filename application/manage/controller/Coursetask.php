@@ -20,22 +20,29 @@ class Coursetask extends Base{
 
         $info = input('get.');
         $where = [];
-        $where['b.id']= $this->request->param('cid');
+        $id=$this->request->param('cid');
+        $where['b.id']= $id;
         if(!empty($info['title'])){
 
             $where['a.title'] = ['like',"%{$info['title']}%"];
         }
 
         $list = Db::table('course_task a')
-            ->field('a.id,a.title,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.type,a.mediaSource,a.mediaSource,a.startTime,a.endTime,b.title btit')
+            ->field('a.id,a.title,a.mode,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.chapterid,a.type,a.mediaSource,a.mediaSource,a.startTime,a.endTime,b.title btit')
             ->join('course b','a.courseId=b.id','LEFT')
             ->where($where)
             ->paginate(20,['query'=>$info]);
 
         $course = Db::table('course')->field('id,title')->select();
+        //这里冲突了
+        $chapter = Db::table('course_chapter')->field('id,title')->where('courseid',$id)->select();
+        //$chapter = Db::table('course_chapter')->field('id,title')->where('courseid='.request()->get('cid'))->select();
+        $taskmode = Db::table('task_mode')->field('id,name')->select();
 
         $this->assign('list',$list);
         $this->assign('course',$course);
+        $this->assign('chapter',$chapter);
+        $this->assign('taskmode',$taskmode);
         $this->assign('typename','课程任务');
         $this->assign('page',$list->render());
         return $this->fetch();
@@ -52,12 +59,15 @@ class Coursetask extends Base{
             'startTime.require' => '开始时间不能为空',
             'endTime.require'   => '结束时间不能为空',
             'courseId.require'  => '课程不能为空',
+            'chapterid.require'  => '课程章必须选择',
         ];
         $validate = new Validate([
             'title'     => 'require|length:2,20',
             'startTime' => 'require',
             'endTime'   => 'require',
-            'courseId'  => 'require'
+            'courseId'  => 'require',
+            'chapterid'  => 'require'
+
         ],$msg);
 
         $validate->check($info);
@@ -74,6 +84,7 @@ class Coursetask extends Base{
             'title' => $info['title'],
             'startTime' => $info['startTime'],
             'endTime'=> $info['endTime'],
+            'chapterid'=> $info['chapterid'],
             'isFree'=>isset($info['isFree'])?$info['isFree']:0,
             'isOptional'=>isset($info['isOptional'])?$info['isOptional']:0,
             'mode'=>$info['mode'],
@@ -88,7 +99,7 @@ class Coursetask extends Base{
 //            'status'=>1,
         ];
 
-        $ok = $role_table->field('title,startTime,endTime,isFree,isOptional,mode,type,length,mediaSource,maxOnlineNum,maxPoint,courseId,createdUserId,createdTime,status')->insert($data);
+        $ok = $role_table->field('title,startTime,endTime,chapterid,isFree,isOptional,mode,type,length,mediaSource,maxOnlineNum,maxPoint,courseId,createdUserId,createdTime,status')->insert($data);
 
         if($ok){
             return ['info'=>'添加成功','code'=>'000'];
@@ -109,13 +120,15 @@ class Coursetask extends Base{
             'startTime.require' => '开始时间不能为空',
             'endTime.require'   => '结束时间不能为空',
             'courseId.require'  => '课程不能为空',
+            'chapterid.require'  => '课程章必须选择',
         ];
         $validate = new Validate([
             'rid'       => 'require',
             'title'     => 'require|length:2,20',
             'startTime' => 'require',
             'endTime'   => 'require',
-            'courseId'  => 'require'
+            'courseId'  => 'require',
+            'chapterid'  => 'require'
         ],$msg);
 
         $validate->check($info);
@@ -139,6 +152,7 @@ class Coursetask extends Base{
             'title' => $info['title'],
             'startTime' => $info['startTime'],
             'endTime'=> $info['endTime'],
+            'chapterid'=> $info['chapterid'],
             'isFree'=>isset($info['isFree'])?$info['isFree']:0,
             'isOptional'=>isset($info['isOptional'])?$info['isOptional']:0,
             'mode'=>$info['mode'],
@@ -150,7 +164,7 @@ class Coursetask extends Base{
             'courseId'=>$info['courseId']+0,
         ];
 
-        $ok = $role_table->field('title,startTime,endTime,isFree,isOptional,mode,type,length,mediaSource,maxOnlineNum,maxPoint,courseId')->where('id',$id)->update($data);
+        $ok = $role_table->field('title,startTime,endTime,chapterid,isFree,isOptional,mode,type,length,mediaSource,maxOnlineNum,maxPoint,courseId')->where('id',$id)->update($data);
 
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];
@@ -159,6 +173,16 @@ class Coursetask extends Base{
         }
     }
 
+    public function delete(){
+            $id = $_GET['rid']+0;
+            $ok=Db::name('course_task')->where("id='$id'")->delete();
+            if(is_numeric($ok)){
+                return ['info'=>'删除成功','code'=>'000'];//改为删除
+            }else{
+                return ['info'=>'删除失败','code'=>'400'];//改为删除
+            }
+
+    }
     public function upload(){
 
         $mediafile = new Mediaupload();
@@ -175,8 +199,6 @@ class Coursetask extends Base{
 
         echo json_encode($all);
         exit;
-
-
 
     }
 

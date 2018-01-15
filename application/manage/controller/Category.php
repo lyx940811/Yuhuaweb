@@ -81,6 +81,7 @@ class Category extends Base{
             'code' => $info['code'],
             'parentcode' => $info['parentcode'],
             'point'=> $info['point'],
+            'Flag'=>$info['flag'],
             'studyTimes'=>$info['studyTimes'],
             'description'=>$info['description'],
             'createtime'=>date('Y-m-d H:i:s',time()),
@@ -146,12 +147,13 @@ class Category extends Base{
             'name'=>$info['name'],
             'code'=>$info['code'],
             'point'=>$info['point'],
+            'Flag'=>$info['flag'],
             'studyTimes'=>$info['studyTimes'],
             'description'=>$info['description'],
 //            'createtime'=>date('Y-m-d H:i:s',time())
         ];
 
-        $ok = $role_table->field('name,code,point,studyTimes,description,createtime')->where('id',$id)->update($data);
+        $ok = $role_table->field('name,code,point,studyTimes,description,Flag,createtime')->where('id',$id)->update($data);
 
         if($ok){
             manage_log('104','004','修改专业',serialize($data),0);

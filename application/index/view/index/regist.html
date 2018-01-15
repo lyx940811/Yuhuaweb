@@ -114,7 +114,7 @@
                     <div class="controls">
                         <label>
                             <input type="checkbox" id="user_terms" checked="checked" name="gender"> 我已阅读并同意<a
-                                href="/userterms" target="_blank">《服务协议》</a>
+                                href="{:url('index/index/service')}" target="_blank">《服务协议》</a>
                         </label>
                     </div>
                 </div>
@@ -142,6 +142,10 @@
 <script>
     $(function(){
         $('#register-btn').click(function(){
+            if(!$('#user_terms').is(':checked')){
+                alert("必须同意服务协议！");
+                return false;
+            }
             var username = $('#register_nickname').val();
             var email    = $('#register_email').val();
             var password = $('#register_password').val();

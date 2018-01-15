@@ -31,6 +31,10 @@ class Course extends ThinkModel
         return $this->hasOne('User','id','userid');
     }
 
+    public function teacherinfo(){
+        return $this->hasOne('TeacherInfo','id','teacherIds');
+    }
+
     public function ask()
     {
         return $this->hasMany('Asklist','courseid','id');
@@ -49,5 +53,10 @@ class Course extends ThinkModel
     public function review()
     {
         return $this->hasMany('CourseReview','courseid','id');
+    }
+
+    public function note()
+    {
+        return $this->hasMany('CourseNote','courseId','id');
     }
 }

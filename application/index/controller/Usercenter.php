@@ -1,11 +1,13 @@
 <?php
 namespace app\index\controller;
 
+use app\index\model\CourseFavorite;
+use app\index\model\StudyResult;
 use app\index\model\UserProfile;
 use think\Controller;
 use think\Config;
 use think\Loader;
-use think\Request;
+use think\Db;
 use app\index\model\Course;
 use app\index\model\User as UserModel;
 class Usercenter extends Home
@@ -51,6 +53,10 @@ class Usercenter extends Home
      * @return mixed
      */
     public function collect(){
+        $course = CourseFavorite::where('userid',$this->user->id)->where('courseid!=0')
+            ->paginate(8);
+        $this->assign('course',$course);
+        $this->assign('page',$course->render());
         return $this->fetch();
     }
     /**
@@ -84,11 +90,37 @@ class Usercenter extends Home
         return $this->fetch();
     }
     /**
-     * 在学课程
+     * 在教课程
      * @return mixed
      */
     public function curriculum(){
         $course = Course::where('userid',$this->theuser->id)->paginate(8);
+        $this->assign('course',$course);
+
+        $page = $course->render();
+        $this->assign('page', $page);
+        return $this->fetch();
+    }
+
+    /**
+     * 在学课程
+     * @return mixed
+     */
+    public function onstudy(){
+        $course = Db::name('study_result')->alias('sr')
+            ->join('course c','sr.courseid=c.id')
+            ->field('sr.courseid as id,c.title,c.smallPicture')
+            ->group('sr.courseid')
+            ->where('sr.userid',$this->user->id)
+            ->paginate(8);
+
+//        foreach ( $course as &$c ){
+//            $people = Db::name('study_result')->where('courseid',$c['id'])->group('userid')->select();
+//            $c['learnNum']      = count($people);
+//            $c['commentsNum']   = Db::name('course_review')->where('courseid',$c['id'])->count();
+//        }
+
+        $course = StudyResult::where('userid',$this->user->id)->where('courseid!=0')->group('courseid')->paginate(8);
         $this->assign('course',$course);
 
         $page = $course->render();

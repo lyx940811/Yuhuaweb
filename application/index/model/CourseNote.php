@@ -23,6 +23,6 @@ class CourseNote extends ThinkModel
 //    protected $autoWriteTimestamp = true;
     public function user()
     {
-        return $this->hasOne('User','id','answerUserID');
+        return $this->hasOne('User','id','userid');
     }
 }

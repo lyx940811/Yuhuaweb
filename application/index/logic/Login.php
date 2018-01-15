@@ -3,6 +3,7 @@
 namespace app\index\logic;
 
 use app\index\model\User as UserModel;
+use app\index\model\UserProfile;
 use think\Request;
 use think\Loader;
 use think\Validate;
@@ -28,10 +29,14 @@ class Login extends Base
         if(UserModel::get(['email'=>$data['email']])){
             return json_data(120,$this->codeMessage[120],'');
         }
-        if(UserModel::get(['username'=>$data['username']])){
+        else if(UserModel::get(['username'=>$data['username']])){
+            return json_data(120,$this->codeMessage[120],'');
+        }
+        else if(UserModel::get(['mobile'=>$data['username']])){
             return json_data(120,$this->codeMessage[120],'');
         }
         else{
+
             //verified data
             $validate = Loader::validate('User');
             if(!$validate->check($data)){
@@ -40,6 +45,8 @@ class Login extends Base
             else{
                 //add data
                 $result = UserModel::create($data);
+                $profile_data['userid'] = $result->id;
+                UserProfile::create($profile_data);
                 if($result){
                     return json_data(0,$this->codeMessage[0],'');
                 }

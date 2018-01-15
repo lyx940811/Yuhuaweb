@@ -1,7 +1,11 @@
 <?php
 namespace app\index\controller;
 
+use app\index\model\AskAnswer;
 use app\index\model\Asklist;
+use app\index\model\CourseNote;
+use app\index\model\CourseReview;
+use app\index\model\CourseTask;
 use app\index\model\StudyResult;
 use think\Exception;
 use think\Loader;
@@ -226,7 +230,7 @@ class Course extends Home
                 unset($l['length'],$l['seq']);
             }
         }
-//        var_dump($lesson);die;
+
         $this->assign('task',$lesson);
         return $this->fetch();
     }
@@ -238,26 +242,70 @@ class Course extends Home
         return $this->fetch();
     }
     public function evaluate(){
-        $review = $this->course->review()->paginate(10);
+        $review = $this->course->review()->where('parentid',0)->order('createdTime desc')->paginate(10);
         $this->assign('review',$review);
         $this->assign('page',$review->render());
         return $this->fetch();
     }
     public function note(){
+        if($this->user){
+            $note = $this->course->note()->where('userid',$this->user->id)->paginate(10);
+            $this->assign('note',$note);
+            $this->assign('page',$note->render());
+        }
         return $this->fetch();
     }
     public function material(){
-        $file = $this->course->file()->paginate(10);
+        $file = $this->course->file()->order('createTime desc')->paginate(10);
         $page = $file->render();
         $this->assign('file',$file);
         $this->assign('page',$page);
 
         return $this->fetch();
     }
+
+    public function down(){
+        $fileid = $this->request->param('fileid');
+        $file = CourseFile::get($fileid);
+        if(file_exists($file['filepath'])){
+            $fp=fopen($file['filepath'],"r");
+            $file_size=filesize($file['filepath']);
+            //下载文件需要用到的头
+            Header("Content-type: application/octet-stream");
+            Header("Accept-Ranges: bytes");
+            Header("Accept-Length:".$file_size);
+            Header("Content-Disposition: attachment; filename=".iconv("utf-8","gb2312",$file['filename']));
+            $buffer=1024;
+            $file_count=0;
+            //向浏览器返回数据
+            while(!feof($fp) && $file_count<$file_size){
+                $file_con=fread($fp,$buffer);
+                $file_count+=$buffer;
+                echo $file_con;
+            }
+            fclose($fp);
+        }
+        else{
+            $this->error('文件不存在');
+        }
+
+
+    }
     public function summary(){
         return $this->fetch();
     }
+    public function askdetail(){
+        $askid = $this->request->param('askid');
+        $ask = Asklist::get($askid);
+        $this->assign('ask',$ask);
+        $answer = $ask->answer()->order('addtime desc')->paginate(10);
+        $this->assign('answer',$answer);
+        $this->assign('page',$answer->render());
 
+        $data['hit'] = $ask['hit']+1;
+        Asklist::update($data,['id'=>$ask['id']]);
+        return $this->fetch();
+    }
     public function createask(){
         if($this->request->isAjax()){
             $data = $this->request->param();
@@ -277,8 +325,140 @@ class Course extends Home
         return $this->fetch();
     }
 
-    public function taskDetail(){
+    public function taskdetail(){
+        $taskid = $this->request->param('taskid');
+        $task = CourseTask::get($taskid);
+        $this->assign('task',$task);
+        //课程目录
+        $video_type = ['mp4','url'];
+        $courseid = $this->course['id'];
+        if(!$course = CourseModel::get($courseid)){
+            return json_data(200,$this->codeMessage[200],'');
+        }
+        $fields = 'ct.id as taskid,ct.courseid,ct.length,ct.type,ct.chapterid,ct.title,cc.title as chapter,cc.seq,ct.mediaSource';
+        $lesson = Db::name('course_task')
+            ->alias('ct')
+            ->join('course_chapter cc','ct.chapterid = cc.id')
+            ->field($fields)
+            ->order('cc.seq')
+            ->where('ct.courseid',$courseid)
+            ->select();
+
+        if(!empty($this->user)){
+            foreach ($lesson as &$l){
+                if($course['type']!='url'){
+                    $l['mediaSource'] = $this->request->domain()."/".$l['mediaSource'];
+                }
+                if($watch_log = Db::name('study_result')->where(['userid'=>$this->user->id,'courseid'=>$l['courseid'],'chapterid'=>$l['chapterid']])->find()){
+                    if($watch_log['status']==1){
+                        $l['plan'] = '100';
+                    }
+                    else{
+                        //这个是还没学完的课程
+                        if(!in_array($l['type'],$video_type)){
+                            $l['plan'] = '100';
+                        }
+                        else{
+                            $length = explode(':',$l['length']);
+                            $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
+
+                            $watch_time = strtotime($watch_log['endtime'])-strtotime($watch_log['starttime']);
+                            $l['plan'] = (round($watch_time/$couse_time,2)*100);
+                        }
+                    }
+                }
+                else{
+                    $l['plan'] = '0';
+                }
+                unset($l['seq']);
+            }
+        }
+
+        $this->assign('tasklist',$lesson);
+
+        $this->assign('domain',$this->request->domain());
         return $this->fetch();
+    }
+
+    public function downtaskfile(){
+        $taskid = $this->request->param('taskid');
+        $task = CourseTask::get($taskid);
+        if(!file_exists($task['mediaSource'])){
+            $this->error('文件不存在');
+        }
+        if($this->user){
+            $data = [
+                'userid'    =>  $this->user->id,
+                'courseid'  =>  $task->courseId,
+                'chapterid' =>  $task->chapterid,
+                'status'    =>  1,
+                'starttime' =>  date('Y-m-d H:i:s',time()),
+                'endtime'   =>  date('Y-m-d H:i:s',time()),
+            ];
+            if(!StudyResult::get(['userid'    =>  $this->user->id, 'courseid'  =>  $task->courseId, 'chapterid' =>  $task->chapterid,])){
+                StudyResult::create($data);
+            }
+        }
+
+        $fp=fopen($task['mediaSource'],"r");
+        $file_size=filesize($task['mediaSource']);
+        $filelastname = explode('.',$task['mediaSource']);
+        $fielname = time().".".$filelastname[1];
+        //下载文件需要用到的头
+        Header("Content-type: application/octet-stream");
+        Header("Accept-Ranges: bytes");
+        Header("Accept-Length:".$file_size);
+        Header("Content-Disposition: attachment; filename=".iconv("utf-8","gb2312",$fielname));
+        $buffer=1024;
+        $file_count=0;
+        //向浏览器返回数据
+        while(!feof($fp) && $file_count<$file_size){
+            $file_con=fread($fp,$buffer);
+            $file_count+=$buffer;
+            echo $file_con;
+        }
+        fclose($fp);
+
+    }
+
+    public function savenote(){
+        $data = $this->request->param();
+        $data['courseId'] = $data['course'];
+        $data['createdTime'] = date('Y-m-d H:i:s',time());
+        unset($data['course']);
+        if(CourseNote::create($data)){
+            return 1;
+        }
+        else{
+            return 0;
+        }
+
+    }
+
+    public function saveanswer(){
+
+        $data = $this->request->param();
+        $data['addtime'] = date('Y-m-d H:i:s',time());
+        unset($data['course']);
+        if(AskAnswer::create($data)){
+            return 1;
+        }
+        else{
+            return 0;
+        }
+    }
+
+    public function savereview(){
+        $data = $this->request->param();
+        $data['createdTime'] = date('Y-m-d H:i:s',time());
+        $data['courseid'] = $data['course'];
+        unset($data['course']);
+        if(CourseReview::create($data)){
+            return 1;
+        }
+        else{
+            return 0;
+        }
     }
 
 }

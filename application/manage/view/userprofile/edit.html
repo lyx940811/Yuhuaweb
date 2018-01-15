@@ -13,6 +13,7 @@
             <!-- 模态框主体 -->
             <div class="modal-body">
                 <form class="form-horizontal" role="form" id="form{$vo.id}" method="post" action="{:url('edit')}">
+                   <input type="hidden" value="{$vo.userid}" name="rid"/>
                     <div class="form-group">
                         <label class="col-sm-2 control-label form-inline">学号</label>
                         <div class="col-sm-4">
@@ -114,15 +115,23 @@
                         </div>
                         <label class="col-sm-2 control-label form-inline">入学院系</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" name="depart" value="{$vo.depart}"
-                                   placeholder="请输入入学院系">
+                            <select name="depart"  class="form-control" >
+                                <option value="">--请选择--</option>
+                                {volist name="depart" id="c"}
+                                <option value="{$c.code}" onclick="sec_depart({$c.id},'{$c.code}',{$vo.id})" {if condition="$vo['depart'] eq $c['code']"}selected="selected"{/if}>{$c.name}</option>
+                                {/volist}
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label form-inline">专业</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" name="majors" value="{$vo.majors}"
-                                   placeholder="请输入专业">
+                            <select name="majors"  class="form-control" id="select_sec{$vo.id}">
+                                <option value="">--请选择--</option>
+                                {volist name="category" id="c"}
+                                <option value="{$c.code}" {if condition="$vo['majors'] eq $c['code']"}selected="selected"{/if}>{$c.name}</option>
+                                {/volist}
+                            </select>
                         </div>
                         <label class="col-sm-2 control-label form-inline">班级</label>
                         <div class="col-sm-4">
