@@ -25,7 +25,7 @@ class Dormitory extends Base{
             $where['name'] = ['like',"%{$info['name']}%"];
         }
 
-        $list = Db::name('dormitory')->field('id,name,code,flag')
+        $list = Db::name('dormitory')->field('id,name,code,Flag')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
 
@@ -62,6 +62,7 @@ class Dormitory extends Base{
         $data = [
             'name' => $info['name'],
             'code' => $info['code'],
+            'Flag' => $info['flag'],
 //            'Flag'=>1,
         ];
 
@@ -109,9 +110,10 @@ class Dormitory extends Base{
         $data = [
             'name' => $info['name'],
             'code' => $info['code'],
+            'Flag' => $info['flag'],
         ];
 
-        $ok = $role_table->field('name,code')->where('id',$id)->update($data);
+        $ok = $role_table->field('name,code,Flag')->where('id',$id)->update($data);
 
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];

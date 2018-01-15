@@ -72,7 +72,7 @@ class Admission extends Base{
             'telephone'=>$info['telephone'],
             'endtime'=>$info['endtime'],
             'createdTime'=>date('Y-m-d H:i:s',time()),
-//            'status'=>1,
+            'status'=>$info['status'],
         ];
 
         $ok = $role_table->field('title,userid,price,num,content,linker,telephone,endtime,createdTime,status')->insert($data);
@@ -121,10 +121,11 @@ class Admission extends Base{
             'linker'=>$info['linker'],
             'telephone'=>$info['telephone'],
             'endtime'=>$info['endtime'],
+            'status'=>$info['status'],
             'createdTime'=>date('Y-m-d H:i:s',time()),
         ];
 
-        $ok = $role_table->field('title,userid,price,num,content,linker,telephone,endtime,createdTime')->where('id',$id)->update($data);
+        $ok = $role_table->field('title,userid,price,num,content,linker,telephone,endtime,createdTime,status')->where('id',$id)->update($data);
 
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];
