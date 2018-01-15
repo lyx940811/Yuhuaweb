@@ -217,8 +217,12 @@
     // })
     function sec_depart(id,code,mainid) {
         $.get("{:url('selectcategory')}?code="+code,function (data) {
-            if(data.data.code==120){
-                alert(data.msg)
+            if(typeof(data.data)!= "undefined"){
+                //120base里无权限
+                if(data.data.code==120){
+                    alert(data.msg)
+                }
+
             }
 
             if(data.code=='000'){

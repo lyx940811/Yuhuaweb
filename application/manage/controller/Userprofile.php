@@ -57,13 +57,14 @@ class Userprofile extends Base{
 
         $msg  =   [
             'sn.require' => '请输入学号',
+            'sn.alphaDash' => '学号必须是英文或者下划线组成的',
             'realname.require' => '真实性别不能为空',
             'nation.require' => '请输入民族',
             'birthday.require' => '请输入生日',
             'mobile.require' => '手机号必须填写',
         ];
         $validate = new Validate([
-            'sn'  => 'require',
+            'sn'  => 'require|alphaDash',
             'realname'   => 'require',
             'nation'   => 'require',
             'birthday'   => 'require',
@@ -81,29 +82,43 @@ class Userprofile extends Base{
         $role_table = Db::name('user_profile');
 
         $data = [
-            'sn' => $info['sn'],
-            'userid'=>session('admin_uid'),
-            'realname' => $info['realname'],
-            'sex'=>$info['sex'],
-            'nation'=>$info['nation'],
-            'cardpic'=>serialize(["front_pic"=>$info['cardpic']]),
-            'birthday'=>$info['birthday'],
-            'idcard'=>$info['idcard'],
-            'policy'=>$info['policy'],
+            'nickname' => $info['mobile'],
+            'username'=> $info['mobile'],
+            'password' => password_hash('123456',PASSWORD_DEFAULT),
+            'type'=>3,
             'mobile'=>$info['mobile'],
-            'city'=>$info['city'],
-            'household'=>$info['household'],
-            'address'=>$info['address'],
+            'createUserID'=>session('admin_uid'),
+            'createdIp'=>request()->ip(),
             'createdTime'=>date('Y-m-d H:i:s',time()),
         ];
 
-        $ok = $role_table->insert($data);
+        $ok = Db::table('user')->insert($data);
+
 
         if($ok){
+            $userid = Db::table('user')->getLastInsID();
             //添加学生在校信息
+            $data2 = [
+                'sn' => $info['sn'],
+                'userid'=>$userid,
+                'realname' => $info['realname'],
+                'sex'=>$info['sex'],
+                'nation'=>$info['nation'],
+                'cardpic'=>serialize(["front_pic"=>$info['cardpic']]),
+                'birthday'=>$info['birthday'],
+                'idcard'=>$info['idcard'],
+                'policy'=>$info['policy'],
+                'mobile'=>$info['mobile'],
+                'city'=>$info['city'],
+                'household'=>$info['household'],
+                'address'=>$info['address'],
+                'createdTime'=>date('Y-m-d H:i:s',time()),
+            ];
+
+            $role_table->insert($data2);
 
             $sdata = [
-                'userid'=>$role_table->getLastInsID(),
+                'userid'=>$userid,
                 'grade'=>$info['grade'],
                 'depart'=>$info['depart'],
                 'majors'=>$info['majors'],
@@ -115,13 +130,14 @@ class Userprofile extends Base{
                 'quarter'=>isset($info['quarter'])?$info['quarter']:'',
                 'studentstatus'=>isset($info['studentstatus'])?$info['studentstatus']:'',
                 'level'=>isset($info['level'])?$info['level']:'',
-//                'createTime'=>date('Y-m-d H:i:s',time()),
+                'createTime'=>date('Y-m-d H:i:s',time()),
                 'createuserid'=>session('admin_uid'),
 
             ];
             Db::table('student_school')->insert($sdata);
 
             manage_log('101','003','添加学员',serialize($info),0);
+
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
@@ -160,9 +176,10 @@ class Userprofile extends Base{
 
         $id = $info['rid']+0;
 
+        $userprofile = $role_table->field('userid')->where('id='.$id)->find();
+
         $data = [
             'sn' => $info['sn'],
-            'userid'=>session('admin_uid'),
             'realname' => $info['realname'],
             'sex'=>$info['sex'],
             'nation'=>$info['nation'],
@@ -180,26 +197,51 @@ class Userprofile extends Base{
 
         if(is_numeric($ok)){
 
-            //修改学员在校信息
-            $sdata = [
-//                'userid'=>$role_table->getLastInsID(),
-                'grade'=>$info['grade'],
-                'depart'=>$info['depart'],
-                'majors'=>$info['majors'],
-                'class'=>$info['class'],
-                'culture'=>$info['culture'],
-                'style'=>$info['style'],
-                'academic'=>$info['academic'],
-                'starttime'=>$info['starttime'],
-                'quarter'=>$info['quarter'],
-                'studentstatus'=>$info['studentstatus'],
-                'level'=>$info['level'],
-//                'createTime'=>date('Y-m-d H:i:s',time()),
-//                'createuserid'=>session('admin_uid'),
+            Db::table('user')->where('id='.$userprofile['userid'])->update(['nickname'=>$info['mobile'],'username'=>$info['mobile'],'mobile'=>$info['mobile']]);
 
-            ];
-            Db::table('student_school')->field('grade,depart,majors,class,culture,style,academic,starttime,quarter,studentstatus,level')->where('userid',$id)->update($sdata);
+            $isHave = Db::table('student_school')->where('userid='.$userprofile['userid'])->find();
+
+            if($isHave){
+                //如果有这条信息，，修改学员在校信息
+                $sdata = [
+                    'grade'=>$info['grade'],
+                    'depart'=>$info['depart'],
+                    'majors'=>$info['majors'],
+                    'class'=>$info['class'],
+                    'culture'=>$info['culture'],
+                    'style'=>$info['style'],
+                    'academic'=>$info['academic'],
+                    'starttime'=>$info['starttime'],
+                    'quarter'=>$info['quarter'],
+                    'studentstatus'=>$info['studentstatus'],
+                    'level'=>$info['level'],
+                ];
+                Db::table('student_school')->where('userid',$userprofile['userid'])->update($sdata);
+
+
+            }else{
+                //如果没有这条在校信息，就重新添加一条
+                $sdata = [
+                    'userid'=>$userprofile['userid'],
+                    'grade'=>$info['grade'],
+                    'depart'=>$info['depart'],
+                    'majors'=>$info['majors'],
+                    'class'=>$info['class'],
+                    'culture'=>isset($info['culture'])?$info['culture']:'',
+                    'style'=>isset($info['style'])?$info['style']:'',
+                    'academic'=>isset($info['academic'])?$info['academic']:'',
+                    'starttime'=>isset($info['starttime'])?$info['starttime']:'',
+                    'quarter'=>isset($info['quarter'])?$info['quarter']:'',
+                    'studentstatus'=>isset($info['studentstatus'])?$info['studentstatus']:'',
+                    'level'=>isset($info['level'])?$info['level']:'',
+                    'createTime'=>date('Y-m-d H:i:s',time()),
+                    'createuserid'=>session('admin_uid'),
+
+                ];
+                Db::table('student_school')->insert($sdata);
+            }
             manage_log('101','004','修改学员',serialize($info),0);
+
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];
