@@ -120,9 +120,11 @@
                         <div class="col-sm-4">
                             <select name="majors"  class="form-control" id="select_sec0">
                                 <option value="">--请选择--</option>
+                                {if condition="isset($vo)"}
                                 {volist name="category" id="c"}
                                 <option value="{$c.code}" {if condition="$vo['depart'] eq $c['code']"}selected="selected"{/if}>{$c.name}</option>
                                 {/volist}
+                                {/if}
                             </select>
                         </div>
                         <label class="col-sm-2 control-label form-inline">班级</label>
