@@ -207,7 +207,7 @@ class Userprofile extends Base{
             $isHave = Db::table('student_school')->where('userid='.$userprofile['userid'])->find();
 
             if($isHave){
-                //如果有这条信息，，修改学员在校信息
+                //如果有这条信息,修改学员在校信息
                 $sdata = [
                     'grade'=>$info['grade'],
                     'depart'=>$info['depart'],
