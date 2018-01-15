@@ -22,7 +22,7 @@ class Companynature extends Base{
     }
 
     public function add(){
-        $info = input('get.');
+        $info = input('post.');
 
         $msg  =   [
             'name.require' => '区域名称不能为空',
