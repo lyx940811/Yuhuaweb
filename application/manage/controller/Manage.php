@@ -76,7 +76,7 @@ class Manage extends Base{
 //                    ['url'=>'/manage/studyresult/index','name'=>'学习记录'],
                 ]
             ],
-            ['typename'=>'学生记录','url'=>'/manage/userprofile/index','children'=>[
+            ['typename'=>'学习记录','url'=>'/manage/userprofile/index','children'=>[
                     ['url'=>'/manage/studyresult/index','name'=>'学习记录列表'],
             ]
             ],
