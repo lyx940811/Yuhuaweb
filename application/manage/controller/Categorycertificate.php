@@ -15,19 +15,16 @@ class Categorycertificate extends Base{
     public function index(){
 
         $info = input('get.');
-        unset($info['v']);
-        if(empty($info)){
-            $info['category']='';
-            $info['name']='';
-        }
+        $data['category']='';
+        $data['name']='';
 
         $where = [];
         if(!empty($info['category'])){
-
+            $data['category']=$info['category'];
             $where['a.categoryID'] = ['eq',$info['category']];
         }
         if(!empty($info['name'])){
-
+            $data['name']=$info['name'];
             $where['a.name'] = ['like',"%{$info['name']}%"];
         }
 
@@ -40,7 +37,7 @@ class Categorycertificate extends Base{
 
         $category = Db::table('category')->field('code,name')->where('Flag','eq',1)->select();
         $this->assign('list',$list);
-        $this->assign('info',$info);
+        $this->assign('info',$data);
         $this->assign('typename','专业证书');
         $this->assign('categorylist',$category);
         $this->assign('page',$list->render());

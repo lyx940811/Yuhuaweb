@@ -13,22 +13,23 @@ class StudentEnroll extends Base{
     public function index(){
 
         $info = input('get.');
-        unset($info['v']);
-        if(empty($info)){
-            $info['admission']='';
-            $info['category']='';
-            $info['starttime']='';
-            $info['endtime']='';
-        }
+        $data['admission']='';
+        $data['category']='';
+        $data['starttime']='';
+        $data['endtime']='';
         $where = [];
         if(!empty($info['admission'])){
+            $data['admission']=$info['admission'];
             $where['admissionID'] = ['eq',$info['admission']];
 
         }
         if(!empty($info['category'])){
+            $data['category']=$info['category'];
             $where['categoryID'] = ['eq' ,$info['category']];
         }
         if(!empty($info['starttime']) && !empty($info['endtime'])){
+            $data['starttime']=$info['starttime'];
+            $data['endtime']=$info['endtime'];
             $where['a.createTime'] = ['between time',[$info['starttime']." 00:00:00", $info['endtime']." 23:59:59"]];
         }
 
@@ -45,7 +46,7 @@ class StudentEnroll extends Base{
 
         $admission = Db::table('admission')->field('id,title')->select();
         $this->assign('typename','专业报名数据查询');
-        $this->assign('info',$info);
+        $this->assign('info',$data);
         $this->assign('list',$list);
         $this->assign('admission',$admission);
         $this->assign('categorylist',$category);

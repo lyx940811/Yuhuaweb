@@ -46,7 +46,7 @@ class Companysize extends Base{
 
         $role_table = Db::name('companysize');
 
-        $is_have = $role_table->field('id')->where(['code'=>['eq',$info['code']]])->find();
+        $is_have = $role_table->field('id,code')->where(['code'=>['eq',$info['code']]])->find();
 
         if($is_have){//如果这个code有
             return ['error'=>'已经有此代码','code'=>'300'];
@@ -70,7 +70,7 @@ class Companysize extends Base{
     }
 
     public function edit(){
-        $info = input('post.');
+        $info = input('get.');
 
         $msg  =   [
             'name.require' => '名称不能为空',
@@ -92,7 +92,10 @@ class Companysize extends Base{
 
         $role_table = Db::name('companysize');
         $id = $info['rid']+0;
-        $is_have = $role_table->field('id')->where("id <> $id AND code={$info['code']}")->find();
+//        $is_have = $role_table->field('id,code')->where(['code'=>['eq',$info['code']]])->find();
+        $where['code']=$info['code'];
+        $where['id']=array('neq',$id);
+        $is_have = $role_table->field('id,code')->where($where)->find();
 
         if($is_have){//如果这个code有
             return ['error'=>'已经有此代码','code'=>'300'];
