@@ -91,6 +91,7 @@ class File extends Controller
         $iError     = 0;
 
 
+
         if ($p_iError > 0) {
             // 文件上传出错
             $iError  = 1;
@@ -153,6 +154,15 @@ class File extends Controller
             }
         }
 
+        //保存原来的资料名
+        $file_name = explode('.',$aFile['name']);
+
+        if(!empty($file_name[0])){
+            $file_name = $file_name[0];
+        }else{
+            $file_name = time();
+        }
+
 
         if ($done) {
 //            $sDestFile = './upload/'.time().'.'.$sExtension;       //合并文件地址
@@ -161,14 +171,15 @@ class File extends Controller
             if(!file_exists($sDestFile)){
                 mkdir($sDestFile,0775,true);
             }
-            $sDestFile = "./uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time()).DS.time().'.'.$sExtension;
 
+            $sDestFile = "./uploads".DS.date('Y',time()).DS.date('m',time()).DS.date('d',time()).DS.$file_name.'.'.$sExtension;
+            $save_path = "uploads"."/".date('Y',time())."/".date('m',time())."/".date('d',time())."/".$file_name.'.'.$sExtension;
             //以下if为判断不是分片上传的话直接挪缓存文件，但是没有删除
             if($iChunks==0){
                 move_uploaded_file($p_sTmpName, iconv("utf-8","gb2312",$sDestFile));
                 @unlink(iconv("utf-8","gb2312",$p_sFilenamePath));
                 @unlink(iconv("utf-8","gb2312","{$p_sFilePath}_0.part"));
-                return json_data(0,'success',$sDestFile);
+                return json_data(0,'success',$save_path);
             }
 
 
@@ -203,7 +214,10 @@ class File extends Controller
 
         }
         send_email('312850391@qq.com','success',$sDestFile);
-        return json_data(0,'success',$sDestFile);
+
+
+
+        return json_data(0,'success',$save_path);
     }
 
 

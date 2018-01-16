@@ -21,7 +21,7 @@ class Login extends Base
      */
     public function userAdd($data){
         $data['password']       =   password_hash($data['password'],PASSWORD_DEFAULT);
-        $data['title']          =   'static\index\images\avatar.png';
+        $data['title']          =   'static/index/images/avatar.png';
         $data['type']           =   3;
         $data['createdTime']    =   date('Y-m-d H:i:s');
 

@@ -8,6 +8,7 @@ use think\Db;
 use app\index\model\User as UserModel;
 use app\index\model\StudyResult;
 use app\index\model\UserProfile;
+use app\index\model\TeacherInfo;
 class User extends Home
 {
     public $LogicUser;
@@ -21,8 +22,11 @@ class User extends Home
     }
 
     public function setting(){
-        $profile = UserProfile::get(['userid'=>UID]);
-
+        if($this->user->type==2){
+            $profile = TeacherInfo::get(['userid'=>UID]);
+        }elseif($this->user->type==3){
+            $profile = UserProfile::get(['userid'=>UID]);
+        }
         $this->assign('profile',$profile);
         return $this->fetch();
     }
@@ -40,7 +44,12 @@ class User extends Home
         return $this->fetch();
     }
     public function submit(){
-        $profile = $this->user->profile;
+        if($this->user->type==2){
+            $profile = TeacherInfo::get(['userid'=>UID]);
+        }elseif($this->user->type==3){
+            $profile = UserProfile::get(['userid'=>UID]);
+        }
+
         if(!empty($profile['cardpic'])){
             $pic = unserialize($profile['cardpic']);
             $this->assign('pic',$pic);
@@ -96,7 +105,12 @@ class User extends Home
         $user_data = array_intersect_key($data,$user_key);
         $profile_data = array_diff_key($data,$user_key);
         $user = UserModel::update($user_data,['id'=>UID]);
-        $profile = UserProfile::update($profile_data,['userid'=>UID]);
+        if($this->user->type==2){
+            $profile = TeacherInfo::update($profile_data,['userid'=>UID]);
+        }elseif($this->user->type==3){
+            $profile = UserProfile::update($profile_data,['userid'=>UID]);
+        }
+
         if($user&&$profile){
             return json_data(0,$this->codeMessage[0],'');
         }

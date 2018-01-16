@@ -106,6 +106,7 @@ class Course extends Home
                     //学完了，需要拿下一节课得名字
                     $next_task = Db::name('course_task')
                         ->where('courseid',$courseid)
+                        ->where('status',1)
                         ->where('chapterid','>',$learn_task['chapterid'])
                         ->find();
                     //找到下一节课了，拿到并赋值
@@ -278,9 +279,11 @@ class Course extends Home
     {
         $fileid = $this->request->param('fileid');
         $file = CourseFile::get($fileid);
-        if(file_exists($file['filepath'])){
-            $fp=fopen($file['filepath'],"r");
-            $file_size=filesize($file['filepath']);
+        $file_path = ".\\".str_replace("/","\\",$file['filepath']);;
+        $file_path = iconv("utf-8","gb2312",$file_path);
+        if(file_exists($file_path)){
+            $fp=fopen($file_path,"r");
+            $file_size=filesize($file_path);
             //下载文件需要用到的头
             Header("Content-type: application/octet-stream");
             Header("Accept-Ranges: bytes");
@@ -403,7 +406,11 @@ class Course extends Home
     {
         $taskid = $this->request->param('taskid');
         $task = CourseTask::get($taskid);
-        if(!file_exists($task['mediaSource'])){
+
+        $file_path = ".\\".str_replace("/","\\",$task['mediaSource']);;
+        $file_path = iconv("utf-8","gb2312",$file_path);
+
+        if(!file_exists($file_path)){
             $this->error('文件不存在');
         }
         if($this->user){
@@ -420,15 +427,18 @@ class Course extends Home
             }
         }
 
-        $fp=fopen($task['mediaSource'],"r");
-        $file_size=filesize($task['mediaSource']);
-        $filelastname = explode('.',$task['mediaSource']);
-        $fielname = time().".".$filelastname[1];
+        $fp=fopen($file_path,"r");
+        $file_size=filesize($file_path);
+
+//        $filelastname = explode('.',$task['mediaSource']);
+//        $filename = time().".".$filelastname[1];
+        $filename = preg_replace('/^.+[\\\\\\/]/', '', $task['mediaSource']);
+
         //下载文件需要用到的头
         Header("Content-type: application/octet-stream");
         Header("Accept-Ranges: bytes");
         Header("Accept-Length:".$file_size);
-        Header("Content-Disposition: attachment; filename=".iconv("utf-8","gb2312",$fielname));
+        Header("Content-Disposition: attachment; filename=".iconv("utf-8","gb2312",$filename));
         $buffer=1024;
         $file_count=0;
         //向浏览器返回数据

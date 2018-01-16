@@ -94,7 +94,7 @@ class Usercenter extends Home
      * @return mixed
      */
     public function curriculum(){
-        $course = Course::where('userid',$this->theuser->id)->paginate(8);
+        $course = Course::where('teacherIds',$this->theuser->id)->paginate(8);
         $this->assign('course',$course);
 
         $page = $course->render();

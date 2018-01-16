@@ -118,6 +118,9 @@ class Index extends Home
             if($user['status']==0){
                 return json_data(170,$this->codeMessage[170],'');
             }
+            if(!in_array($user['type'],[2,3])){
+                return json_data(171,$this->codeMessage[171],'');
+            }
 
             if($user['locked']==1){
                 return json_data(160,$this->codeMessage[160],'');

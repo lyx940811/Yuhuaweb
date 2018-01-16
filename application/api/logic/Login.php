@@ -76,6 +76,10 @@ class Login extends Base
                 return json_data(170,$this->codeMessage[170],$user_none );
             }
 
+            if(!in_array($user['type'],[2,3])){
+                return json_data(171,$this->codeMessage[171],'');
+            }
+
             if($user['locked']==1){
                 return json_data(160,$this->codeMessage[160],$user_none );
             }

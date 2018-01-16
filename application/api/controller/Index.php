@@ -87,15 +87,30 @@ class Index extends Home
      * 得到轮播图
      */
     public function getscrollpic(){
-        $pic = Db::name('ad')->where('type','mobile')->where('flag',1)->field('img')->select();
+        $pic = Db::name('ad')->where('type','mobile')->where('flag',1)->field('img,url')->select();
         if($pic){
-            $pic = array_column($pic,'img');
+//            $pic = array_column($pic,'img');
             foreach ($pic as &$item) {
                 $item = $this->request->domain()."/".$item;
             }
         }
         return json_data(0,$this->codeMessage[0],$pic);
     }
+
+    /**
+     * 得到轮播图(带跳转链接版本)
+     */
+    public function getscrollpic_withurl(){
+        $pic = Db::name('ad')->where('type','mobile')->where('flag',1)->field('img,url')->select();
+        if($pic){
+//            $pic = array_column($pic,'img');
+            foreach ($pic as &$p) {
+                $p['img'] = $this->request->domain()."/".$p['img'];
+            }
+        }
+        return json_data(0,$this->codeMessage[0],$pic);
+    }
+
 
     /**
      * 搜索

@@ -4,6 +4,8 @@ namespace app\index\logic;
 
 use app\index\model\UserProfile as UserProfileModel;
 use app\index\model\User as UserModel;
+use app\index\model\UserProfile;
+use app\index\model\TeacherInfo;
 use app\index\model\Friend as FriendModel;
 use think\Loader;
 use think\Validate;
@@ -216,19 +218,28 @@ class User extends Base
             return json_data(130,$validate->getError(),'');
         }
 
-        //如果已经生成user_profile的话，就更新，没有的话则生成对应的userprofile
-        if($user = UserProfileModel::get([ 'userid' => $userid ])){
-            $user->realname =   $data['realname'];
-            $user->idcard   =   $data['idcard'];
-            $user->cardpic  =   $data['cardpic'];
-            $user->save();
+        $user = \app\index\model\User::get(UID);
+
+        if($user->type==2){
+            TeacherInfo::update($data,['userid'=>UID]);
+            return json_data(0,$this->codeMessage[0],$res['path']);
+        }elseif($user->type==3){
+            UserProfile::update($data,['userid'=>UID]);
             return json_data(0,$this->codeMessage[0],$res['path']);
         }
-        else{
-            $new_profile = new UserProfileModel;
-            $new_profile->data($data)->isUpdate(false)->save();
-            return json_data(0,$this->codeMessage[0],'');
-        }
+//        //如果已经生成user_profile的话，就更新，没有的话则生成对应的userprofile
+//        if($user = UserProfileModel::get([ 'userid' => $userid ])){
+//            $user->realname =   $data['realname'];
+//            $user->idcard   =   $data['idcard'];
+//            $user->cardpic  =   $data['cardpic'];
+//            $user->save();
+//            return json_data(0,$this->codeMessage[0],$res['path']);
+//        }
+//        else{
+//            $new_profile = new UserProfileModel;
+//            $new_profile->data($data)->isUpdate(false)->save();
+//            return json_data(0,$this->codeMessage[0],'');
+//        }
     }
 
     /**

@@ -418,7 +418,8 @@ class Course extends Home
                 unset($l['length'],$l['seq']); 
         }
         }
-        return json_data(0,$this->codeMessage[0],$lesson);    }
+        return json_data(0,$this->codeMessage[0],$lesson);
+    }
 
     //abandoned , use the rebuild version
     public function getcoursetop_abandoned(){
@@ -575,6 +576,7 @@ class Course extends Home
                     //学完了，需要拿下一节课得名字
                     $next_task = Db::name('course_task')
                         ->where('courseid',$courseid)
+                        ->where('status',1)
                         ->where('chapterid','>',$learn_task['chapterid'])
                         ->find();
                     //找到下一节课了，拿到并赋值

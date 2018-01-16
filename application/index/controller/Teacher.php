@@ -21,7 +21,7 @@ class Teacher extends User
     }
 
     public function teacherclass(){
-        $course = Course::where('userid',UID)->paginate(5);
+        $course = Course::where('teacherIds',UID)->paginate(5);
         $this->assign('course',$course);
         $this->assign('page',$course->render());
         return $this->fetch();
@@ -34,7 +34,7 @@ class Teacher extends User
             ->alias('a')
             ->join('course c','a.courseid=c.id')
             ->join('category ca','a.category_id=ca.code')
-            ->where('c.userid',UID)
+            ->where('c.teacherIds',UID)
             ->field('a.*,c.userid,c.title as coursename,ca.name as catename')
             ->paginate(10);
 
@@ -133,8 +133,9 @@ class Teacher extends User
 
     public function savecoursefile(){
         $data = $this->request->param();
-        $data['filesize'] = filesize($data['filepath']);
-        $data['filename'] = basename($data['filepath']);
+
+        $data['filesize'] = filesize(iconv("utf-8","gb2312",$data['filepath']));
+        $data['filename'] = preg_replace('/^.+[\\\\\\/]/', '', $data['filepath']);
         $data['type']     = explode('.',$data['filename']);
         $data['type']     = $data['type'][1];
         $data['createTime']     = date('Y-m-d H:i:s',time());
