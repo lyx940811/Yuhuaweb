@@ -417,7 +417,6 @@
     $.each($('.mediaHtmlc'),function (id,item) {
         var mid = $(this).data('mid')
 
-        console.log(mid)
         $('input[name="media"]').change(function () {
             WebUploader.create({
                 pick: '#picker'+mid,
@@ -427,7 +426,7 @@
                 swf: '__MANAGE_JS__Webuploader/Uploader.swf',
             }).on('fileQueued', function( file ) {
                 var start =  +new Date();
-                console.log(file);
+                // console.log(file);
 
                 // 返回的是 promise 对象
                 this.md5File(file, 0, 1 * 1024 * 1024)
@@ -445,7 +444,7 @@
                         // log('HTML5: md5 ' + file.name + ' cost ' + (end - start) + 'ms get value: ' + ret);
                     });
             }).on('uploadSuccess', function (file, response) {
-                console.log(file)
+                // console.log(file)
                 console.log(response); //这里可以得到后台返回的数据
 
 
