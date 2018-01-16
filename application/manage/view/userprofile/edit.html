@@ -30,8 +30,8 @@
                         <div class="col-sm-4">
                             <select name="sex" class="form-control">
                                 <option value="">--请选择--</option>
-                                <option value="0">男</option>
-                                <option value="1">女</option>
+                                <option value="0" {if condition="$vo['sex'] eq 0"} selected {/if}>男</option>
+                                <option value="1" {if condition="$vo['sex'] eq 1"} selected {/if}>女</option>
                             </select>
                         </div>
                         <label class="col-sm-2 control-label form-inline">民族</label>
