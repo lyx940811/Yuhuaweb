@@ -108,7 +108,7 @@ class Course extends Base{
 
     public function edit(){
 
-        $info = input('post.');
+        $info = input('get.');
 
         $msg  =   [
             'title.require' => '课程名称不能为空',
@@ -157,7 +157,7 @@ class Course extends Base{
 
         $ok = $role_table->field('title,subtitle,tags,categoryId,serializeMode,smallPicture,userid,about,status')->where('id',$id)->update($data);
 
-        if($ok){
+        if(is_numeric($ok)){
             manage_log('108','004','修改课程',serialize($data),0);
             return ['info'=>'修改成功','code'=>'000'];
         }else{

@@ -48,7 +48,7 @@
         <tr>
             <td>{$vo.sn}</td>
             <td>{$vo.realname}</td>
-            <td>{$vo.sex}</td>
+            <td>{$vo.sex?'女':'男'}</td>
             <td>{php}echo isset($vo['work'][0])?$vo['work'][0]['depart']:'';{/php}</td>
             <td>{$vo.phone}</td>
             <td>{$vo.education}</td>
