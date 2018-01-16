@@ -13,6 +13,7 @@ class StudentEnroll extends Base{
     public function index(){
 
         $info = input('get.');
+        unset($info['v']);
         if(empty($info)){
             $info['admission']='';
             $info['category']='';
