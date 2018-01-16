@@ -151,7 +151,7 @@
             var password = $('#register_password').val();
             var retUsername =/^[\u4e00-\u9fa5_a-zA-Z0-9_]{4,10}$/;
             var retEmail =/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/;
-            var retPassword =/^[a-zA-Z][a-zA-Z0-9_]{5,20}$/;
+            var retPassword =/^[0-9a-zA-Z]{6,16}$/;
             if(!retEmail.test(email)){
                 $(".help-block").html("邮箱格式有误，请重新输入");
                 return false;
