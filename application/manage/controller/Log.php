@@ -36,12 +36,9 @@ class Log extends Base{
             ->join('user u','a.userid=u.id')
             ->field('a.id,a.userid,b.classname bname,c.classname cname,a.message,a.createdTime,a.data')
             ->where($wheredata)
+            ->order('a.id desc')
             ->paginate(20,false,['query' => request()->get()]);
 
-
-//        echo Db::name('log a')->getLastSql();
-//        print_r($wheredata);
-//        exit;
         $module = Db::table('classmodule')->field('id,classname')->select();
         $action = Db::table('classaction')->field('classname,code')->select();
 
