@@ -20,16 +20,16 @@ class Studyresult extends Base{
         $where = [];
         if(!empty($info['realname'])){
             $search=$info['realname'];
-            $where['d.realname'] = ['like',"%{$info['realname']}%"];
+            $where['u.username'] = ['like',"%{$info['realname']}%"];
         }
         if($userid){
             $where['a.userid']=$userid;
         }
         $list = Db::table('study_result a')
-            ->field('a.id,a.status,b.title,c.title ctit,d.realname')
+            ->field('a.id,a.status,b.title,c.title ctit,u.username')
             ->join('course b','a.courseid=b.id','LEFT')
             ->join('course_chapter c','a.chapterid=c.id','LEFT')
-            ->join('user_profile d','a.userid=d.userid','LEFT')
+            ->join('user u','a.userid=u.id','LEFT')
             ->where($where)
             ->paginate(20,['query'=>$info]);
 
