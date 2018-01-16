@@ -97,6 +97,7 @@ class Teacherinfo extends Base{
             'password' => password_hash('123456',PASSWORD_DEFAULT),
             'type'=> 2,
             'roles'=>0,
+            'title'=>'static/index/images/avatar.png',
             'mobile'=>$info['phone'],
             'createdIp'=>request()->ip(),
             'createdTime'=>$info['policy'],

@@ -154,7 +154,7 @@ class User extends Base{
                 Db::table('user_profile')->where('userid='.$id)->update(['mobile'=>$info['mobile']]);
             }elseif($info['type']==2){
                 //2为教师
-                Db::table('teacher_info')->where('userid='.$id)->update(['phone'=>$info['mobile'],'realname'=>$info['user_name']]);
+                Db::table('teacher_info')->where('userid='.$id)->update(['phone'=>$info['mobile']]);
 
             }
 
