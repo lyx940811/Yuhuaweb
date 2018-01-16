@@ -22,9 +22,9 @@ class Category extends Base{
         $info = input('get.');
 
         $where = [];
-        if(!empty($info['flag'])){
+        if(isset($info['Flag'])){
 
-            $where['Flag'] = ['eq',$info['flag']];
+            $where['Flag'] = ['eq',$info['Flag']];
         }
         if(!empty($info['name'])){
             $where['name'] = ['like',"%{$info['name']}%"];
@@ -81,11 +81,10 @@ class Category extends Base{
             'code' => $info['code'],
             'parentcode' => $info['parentcode'],
             'point'=> $info['point'],
-            'Flag'=>$info['flag'],
+            'Flag'=>$info['Flag'],
             'studyTimes'=>$info['studyTimes'],
             'description'=>$info['description'],
             'createtime'=>date('Y-m-d H:i:s',time()),
-//            'Flag'=>1,
         ];
 
         $ok = $role_table->field('name,code,parentcode,point,studyTimes,description,createtime,Flag')->insert($data);
@@ -147,7 +146,7 @@ class Category extends Base{
             'name'=>$info['name'],
             'code'=>$info['code'],
             'point'=>$info['point'],
-            'Flag'=>$info['flag'],
+            'Flag'=>$info['Flag'],
             'studyTimes'=>$info['studyTimes'],
             'description'=>$info['description'],
 //            'createtime'=>date('Y-m-d H:i:s',time())
@@ -167,7 +166,7 @@ class Category extends Base{
 
         $id = $_GET['rid']+0;
 
-        $data = ['Flag'=>0,'createtime'=>date('Y-m-d H:i:s',time())];
+        $data = ['Flag'=>0];
         $ok = Db::name('category')->field('Flag,createtime')->where("id='$id'")->update($data);
 
         if($ok){

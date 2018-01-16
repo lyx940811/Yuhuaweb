@@ -38,6 +38,7 @@
             <th>媒体资源</th>
             <th>开始时间</th>
             <th>结束时间</th>
+            <th>状态</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -49,6 +50,7 @@
             <td>{$vo.btit}</td>
             <td>{$vo.mediaSource}</td>
             <td>{$vo.startTime}</td>
+            <td>{$vo.status?'启用':'禁用'}</td>
             <td>{$vo.endTime}</td>
             <td>
                 {php}
