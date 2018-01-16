@@ -48,14 +48,14 @@
         <tr>
             <td>{$vo.title}</td>
             <td>{$vo.btit}</td>
-            <td>{$vo.mediaSource}</td>
+            <td style="width: 40%;word-break: break-all">{$vo.mediaSource}</td>
             <td>{$vo.startTime}</td>
             <td>{$vo.status?'启用':'禁用'}</td>
             <td>{$vo.endTime}</td>
             <td>
                 {php}
                     if(check($uid,'/manage/coursetask/edit')){
-                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
+                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'" >编辑</a>';
                         echo '<strong>/</strong>';
                     }
                     if(check($uid,'/manage/coursetask/delete')){
@@ -135,14 +135,16 @@
                                         <label class="col-sm-2 control-label">媒体文件来源</label>
                                         <div class="col-sm-10">
                                             <label class="radio-inline">
-                                                <input type="radio" class="mediatype" name="mediatype" value="1"> 本地.mp4、doc等文件上传
+                                                <input type="radio" class="mediatype" name="mediatype" value="1" {if condition="strpos($vo['mediaSource'],'http')===false"}checked="checked"{/if}> 本地.mp4、doc等文件上传
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" class="mediatype" name="mediatype" value="2"> 优酷等媒体链接
+                                                <input type="radio" class="mediatype" name="mediatype" value="2" {if condition="strpos($vo['mediaSource'],'http')!==false"}checked="checked"{/if}> 优酷等媒体链接
                                             </label>
-                                            <div id="mediaHtml{$vo.id}">
-                                                <input type="text" class="form-control" value="{$vo.mediaSource}" name="mediaSource" id="mediaSource{$vo.id}"/>
-                                                <input type="text" class="form-control" value="{$vo.type}" name="type" id="type{$vo.id}" placeholder="如果是媒体链接，此项可选"/>
+                                            <div id="picker{$vo.id}" class="mediaHtmlc" data-mid="{$vo.id}">
+                                                <input type="file" name="media"/>
+                                                <input type="text" id="length{$vo.id}" name="length" class="form-control" placeholder="媒体长度" value="{$vo.length}"/>
+                                                <input type="text" id="mediaSource{$vo.id}" name="mediaSource" class="form-control" placeholder="媒体资源" value="{$vo.mediaSource}"/>
+                                                <input type="text" id="type{$vo.id}" name="type" class="form-control" placeholder="类型" value="{$vo.type}"/>
                                             </div>
                                         </div>
                                     </div>
@@ -182,6 +184,7 @@
                                             </label>
                                         </div>
                                     </div>
+
                                     <input type="hidden" name="rid" value="{$vo.id}" />
                                     <input type="hidden" name="courseId" value="{$vo.courseId}"/>
                                     <!-- 模态框底部 -->
@@ -285,9 +288,11 @@
                                 <label class="radio-inline">
                                     <input type="radio" class="mediatype" name="mediatype" value="2"> 优酷等媒体链接
                                 </label>
-                                <div id="mediaHtml">
-                                    <input type="text" class="form-control" value="" name="mediaSource0" id="mediaSource0"/>
-                                    <input type="text" class="form-control" value="" name="type" id="type0"/>
+                                <div id="picker0" class="mediaHtmlc" data-mid="0">
+                                    <input type="file" name="media"/>
+                                    <input type="text" id="length0" name="length" class="form-control" placeholder="媒体长度"/>
+                                    <input type="text" id="mediaSource0" name="mediaSource" class="form-control" placeholder="媒体资源"/>
+                                    <input type="text" id="type0" name="type" class="form-control" placeholder="类型"/>
                                 </div>
                             </div>
                         </div>
@@ -327,6 +332,7 @@
                                 </label>
                             </div>
                         </div>
+
                         <input type="hidden" name="rid" value="" id="selfcode"/>
                         <input type="hidden" name="courseId" value="{$Think.get.cid}" id="courseId"/>
                         <!-- 模态框底部 -->
@@ -378,33 +384,50 @@
         forceParse: 0
     });
 
-    /*
-    * 媒体资源上传
-    * */
-    $('.mediatype').click(function () {
-        var type = $(this).val()
 
-        if(type==1){
+    function append_media(id) {
+        //上传文件
+        var Html = '<div id="picker">' +
+            '<input type="file" name="media"/>' +
+            '<input type="text" id="length" name="length" class="form-control" placeholder="媒体长度"/>' +
+            '<input type="text" id="mediaSource" name="mediaSource" class="form-control" placeholder="媒体资源"/>' +
+            '<input type="text" id="type" name="type" class="form-control" placeholder="类型"/>' +
+            '</div>';
 
-            //上传文件
-            var Html = '<div id="picker">' +
-                '<input type="file" name="media"/>' +
-                '<input type="text" id="length" name="length" class="form-control" placeholder="媒体长度"/>' +
-                '<input type="text" id="mediaSource" name="mediaSource" class="form-control" placeholder="媒体资源"/>' +
-                '<input type="text" id="type" name="type" class="form-control" placeholder="类型"/>' +
-                '</div>';
+        $('#mediaHtml').html(Html)
 
-            $('#mediaHtml').html(Html)
 
+        var mediaHtml = '<div class="form-group">';
+        mediaHtml += '<label class="col-sm-2 control-label">媒体文件来源</label>';
+        mediaHtml += '<div class="col-sm-10">';
+        mediaHtml += '<label class="radio-inline">';
+        mediaHtml += '<input type="radio" class="mediatype" name="mediatype" value="1"> 本地.mp4、doc等文件上传';
+        mediaHtml += '</label>';
+        mediaHtml += '<label class="radio-inline">';
+        mediaHtml += '<input type="radio" class="mediatype" name="mediatype" value="2"> 优酷等媒体链接';
+        mediaHtml += '</label>';
+        mediaHtml += '<div id="mediaHtml0" class="mediaHtmlc" data-mid="0">';
+        mediaHtml += '<input type="text" class="form-control" value="" name="mediaSource0" id="mediaSource0"/>';
+        mediaHtml += '<input type="text" class="form-control" value="" name="type" id="type0"/>';
+        mediaHtml += '</div>';
+        mediaHtml += '</div>';
+        mediaHtml += '</div>';
+    }
+
+    $.each($('.mediaHtmlc'),function (id,item) {
+        var mid = $(this).data('mid')
+
+        console.log(mid)
+        $('input[name="media"]').change(function () {
             WebUploader.create({
-                pick: '#picker',
-                server: '{:url("upload")}',
+                pick: '#picker'+mid,
+                server: '{:url("upload")}?'+Math.random(),
                 auto: true,
                 chunked: true,
                 swf: '__MANAGE_JS__Webuploader/Uploader.swf',
             }).on('fileQueued', function( file ) {
                 var start =  +new Date();
-console.log(file);
+                console.log(file);
 
                 // 返回的是 promise 对象
                 this.md5File(file, 0, 1 * 1024 * 1024)
@@ -424,23 +447,33 @@ console.log(file);
             }).on('uploadSuccess', function (file, response) {
                 console.log(file)
                 console.log(response); //这里可以得到后台返回的数据
+
+
                 if(response.fileinfo.duration){
-                    $('#length').val(response.fileinfo.duration)
+                    $('#length'+mid).val(response.fileinfo.duration)
+                }else{
+                    $('#length'+mid).val('')
                 }
 
-                $('#mediaSource').val(response.fileinfo.name)
-                $('#type').val(response.fileinfo.type)
+                $('#mediaSource'+mid).val(response.fileinfo.name)
+                $('#type'+mid).val(response.fileinfo.type)
                 // $('#' + file.id).addClass('upload-state-done');
                 // imgArr.push(response._raw);
-            });;
+            });
+        })
+    })
 
 
-        }else{
-            //链接
-            var Html = '<input type="text" id="mediaSource" class="form-control" name="mediaSource" placeholder="媒体资源"/>';
 
-            $('#mediaHtml').html(Html)
-        }
+
+    /*
+    * 媒体资源上传
+    * */
+    $('.mediatype').click(function () {
+
+        // $('input[name="length"]').val('')
+        // $('input[name="mediaSource"]').val('')
+        // $('input[name="type"]').val('')
     })
 
 

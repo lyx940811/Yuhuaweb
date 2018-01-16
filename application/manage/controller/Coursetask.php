@@ -28,7 +28,7 @@ class Coursetask extends Base{
         }
 
         $list = Db::table('course_task a')
-            ->field('a.id,a.title,a.mode,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.chapterid,a.type,a.mediaSource,a.mediaSource,a.status,a.startTime,a.endTime,b.title btit')
+            ->field('a.id,a.title,a.mode,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.chapterid,a.type,a.mediaSource,a.length,a.mediaSource,a.status,a.startTime,a.endTime,b.title btit')
             ->join('course b','a.courseId=b.id','LEFT')
             ->where($where)
             ->paginate(20,['query'=>$info]);
@@ -79,6 +79,12 @@ class Coursetask extends Base{
         }
 
         $role_table = Db::name('course_task');
+
+        $have = $role_table->field('id')->where("chapterid='{$info['chapterid']}'")->find();
+
+        if($have){//如果没这个code
+            return ['error'=>'已经有此章节','code'=>'300'];
+        }
 
         $data = [
             'title' => $info['title'],
