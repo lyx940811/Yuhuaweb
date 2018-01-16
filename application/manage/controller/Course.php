@@ -15,21 +15,28 @@ class Course extends Base{
     public function index(){
 
         $list = Db::table('course c')
-            ->field('c.*,tf.realname,count(d.id) as num')
-            ->join('study_result d','d.courseid=c.id','LEFT')
+            ->field('c.*,tf.realname')
             ->join('teacher_info tf','c.teacherIds=tf.id','LEFT')
-            ->order('createdTime desc')
-            ->group('c.id')
             ->paginate(20);
 
 
-//        $category = Db::table('category')->field('code,name')->order('grade desc')->select();
         $category=$this->subtree(0);
 
         $tags = Db::table('tag')->select();
         $teacher = Db::table('teacher_info')->field('id,realname')->select();
 
-        $this->assign('list',$list);
+        $newlist = [];
+        foreach ($list as $k=>$v){
+
+            $newlist[$k] = $v;
+            $newlist[$k]['num'] = Db::table('study_result')->where('courseid='.$v['id'])->group('userid')->count();
+        }
+
+
+//        print_r($newlist);exit;
+
+
+        $this->assign('list',$newlist);
         $this->assign('typename','课程列表');
         $this->assign('category',$category);
         $this->assign('teacher',$teacher);

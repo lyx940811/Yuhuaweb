@@ -3,6 +3,9 @@
 {include file="manage/header" /}
 <link href="__MANAGE_JS__datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <body>
+<style>
+
+</style>
 <div class="container-fluid">
     {php}
     $uid = session('admin_uid');
@@ -387,40 +390,15 @@
     });
 
 
-    function append_media(id) {
-        //上传文件
-        var Html = '<div id="picker">' +
-            '<input type="file" name="media"/>' +
-            '<input type="text" id="length" name="length" class="form-control" placeholder="媒体长度"/>' +
-            '<input type="text" id="mediaSource" name="mediaSource" class="form-control" placeholder="媒体资源"/>' +
-            '<input type="text" id="type" name="type" class="form-control" placeholder="类型"/>' +
-            '</div>';
 
-        $('#mediaHtml').html(Html)
-
-
-        var mediaHtml = '<div class="form-group">';
-        mediaHtml += '<label class="col-sm-2 control-label">媒体文件来源</label>';
-        mediaHtml += '<div class="col-sm-10">';
-        mediaHtml += '<label class="radio-inline">';
-        mediaHtml += '<input type="radio" class="mediatype" name="mediatype" value="1"> 本地.mp4、doc等文件上传';
-        mediaHtml += '</label>';
-        mediaHtml += '<label class="radio-inline">';
-        mediaHtml += '<input type="radio" class="mediatype" name="mediatype" value="2"> 优酷等媒体链接';
-        mediaHtml += '</label>';
-        mediaHtml += '<div id="mediaHtml0" class="mediaHtmlc" data-mid="0">';
-        mediaHtml += '<input type="text" class="form-control" value="" name="mediaSource0" id="mediaSource0"/>';
-        mediaHtml += '<input type="text" class="form-control" value="" name="type" id="type0"/>';
-        mediaHtml += '</div>';
-        mediaHtml += '</div>';
-        mediaHtml += '</div>';
-    }
+    var uploader='';
 
     $.each($('.mediaHtmlc'),function (id,item) {
-        var mid = $(this).data('mid')
 
-        $('input[name="media"]').change(function () {
-            WebUploader.create({
+        $('input[name="media"]')[id].addEventListener('click',function () {
+
+            console.log(id)
+            uploader = WebUploader.create({
                 pick: '#picker'+mid,
                 server: '{:url("upload")}?'+Math.random(),
                 auto: true,
@@ -428,42 +406,41 @@
                 swf: '__MANAGE_JS__Webuploader/Uploader.swf',
             }).on('fileQueued', function( file ) {
                 var start =  +new Date();
-                // console.log(file);
+                console.log(file);
 
                 // 返回的是 promise 对象
                 this.md5File(file, 0, 1 * 1024 * 1024)
 
-                // 可以用来监听进度
-                    .progress(function(percentage) {
-                        // console.log('Percentage:', percentage);
-                    })
-
-                    // 处理完成后触发
+                // 处理完成后触发
                     .then(function(ret) {
                         console.log('md5:', ret);
 
                         var end = +new Date();
-                        // log('HTML5: md5 ' + file.name + ' cost ' + (end - start) + 'ms get value: ' + ret);
                     });
             }).on('uploadSuccess', function (file, response) {
-                // console.log(file)
+
                 console.log(response); //这里可以得到后台返回的数据
 
+                var info = response.fileinfo;
 
-                if(response.fileinfo.duration){
-                    $('#length'+mid).val(response.fileinfo.duration)
+                if(info.duration){
+                    $('#length'+mid).val(info.duration)
                 }else{
                     $('#length'+mid).val('')
                 }
-
-                $('#mediaSource'+mid).val(response.fileinfo.name)
-                $('#type'+mid).val(response.fileinfo.type)
-                // $('#' + file.id).addClass('upload-state-done');
-                // imgArr.push(response._raw);
+                $('#mediaSource'+mid).val(info.name)
+                $('#type'+mid).val(info.type)
             });
+            uploader.refresh()
+        })
+
+        var mid = $(this).data('mid')
+
+        $('input[name="media"]').change(function () {
+
+
         })
     })
-
 
 
 
@@ -471,11 +448,13 @@
     * 媒体资源上传
     * */
     $('.mediatype').click(function () {
-
         // $('input[name="length"]').val('')
         // $('input[name="mediaSource"]').val('')
         // $('input[name="type"]').val('')
+        // uploader.refresh()
     })
+
+
 
 
     function dopost($url,formid) {
