@@ -7,8 +7,8 @@
         <div class="panel-heading">我的课程</div>
         <div class="panel-body">
             <ul class="nav nav-pills">
-                <li class="active" type="study"><a href="{:url('index/student/mystudy')}">学习中</a></li>
-                <li type="done"><a href="{:url('index/student/donestudy')}">已学完</a></li>
+                <li type="study"><a href="{:url('index/student/mystudy')}">学习中</a></li>
+                <li class="active" type="done"><a href="{:url('index/student/donestudy')}">已学完</a></li>
                 <li type="collect"><a href="{:url('index/student/collect')}">收藏</a></li>
             </ul>
             <ul class="course-grids">
@@ -17,9 +17,9 @@
                     <a href="{:url('index/course/catalogue',array('course'=>$course['id']))}" class="grid-body">
                         <div class="course-grid-img">
                             <img src="/{$course.smallPicture}" class="img-responsive thumb">
-                            <div class="course-grid-mask">
-                                <span class="btn btn-warning btn-sm course-grid-btn-learn">继续学习</span>
-                            </div>
+                            <!--<div class="course-grid-mask">-->
+                                <!--<span class="btn btn-warning btn-sm course-grid-btn-learn">继续学习</span>-->
+                            <!--</div>-->
                         </div>
                         <span class="course-label"></span>
                         <div class="progress progress-sm mb0">

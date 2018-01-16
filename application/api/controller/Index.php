@@ -66,6 +66,7 @@ class Index extends Home
             ->where($map)
             ->field('id,title,smallPicture,price')
             ->order('createdTime desc')
+            ->where('status',1)
             ->page($page,6)
             ->select();
         //需要对在学人数和评论进行计数
