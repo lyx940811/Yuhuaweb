@@ -30,6 +30,7 @@ class Returnvisit extends Base{
             ->join('user b','a.userid=b.id','LEFT')
             ->where($where)
             ->field('a.*,b.nickname')
+            ->order('a.id desc')
             ->paginate(20,false,['query'=>request()->get()]);
 
 
@@ -73,6 +74,7 @@ class Returnvisit extends Base{
             'result'=>$info['result'],
             'fromUserID'=>session('admin_uid'),
             'type'=>isset($info['type'])?$info['type']:'',
+            'visitTime'=>date('Y-m-d H:i:s',time()),
             'createdTime'=>date('Y-m-d H:i:s',time())
         ];
 
@@ -122,7 +124,7 @@ class Returnvisit extends Base{
             'result'=>$info['result'],
             'fromUserID'=>session('admin_uid'),
             'type'=>isset($info['type'])?$info['type']:'',
-            'createdTime'=>date('Y-m-d H:i:s',time())
+            'visitTime'=>date('Y-m-d H:i:s',time()),
         ];
 
         $ok = $role_table->where('id',$id)->update($data);
