@@ -166,7 +166,7 @@
                                         <div class="col-sm-10">
                                             <input type="file" id="newfile{$vo.id}" name="newfile" onchange="uploadImage({$vo.id});">
                                             <input type="hidden" name="pic" id="pic{$vo.id}" value="{$vo.smallPicture}">
-                                            <div id="showinfoPic{$vo.id}"><img src="{$vo.smallPicture}"/></div>
+                                            <div id="showinfoPic{$vo.id}"><img src="/{$vo.smallPicture}" width="100%"/></div>
                                         </div>
                                     </div>
                                     <div class="form-group">
