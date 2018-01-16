@@ -11,7 +11,7 @@
         <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
             <div class="form-group">
                 <label>状态</label>
-                <select name="flag" class="form-control">
+                <select name="Flag" class="form-control">
                     <option value="0">禁用</option>
                     <option value="1" selected="selected">启用</option>
                 </select>
@@ -125,10 +125,10 @@
                                     <div class="form-group">
                                         <div class="center-block" style="width: 200px">
                                             <label class="radio-inline">
-                                                <input type="radio" name="flag" value="1"  {if condition="$vo['Flag'] eq 1"}checked{/if}> 启用
+                                                <input type="radio" name="Flag" value="1"  {if condition="$vo['Flag'] eq 1"}checked{/if}> 启用
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="flag" value="0"  {if condition="$vo['Flag'] eq 0"}checked{/if}> 禁用
+                                                <input type="radio" name="Flag" value="0"  {if condition="$vo['Flag'] eq 0"}checked{/if}> 禁用
                                             </label>
                                         </div>
                                     </div>
@@ -208,10 +208,10 @@
                         <div class="form-group">
                             <div class="center-block" style="width: 200px">
                                 <label class="radio-inline">
-                                    <input type="radio" name="flag" value="1"> 启用
+                                    <input type="radio" name="Flag" value="1"> 启用
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="flag" value="0" checked> 禁用
+                                    <input type="radio" name="Flag" value="0" checked> 禁用
                                 </label>
                             </div>
                         </div>
