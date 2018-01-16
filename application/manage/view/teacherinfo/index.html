@@ -50,8 +50,14 @@
             <td>{$vo.realname}</td>
             <td>{$vo.sex?'女':'男'}</td>
             <td>{php}echo isset($vo['work'][0])?$vo['work'][0]['depart']:'';{/php}</td>
-            <td>{$vo.phone}</td>
-            <td>{$vo.education}</td>
+            <td>{$vo.mobile}</td>
+            <td>
+                {if condition="$vo['education'] eq 0"}初中{/if}
+                {if condition="$vo['education'] eq 1"}高中{/if}
+                {if condition="$vo['education'] eq 2"}中专{/if}
+                {if condition="$vo['education'] eq 3"}专科{/if}
+                {if condition="$vo['education'] eq 4"}本科及以上{/if}
+            </td>
             <td>{php}echo isset($vo['work'][0])?$vo['work'][0]['title']:'';{/php}</td>
             <td>
                 {php}
@@ -127,7 +133,7 @@
                                         </div>
                                         <label class="col-sm-2 control-label form-inline">身份证号</label>
                                         <div class="col-sm-4">
-                                            <input type="text" class="form-control" name="card"  value="{$vo.card}"
+                                            <input type="text" class="form-control" name="idcard"  value="{$vo.idcard}"
                                                    placeholder="请输入身份证号">
                                         </div>
                                     </div>
@@ -139,7 +145,7 @@
                                         </div>
                                         <label class="col-sm-2 control-label form-inline">联系电话</label>
                                         <div class="col-sm-4">
-                                            <input type="text" class="form-control" name="phone" value="{$vo.phone}"
+                                            <input type="text" class="form-control" name="mobile" value="{$vo.mobile}"
                                                    placeholder="请输入联系电话">
                                         </div>
                                     </div>
@@ -319,7 +325,7 @@
                             </div>
                             <label class="col-sm-2 control-label form-inline">身份证号</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" name="card"
+                                <input type="text" class="form-control" name="idcard"
                                        placeholder="请输入身份证号">
                             </div>
                         </div>
@@ -331,7 +337,7 @@
                             </div>
                             <label class="col-sm-2 control-label form-inline">联系电话</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" name="phone"
+                                <input type="text" class="form-control" name="mobile"
                                        placeholder="请输入联系电话">
                             </div>
                         </div>

@@ -35,9 +35,12 @@ class Userprofile extends Base{
         $newlist = [];
         foreach ($list as $k=>$v){
             $newlist[$k] = $v;
-            $newlist[$k]['home'] = Db::table('student_home')->where('userid='.$v['id'])->select();
+            $newlist[$k]['home'] = Db::table('student_home')->where('userid',$v['id'])->select();
+            $newlist[$k]['depart'] = Db::table('category')->where('code',$v['depart'])->value('name');
+            $newlist[$k]['majors'] = Db::table('category')->where('code',$v['majors'])->value('name');
         }
 
+//        print_r($newlist);exit;
 
         $classroom = Db::table('classroom')->field('id,title')->select();
         $depart = Db::table('category')->field('id,code,name')->where('parentcode=0')->select();
@@ -187,7 +190,7 @@ class Userprofile extends Base{
 
         $id = $info['rid']+0;
 
-        $userprofile = $role_table->field('userid')->where('id='.$id)->find();
+        $userprofile = $role_table->field('userid')->where('id',$id)->find();
 
         $data = [
             'sn' => $info['sn'],
@@ -211,7 +214,7 @@ class Userprofile extends Base{
 
             Db::table('user')->where('id='.$userprofile['userid'])->update(
                 [
-//                    'nickname'=>$info['mobile'],
+                    'nickname'=>$info['realname'],
 //                    'username'=>$info['mobile'],
                     'mobile'=>$info['mobile']]
             );

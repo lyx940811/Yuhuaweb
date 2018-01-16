@@ -60,8 +60,8 @@ class Teacherinfo extends Base{
             'sex.require' => '性别不能为空',
             'nation.require' => '民族不能为空',
             'birthday.require' => '生日不能为空',
-            'card.require' => '身份证号必须填写',
-            'card.length' => '身份证号太短',
+            'idcard.require' => '身份证号必须填写',
+            'idcard.length' => '身份证号太短',
             'policy.require' => '政治面貌不能为空',
         ];
         $validate = new Validate([
@@ -70,7 +70,7 @@ class Teacherinfo extends Base{
             'sex'   => 'require',
             'nation'   => 'require',
             'birthday'   => 'require',
-            'card'  => 'require|length:18,21',
+            'idcard'  => 'require|length:18,21',
             'policy'   => 'require',
 
         ],$msg);
@@ -85,7 +85,7 @@ class Teacherinfo extends Base{
 
         $role_table = Db::name('teacher_info');
 
-        $is_have = $role_table->field('id')->where(['card'=>['eq',$info['card']]])->find();
+        $is_have = $role_table->field('id')->where(['idcard'=>['eq',$info['idcard']]])->find();
 
         if($is_have){//如果这个code有
             return ['error'=>'已经有此身份证号','code'=>'300'];
@@ -93,12 +93,12 @@ class Teacherinfo extends Base{
 
         $data = [
             'nickname'=>$info['realname'],
-            'username' => $info['phone'],
+            'username' => $info['mobile'],
             'password' => password_hash('123456',PASSWORD_DEFAULT),
             'type'=> 2,
             'roles'=>0,
             'title'=>'static/index/images/avatar.png',
-            'mobile'=>$info['phone'],
+            'mobile'=>$info['mobile'],
             'createdIp'=>request()->ip(),
             'createdTime'=>$info['policy'],
             'createdTime'=>date('Y-m-d H:i:s',time()),
@@ -128,9 +128,9 @@ class Teacherinfo extends Base{
                 'sex'=> $info['sex'],
                 'nation'=>$info['nation'],
                 'birthday'=>$info['birthday'],
-                'card'=>$info['card'],
+                'idcard'=>$info['idcard'],
                 'policy'=>$info['policy'],
-                'phone'=>$info['phone'],
+                'mobile'=>$info['mobile'],
                 'province'=>$info['province'],
                 'household'=>$info['household'],
                 'address'=>$info['address'],
@@ -157,8 +157,8 @@ class Teacherinfo extends Base{
             'sex.require' => '性别不能为空',
             'nation.require' => '民族不能为空',
             'birthday.require' => '生日不能为空',
-            'card.require' => '身份证号必须填写',
-            'card.length' => '身份证号太短',
+            'idcard.require' => '身份证号必须填写',
+            'idcard.length' => '身份证号太短',
             'policy.require' => '政治面貌不能为空',
         ];
         $validate = new Validate([
@@ -167,7 +167,7 @@ class Teacherinfo extends Base{
             'sex'   => 'require',
             'nation'   => 'require',
             'birthday'   => 'require',
-            'card'  => 'require|length:18,21',
+            'idcard'  => 'require|length:18,21',
             'policy'   => 'require',
 
         ],$msg);
@@ -196,9 +196,9 @@ class Teacherinfo extends Base{
             'sex'=> $info['sex'],
             'nation'=>$info['nation'],
             'birthday'=>$info['birthday'],
-            'card'=>$info['card'],
+            'idcard'=>$info['idcard'],
             'policy'=>$info['policy'],
-            'phone'=>$info['phone'],
+            'mobile'=>$info['mobile'],
             'province'=>$info['province'],
             'household'=>$info['household'],
             'address'=>$info['address'],
@@ -223,8 +223,8 @@ class Teacherinfo extends Base{
 
             $data = [
                 'nickname'=>$info['realname'],
-                'username' => $info['phone'],
-                'mobile'=>$info['phone'],
+//                'username' => $info['mobile'],
+                'mobile'=>$info['mobile'],
             ];
 
             Db::table('user')->where('id',$have['userid'])->update($data);
