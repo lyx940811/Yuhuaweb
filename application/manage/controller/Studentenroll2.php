@@ -13,21 +13,21 @@ class StudentEnroll2 extends Base{
     public function index(){
 
         $info = input('get.');
-        unset($info['v']);
-        if(empty($info)){
-            $info['realname']='';
-            $info['name']='';
-            $info['status']='';
-        }
+        $data['realname']='';
+        $data['name']='';
+        $data['status']='';
         $where = [];
         if(!empty($info['realname'])){
+            $data['realname']=$info['realname'];
             $where['a.realname'] = ['like',"%{$info['realname']}%"];
 
         }
         if(!empty($info['name'])){
+            $data['name']=$info['name'];
             $where['a.categoryID'] = ['eq' ,$info['name']];
         }
         if(!empty($info['status'])){
+            $data['status']=$info['status'];
             $where['a.status'] = ['eq',$info['status']-1];
         }
 
@@ -44,7 +44,7 @@ class StudentEnroll2 extends Base{
 
         $admission = Db::table('admission')->field('id,title')->select();
         $this->assign('typename','报名管理');
-        $this->assign('info',$info);
+        $this->assign('info',$data);
         $this->assign('list',$list);
         $this->assign('admission',$admission);
         $this->assign('categorylist',$category);

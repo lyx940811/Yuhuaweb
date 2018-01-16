@@ -20,17 +20,16 @@ class Category extends Base{
     public function index(){
 
         $info = input('get.');
-        unset($info['v']);
-        if(empty($info)){
-            $info['Flag']='';
-            $info['name']='';
-        }
+        $data['Flag']='';
+        $data['name']='';
+
         $where = [];
         if(!empty($info['Flag'])){
-
+            $data['Flag']=$info['Flag'];
             $where['Flag'] = ['eq',$info['Flag']-1];
         }
         if(!empty($info['name'])){
+            $data['name']=$info['name'];
             $where['name'] = ['like',"%{$info['name']}%"];
         }
 
@@ -40,7 +39,7 @@ class Category extends Base{
             ->paginate(20,false,['query'=>request()->get()]);
         $this->assign('list',$list);
         $this->assign('page',$list->render());
-        $this->assign('info',$info);
+        $this->assign('info',$data);
 
         $this->assign('typename','专业管理');
 
