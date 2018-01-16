@@ -13,7 +13,12 @@ class StudentEnroll extends Base{
     public function index(){
 
         $info = input('get.');
-
+        if(empty($info)){
+            $info['admission']='';
+            $info['category']='';
+            $info['starttime']='';
+            $info['endtime']='';
+        }
         $where = [];
         if(!empty($info['admission'])){
             $where['admissionID'] = ['eq',$info['admission']];
@@ -39,7 +44,7 @@ class StudentEnroll extends Base{
 
         $admission = Db::table('admission')->field('id,title')->select();
         $this->assign('typename','专业报名数据查询');
-
+        $this->assign('info',$info);
         $this->assign('list',$list);
         $this->assign('admission',$admission);
         $this->assign('categorylist',$category);

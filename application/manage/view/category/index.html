@@ -12,13 +12,14 @@
             <div class="form-group">
                 <label>状态</label>
                 <select name="Flag" class="form-control">
-                    <option value="0">禁用</option>
-                    <option value="1" selected="selected">启用</option>
+                    <option value="">--请选择--</option>
+                    <option value="1" {if condition="$info['Flag'] eq 1"}selected{/if}>禁用</option>
+                    <option value="2" {if condition="$info['Flag'] eq 2"}selected{/if}>启用</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>名称</label>
-                <input type="text" class="form-control" placeholder="名称" name="name">
+                <input type="text" class="form-control" placeholder="名称" value="{$info['name']}" name="name">
             </div>
             <button type="submit" class="btn btn-primary">搜索</button>
         </form>

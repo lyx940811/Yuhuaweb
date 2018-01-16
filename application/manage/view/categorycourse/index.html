@@ -12,21 +12,23 @@
             <div class="form-group">
                 <label>专业</label>
                 <select name="category" class="form-control">
+                    <option value="">--请选择--</option>
                     {volist name='categorylist' id='c'}
-                    <option value="{$c.code}">{$c.name}</option>
+                    <option value="{$c.code}" {if condition="$info['category'] eq $c['code']"}selected{/if}>{$c.name}</option>
                     {/volist}
                 </select>
             </div>
             <div class="form-group">
                 <label>课程形式</label>
                 <select name="type" class="form-control">
-                    <option value="">理论课</option>
-                    <option value="1">实践课</option>
+                    <option value="">--请选择--</option>
+                    <option value="1" {if condition="$info['type'] eq 1"}selected{/if}>理论课</option>
+                    <option value="2" {if condition="$info['type'] eq 2"}selected{/if}>实践课</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>课程名称</label>
-                <input type="text" class="form-control" placeholder="课程名称" name="name">
+                <input type="text" class="form-control" placeholder="课程名称" value="{$info.name}" name="name">
             </div>
             <button type="submit" class="btn btn-primary">搜索</button>
         </form>

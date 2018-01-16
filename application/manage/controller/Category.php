@@ -21,10 +21,14 @@ class Category extends Base{
 
         $info = input('get.');
 
+        if(empty($info)){
+            $info['Flag']='';
+            $info['name']='';
+        }
         $where = [];
-        if(isset($info['Flag'])){
+        if(!empty($info['Flag'])){
 
-            $where['Flag'] = ['eq',$info['Flag']];
+            $where['Flag'] = ['eq',$info['Flag']-1];
         }
         if(!empty($info['name'])){
             $where['name'] = ['like',"%{$info['name']}%"];
@@ -37,7 +41,7 @@ class Category extends Base{
 
         $this->assign('list',$list);
         $this->assign('page',$list->render());
-
+        $this->assign('info',$info);
 
         $this->assign('typename','专业管理');
 

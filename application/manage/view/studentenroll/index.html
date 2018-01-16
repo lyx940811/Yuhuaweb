@@ -15,7 +15,7 @@
                 <select name="admission" class="form-control">
                     <option value="">--请选择--</option>
                     {volist name="admission" id="a"}
-                    <option value="{$a.id}">{$a.title}</option>
+                    <option value="{$a.id}" {if condition="$info['admission'] eq $a['id']"} selected {/if}>{$a.title}</option>
                     {/volist}
                 </select>
             </div>
@@ -24,14 +24,14 @@
                 <select name="category" class="form-control">
                     <option value="">--请选择--</option>
                     {volist name='categorylist' id='c'}
-                    <option value="{$c.code}">{$c.name}</option>
+                    <option value="{$c.code}" {if condition="$info['category'] eq $c['code']"} selected {/if}>{$c.name}</option>
                     {/volist}
                 </select>
             </div>
             <div class="form-group">
                 <label>报名日期</label>
-                <input type="text" class="form-control form_datetime" placeholder="开始日期" name="starttime">-
-                <input type="text" class="form-control form_datetime" placeholder="结束日期" name="endtime">
+                <input type="text" class="form-control form_datetime" value="{$info['starttime']}" placeholder="开始日期" name="starttime">-
+                <input type="text" class="form-control form_datetime" value="{$info['endtime']}" placeholder="结束日期" name="endtime">
             </div>
             <button type="submit" class="btn btn-primary">搜索</button>
         </form>
