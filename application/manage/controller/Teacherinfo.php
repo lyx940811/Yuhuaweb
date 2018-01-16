@@ -26,7 +26,7 @@ class Teacherinfo extends Base{
         }
 
         $list = Db::name('teacher_info a')
-            ->join('teacher_level b','a.id=b.teacherid','LEFT')
+            ->join('teacher_level b','a.userid=b.teacherid','LEFT')
             ->where($where)
             ->field('a.*,b.education,b.degree,b.topeducation,b.topdegree')
             ->order('a.id desc')
@@ -204,7 +204,7 @@ class Teacherinfo extends Base{
             'address'=>$info['address'],
             'maritalstatus'=>$info['maritalstatus'],
             'cardpic'=>!empty($info['cardpic'])?$info['cardpic']:$have['cardpic'],
-//            'createdTime'=>date('Y-m-d H:i:s',time()),
+            'createdTime'=>date('Y-m-d H:i:s',time()),
         ];
         $ok = $role_table->where('id',$id)->update($sdata);
 
@@ -216,10 +216,8 @@ class Teacherinfo extends Base{
                 'degree'=>$info['degree'],
                 'topeducation'=>$info['topeducation'],
                 'topdegree'=>$info['topdegree'],
-//                'createTime'=>date('Y-m-d H:i:s',time()),
-//                'createuserid'=>session('admin_uid'),
             ];
-            Db::table('teacher_level')->where('teacherid='.$id)->update($leveldata);
+            Db::table('teacher_level')->where('teacherid',$have['userid'])->update($leveldata);
 
             $data = [
                 'nickname'=>$info['realname'],
