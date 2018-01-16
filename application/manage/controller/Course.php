@@ -108,7 +108,7 @@ class Course extends Base{
 
     public function edit(){
 
-        $info = input('get.');
+        $info = input('post.');
 
         $msg  =   [
             'title.require' => '课程名称不能为空',
@@ -137,10 +137,10 @@ class Course extends Base{
             return ['error'=>'没有此课程','code'=>'300'];
         }
 
-        if(!empty($info['pic'])){
-            $data['smallPicture'] =$info['pic'];
+        if(isset($info['pic'])){
+            $pic=$info['pic'];
         }else{
-            $data['smallPicture'] = $have['smallPicture'];
+            $pic = $have['smallPicture'];
         }
 
         $data = [
@@ -151,11 +151,12 @@ class Course extends Base{
             'serializeMode' => $info['serializeMode'],
             'userid'        => session('admin_uid'),
             'about'        => $info['about'],
-            'status'=>$info['status'],
+            'status'       =>$info['status'],
+            'smallPicture'=>$pic,
 //            'createdTime'   =>date('Y-m-d H:i:s',time()),
         ];
 
-        $ok = $role_table->field('title,subtitle,tags,categoryId,serializeMode,smallPicture,userid,about,status')->where('id',$id)->update($data);
+        $ok = $role_table->where('id',$id)->update($data);
 
         if(is_numeric($ok)){
             manage_log('108','004','修改课程',serialize($data),0);

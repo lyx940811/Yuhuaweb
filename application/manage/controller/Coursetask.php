@@ -30,7 +30,7 @@ class Coursetask extends Base{
         $list = Db::table('course_task a')
             ->field('a.id,a.title,a.mode,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.chapterid,a.type,a.mediaSource,a.length,a.mediaSource,a.status,a.startTime,a.endTime,b.title btit,cc.title as ctitle')
             ->join('course b','a.courseId=b.id','LEFT')
-            ->join('course_chapter cc','a.courseId=cc.courseid','LEFT')
+            ->join('course_chapter cc','a.chapterid=cc.courseid','LEFT')
             ->where($where)
             ->paginate(20,['query'=>$info]);
 
