@@ -351,8 +351,8 @@
                 // console.log(data);
 
                 if(data.code=='000'){
-                    $('#pic').val(data.path)
-                    $('#showinfoPic').html('<img class="img-rounded" src="/'+data.path+'" width="100%"/>');
+                    $('#pic'+id).val(data.path)
+                    $('#showinfoPic'+id).html('<img class="img-rounded" src="/'+data.path+'" width="100%"/>');
                     alert('上传成功');
                 }
 
@@ -369,7 +369,7 @@
 
         $.ajax({
             url: $url+"?"+Math.random(),
-            type:"post",
+            type:"get",
             data:$('#form'+formid).serialize(),
             success:function(data){
 
