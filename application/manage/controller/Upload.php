@@ -10,7 +10,7 @@ class Upload
      * @param $files    图片信息
      * @return array|mixed  以数组的方式对应返回路径,键名为上传时定义的name，键值是路径
      */
-    public function uploadPic($files){
+    public function uploadPic($files,$path){
         $save_path = array();
         $type = ['image/gif','image/jpeg','image/png'];
         foreach ($files as $key=>$value){
@@ -25,7 +25,7 @@ class Upload
 //                throw new Exception('file over size',710);
                 return ['error'=>'file over size','code'=>710];
             }
-            $save_path[$key] = $this->upload($files[$key]);
+            $save_path[$key] = $this->upload($files[$key],$path);
         }
         return $save_path;
     }

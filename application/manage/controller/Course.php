@@ -175,7 +175,14 @@ class Course extends Base{
 
         $id = $_GET['id']+0;
 
-        $file = upload('newfile'.$id,'course');
+        $upload = new Upload();
+
+        $file = $upload->uploadPic($_FILES,'course');
+
+        $file['path'] = $file['newfile'.$id]['path'];
+        $file['code'] = $file['newfile'.$id]['code'];
+        unset($file['newfile'.$id]);
+//        $file = upload('newfile'.$id,'course');
         return $file;
 
     }
