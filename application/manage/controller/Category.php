@@ -20,7 +20,7 @@ class Category extends Base{
     public function index(){
 
         $info = input('get.');
-
+        unset($info['v']);
         if(empty($info)){
             $info['Flag']='';
             $info['name']='';
@@ -38,7 +38,6 @@ class Category extends Base{
             ->field('id,name,code,parentcode,studyTimes,point,createtime,Flag,description')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
-
         $this->assign('list',$list);
         $this->assign('page',$list->render());
         $this->assign('info',$info);
