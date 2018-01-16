@@ -18,14 +18,18 @@ class Categorycourse extends Base{
     public function index(){
 
         $info = input('get.');
-
+        if(empty($info)){
+            $info['category']='';
+            $info['type']='';
+            $info['name']='';
+        }
         $where = [];
         if(!empty($info['category'])){
 
             $where['a.categoryID'] = ['eq',$info['category']];
         }
         if(!empty($info['type'])){
-            $where['c.type'] = ['eq',$info['type']];
+            $where['c.type'] = ['eq',$info['type']-1];//由于0判断的特殊性，页面如果是0会默认选择，判断条件无效果。所以搜索时传过来的值比实际表里存的状态多加了1.
         }
         if(!empty($info['name'])){
             $where['c.title'] = ['like',"%{$info['name']}%"];
@@ -45,6 +49,7 @@ class Categorycourse extends Base{
 
         $this->assign('typename','专业课程');
         $this->assign('list',$list);
+        $this->assign('info',$info);
         $this->assign('categorylist',$category);
         $this->assign('courselist',$course);
         $this->assign('page',$list->render());
