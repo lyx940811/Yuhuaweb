@@ -96,9 +96,9 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="user_type" class="col-sm-2 control-label">用户类型</label>
+                                        <label for="type" class="col-sm-2 control-label">用户类型</label>
                                         <div class="col-sm-8">
-                                            <select class="form-control" name="user_type">
+                                            <select class="form-control" name="type">
                                                 <option value="">--请选择--</option>
                                                 {volist name='types' id='t'}
                                                 <option value="{$t.id}" {if condition="$vo['type'] eq $t['id']"}selected{/if}>{$t.name}</option>
@@ -188,9 +188,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="user_type" class="col-sm-2 control-label">用户类型</label>
+                            <label for="type" class="col-sm-2 control-label">用户类型</label>
                             <div class="col-sm-8">
-                                <select id="user_type" class="form-control" name="user_type">
+                                <select id="type" class="form-control" name="type">
                                     <option value="">--请选择--</option>
                                     {volist name='types' id='t'}
                                         <option value="{$t.id}">{$t.name}</option>

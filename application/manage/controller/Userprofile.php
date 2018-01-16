@@ -92,7 +92,7 @@ class Userprofile extends Base{
             'createdIp'=>request()->ip(),
             'createdTime'=>date('Y-m-d H:i:s',time()),
         ];
-
+        Db::startTrans();
         $ok = Db::table('user')->insert($data);
 
         if($ok){
@@ -146,9 +146,10 @@ class Userprofile extends Base{
 
 
             manage_log('101','003','添加学员',serialize($info),0);
-
+            Db::commit();
             return ['info'=>'添加成功','code'=>'000'];
         }else{
+            Db::rollback();
             return ['error'=>'添加失败','code'=>'400'];
         }
     }
@@ -201,7 +202,7 @@ class Userprofile extends Base{
             'household'=>$info['household'],
             'address'=>$info['address'],
         ];
-
+        Db::startTrans();
         $ok = $role_table->where('id',$id)->update($data);
 
 
@@ -276,12 +277,13 @@ class Userprofile extends Base{
 
                 );
             }
-
+            Db::commit();
 
             manage_log('101','004','修改学员',serialize($info),0);
 
             return ['info'=>'修改成功','code'=>'000'];
         }else{
+            Db::rollback();
             return ['error'=>'修改失败','code'=>'200'];
         }
     }
