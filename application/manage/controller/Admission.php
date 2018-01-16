@@ -19,10 +19,10 @@ class Admission extends Base{
     public function index(){
 
         $info = input('get.');
-
+        $search='';
         $where = [];
         if(!empty($info['title'])){
-
+            $search=$info['title'];
             $where['title'] = ['like',"%{$info['title']}%"];
         }
 
@@ -31,7 +31,7 @@ class Admission extends Base{
 
         $this->assign('list',$list);
         $this->assign('page',$list->render());
-
+        $this->assign('search',$search);
         $this->assign('typename','招生管理');
 
         return $this->fetch();
