@@ -16,10 +16,10 @@ class Studyresult extends Base{
 
         $userid=$this->request->param('id')+0;//在学生列表跳转到本列表是使用
         $info = input('get.');
-
+        $search='';
         $where = [];
-        if(!empty($info['userid'])){
-
+        if(!empty($info['realname'])){
+            $search=$info['realname'];
             $where['d.realname'] = ['like',"%{$info['realname']}%"];
         }
         if($userid){
@@ -37,6 +37,7 @@ class Studyresult extends Base{
 
         $this->assign('list',$list);
         $this->assign('course',$course);
+        $this->assign('search',$search);
         $this->assign('typename','学习记录');
         $this->assign('page',$list->render());
         return $this->fetch();

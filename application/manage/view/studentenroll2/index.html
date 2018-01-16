@@ -11,27 +11,26 @@
     <div class="well clearfix">
         <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
             <div class="form-group">
-                <label>招生批次</label>
-                <select name="admission" class="form-control">
-                    <option value="">--请选择--</option>
-                    {volist name="admission" id="a"}
-                    <option value="{$a.id}">{$a.title}</option>
-                    {/volist}
-                </select>
+                <label>姓名</label>
+                <input type="text" class="form-control" placeholder="请输入姓名" value="{$info.realname}" name="realname">
             </div>
             <div class="form-group">
                 <label>专业</label>
-                <select name="category" class="form-control">
+                <select name="name" class="form-control">
                     <option value="">--请选择--</option>
                     {volist name='categorylist' id='c'}
-                    <option value="{$c.code}">{$c.name}</option>
+                    <option value="{$c.code}" {if condition="$info['name'] eq $c['code']"} selected {/if}>{$c.name}</option>
                     {/volist}
                 </select>
             </div>
             <div class="form-group">
-                <label>报名日期</label>
-                <input type="text" class="form-control form_datetime" placeholder="开始日期" name="starttime">-
-                <input type="text" class="form-control form_datetime" placeholder="结束日期" name="endtime">
+                <label>审批状态</label>
+                    <select name="status" class="form-control">
+                        <option value="">--请选择--</option>
+                        <option value="1" {if condition="$info['status'] eq 1"} selected {/if}>待审</option>
+                        <option value="2" {if condition="$info['status'] eq 2"} selected {/if}>未通过</option>
+                        <option value="3" {if condition="$info['status'] eq 3"} selected {/if}>通过</option>
+                    </select>
             </div>
             <button type="submit" class="btn btn-primary">搜索</button>
         </form>

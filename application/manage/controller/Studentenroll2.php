@@ -13,17 +13,22 @@ class StudentEnroll2 extends Base{
     public function index(){
 
         $info = input('get.');
-
+        unset($info['v']);
+        if(empty($info)){
+            $info['realname']='';
+            $info['name']='';
+            $info['status']='';
+        }
         $where = [];
-        if(!empty($info['admission'])){
-            $where['admissionID'] = ['eq',$info['admission']];
+        if(!empty($info['realname'])){
+            $where['a.realname'] = ['like',"%{$info['realname']}%"];
 
         }
-        if(!empty($info['category'])){
-            $where['categoryID'] = ['eq' ,$info['category']];
+        if(!empty($info['name'])){
+            $where['a.categoryID'] = ['eq' ,$info['name']];
         }
-        if(!empty($info['starttime']) && !empty($info['endtime'])){
-            $where['a.createTime'] = ['between time',[$info['starttime']." 00:00:00", $info['endtime']." 23:59:59"]];
+        if(!empty($info['status'])){
+            $where['a.status'] = ['eq',$info['status']-1];
         }
 
         $list = Db::table('student_enroll')
@@ -39,7 +44,7 @@ class StudentEnroll2 extends Base{
 
         $admission = Db::table('admission')->field('id,title')->select();
         $this->assign('typename','报名管理');
-
+        $this->assign('info',$info);
         $this->assign('list',$list);
         $this->assign('admission',$admission);
         $this->assign('categorylist',$category);

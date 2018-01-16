@@ -17,11 +17,11 @@ class Classroom extends Base{
     public function index(){
 
         $info = input('get.');
-
+        $search='';
         $where = [];
 
         if(!empty($info['title'])){
-
+            $search=$info['title'];
             $where['a.title'] = ['like',"%{$info['title']}%"];
         }
 
@@ -37,7 +37,7 @@ class Classroom extends Base{
 
         $this->assign('list',$list);
         $this->assign('page',$list->render());
-
+        $this->assign('search',$search);
         $this->assign('teacher',$teacher);
         $this->assign('category',$category);
         $this->assign('typename','班级管理');

@@ -17,11 +17,11 @@ class Dormitory extends Base{
     public function index(){
 
         $info = input('get.');
-
+        $search='';
         $where = [];
 
         if(!empty($info['name'])){
-
+            $search=$info['name'];
             $where['name'] = ['like',"%{$info['name']}%"];
         }
 
@@ -31,7 +31,7 @@ class Dormitory extends Base{
 
         $this->assign('list',$list);
         $this->assign('page',$list->render());
-
+        $this->assign('search',$search);
         $this->assign('typename','宿舍管理');
 
         return $this->fetch();
