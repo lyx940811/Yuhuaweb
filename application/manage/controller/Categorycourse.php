@@ -18,6 +18,7 @@ class Categorycourse extends Base{
     public function index(){
 
         $info = input('get.');
+        unset($info['v']);
         if(empty($info)){
             $info['category']='';
             $info['type']='';

@@ -15,7 +15,11 @@ class Categorycertificate extends Base{
     public function index(){
 
         $info = input('get.');
-
+        unset($info['v']);
+        if(empty($info)){
+            $info['category']='';
+            $info['name']='';
+        }
 
         $where = [];
         if(!empty($info['category'])){
@@ -36,6 +40,7 @@ class Categorycertificate extends Base{
 
         $category = Db::table('category')->field('code,name')->where('Flag','eq',1)->select();
         $this->assign('list',$list);
+        $this->assign('info',$info);
         $this->assign('typename','专业证书');
         $this->assign('categorylist',$category);
         $this->assign('page',$list->render());
