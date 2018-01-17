@@ -268,16 +268,18 @@
     }
 
     function deleteR(id) {
-        $.get("{:url('enable')}?rid="+id,function (data) {
-            if(data.code=='000'){
-                alert(data.info)
-                $('#myModal2').modal('hide')
-            }else{
+        if(confirm('确定删除吗')){
+            $.get("{:url('enable')}?rid="+id,function (data) {
+                if(data.code=='000'){
+                    alert(data.info)
+                    $('#myModal2').modal('hide')
+                    window.location.reload();
+                }else{
 
-            }
-        });
+                }
+            });
+        }
     }
-
 
 </script>
 </body>
