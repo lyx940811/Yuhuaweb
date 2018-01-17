@@ -47,7 +47,6 @@ class Classroom extends Base{
 
     public function add(){
         $info = input('post.');
-
         $msg  =   [
             'title.require' => '名称不能为空',
             'title.length' => '名称长度太短',
@@ -70,7 +69,7 @@ class Classroom extends Base{
         $data = [
             'title' => $info['title'],
             'categoryId' => $info['categoryId'],
-            'teacherIds'=> $info['teacherIds'],
+            'teacherIds'=> 0,
             'about'=>$info['about'],
             'createdTime'=>date('Y-m-d H:i:s',time()),
             'status'=>$info['status'],
@@ -121,7 +120,7 @@ class Classroom extends Base{
         $data = [
             'title' => $info['title'],
             'categoryId' => $info['categoryId'],
-            'teacherIds'=> $info['teacherIds'],
+            'teacherIds'=> 0,
             'about'=>$info['about'],
 //            'createdTime'=>date('Y-m-d H:i:s',time()),
             'status'=>$info['status'],
@@ -149,23 +148,23 @@ class Classroom extends Base{
     }
 
     //添加班级教师
-    public function addteacher(){
-        $id=$this->request->param('id')+0;
-        if($id){
-            $where['a.id']=$id;
-            $where['b.classid']=$id;
-        }
-
-        $list = Db::name('classroom a')
-            ->join('category b','a.categoryId=b.code','LEFT')
-            ->join('teacher_info c','a.teacherIds=c.id','LEFT')
-            ->join('classTeacher ct','a.id=ct.classid','LEFT')
-            ->field('a.id,a.about,a.title,a.status,a.categoryId,a.teacherIds,a.hitNum,a.studentNum,a.createdTime,c.id as cid,c.realname,b.name,b.code')
-            ->where($where)
-            ->paginate(20,false,['query'=>request()->get()]);
-
-        $teacher = Db::table('teacher_info')->field('id,realname')->select();
-    }
+//    public function addteacher(){
+//        $id=$this->request->param('id')+0;
+//        if($id){
+//            $where['a.id']=$id;
+//            $where['b.classid']=$id;
+//        }
+//
+//        $list = Db::name('classroom a')
+//            ->join('category b','a.categoryId=b.code','LEFT')
+//            ->join('teacher_info c','a.teacherIds=c.id','LEFT')
+//            ->join('classTeacher ct','a.id=ct.classid','LEFT')
+//            ->field('a.id,a.about,a.title,a.status,a.categoryId,a.teacherIds,a.hitNum,a.studentNum,a.createdTime,c.id as cid,c.realname,b.name,b.code')
+//            ->where($where)
+//            ->paginate(20,false,['query'=>request()->get()]);
+//
+//        $teacher = Db::table('teacher_info')->field('id,realname')->select();
+//    }
 
 
 }

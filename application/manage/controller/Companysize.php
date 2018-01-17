@@ -115,4 +115,17 @@ class Companysize extends Base{
             return ['error'=>'添加失败','code'=>'400'];
         }
     }
+
+    public function enable(){
+        $id = $_GET['rid']+0;
+
+        $ok = Db::name('companysize')->where("id='$id'")->delete();
+
+        if(is_numeric($ok)){
+            manage_log('108','005','删除课程',serialize(['id'=>$id]),0);
+            return ['info'=>'删除成功','code'=>'000'];
+        }else{
+            return ['error'=>'删除失败','code'=>'200'];
+        }
+    }
 }
