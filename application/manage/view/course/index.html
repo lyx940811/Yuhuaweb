@@ -6,9 +6,7 @@
     {php}
     $uid = session('admin_uid');
     {/php}
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="{:url('')}" style="cursor: pointer">刷新列表</a></li>
-    </ul>
+    <a href="{:url('')}"  class="btn btn-primary" >返回</a>
     <div class="pull-right">
         {php}
         $access = check($uid,'/manage/course/add');
@@ -74,7 +72,7 @@
                                     <div class="form-group">
                                         <label for="title" class="col-sm-2 control-label">教师</label>
                                         <div class="col-sm-5">
-                                            <select name="teacherIds" id="teacherIds">
+                                            <select name="teacherIds" id="teacherIds" class="form-control">
                                                 <option value="">--请选择--</option>
                                                 {volist name="teacher" id="t"}
                                                 <option value="{$t.id}" {if condition="$vo['teacherIds'] eq $t['id']"}selected="selected"{/if}>{$t.realname}</option>

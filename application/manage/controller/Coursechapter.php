@@ -15,22 +15,25 @@ class Coursechapter extends Base{
     public function index(){
         $info = input('get.',NULL,'htmlspecialchars');
 
+        $id = $this->request->param('cid');
         $where = [];
-        $where['b.id']= $this->request->param('cid');
+        $where['a.courseid'] = $id;
         if(!empty($info['title'])){
 
             $where['a.title'] = ['like',"%{$info['title']}%"];
         }
 
         $list = Db::table('course_chapter a')
-            ->field('a.*,b.title as btit')
-            ->join('course b','a.courseid=b.id','LEFT')
+            ->field('a.*')
+//            ->join('course b','a.courseid=b.id','LEFT')
             ->where($where)
             ->order('createTime desc')
             ->paginate(20);
 //echo Db::table('course_chapter a')->getLastSql();exit;
+        $course = Db::table('course')->field('id,title')->where('id',$id)->find();
         $this->assign('list',$list);
-        $this->assign('typename','课程章节管理');
+        $this->assign('tit',$course['title']);
+        $this->assign('typename',$course['title'].'-课程章节管理');
         $this->assign('page',$list->render());
         return $this->fetch();
     }
