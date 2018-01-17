@@ -21,30 +21,31 @@ class Coursetask extends Base{
         $info = input('get.');
         $where = [];
         $id=$this->request->param('cid');
-        $where['b.id']= $id;
+        $where['a.courseid']= $id;
         if(!empty($info['title'])){
 
             $where['a.title'] = ['like',"%{$info['title']}%"];
         }
 
         $list = Db::table('course_task a')
-            ->field('a.id,a.title,a.mode,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.chapterid,a.type,a.mediaSource,a.length,a.mediaSource,a.status,a.startTime,a.endTime,b.title btit,cc.title as ctitle')
-            ->join('course b','a.courseId=b.id','LEFT')
+            ->field('a.id,a.title,a.mode,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.chapterid,a.type,a.mediaSource,a.length,a.mediaSource,a.status,a.startTime,a.endTime,cc.title as ctitle')
+//            ->join('course b','a.courseId=b.id','LEFT')
             ->join('course_chapter cc','a.chapterid=cc.id','LEFT')
             ->where($where)
             ->paginate(20,['query'=>$info]);
 
-        $course = Db::table('course')->field('id,title')->select();
+        $course = Db::table('course')->field('id,title')->where('id',$id)->find();
         //这里冲突了
         $chapter = Db::table('course_chapter')->field('id,title')->where('courseid',$id)->select();
         //$chapter = Db::table('course_chapter')->field('id,title')->where('courseid='.request()->get('cid'))->select();
         $taskmode = Db::table('task_mode')->field('id,name')->select();
 
         $this->assign('list',$list);
-        $this->assign('course',$course);
+//        $this->assign('course',$course);
         $this->assign('chapter',$chapter);
         $this->assign('taskmode',$taskmode);
-        $this->assign('typename','课程任务');
+        $this->assign('tit',$course['title']);
+        $this->assign('typename',$course['title'].'-课程任务');
         $this->assign('page',$list->render());
         return $this->fetch();
     }
@@ -57,15 +58,15 @@ class Coursetask extends Base{
         $msg  =   [
             'title.require'     => '任务名称不能为空',
             'title.length'      => '任务名称长度太短',
-            'startTime.require' => '开始时间不能为空',
-            'endTime.require'   => '结束时间不能为空',
+//            'startTime.require' => '开始时间不能为空',
+//            'endTime.require'   => '结束时间不能为空',
             'courseId.require'  => '课程不能为空',
             'chapterid.require'  => '课程章必须选择',
         ];
         $validate = new Validate([
             'title'     => 'require|length:2,20',
-            'startTime' => 'require',
-            'endTime'   => 'require',
+//            'startTime' => 'require',
+//            'endTime'   => 'require',
             'courseId'  => 'require',
             'chapterid'  => 'require'
 
@@ -89,17 +90,17 @@ class Coursetask extends Base{
 
         $data = [
             'title' => $info['title'],
-            'startTime' => $info['startTime'],
-            'endTime'=> $info['endTime'],
+//            'startTime' => $info['startTime'],
+//            'endTime'=> $info['endTime'],
             'chapterid'=> $info['chapterid'],
             'isFree'=>isset($info['isFree'])?$info['isFree']:0,
-            'isOptional'=>isset($info['isOptional'])?$info['isOptional']:0,
+//            'isOptional'=>isset($info['isOptional'])?$info['isOptional']:0,
             'mode'=>$info['mode'],
             'type'=>isset($info['type'])?$info['type']:'url',
             'length'=>isset($info['length'])?$info['length']:0,
             'mediaSource'=>isset($info['mediaSource'])?$info['mediaSource']:'',
-            'maxOnlineNum'=>$info['maxOnlineNum']+0,
-            'maxPoint'=>$info['maxPoint']+0,
+//            'maxOnlineNum'=>$info['maxOnlineNum']+0,
+//            'maxPoint'=>$info['maxPoint']+0,
             'courseId'=>$info['courseId']+0,
             'createdUserId'=>session('admin_uid'),
             'createdTime'=>date('Y-m-d H:i:s',time()),
@@ -124,16 +125,16 @@ class Coursetask extends Base{
             'rid'               =>'任务id不能为空',
             'title.require'     => '任务名称不能为空',
             'title.length'      => '任务名称长度太短',
-            'startTime.require' => '开始时间不能为空',
-            'endTime.require'   => '结束时间不能为空',
+//            'startTime.require' => '开始时间不能为空',
+//            'endTime.require'   => '结束时间不能为空',
             'courseId.require'  => '课程不能为空',
             'chapterid.require'  => '课程章必须选择',
         ];
         $validate = new Validate([
             'rid'       => 'require',
             'title'     => 'require|length:2,20',
-            'startTime' => 'require',
-            'endTime'   => 'require',
+//            'startTime' => 'require',
+//            'endTime'   => 'require',
             'courseId'  => 'require',
             'chapterid'  => 'require'
         ],$msg);
@@ -157,17 +158,17 @@ class Coursetask extends Base{
 
         $data = [
             'title' => $info['title'],
-            'startTime' => $info['startTime'],
-            'endTime'=> $info['endTime'],
+//            'startTime' => $info['startTime'],
+//            'endTime'=> $info['endTime'],
             'chapterid'=> $info['chapterid'],
             'isFree'=>isset($info['isFree'])?$info['isFree']:0,
-            'isOptional'=>isset($info['isOptional'])?$info['isOptional']:0,
+//            'isOptional'=>isset($info['isOptional'])?$info['isOptional']:0,
             'mode'=>$info['mode'],
             'type'=>isset($info['type'])?$info['type']:'url',
             'length'=>isset($info['length'])?$info['length']:0,
             'mediaSource'=>isset($info['mediaSource'])?$info['mediaSource']:'',
-            'maxOnlineNum'=>$info['maxOnlineNum']+0,
-            'maxPoint'=>$info['maxPoint']+0,
+//            'maxOnlineNum'=>$info['maxOnlineNum']+0,
+//            'maxPoint'=>$info['maxPoint']+0,
             'courseId'=>$info['courseId']+0,
             'status'=>$info['status']
         ];
