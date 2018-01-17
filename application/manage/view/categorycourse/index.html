@@ -21,9 +21,9 @@
             <div class="form-group">
                 <label>课程形式</label>
                 <select name="type" class="form-control">
-
-                    <option value="0" {if condition="$info['type'] eq 1"}selected{/if}>理论课</option>
-                    <option value="1" {if condition="$info['type'] eq 2"}selected{/if}>实践课</option>
+                    <option value="">--请选择--</option>
+                    <option value="1" {if condition="$info['type'] eq 1"}selected{/if}>理论课</option>
+                    <option value="2" {if condition="$info['type'] eq 2"}selected{/if}>实践课</option>
                 </select>
             </div>
             <div class="form-group">
