@@ -109,7 +109,7 @@ class Filetype extends Base{
         }
     }
 
-    public function delete(){
+    public function enable(){
         $id = $_GET['rid']+0;
         $ok = Db::name('filetype')->where('id',$id)->delete();
 
