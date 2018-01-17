@@ -730,8 +730,10 @@ class User extends Controller
      * 结束观看
      */
     public function endwatch(){
+
         $courseid  = $this->data['courseid'];
         $chapterid = $this->data['chapterid'];
+
         if(!$res = Db::name('course_task')->where(['courseId'=>$courseid,'chapterid'=>$chapterid])->find()){
             return json_data(200,$this->codeMessage[200],'');
         }
