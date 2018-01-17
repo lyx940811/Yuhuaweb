@@ -368,24 +368,30 @@ class Userprofile extends Base{
 
         $userid=$this->request->param('id')+0;//在学生列表跳转到本列表是使用
         $info = input('get.');
-
+        $search='';
         $where = [];
-
+        if(!empty($info['realname'])){
+            $search=$info['realname'];
+            $where['u.username'] = ['like',"%{$info['realname']}%"];
+        }
         if($userid){
             $where['a.userid']=$userid;
         }
-        $list = Db::table('study_result a')
-            ->field('a.id,a.status,b.title,c.title ctit,d.realname')
+        $list = Db::table('study_result_log a')
+            ->field('a.*,b.title,c.title ctit,u.username,ct.title as cttitle,ct.length')
             ->join('course b','a.courseid=b.id','LEFT')
             ->join('course_chapter c','a.chapterid=c.id','LEFT')
-            ->join('user_profile d','a.userid=d.userid','LEFT')
+            ->join('user u','a.userid=u.id','LEFT')
+            ->join('course_task ct','b.id=ct.courseId')
             ->where($where)
             ->paginate(20,['query'=>$info]);
-
+        $test=new Studyresult();
+        $data = $test->Percentage($list);
         $course = Db::table('course')->field('id,title')->select();
 
-        $this->assign('list',$list);
+        $this->assign('list',$data);
         $this->assign('course',$course);
+        $this->assign('search',$search);
         $this->assign('typename','学习记录');
         $this->assign('page',$list->render());
         return $this->fetch();

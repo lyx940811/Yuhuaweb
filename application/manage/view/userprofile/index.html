@@ -18,7 +18,9 @@
         </form>
     </div>
     <ul class="nav nav-tabs">
-        <li class="active"><a href="{:url('')}" style="cursor: pointer">返回列表</a></li>
+        <li role="presentation"><a href="{:url('')}" style="cursor: pointer">刷新学生列表</a></li>
+        <li role="presentation"  class="active"><a href="{:url('userprofile/index')}">学习列表</a></li>
+        <li role="presentation"><a href="{:url('studyresult/index')}">学习记录</a></li>
     </ul>
     <div class="pull-right">
         {php}
