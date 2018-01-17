@@ -36,7 +36,7 @@
         {$task->chapter->title}：{$task->title}
       </div>
       <div class="dashboard-body">
-          {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
+          {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url' or $task['type'] eq 'flv'"}
           <!--视频-->
           <video id="my-video" class="video-js" controls preload="auto" style="width:100%;height:100%"
                  poster="m.png" data-setup="{}">
@@ -113,7 +113,7 @@
                 <div class="task-list-pane-body js-sidebar-pane-body">
                     <ul class="task-list task-show">
                         {volist name="tasklist" id="tl"}
-                        {if condition="$tl['type'] eq 'mp4' or $tl['type'] eq 'url'"}
+                        {if condition="$tl['type'] eq 'mp4' or $tl['type'] eq 'url' or $task['type'] eq 'flv'"}
                         {present name="tl.plan"}
                         {switch name="tl.plan" }
                         {case value="100"}
@@ -149,7 +149,7 @@
                             <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
                                 {$tl.chapter}: {$tl.title}
                             </a>
-                            <span class="right-menu">23:10
+                            <span class="right-menu">{$tl.length|video_time_trans}
                                     <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
                             </span>
                         </li>
@@ -176,7 +176,7 @@
                         {else /}
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title" href="/course/127/task/749/show">
+                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$task['taskid']))}">
                                 {$tl.chapter}: {$tl.title}
                             </a>
                             <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
