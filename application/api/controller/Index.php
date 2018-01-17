@@ -88,9 +88,10 @@ class Index extends Home
      * 得到轮播图
      */
     public function getscrollpic(){
-        $pic = Db::name('ad')->where('type','mobile')->where('flag',1)->field('img,url')->select();
+        $pic = Db::name('ad')->where('type','mobile')->where('flag',1)->field('img')->select();
+
         if($pic){
-//            $pic = array_column($pic,'img');
+            $pic = array_column($pic,'img');
             foreach ($pic as &$item) {
                 $item = $this->request->domain()."/".$item;
             }
