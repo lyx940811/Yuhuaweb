@@ -58,14 +58,18 @@
                     </a>
                 </li>-->
             </ul>
+
             <div class="container" style="text-align: center;width: 83%;">
                 <nav aria-label="Page navigation">
                     <ul class="pagination">
-                        <li><a href="#">&lt;</a></li>
-                        <li><a href="#">&gt;</a></li>
+                        {if condition="$page gt 1"}
+                        <li><a href="{:url('index/student/mystudy',array('page'=>$page-1))}">&lt;</a></li>
+                        {/if}
+                        <li><a href="{:url('index/student/mystudy',array('page'=>$page+1))}">&gt;</a></li>
                     </ul>
                 </nav>
             </div>
+
         </div>
     </div>
 </div>

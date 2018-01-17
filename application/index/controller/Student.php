@@ -17,7 +17,7 @@ class Student extends Home
 
     public function mystudy()
     {
-        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        !empty($this->request->param('page'))?$page = $this->request->param('page'):$page = 1;
         $video_type = ['mp4','url'];
         //先选择学习记录并group掉重复的课程
         $course = Db::name('study_result')
@@ -87,7 +87,7 @@ class Student extends Home
                 }
             }
         }
-
+        $this->assign('page',$page);
         $this->assign('course',$done_course);
         return $this->fetch();
     }
@@ -104,7 +104,7 @@ class Student extends Home
     }
     public function donestudy()
     {
-        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        !empty($this->request->param('page'))?$page = $this->request->param('page'):$page = 1;
         $video_type = ['mp4','url'];
         //先选择学习记录并group掉重复的课程
         $course = Db::name('study_result')
@@ -179,13 +179,14 @@ class Student extends Home
         }
         else{
         }
+        $this->assign('page',$page);
         $this->assign('course',$done_course);
         return $this->fetch();
     }
     public function collect()
     {
         $video_type = ['mp4','url'];
-        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        !empty($this->request->param('page'))?$page = $this->request->param('page'):$page = 1;
         $field = 'cf.id,cf.courseid,cf.userid,c.title,c.smallPicture';
         $course = Db::name('course_favorite')
             ->alias('cf')
@@ -256,6 +257,7 @@ class Student extends Home
                 $done_course[] = $c;
             }
         }
+        $this->assign('page',$page);
         $this->assign('course',$done_course);
 
         return $this->fetch();
