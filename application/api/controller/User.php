@@ -8,7 +8,7 @@ use think\Config;
 use app\index\model\UserProfile as UserProfileModel;
 use app\index\model\User as UserModel;
 use app\index\model\StudyResult;
-use app\index\model\Asklist;
+use app\index\model\StudyResultLog;
 use think\Db;
 use think\Exception;
 use think\Validate;
@@ -698,6 +698,16 @@ class User extends Controller
         $courseid  = $this->data['courseid'];
         $chapterid = $this->data['chapterid'];
         $time = date('Y-m-d H:i:s',time());
+
+        $log_data = [
+            'userid'    =>  $this->user->id,
+            'starttime' => $time,
+            'endtime'   => $time,
+            'courseid'  => $courseid,
+            'chapterid' => $chapterid
+        ];
+        StudyResultLog::create($log_data);
+
         if($watch = StudyResult::get(['userid'=>$this->user->id,'courseid'=>$courseid,'chapterid'=>$chapterid])){
             if($watch['status']!=1){
                 $data = [
@@ -750,10 +760,27 @@ class User extends Controller
             $watch_time = $time-strtotime($watch['starttime']);
             
             $data = ['endtime' => date('Y-m-d H:i:s',$time)];
-            if($watch_time>$couse_time){
+            if($watch_time>=$couse_time){
                 $data['status'] = 1;
             }
             StudyResult::update($data,['id'=>$watch['id']]);
+
+            //对log进行判断
+            $watch_log = Db::name('study_result_log')->where(['courseId'=>$courseid,'chapterid'=>$chapterid])->order('starttime desc')->find();
+            if($watch_log){
+
+                $length = explode(':',$course['length']);
+                $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
+
+                $watch_time = $time-strtotime($watch_log['starttime']);
+
+                $data = ['endtime' => date('Y-m-d H:i:s',$time)];
+                if($watch_time>=$couse_time){
+                    $data['status'] = 1;
+                }
+                StudyResultLog::update($data,['id'=>$watch_log['id']]);
+            }
+
             return json_data(0,$this->codeMessage[0],'');
         }
         else{
