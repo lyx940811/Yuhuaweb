@@ -116,22 +116,29 @@
                                                    placeholder="请输入民族">
                                         </div>
                                     </div>
+                                    {php}
+                                    if($vo['cardpic']){
+                                    $ser = unserialize($vo['cardpic']);
+                                    $front_pic = isset($ser['front_pic'])?$ser['front_pic']:'';
+                                    $behind_pic = isset($ser['behind_pic'])?$ser['behind_pic']:'';
+                                    }
+                                    {/php}
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label form-inline">身份证正面照</label>
                                         <div class="col-sm-4">
                                             <input type="file"  name="newfile{$vo.id}" id="newfile{$vo.id}" onchange="uploadImage({$vo.id});">
-                                            <input type="hidden" name="cardpic[]" id="pic{$vo.id}">
-                                            <div id="showinfoPic{$vo.id}"></div>
+                                            <input type="hidden" name="cardpic[]" id="pic{$vo.id}" value="{$front_pic}">
+                                            <div id="showinfoPic{$vo.id}">{$front_pic?'<img src="/'.$front_pic.'" width="100%"/>':''}</div>
                                         </div>
 
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label form-inline">身份证反面照</label>
                                         <div class="col-sm-4">
-                                            {php}$num = $vo['id']+2;{/php}
+                                            {php}$num = $vo['id']+002;{/php}
                                             <input type="file" name="newfile{$num}" id="newfile{$num}" onchange="uploadImage({$num});">
-                                            <input type="hidden" name="cardpic[]" id="pic{$num}">
-                                            <div id="showinfoPic{$num}"></div>
+                                            <input type="hidden" name="cardpic[]" id="pic{$num}" value="{$behind_pic}">
+                                            <div id="showinfoPic{$num}">{$behind_pic?'<img src="/'.$behind_pic.'" width="100%"/>':''}</div>
                                         </div>
 
                                     </div>
