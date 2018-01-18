@@ -58,7 +58,7 @@
             {elseif condition="$vo.status ==2"/}
             	<td>已下架</td>
             {/if}
-            <td><img src="http://localhost/{$vo.img}" alt="" style="width:50px;height:60px"></td>
+            <td><img src="/{$vo.img}" alt="" style="width:50px;height:60px"></td>
             <td>{$vo.createdTime}</td>
             <td>
                 <a onclick="edit({$vo.id})" href="#" data-toggle="modal" data-target="#myModal">编辑</a>
@@ -225,7 +225,7 @@ $(document).ready(function(){
             contentType: false, //不可缺参数
             processData: false,     //不可缺参数
             success:function(data){
-                html=' <img src=http://localhost/'+data+' alt="" style="width:50px;height:60px">'
+                html=' <img src="/'+data+'" alt="" style="width:50px;height:60px">'
                 $('#appendimg').html('');
                 $('#appendimg').append(html);
                 $('#icon').val(data);
