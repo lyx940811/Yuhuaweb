@@ -8,6 +8,7 @@
 namespace app\manage\controller;
 
 use think\Db;
+use think\Validate;
 
 class Tasktype extends Base{
 
@@ -21,15 +22,17 @@ class Tasktype extends Base{
         return $this->fetch();
     }
     public function add(){
-        $info = input('post.');
+        $info = input('get.');
 
         $msg  =   [
-            'classname.require' => '类型名称不能为空',
+            'name.require' => '类型名称不能为空',
             'code.require' => '类型代码不能为空',
+            'seq.require' => '排序不能为空',
         ];
         $validate = new Validate([
-            'classname'  => 'require',
+            'name'  => 'require',
             'code'   => 'require',
+            'seq'   =>'require',
         ],$msg);
 
         $validate->check($info);
@@ -40,23 +43,27 @@ class Tasktype extends Base{
             return ['error'=>$error,'code'=>'200'];
         }
 
-        $role_table = Db::name('filetype');
+        $role_table = Db::name('task_type');
 
         $is_have = $role_table->field('id')->where(['code'=>['eq',$info['code']]])->find();
 
         if($is_have){//如果这个code有
             return ['error'=>'已经有此代码','code'=>'300'];
         }
-
+        $is_seq = $role_table->field('id')->where(['seq'=>['eq',$info['seq']]])->find();
+        if($is_seq){
+            return ['error'=>'已经有此排序','code'=>'300'];
+        }
         $data = [
-            'classname'         => $info['classname'],
+            'name'         => $info['name'],
             'code'      => $info['code'],
+            'seq'          => $info['seq'],
             'Flag'          => $info['flag'],
         ];
 
-        $ok = $role_table->field('classname,code,Flag')->insert($data);
+        $ok = $role_table->field('name,code,Flag,seq')->insert($data);
         if(is_numeric($ok)){
-            manage_log('108','003','添加课程',serialize($data),0);
+            manage_log('108','003','添加任务类型',serialize($data),0);
             return ['info'=>'添加成功','code'=>'000'];
         }else{
             return ['error'=>'添加失败','code'=>'400'];
@@ -64,15 +71,17 @@ class Tasktype extends Base{
     }
 
     public function edit(){
-        $info = input('post.');
+        $info = input('get.');
 
         $msg  =   [
-            'classname.require' => '类型名称不能为空',
+            'name.require' => '类型名称不能为空',
             'code.require' => '类型代码不能为空',
+            'seq.require' => '排序不能为空',
         ];
         $validate = new Validate([
-            'classname'  => 'require',
+            'name'  => 'require',
             'code'   => 'require',
+            'seq'   =>'require',
         ],$msg);
 
         $validate->check($info);
@@ -83,7 +92,8 @@ class Tasktype extends Base{
             return ['error'=>$error,'code'=>'200'];
         }
 
-        $role_table = Db::name('filetype');
+        $role_table = Db::name('task_type');
+
         $id=$info['rid']+0;
         $where['id']=array('neq',$id);
         $where['code']=$info['code'];
@@ -92,16 +102,21 @@ class Tasktype extends Base{
         if($is_have){//如果这个code有
             return ['error'=>'已经有此代码','code'=>'300'];
         }
-
+        $where1['id']=array('neq',$id);
+        $where1['seq']=$info['seq'];
+        $is_seq = $role_table->field('id')->where($where1)->find();
+        if($is_seq){
+            return ['error'=>'已经有此排序','code'=>'300'];
+        }
         $data = [
-            'classname'         => $info['classname'],
+            'name'         => $info['name'],
             'code'      => $info['code'],
+            'seq'          => $info['seq'],
             'Flag'          => $info['flag'],
         ];
-
-        $ok = $role_table->field('classname,code,Flag')->where('id',$id)->update($data);
+        $ok = $role_table->field('name,code,Flag,seq')->where('id',$id)->update($data);
         if(is_numeric($ok)){
-            manage_log('108','003','添加课程',serialize($data),0);
+            manage_log('108','003','修改任务类型',serialize($data),0);
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'400'];
@@ -110,7 +125,7 @@ class Tasktype extends Base{
 
     public function enable(){
         $id = $_GET['rid']+0;
-        $ok = Db::name('filetype')->where('id',$id)->delete();
+        $ok = Db::name('task_type')->where('id',$id)->delete();
 
         if(is_numeric($ok)){
             return ['info'=>'删除成功','code'=>'000'];

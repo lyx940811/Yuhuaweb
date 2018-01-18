@@ -18,13 +18,12 @@
             <button type="submit" class="btn btn-primary">搜索</button>
         </form>
     </div>
-    <table style="font-size:18px;">
-        <tr>
-            <td style="width:100px;">当前用户：</td>
-            <td>{$userid|getUserinfo}</td>
-        </tr>
-    </table>
+
     <table class="table table-striped table-hover">
+        <thead>
+        <tr><th style="fint-size:16px;">当前用户:{$userid|getUserinfo}</th></tr>
+        <tr><th colspan="5" style="text-align: center;border-top: 1px solid #000000"><h4>学习记录</h4></th></tr>
+        </thead>
         <thead>
         <tr>
 
