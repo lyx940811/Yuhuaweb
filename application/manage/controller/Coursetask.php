@@ -62,13 +62,15 @@ class Coursetask extends Base{
 //            'endTime.require'   => '结束时间不能为空',
             'courseId.require'  => '课程不能为空',
             'chapterid.require'  => '课程章必须选择',
+            'mediaSource.require'  => '媒体资源必须填写',
         ];
         $validate = new Validate([
             'title'     => 'require|length:2,20',
 //            'startTime' => 'require',
 //            'endTime'   => 'require',
             'courseId'  => 'require',
-            'chapterid'  => 'require'
+            'chapterid'  => 'require',
+            'mediaSource'  => 'require'
 
         ],$msg);
 
@@ -129,6 +131,7 @@ class Coursetask extends Base{
 //            'endTime.require'   => '结束时间不能为空',
             'courseId.require'  => '课程不能为空',
             'chapterid.require'  => '课程章必须选择',
+            'mediaSource.require'  => '媒体资源必须填写',
         ];
         $validate = new Validate([
             'rid'       => 'require',
@@ -136,7 +139,8 @@ class Coursetask extends Base{
 //            'startTime' => 'require',
 //            'endTime'   => 'require',
             'courseId'  => 'require',
-            'chapterid'  => 'require'
+            'chapterid'  => 'require',
+            'mediaSource'  => 'require'
         ],$msg);
 
         $validate->check($info);

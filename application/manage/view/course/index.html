@@ -138,7 +138,6 @@
                                         <label for="categoryId" class="col-sm-2 control-label">所属专业</label>
                                         <div class="col-sm-10">
                                             <select name="categoryId" class="form-control">
-
                                                 {volist name="category" id="c"}
                                                 <option value="{$c.code}"  {if condition="$vo['categoryId'] eq $c['code']"}selected{/if}>{php} echo str_repeat('&nbsp;',$c['grade']*4).'|_'{/php}{$c.name}</option>
                                                 {/volist}
