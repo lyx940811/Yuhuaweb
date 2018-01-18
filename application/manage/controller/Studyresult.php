@@ -49,10 +49,11 @@ class Studyresult extends Base{
         foreach($info as $k=>$value){
             $minute=floor((strtotime($value['endtime'])-strtotime($value['starttime']))%86400/60);
             $time=date('G',strtotime($value['length']))*60+date('i',strtotime($value['length']));
-            if(!empty($minute)){
-                $percentage=$minute/$time*100;
-            }else{
-                $percentage=0;
+            $percentage=0;
+            if($value['status']==1){
+                $percentage=100;
+            }else if(!empty($minute)) {
+                $percentage = $minute / $time * 100;
             }
 
             $data[$k]['id']=$value['id'];
@@ -62,7 +63,7 @@ class Studyresult extends Base{
             $data[$k]['ctit']=$value['ctit'];
             $data[$k]['username']=$value['username'];
             $data[$k]['cttitle']=$value['cttitle'];
-            $data[$k]['percentage']=$percentage.'%';
+            $data[$k]['percentage']=round($percentage,2).'%';
         }
         return $data;
     }
