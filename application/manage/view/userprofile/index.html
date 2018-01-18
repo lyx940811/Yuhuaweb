@@ -68,10 +68,6 @@
                         echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
                         echo '<strong>/</strong>';
                     }
-                    if(check($uid,'/manage/userprofile/add')){
-                        echo '<a href="'.url('addhome').'?tid='.$vo['id'].'">添加家庭情况</a>';
-                        echo '<strong>/</strong>';
-                    }
                     {/php}
                     <a href="{:url('studyresult')}?id={$vo.userid}">学习记录</a><strong>/</strong>
                     <a href="{:url('integrallist')}?id={$vo.userid}">积分记录</a>
@@ -164,7 +160,7 @@
                 }
                 if(data.code=='000'){
                     $('#pic'+id).val(data.path)
-                    $('#showinfoPic'+id).html('<img class="img-rounded" src="'+data.path+'" width="100%"/>');
+                    $('#showinfoPic'+id).html('<img class="img-rounded" src="/'+data.path+'" width="100%"/>');
                     alert('上传成功');
                 }
 
@@ -188,9 +184,6 @@
 
                     alert(data.info)
 
-                    // $('#selfcode').val('')//必须清空
-                    //
-                    // $('#myModal').modal('hide')
                     window.location.reload();
 
                 }else{
@@ -204,21 +197,7 @@
         });
     }
     
-    // $('select[name="depart"]').change(function () {
-    //     console.log($(this).children())
-    //     // $.each($(this).children(),function (e,item) {
-    //     //     $.get("{:url('selectcategory')}?code="+$(item).val(),function (data) {
-    //     //         console.log(data)
-    //     //         if(data.code=='000'){
-    //     //             // alert(data.info)
-    //     //             // $('#myModal2').modal('hide')
-    //     //             // window.location.reload();
-    //     //         }else{
-    //     //
-    //     //         }
-    //     //     });
-    //     // })
-    // })
+
     function sec_depart(id,code,mainid) {
         $.get("{:url('selectcategory')}?code="+code,function (data) {
             if(typeof(data.data)!= "undefined"){
@@ -246,6 +225,18 @@
                 alert(data.error)
             }
         });
+    }
+    
+    function addFamily(id) {
+
+        $.post("{:url('addhome')}",$('#formfamily'+id).serialize(),function (data) {
+            if(data.code=='000'){
+                alert(data.info)
+                window.location.reload()
+            }else{
+                alert(data.error)
+            }
+        })
     }
 </script>
 </body>

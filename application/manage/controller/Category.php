@@ -69,19 +69,28 @@ class Category extends Base{
             return ['error'=>$error,'code'=>'200'];
         }
 
-
         $role_table = Db::name('category');
 
-        $is_have = $role_table->field('id')->where(['code'=>['eq',$info['code']]])->find();
+        $is_have = $role_table->field('id,parentcode')->where('code',$info['code'])->find();
 
         if($is_have){//如果这个code有
             return ['error'=>'已经有此代码','code'=>'300'];
         }
 
+        $grade = 0;
+
+        if(empty($info['parentcode']) || !isset($info['parentcode'])){
+            $grade = 1;
+        }else{
+            $parent = $role_table->field('grade')->where('code',$info['parentcode'])->find();
+
+            $grade = $parent['grade']+1;
+        }
         $data = [
             'name' => $info['name'],
             'code' => $info['code'],
-            'parentcode' => $info['parentcode'],
+            'grade' => $grade,
+            'parentcode' => isset($info['parentcode'])?$info['parentcode']:'0',
             'point'=> $info['point'],
             'Flag'=>$info['Flag'],
             'studyTimes'=>$info['studyTimes'],
@@ -89,7 +98,7 @@ class Category extends Base{
             'createtime'=>date('Y-m-d H:i:s',time()),
         ];
 
-        $ok = $role_table->field('name,code,parentcode,point,studyTimes,description,createtime,Flag')->insert($data);
+        $ok = $role_table->field('name,code,grade,parentcode,point,studyTimes,description,createtime,Flag')->insert($data);
 
         if($ok){
 

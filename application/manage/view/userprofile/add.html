@@ -41,11 +41,20 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label form-inline">照片</label>
+                        <label class="col-sm-2 control-label form-inline">身份证正面照</label>
                         <div class="col-sm-4">
-                            <input type="file" id="newfile0" name="newfile" onchange="uploadImage(0);">
-                            <input type="hidden" name="cardpic" id="pic0">
+                            <input type="file"  name="newfile0" id="newfile0" onchange="uploadImage(0);">
+                            <input type="hidden" name="cardpic[]" id="pic0">
                             <div id="showinfoPic0"></div>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label form-inline">身份证反面照</label>
+                        <div class="col-sm-4">
+                            <input type="file" name="newfile-1" id="newfile-1" onchange="uploadImage(-1);">
+                            <input type="hidden" name="cardpic[]" id="pic-1">
+                            <div id="showinfoPic-1"></div>
                         </div>
 
                     </div>
@@ -198,7 +207,6 @@
                             </select>
                         </div>
                     </div>
-
 
                     <input type="hidden" name="rid" value="" id="selfcode"/>
                     <!-- 模态框底部 -->

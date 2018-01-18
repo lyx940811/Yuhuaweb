@@ -196,7 +196,16 @@ class Teacherinfo extends Base{
         }
 
         $cardpic = $info['cardpic'];
-        $cardpic_ser = serialize(['front_pic'=>isset($cardpic[0])?$cardpic[0]:'','behind_pic'=>isset($cardpic[1])?$cardpic[1]:'']);
+
+        if($info['cardpic']!=''){
+            $cardpic_ser = serialize(['front_pic'=>isset($cardpic[0])?$cardpic[0]:'','behind_pic'=>isset($cardpic[1])?$cardpic[1]:'']);
+        }else{
+            $ser = unserialize($have['cardpic']);
+            $cardpic_ser = serialize(['front_pic'=>isset($cardpic[0])?$cardpic[0]:isset($ser['front_pic'])?$ser['front_pic']:'','behind_pic'=>isset($cardpic[1])?$cardpic[1]:isset($ser['behind_pic'])?$ser['behind_pic']:'']);
+        }
+
+
+
         $sdata = [
             'sn' => $info['sn'],
             'realname' => $info['realname'],

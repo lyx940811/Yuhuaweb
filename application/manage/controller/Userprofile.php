@@ -35,7 +35,7 @@ class Userprofile extends Base{
         $newlist = [];
         foreach ($list as $k=>$v){
             $newlist[$k] = $v;
-            $newlist[$k]['home'] = Db::table('student_home')->where('userid',$v['id'])->select();
+            $newlist[$k]['home'] = Db::table('student_home')->where('userid',$v['userid'])->select();
             $newlist[$k]['depart'] = Db::table('category')->where('code',$v['depart'])->value('name');
             $newlist[$k]['majors'] = Db::table('category')->where('code',$v['majors'])->value('name');
         }
@@ -43,7 +43,7 @@ class Userprofile extends Base{
 //        print_r($newlist);exit;
 
         $classroom = Db::table('classroom')->field('id,title')->select();
-        $depart = Db::table('category')->field('id,code,name')->where('parentcode=0')->select();
+        $depart = Db::table('category')->field('id,code,name')->where('grade=1')->select();
         $category = Db::table('category')->field('code,name')->select();
 
         $this->assign('search',$search);
@@ -91,6 +91,7 @@ class Userprofile extends Base{
             'username'=> $info['mobile'],
             'password' => password_hash('123456',PASSWORD_DEFAULT),
             'type'=>3,
+            'title'=>'static/index/images/avatar.png',
             'mobile'=>$info['mobile'],
             'createUserID'=>session('admin_uid'),
             'createdIp'=>request()->ip(),
@@ -101,6 +102,9 @@ class Userprofile extends Base{
 
         if($ok){
             $userid = Db::table('user')->getLastInsID();
+            $cardpic = $info['cardpic'];
+            $cardpic_ser = serialize(['front_pic'=>isset($cardpic[0])?$cardpic[0]:'','behind_pic'=>isset($cardpic[1])?$cardpic[1]:'']);
+
             //添加学生在校信息
             $data2 = [
                 'sn' => $info['sn'],
@@ -108,7 +112,7 @@ class Userprofile extends Base{
                 'realname' => $info['realname'],
                 'sex'=>$info['sex'],
                 'nation'=>$info['nation'],
-                'cardpic'=>serialize(["front_pic"=>$info['cardpic']]),
+                'cardpic'=>$cardpic_ser,
                 'birthday'=>$info['birthday'],
                 'idcard'=>$info['idcard'],
                 'policy'=>$info['policy'],
@@ -190,14 +194,24 @@ class Userprofile extends Base{
 
         $id = $info['rid']+0;
 
-        $userprofile = $role_table->field('userid')->where('id',$id)->find();
+        $userprofile = $role_table->field('userid,cardpic')->where('id',$id)->find();
+
+        $cardpic = $info['cardpic'];
+
+        if($info['cardpic']!=''){
+            $cardpic_ser = serialize(['front_pic'=>isset($cardpic[0])?$cardpic[0]:'','behind_pic'=>isset($cardpic[1])?$cardpic[1]:'']);
+        }else{
+            $ser = unserialize($userprofile['cardpic']);
+            $cardpic_ser = serialize(['front_pic'=>isset($cardpic[0])?$cardpic[0]:isset($ser['front_pic'])?$ser['front_pic']:'','behind_pic'=>isset($cardpic[1])?$cardpic[1]:isset($ser['behind_pic'])?$ser['behind_pic']:'']);
+        }
+
 
         $data = [
             'sn' => $info['sn'],
             'realname' => $info['realname'],
             'sex'=>$info['sex'],
             'nation'=>$info['nation'],
-            'cardpic'=>serialize(["front_pic"=>$info['cardpic'],'behind_pic'=>'']),
+            'cardpic'=>$cardpic_ser,
             'birthday'=>$info['birthday'],
             'idcard'=>$info['idcard'],
             'policy'=>$info['policy'],
@@ -216,7 +230,8 @@ class Userprofile extends Base{
                 [
                     'nickname'=>$info['realname'],
 //                    'username'=>$info['mobile'],
-                    'mobile'=>$info['mobile']]
+                    'mobile'=>$info['mobile']
+                ]
             );
 
             $isHave = Db::table('student_school')->where('userid='.$userprofile['userid'])->find();
@@ -291,13 +306,18 @@ class Userprofile extends Base{
             return ['error'=>'修改失败','code'=>'200'];
         }
     }
+
     public function upload(){
 
         $id = $_GET['id']+0;
-        $file = upload('newfile'.$id,'teacherinfo');
+        $file = new Upload();
+        $res = $file->uploadPic($_FILES,'userprofile');
 
-        return $file;
+        $res['path'] = $res['newfile'.$id]['path'];
+        $res['code'] = $res['newfile'.$id]['code'];
+        return $res;
     }
+
 
     public function delete(){
 
@@ -312,47 +332,25 @@ class Userprofile extends Base{
 
     public function addhome(){
 
-        if(request()->post('add')=='home'){
+        $info = input('post.');
 
-            $info = input('post.');
+        $data = [
+            'userid'=>$info['userid'],
+            'name'=>$info['name'],
+            'phone'=>$info['phone'],
+            'relation'=>$info['relation'],
+            'createuserid'=>session('admin_uid'),
+            'createTime'=>date('Y-m-d H:i:s',time())
+        ];
 
-            $data = [
-                'userid'=>$info['userid'],
-                'name'=>$info['name'],
-                'phone'=>$info['phone'],
-                'relation'=>$info['relation'],
-                'createuserid'=>session('admin_uid'),
-                'createTime'=>date('Y-m-d H:i:s',time())
-            ];
+        $ok = Db::table('student_home')->insert($data);
 
-            if(!empty($info['id'])){
-                $ok = Db::table('student_home')->where('id',$info['id'])->update($data);
-            }else{
-                $ok = Db::table('student_home')->insert($data);
-            }
+        if($ok){
 
-            if($ok || $ok==0){
-
-                return ['info'=>'添加成功','code'=>'000'];
-            }else{
-                return ['error'=>'添加失败','code'=>'400'];
-            }
-
+            return ['info'=>'添加成功','code'=>'000'];
         }else{
-            $tid = $_GET['tid']+0;
-
-            $list = Db::table('student_home a')
-                ->join('user_profile b','a.userid=b.id','LEFT')
-                ->field('a.*')
-                ->where('b.id='.$tid)->paginate(20);
-
-            $this->assign('list',$list);
-            $this->assign('tid',$tid);
-            $this->assign('page',$list->render());
-            $this->assign('typename','添加家庭信息');
-            return $this->fetch();
+            return ['error'=>'添加失败','code'=>'100'];
         }
-
 
     }
 

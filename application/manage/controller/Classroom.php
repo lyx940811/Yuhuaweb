@@ -32,14 +32,16 @@ class Classroom extends Base{
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
 
-        $category = Db::table('category')->field('code,name')->select();
+        $category = Db::table('category')->field('code,parentcode,name')->select();
+        $categorylist = tree($category);
+
         $teacher = Db::table('teacher_info')->field('id,realname')->select();
 
         $this->assign('list',$list);
         $this->assign('page',$list->render());
         $this->assign('search',$search);
         $this->assign('teacher',$teacher);
-        $this->assign('category',$category);
+        $this->assign('category',$categorylist);
         $this->assign('typename','班级管理');
 
         return $this->fetch();
