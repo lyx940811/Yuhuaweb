@@ -208,6 +208,7 @@ class Course extends Home
             ->where('ct.status',1)
             ->select();
 
+
         if(!empty($this->user)){
             foreach ($lesson as &$l){
                 if($course['type']!='url'){
@@ -234,7 +235,7 @@ class Course extends Home
                 else{
                     $l['plan'] = '0';
                 }
-                unset($l['length'],$l['seq']);
+                unset($l['seq']);
             }
         }
 
@@ -397,7 +398,7 @@ class Course extends Home
         }
 
         $this->assign('tasklist',$lesson);
-
+//        var_dump($lesson);die;
         $this->assign('domain',$this->request->domain());
         return $this->fetch();
     }

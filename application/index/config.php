@@ -17,6 +17,8 @@ return[
         '__TEACHERUPLOAD__' => '/static/index/teacher/webup/',
     ],
 
+    'video_type'    =>  ['url','mp4','flv'],
+
     'apicode_message'          =>[
         //关于User相关的
         0       =>  '成功',
