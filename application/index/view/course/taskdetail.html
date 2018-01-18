@@ -36,16 +36,33 @@
         {$task->chapter->title}：{$task->title}
       </div>
       <div class="dashboard-body">
-          {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url' or $task['type'] eq 'flv'"}
+          {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
           <!--视频-->
-          <video id="my-video" class="video-js" controls preload="auto" style="width:100%;height:100%"
+          <div style="width: 100%; height: 100%; ">
+            <script src="__JS__sewise.player.min.js"></script>
+            <script type="text/javascript">
+                SewisePlayer.setup({
+                    server: "vod",
+                    type: "flv",
+                    autostart: "false",
+                    videourl: "http://yunxianchang.live.ujne7.com/vod-system-bj/TLaf2cc9d469939803949187b46da16c45.flv",
+                    skin: "vodFlowPlayer",
+                    fallbackurls:{
+                        mp4: "http://jackzhang1204.github.io/materials/mov_bbb.mp4",
+                        ogg: "http://jackzhang1204.github.io/materials/mov_bbb.ogg",
+                        webm: "http://jackzhang1204.github.io/materials/mov_bbb.webm"
+                    }
+                });
+            </script>
+        </div>
+          <!-- <video id="my-video" class="video-js" controls preload="auto" style="width:100%;height:100%"
                  poster="m.png" data-setup="{}">
               <source src="{$task->mediaSource}" type="video/mp4">
               <p class="vjs-no-js">
                   To view this video please enable JavaScript, and consider upgrading to a web browser that
                   <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
               </p>
-          </video>
+          </video> -->
           {else /}
           <!-- 列表 -->
           <ul class="download-activity-list">
@@ -113,7 +130,7 @@
                 <div class="task-list-pane-body js-sidebar-pane-body">
                     <ul class="task-list task-show">
                         {volist name="tasklist" id="tl"}
-                        {if condition="$tl['type'] eq 'mp4' or $tl['type'] eq 'url' or $task['type'] eq 'flv'"}
+                        {if condition="$tl['type'] eq 'mp4' or $tl['type'] eq 'url'"}
                         {present name="tl.plan"}
                         {switch name="tl.plan" }
                         {case value="100"}
@@ -149,7 +166,7 @@
                             <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
                                 {$tl.chapter}: {$tl.title}
                             </a>
-                            <span class="right-menu">{$tl.length|video_time_trans}
+                            <span class="right-menu">23:10
                                     <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
                             </span>
                         </li>
@@ -345,10 +362,9 @@
   <script src="__JS__bootstrap.js"></script>
   <script src="__JS__student/quill.js"></script>
   <script src="__JS__course.js"></script>
-  <script src="__JS__video.min.js"></script>
 <script>
     $(function(){
-
+        
         $("button").unbind("click");
         $("[taskid='{$task.id}']").addClass(' active');
         $('#testsave').click(function(){
