@@ -32,7 +32,7 @@ class Studyresult extends Base{
             ->join('user u','a.userid=u.id','LEFT')
             ->join('course_task ct','b.id=ct.courseId')
             ->where($where)
-            ->paginate(20,['query'=>$info]);
+            ->paginate(20,false,['query'=>request()->get()]);
         $data=$this->Percentage($list);//算百分比
         $course = Db::table('course')->field('id,title')->select();
 

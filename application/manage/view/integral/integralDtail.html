@@ -6,9 +6,9 @@
     {php}
     $uid = session('admin_uid');
     {/php}
-    
+
     <ul class="nav nav-tabs">
-        <li role="presentation"><a href="{:url('integral/integralList')}">返回积分列表</a></li>
+        <li role="presentation"><a href="{:url('integral/integralList')}">>>返回列表</a></li>
     </ul>
     <table class="table table-striped table-hover">
         <thead>
@@ -42,7 +42,7 @@
     <ul class="pagination">
         {$page}
     </ul>
-   
+
 </div>
 {include file='manage/bottom'}
 
