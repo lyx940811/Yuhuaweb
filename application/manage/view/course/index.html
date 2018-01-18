@@ -6,7 +6,9 @@
     {php}
     $uid = session('admin_uid');
     {/php}
-    <a href="{:url('')}"  class="btn btn-primary" >返回</a>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{:url('')}" style="cursor: pointer">刷新列表</a></li>
+    </ul>
     <div class="pull-right">
         {php}
         $access = check($uid,'/manage/course/add');

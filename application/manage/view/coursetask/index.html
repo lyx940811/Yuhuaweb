@@ -10,6 +10,9 @@
     {php}
     $uid = session('admin_uid');
     {/php}
+    <ul class="nav nav-tabs">
+        <li role="presentation" style="font-size:16px;"><a href="{:url('course/index')}">>>返回列表</a></li>
+    </ul>
     <div class="well clearfix">
         <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
             <div class="form-group">
@@ -20,7 +23,7 @@
             <button type="submit" class="btn btn-primary">搜索</button>
         </form>
     </div>
-    <a href="{:url('course/index')}" class="btn btn-primary">返回</a>
+
     <div class="pull-right">
 
         {php}
