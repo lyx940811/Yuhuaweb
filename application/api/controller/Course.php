@@ -392,8 +392,7 @@ class Course extends Home
         }
         $l['plan'] = '0';
         if(!empty($this->user)){
-            
-                
+
                 if($watch_log = Db::name('study_result')->where(['userid'=>$this->user->id,'courseid'=>$l['courseid'],'chapterid'=>$l['chapterid']])->find()){
                     if($watch_log['status']==1){
                         $l['plan'] = '100';

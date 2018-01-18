@@ -398,7 +398,7 @@ p{word-wrap:break-word}
         // 当有文件被添加进队列的时候
         uploader.on('fileQueued', function (file) {
             $list.append('<ul style="width:100%; height:40px; line-height:40px; border-bottom:1px solid #eee; position:relative;" id="' + file.id + '" class="item">' +
-                    '<li style="width:40%; float:left; padding-left:10px; position:relative; z-index:99;" class="info">' + file.name + '</li><li  style="width:20%; float:left; padding-left:10px;position:relative; z-index:99;">'+WebUploader.formatSize(file.size)+'</li><li style="width:20%; float:left; padding-left:10px;position:relative; z-index:99;"><p class="state">等待上传</p></li><li class="rems" style="width:20%; float:left; padding-left:20px;position:relative; z-index:99;"><button type="button" fileId="' + file.id + '" class="btn btn-danger btn-delete"><span class="glyphicon glyphicon-trash"></span></button></li></ul>');
+                    '<li style="width:40%; float:left; padding-left:10px; position:relative; z-index:99;" class="info">' + file.name + '</li><li  style="width:20%; float:left; padding-left:10px;position:relative; z-index:99;">'+WebUploader.formatSize(file.size)+'</li><li style="width:20%; float:left; padding-left:10px;position:relative; z-index:99;"><p class="state">等待上传</p></li><li class="rems" style="width:20%; float:left; padding-left:20px;position:relative; z-index:99;"><button type="button" fileId="' + file.id + '" class="btn btn-danger btn-delete"><span style="font-weight: 900; font-size: 13px;">×</span></button></li></ul>');
             // console.info("id=file_"+flie_count);
             flie_count++;
 
