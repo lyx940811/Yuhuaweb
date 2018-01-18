@@ -47,13 +47,19 @@ class Studyresult extends Base{
     public function Percentage($info){
         $data=[];
         foreach($info as $k=>$value){
-            $minute=floor((strtotime($value['endtime'])-strtotime($value['starttime']))%86400/60);
-            $time=date('G',strtotime($value['length']))*60+date('i',strtotime($value['length']));
-            $percentage=0;
-            if($value['status']==1){
-                $percentage=100;
-            }else if(!empty($minute)) {
-                $percentage = $minute / $time * 100;
+            $minute=floor((strtotime($value['endtime'])-strtotime($value['starttime']))%86400%60);
+
+            $time=date('G',strtotime($value['length']))*60*60+date('i',strtotime($value['length']))*60+date('s',strtotime($value['length']));
+
+            $percentage1=0;
+            if($time>0) {
+                if ($value['status'] == 1) {
+                    $percentage1 = 100;
+                } else if (!empty($minute)) {
+                    $percentage = $minute / $time;
+                    $test=round($percentage,4);
+                    $percentage1=sprintf('%.4f',$test)*100;
+                }
             }
 
             $data[$k]['id']=$value['id'];
@@ -63,7 +69,7 @@ class Studyresult extends Base{
             $data[$k]['ctit']=$value['ctit'];
             $data[$k]['username']=$value['username'];
             $data[$k]['cttitle']=$value['cttitle'];
-            $data[$k]['percentage']=round($percentage,2).'%';
+            $data[$k]['percentage']=$percentage1.'%';
         }
         return $data;
     }
