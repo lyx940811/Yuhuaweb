@@ -68,7 +68,7 @@ class User extends Base{
         $data['roles'] = isset($info['user_roles'])?$info['user_roles']:0;
         $data['locked'] = isset($info['user_locked'])?$info['user_locked']:0;
         $data['status'] = isset($info['status'])?$info['status']:0;
-        $data['title'] = 'static\index\images\avatar.png';
+        $data['title'] = $info['userpic'];
         $data['createdIp'] = request()->ip();
         $data['createdTime'] = date('Y-m-d H:i:s' ,time());
         $data['createUserID'] = session('admin_uid');
@@ -87,7 +87,7 @@ class User extends Base{
 
                 $sdata['userid'] = $user_table->getLastInsID();
                 $sdata['realname'] = $info['user_name'];
-                $sdata['phone'] = $info['mobile'];
+                $sdata['mobile'] = $info['mobile'];
                 $sdata['createdTime'] = date('Y-m-d H:i:s' ,time());
                 Db::table('teacher_info')->insert($sdata);
             }
@@ -139,13 +139,14 @@ class User extends Base{
 
         $data['nickname'] = $info['user_name'];
         $data['type'] = $info['type'];
+        $data['title']=$info['userpic'];
         $data['email'] = $info['user_email'];
         $data['mobile'] = $info['mobile'];
         $data['roles'] = isset($info['user_roles'])?$info['user_roles']:0;
         $data['status'] = isset($info['status'])?$info['status']:0;
         $data['locked'] = isset($info['user_locked'])?$info['user_locked']:0;
         Db::startTrans();
-        $ok = $user_table->field('nickname,email,mobile,roles,type,locked,status')->where('id',$id)->update($data);
+        $ok = $user_table->field('nickname,title,email,mobile,roles,type,locked,status')->where('id',$id)->update($data);
 
         if($ok){
 
@@ -154,7 +155,7 @@ class User extends Base{
                 Db::table('user_profile')->where('userid='.$id)->update(['mobile'=>$info['mobile']]);
             }elseif($info['type']==2){
                 //2为教师
-                Db::table('teacher_info')->where('userid='.$id)->update(['phone'=>$info['mobile']]);
+                Db::table('teacher_info')->where('userid='.$id)->update(['mobile'=>$info['mobile']]);
 
             }
 
@@ -179,6 +180,17 @@ class User extends Base{
         }else{
             return ['error'=>'删除失败','code'=>'200'];
         }
+    }
+
+    public function upload(){
+
+        $id = $_GET['id']+0;
+        $file = new Upload();
+        $res = $file->uploadPic($_FILES,'teacherinfo');
+
+        $res['path'] = $res['newfile'.$id]['path'];
+        $res['code'] = $res['newfile'.$id]['code'];
+        return $res;
     }
 
 }

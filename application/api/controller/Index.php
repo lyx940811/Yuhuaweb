@@ -64,9 +64,9 @@ class Index extends Home
 
         $course = Db::name('course')
             ->where($map)
+            ->where('status=1')
             ->field('id,title,smallPicture,price')
             ->order('createdTime desc')
-            ->where('status',1)
             ->page($page,6)
             ->select();
         //需要对在学人数和评论进行计数
@@ -85,27 +85,26 @@ class Index extends Home
 
 
     /**
-     * 得到轮播图
+     * 得到轮播图(不带跳转链接版本)
      */
-    public function getscrollpic(){
-        $pic = Db::name('ad')->where('type','mobile')->where('flag',1)->field('img')->select();
-
-        if($pic){
-            $pic = array_column($pic,'img');
-            foreach ($pic as &$item) {
-                $item = $this->request->domain()."/".$item;
-            }
-        }
-        return json_data(0,$this->codeMessage[0],$pic);
-    }
+//    public function getscrollpic(){
+//        $pic = Db::name('ad')->where('type','mobile')->where('flag',1)->field('img')->select();
+//
+//        if($pic){
+//            $pic = array_column($pic,'img');
+//            foreach ($pic as &$item) {
+//               $item = $this->request->domain()."/".$item;
+//            }
+//        }
+//        return json_data(0,$this->codeMessage[0],$pic);
+//    }
 
     /**
      * 得到轮播图(带跳转链接版本)
      */
-    public function getscrollpic_withurl(){
+    public function getscrollpic(){
         $pic = Db::name('ad')->where('type','mobile')->where('flag',1)->field('img,url')->select();
         if($pic){
-//            $pic = array_column($pic,'img');
             foreach ($pic as &$p) {
                 $p['img'] = $this->request->domain()."/".$p['img'];
             }

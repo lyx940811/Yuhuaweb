@@ -35,7 +35,7 @@
         <tr>
             <td>{$vo.id}</td>
             <td>{$vo.username}</a>(<small>{$vo.nickname}</small>)</td>
-            <td><img src="__ROOT__/{$vo.title}" title="用户头像" width="20px"/></td>
+            <td><img src="__ROOT__/{$vo.title}" title="用户头像" width="80px" height="70px"/></td>
             <td>{$vo.mobile}</td>
             <td>{$vo.name}</td>
             <td>{if condition="$vo['type'] eq '0'"}超级管理员{elseif condition="$vo['type'] eq '1'"}管理员{elseif condition="$vo['type'] eq '2'"}教师{elseif condition="$vo['type'] eq '3'"}学员{elseif condition="$vo['type'] eq '3'"}企业{/if}</td>
@@ -80,6 +80,15 @@
                                             <input type="text" class="form-control" name="user_name" value="{$vo.nickname}"
                                                    placeholder="请输入用户名称">
                                         </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label form-inline">用户头像</label>
+                                        <div class="col-sm-4">
+                                            <input type="file"  name="newfile{$vo.id}" id="newfile{$vo.id}" onchange="uploadImage({$vo.id});">
+                                            <input type="hidden" name="userpic" id="pic{$vo.id}" value="{$vo.title}">
+                                            <div id="showinfoPic{$vo.id}"><img class="img-rounded" src="/{$vo.title}" width="100%"/></div>
+                                        </div>
+
                                     </div>
                                     <div class="form-group">
                                         <label for="mobile" class="col-sm-2 control-label">手机</label>
@@ -174,6 +183,15 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-2 control-label form-inline">用户头像</label>
+                            <div class="col-sm-4">
+                                <input type="file"  name="newfile0" id="newfile0" onchange="uploadImage(0);">
+                                <input type="hidden" name="userpic" id="pic0">
+                                <div id="showinfoPic0"></div>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
                             <label for="mobile" class="col-sm-2 control-label">手机</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name="mobile" id="mobile"
@@ -260,7 +278,43 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
+    function uploadImage(id) {
+        // FormData对象，来发送二进制文件。
+        var formdata = new FormData();
 
+        // 将文件追加到 formdata对象中。
+        formdata.append("newfile"+id,document.getElementById('newfile'+id).files[0]);
+        console.log(formdata);
+        $.ajax({
+            type: "POST",
+            url: "{:url('upload')}?id="+id,
+            data:formdata,
+            /**
+             * 必须false才会避开jQuery对 formdata 的默认处理
+             * XMLHttpRequest会对 formdata 进行正确的处理
+             */
+            processData: false,
+            // 告诉jQuery不要去设置Content-Type请求头
+            contentType: false,
+            dataType: "json",
+            beforeSend:function () {
+                alert('正在上传中...')
+            }, //发送请求
+            success: function(data){
+
+                if(data.code=='000'){
+                    $('#pic'+id).val(data.path)
+                    $('#showinfoPic'+id).html('<img class="img-rounded" src="/'+data.path+'" width="100%"/>');
+                    alert('上传成功');
+                }
+
+            },
+            error: function(jqXHR){
+                alert("发生错误：" + jqXHR.status);
+            },
+        });
+
+    }
     function dopost($url,formid) {
         $url=='add'?"{:url('add')}":"{:url('edit')}";
 

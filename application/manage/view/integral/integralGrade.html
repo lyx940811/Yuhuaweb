@@ -47,7 +47,7 @@
         <tr>
             <td>{$vo.name}</td>
             <td>{$vo.point}-{$vo.maxpoint}</td>
-            <td> <img src="http://localhost/{$vo.icon}" alt="" style="width:50px;height:60px"></td>
+            <td> <img src="/{$vo.icon}" alt="" style="width:50px;height:60px"></td>
             {if condition="$vo.flag == 0"}
                 <td>未启用</td>
             {elseif condition="$vo.flag == 1"/}
@@ -218,7 +218,7 @@ $(document).ready(function(){
             processData: false,     //不可缺参数
             success:function(data){
                 console.log(data);
-                html=' <img src=http://localhost/'+data+' alt="" style="width:50px;height:60px;">'
+                html=' <img src="/'+data+'" alt="" style="width:50px;height:60px;">'
                 $('#appendimg').html('');
                 $('#appendimg').append(html);
                 $('#icon').val(data);
@@ -246,7 +246,7 @@ function edit(id){
                 $('#maxpoint').val(val.maxpoint);
                 $('#flag').val(val.flag);
                 $('#icon').val(val.icon)
-                html=' <img src=http://localhost/'+val.icon+' alt="" style="width:50px;height:60px;">'
+                html=' <img src=/'+val.icon+' alt="" style="width:50px;height:60px;">'
                 $('#appendimg').html('');
                 $('#appendimg').append(html);
             });

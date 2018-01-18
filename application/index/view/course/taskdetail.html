@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
     <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <title>任务学习 - 豫化在线课堂 - 豫化在线课堂 - Powered By EduSoho</title>
+    <title>任务学习</title>
     <meta name="keywords" content="豫化在线网络课堂,在线教育,在线教学,开源教学软件">
     <meta name="description" content="豫化在线是面向个人、学校、培训机构及企业用户的友好、开源、高性价比的在线教育建站系统。Edusoho提供在线教学、网校管理、云视频点播、直播、移APP等功能，为使教育机构能够以最低成本开展在线教学活动，EduSoho也提供云服务器，云视频、云直播和移动APP定制服务，并配备相应的技术支持服务，让客户搭建自有品牌网校和搭积木一样简单。EduSoho产品及服务大大降低了传统教育培训机构进入在线教育行业的门槛。与其他在线教育产品相比，EduSoho具有完整，高自由度，高性价比的产品体验，使用其搭建在线教学网站是快速进入在线教育的最佳选择方案。EduSoho开源并免费提供给非商业用途用户使用，用户可在3分钟内搭建功能完备的在线教育网站。">
     <meta content="ML9Jb6sbzOAzIHPAL82343S0p6Zgf_oJq-zOzW_y3EM" name="csrf-token">
@@ -36,16 +36,33 @@
         {$task->chapter->title}：{$task->title}
       </div>
       <div class="dashboard-body">
-          {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url' or $task['type'] eq 'flv'"}
+          {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
           <!--视频-->
-          <video id="my-video" class="video-js" controls preload="auto" style="width:100%;height:100%"
+          <div style="width: 100%; height: 100%; ">
+            <script src="__JS__sewise.player.min.js"></script>
+            <script type="text/javascript">
+                SewisePlayer.setup({
+                    server: "vod",
+                    type: "flv",
+                    autostart: "false",
+                    videourl: "http://yunxianchang.live.ujne7.com/vod-system-bj/TLaf2cc9d469939803949187b46da16c45.flv",
+                    skin: "vodFlowPlayer",
+                    fallbackurls:{
+                        mp4: "http://jackzhang1204.github.io/materials/mov_bbb.mp4",
+                        ogg: "http://jackzhang1204.github.io/materials/mov_bbb.ogg",
+                        webm: "http://jackzhang1204.github.io/materials/mov_bbb.webm"
+                    }
+                });
+            </script>
+        </div>
+          <!-- <video id="my-video" class="video-js" controls preload="auto" style="width:100%;height:100%"
                  poster="m.png" data-setup="{}">
               <source src="{$task->mediaSource}" type="video/mp4">
               <p class="vjs-no-js">
                   To view this video please enable JavaScript, and consider upgrading to a web browser that
                   <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
               </p>
-          </video>
+          </video> -->
           {else /}
           <!-- 列表 -->
           <ul class="download-activity-list">
@@ -113,7 +130,7 @@
                 <div class="task-list-pane-body js-sidebar-pane-body">
                     <ul class="task-list task-show">
                         {volist name="tasklist" id="tl"}
-                        {if condition="$tl['type'] eq 'mp4' or $tl['type'] eq 'url' or $task['type'] eq 'flv'"}
+                        {if condition="$tl['type'] eq 'mp4' or $tl['type'] eq 'url'"}
                         {present name="tl.plan"}
                         {switch name="tl.plan" }
                         {case value="100"}
@@ -149,7 +166,7 @@
                             <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
                                 {$tl.chapter}: {$tl.title}
                             </a>
-                            <span class="right-menu">{$tl.length|video_time_trans}
+                            <span class="right-menu">23:10
                                     <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
                             </span>
                         </li>
@@ -176,7 +193,7 @@
                         {else /}
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$task['taskid']))}">
+                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
                                 {$tl.chapter}: {$tl.title}
                             </a>
                             <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
@@ -345,10 +362,9 @@
   <script src="__JS__bootstrap.js"></script>
   <script src="__JS__student/quill.js"></script>
   <script src="__JS__course.js"></script>
-  <script src="__JS__video.min.js"></script>
 <script>
     $(function(){
-
+        
         $("button").unbind("click");
         $("[taskid='{$task.id}']").addClass(' active');
         $('#testsave').click(function(){
