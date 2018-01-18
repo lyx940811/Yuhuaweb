@@ -117,11 +117,21 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label form-inline">身份证照片</label>
+                                        <label class="col-sm-2 control-label form-inline">身份证正面照</label>
                                         <div class="col-sm-4">
-                                            <input type="file" id="newfile{$vo.id}" name="newfile" onchange="uploadImage({$vo.id});">
-                                            <input type="hidden" name="cardpic" id="pic{$vo.id}">
-                                            <div id="showinfoPic{$vo.id}"><img src="{$vo.cardpic}" width="100%"/> </div>
+                                            <input type="file"  name="newfile{$vo.id}" id="newfile{$vo.id}" onchange="uploadImage({$vo.id});">
+                                            <input type="hidden" name="cardpic[]" id="pic{$vo.id}">
+                                            <div id="showinfoPic{$vo.id}"></div>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label form-inline">身份证反面照</label>
+                                        <div class="col-sm-4">
+                                            {php}$num = $vo['id']+2;{/php}
+                                            <input type="file" name="newfile{$num}" id="newfile{$num}" onchange="uploadImage({$num});">
+                                            <input type="hidden" name="cardpic[]" id="pic{$num}">
+                                            <div id="showinfoPic{$num}"></div>
                                         </div>
 
                                     </div>
@@ -309,11 +319,20 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label form-inline">身份证照片</label>
+                            <label class="col-sm-2 control-label form-inline">身份证正面照</label>
                             <div class="col-sm-4">
-                                <input type="file" id="newfile" name="newfile" onchange="uploadImage();">
-                                <input type="hidden" name="cardpic" id="pic">
-                                <div id="showinfoPic"></div>
+                                <input type="file"  name="newfile0" id="newfile0" onchange="uploadImage(0);">
+                                <input type="hidden" name="cardpic[]" id="pic0">
+                                <div id="showinfoPic0"></div>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-inline">身份证反面照</label>
+                            <div class="col-sm-4">
+                                <input type="file" name="newfile-1" id="newfile-1" onchange="uploadImage(-1);">
+                                <input type="hidden" name="cardpic[]" id="pic-1">
+                                <div id="showinfoPic-1"></div>
                             </div>
 
                         </div>
@@ -407,6 +426,7 @@
                                 <label class="col-sm-1 control-label form-inline">最高学位</label>
                                 <div class="col-sm-2">
                                     <select name="topdegree" class="form-control">
+                                        <option value="">--请选择--</option>
                                         <option value="0">学士</option>
                                         <option value="1">硕士</option>
                                         <option value="2">博士</option>
@@ -498,7 +518,7 @@
 
                 if(data.code=='000'){
                     $('#pic'+id).val(data.path)
-                    $('#showinfoPic'+id).html('<img class="img-rounded" src="'+data.path+'" width="100%"/>');
+                    $('#showinfoPic'+id).html('<img class="img-rounded" src="/'+data.path+'" width="100%"/>');
                     alert('上传成功');
                 }
 
