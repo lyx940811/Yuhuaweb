@@ -104,6 +104,7 @@ class Teacherinfo extends Base{
             'createdTime'=>date('Y-m-d H:i:s',time()),
         ];
 
+        Db::startTrans();
         $ok = Db::table('user')->insert($data);
 
         if($ok){
@@ -114,12 +115,14 @@ class Teacherinfo extends Base{
                 'education'=>$info['education'],
                 'degree'=>$info['degree'],
                 'topeducation'=>$info['topeducation'],
-                'topdegree'=>$info['topdegree'],
+                'topdegree'=>isset($info['topdegree'])?$info['topdegree']:'',
                 'createTime'=>date('Y-m-d H:i:s',time()),
                 'createuserid'=>session('admin_uid'),
             ];
             Db::table('teacher_level')->insert($leveldata);
 
+            $cardpic = $info['cardpic'];
+            $cardpic_ser = serialize(['front_pic'=>isset($cardpic[0])?$cardpic[0]:'','behind_pic'=>isset($cardpic[1])?$cardpic[1]:'']);
 
             $sdata = [
                 'userid'=> $userid,
@@ -135,13 +138,15 @@ class Teacherinfo extends Base{
                 'household'=>$info['household'],
                 'address'=>$info['address'],
                 'maritalstatus'=>$info['maritalstatus'],
-                'cardpic'=>$info['cardpic'],
+                'cardpic'=> $cardpic_ser,
                 'createdTime'=>date('Y-m-d H:i:s',time()),
             ];
             $role_table->insert($sdata);
 
+            Db::commit();
             return ['info'=>'添加成功','code'=>'000'];
         }else{
+            Db::rollback();
             return ['error'=>'添加失败','code'=>'400'];
         }
     }
@@ -190,6 +195,8 @@ class Teacherinfo extends Base{
             return ['error'=>'没有此教师','code'=>'300'];
         }
 
+        $cardpic = $info['cardpic'];
+        $cardpic_ser = serialize(['front_pic'=>isset($cardpic[0])?$cardpic[0]:'','behind_pic'=>isset($cardpic[1])?$cardpic[1]:'']);
         $sdata = [
             'sn' => $info['sn'],
             'realname' => $info['realname'],
@@ -203,7 +210,7 @@ class Teacherinfo extends Base{
             'household'=>$info['household'],
             'address'=>$info['address'],
             'maritalstatus'=>$info['maritalstatus'],
-            'cardpic'=>!empty($info['cardpic'])?$info['cardpic']:$have['cardpic'],
+            'cardpic'=>$cardpic_ser,
             'createdTime'=>date('Y-m-d H:i:s',time()),
         ];
         $ok = $role_table->where('id',$id)->update($sdata);
@@ -243,9 +250,12 @@ class Teacherinfo extends Base{
     public function upload(){
 
         $id = $_GET['id']+0;
-        $file = upload('newfile'.$id,'teacherinfo');
+        $file = new Upload();
+        $res = $file->uploadPic($_FILES,'teacherinfo');
 
-        return $file;
+        $res['path'] = $res['newfile'.$id]['path'];
+        $res['code'] = $res['newfile'.$id]['code'];
+        return $res;
     }
 
     public function addunit(){
