@@ -66,7 +66,7 @@ class Role extends Base{
         }
 
         $role_table = Db::name('role');
-        $is_have = $role_table->field('id')->where("code='{$info['code']}'")->find();
+        $is_have = $role_table->field('id,parentcode')->where("code='{$info['code']}'")->find();
 
         if($is_have){//如果这个code有
             return ['error'=>'已经有此代码','code'=>'300'];
@@ -78,7 +78,6 @@ class Role extends Base{
         $data['flag'] = $info['flag'];
         $data['createdUserId'] = session('admin_uid');
         $data['createdTime'] = date('Y-m-d H:i:s',time());
-//        $data['flag'] = 1;
         $data['parentcode'] = empty($info['parentcode'])?0:$info['parentcode'];
 
         $ok = $role_table->field('name,code,data,createdUserId,createdTime,flag,parentcode')->insert($data);
@@ -87,7 +86,7 @@ class Role extends Base{
             manage_log('103','003','添加角色',serialize($data),0);
             return ['info'=>'添加成功','code'=>'000'];
         }else{
-            return ['error'=>'添加失败','code'=>'400'];
+            return ['error'=>'添加失败','code'=>'500'];
         }
 
 
