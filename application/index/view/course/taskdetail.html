@@ -176,7 +176,7 @@
                         {else /}
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$task['taskid']))}">
+                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
                                 {$tl.chapter}: {$tl.title}
                             </a>
                             <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
