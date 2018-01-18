@@ -219,7 +219,7 @@
     }
 
     function enableR(id) {
-        if(confirm('确定禁用吗')){
+        if(confirm('确定删除吗')){
             $.get("{:url('enable')}?rid="+id,function (data) {
                 if(data.code=='000'){
                     alert(data.info)

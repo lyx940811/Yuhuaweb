@@ -392,6 +392,7 @@ class Userprofile extends Base{
         $this->assign('list',$data);
         $this->assign('course',$course);
         $this->assign('search',$search);
+        $this->assign('userid',$userid);
         $this->assign('typename','学习记录');
         $this->assign('page',$list->render());
         return $this->fetch();
