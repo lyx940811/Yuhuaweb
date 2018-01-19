@@ -1,5 +1,5 @@
 {extend name="public/courselayout"}
-{block name="title"}在教课程 - 个人主页{/block}
+{block name="title"}{$course.title}-目录{/block}
 {block name="navdetail"}
 <div class="course-detail-content">
     <ul class="task-list task-list-md task-list-hover">
@@ -10,7 +10,7 @@
             <a class="title"> <!--href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$task['taskid']))}"-->
                 {$task.chapter}： {$task.title}
             </a>
-            <span class="right-menu color-gray ">09:11<i class="es-icon es-icon es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i></span>
+            <span class="right-menu color-gray ">{$task.length|video_time_trans}<i class="es-icon es-icon es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i></span>
             <span class="right-menu mouse-enter"></span>
         </li>
         {else /}
@@ -19,7 +19,7 @@
             <a class="title"><!--href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$task['taskid']))}"-->
                 {$task.chapter}： {$task.title}
             </a>
-            <span class="right-menu color-gray ">09:11<i class="es-icon es-icon es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i></span>
+            <span class="right-menu color-gray "><!--时间的--><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i></span>
             <span class="right-menu mouse-enter"></span>
         </li>
         {/if}

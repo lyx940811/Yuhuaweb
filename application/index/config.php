@@ -18,6 +18,8 @@ return[
         '__VIDEO_HTML__'    =>  './../index/view/course/video-js/',
     ],
 
+    'video_type'    =>  ['url','mp4','flv'],
+
     'apicode_message'          =>[
         //关于User相关的
         0       =>  '成功',

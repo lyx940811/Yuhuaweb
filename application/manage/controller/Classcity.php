@@ -115,4 +115,17 @@ class Classcity extends Base{
         }
     }
 
+    public function enable(){
+        $id = $_GET['rid']+0;
+
+        $ok = Db::name('classcity')->where("id='$id'")->delete();
+
+        if($ok){
+            manage_log('108','005','删除区域',serialize(['id'=>$id]),0);
+            return ['info'=>'删除成功','code'=>'000'];
+        }else{
+            return ['error'=>'删除失败','code'=>'200'];
+        }
+    }
+
 }

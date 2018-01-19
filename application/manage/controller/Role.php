@@ -66,7 +66,7 @@ class Role extends Base{
         }
 
         $role_table = Db::name('role');
-        $is_have = $role_table->field('id')->where("code='{$info['code']}'")->find();
+        $is_have = $role_table->field('id,parentcode')->where("code='{$info['code']}'")->find();
 
         if($is_have){//如果这个code有
             return ['error'=>'已经有此代码','code'=>'300'];
@@ -78,7 +78,6 @@ class Role extends Base{
         $data['flag'] = $info['flag'];
         $data['createdUserId'] = session('admin_uid');
         $data['createdTime'] = date('Y-m-d H:i:s',time());
-//        $data['flag'] = 1;
         $data['parentcode'] = empty($info['parentcode'])?0:$info['parentcode'];
 
         $ok = $role_table->field('name,code,data,createdUserId,createdTime,flag,parentcode')->insert($data);
@@ -87,7 +86,7 @@ class Role extends Base{
             manage_log('103','003','添加角色',serialize($data),0);
             return ['info'=>'添加成功','code'=>'000'];
         }else{
-            return ['error'=>'添加失败','code'=>'400'];
+            return ['error'=>'添加失败','code'=>'500'];
         }
 
 
@@ -123,29 +122,25 @@ class Role extends Base{
         $role_table = Db::name('role');
 
         $id = $info['rid']+0;
-        $have = $role_table->field('id,code')->where("id='$id'")->find();
+        $have = $role_table->field('id,code,parentcode')->where("id='$id'")->find();
 
         if(!$have){//如果没这个code
             return ['error'=>'没有此角色','code'=>'300'];
         }
 
-        if($have['code']==$info['code']){
+        if($info['code']==$have['parentcode']){
 
-            $ok = $role_table->field('name,data,flag')->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name'],'flag'=>$info['flag']]);
-        }else{
-
-            $where['id'] = ['neq',$id];
-            $where['code'] = $info['code'];
-
-            $have = $role_table->field('id')->where($where)->find();
-
-            if($have){
-                return ['error'=>'已经有此代码','code'=>'300'];
-            }
-
-            $ok = $role_table->field('name,data,code,flag')->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name'],'code'=>$info['code'],'flag'=>$info['flag']]);
+            return ['error'=>'父级代码不能和代码一样','code'=>'200'];
         }
 
+
+        $role = $role_table->field('id,code')->where("code",$info['code'])->find();
+
+        if($role['id']!=$id && $role['code']==$info['code']){
+            return ['error'=>'已经有此代码','code'=>'300'];
+        }
+
+        $ok = $role_table->field('name,data,code,flag')->where('id',$id)->update(['name' => $info['name'],'data'=>$info['name'],'code'=>$info['code'],'flag'=>$info['flag']]);
 
         if($ok){
             manage_log('103','004','修改角色',serialize($info),0);
