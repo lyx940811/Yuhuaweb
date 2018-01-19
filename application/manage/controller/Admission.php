@@ -19,11 +19,23 @@ class Admission extends Base{
     public function index(){
 
         $info = input('get.');
-        $search='';
+        $data['title']='';
+        $data['status']='';
         $where = [];
         if(!empty($info['title'])){
             $search=$info['title'];
             $where['title'] = ['like',"%{$info['title']}%"];
+        }
+        if(!empty($info['status'])){
+            $data['status']=$info['status'];
+            $where['status']=$info['status']-1;
+        }
+        if(!empty($info['starttime']) && !empty($info['endtime'])){
+            $data['starttime']=$info['starttime'];
+            $data['endtime']=$info['endtime'];
+//            $where['createdTime']=array('egt',$info['starttime'],'AND');
+//            $where['endtime']=array('elt',$info['endtime']);
+            $where['createdTime'] = ['between time',[$info['starttime']." 00:00:00", $info['endtime']." 23:59:59"]];
         }
 
         $list = Db::name('admission')->where($where)->paginate(20,false,['query'=>request()->get()]);
@@ -31,7 +43,7 @@ class Admission extends Base{
 
         $this->assign('list',$list);
         $this->assign('page',$list->render());
-        $this->assign('search',$search);
+        $this->assign('info',$data);
         $this->assign('typename','招生管理');
 
         return $this->fetch();
