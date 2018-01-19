@@ -36,7 +36,21 @@
         {$task->chapter->title}：{$task->title}
       </div>
       <div class="dashboard-body">
-          {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
+            {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
+            <!-- <script src="__JS__video.js"></script>
+            <script>
+                videojs.options.flash.swf = "__JS__video-js.swf";
+            </script>        
+            <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="640" height="264"
+                poster="http://video-js.zencoder.com/oceans-clip.png"
+                data-setup="{}">
+                <source src="http://la2.indexcom.com/me/flv/guqin.flv" type='video/flv' />
+                <source src="http://video-js.zencoder.com/oceans-clip.webm" type='video/webm' />
+                <source src="http://video-js.zencoder.com/oceans-clip.ogv" type='video/ogg' />
+                <track kind="subtitles" src="demo.captions.vtt" srclang="en" label="English">
+                <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+            </video> 
+            -->
           <!--视频-->
           <div style="width: 100%; height: 100%; ">
             <script src="__JS__sewise.player.min.js"></script>
@@ -126,9 +140,9 @@
             </ul>
         </div>
         <div class="topic-list tab-content tab-main-content">
-            <div  id="task-list" role="tabpanel" class=" tab-pane active media topic-item" >
-                <div class="task-list-pane-body js-sidebar-pane-body">
-                    <ul class="task-list task-show">
+            <div  id="task-list" role="tabpanel" class="innerbox task-list-pane tab-pane active media topic-item" style="height:100%;overflow-y:scroll">
+                <div class="task-list-pane-body js-sidebar-pane-body" >
+                    <ul class="task-list task-show" >
                         {volist name="tasklist" id="tl"}
                         {if condition="$tl['type'] eq 'mp4' or $tl['type'] eq 'url'"}
                         {present name="tl.plan"}
