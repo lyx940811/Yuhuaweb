@@ -17,12 +17,21 @@ class Classroom extends Base{
     public function index(){
 
         $info = input('get.');
-        $search='';
         $where = [];
-
+        $data['status']='';
+        $data['categoryId']='';
+        $data['title']='';
         if(!empty($info['title'])){
-            $search=$info['title'];
+            $data['title']=$info['title'];
             $where['a.title'] = ['like',"%{$info['title']}%"];
+        }
+        if(!empty($info['categoryId'])){
+            $data['categoryId']=$info['categoryId'];
+            $where['a.categoryId']=$info['categoryId'];//由于0的特殊性，页面搜索数据全部加1
+        }
+        if(!empty($info['status'])){
+            $data['status']=$info['status'];
+            $where['a.status']=$info['status']-1;
         }
 
         $list = Db::name('classroom a')
@@ -39,7 +48,7 @@ class Classroom extends Base{
 
         $this->assign('list',$list);
         $this->assign('page',$list->render());
-        $this->assign('search',$search);
+        $this->assign('info',$data);
         $this->assign('teacher',$teacher);
         $this->assign('category',$categorylist);
         $this->assign('typename','班级管理');

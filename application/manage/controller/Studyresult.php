@@ -16,11 +16,16 @@ class Studyresult extends Base{
 
         $userid=$this->request->param('userid')+0;//在学生列表跳转到本列表是使用
         $info = input('get.');
-        $search='';
+        $data['realname']='';
+        $data['classname']='';
         $where = [];
         if(!empty($info['realname'])){
-            $search=$info['realname'];
+            $data['realname']=$info['realname'];
             $where['u.username'] = ['like',"%{$info['realname']}%"];
+        }
+        if(!empty($info['classname'])){
+            $data['classname']=$info['classname'];
+            $where['b.title'] = ['like',"%{$info['classname']}%"];
         }
         if($userid){
             $where['a.userid']=$userid;
@@ -33,12 +38,12 @@ class Studyresult extends Base{
             ->join('course_task ct','b.id=ct.courseId')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
-        $data=$this->Percentage($list);//算百分比
+        $test=$this->Percentage($list);//算百分比
         $course = Db::table('course')->field('id,title')->select();
 
-        $this->assign('list',$data);
+        $this->assign('info',$data);
+        $this->assign('list',$test);
         $this->assign('course',$course);
-        $this->assign('search',$search);
         $this->assign('typename','学习记录');
         $this->assign('page',$list->render());
         return $this->fetch();

@@ -6,7 +6,23 @@
     {php}
     $uid = session('admin_uid');
     {/php}
+    <div class="well clearfix">
+        <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
 
+            <div class="form-group">
+                <label>文件名称</label>
+                <input type="text" class="form-control" placeholder="文件名称" value="{$info.name}" name="name">
+            </div>
+            <div class="form-group">
+                <label>文件类型</label>
+                <input type="text" class="form-control" placeholder="文件类型" value="{$info.type}" name="type">
+            </div>
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </form>
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{:url('')}" style="cursor: pointer">刷新列表</a></li>
+    </ul>
     <table class="table table-striped table-hover">
         <thead>
         <tr>

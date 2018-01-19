@@ -13,9 +13,27 @@ use think\Validate;
 class Tag extends Base{
 
     public function index(){
+        $info=input('get.');
+        $data['flag']='';
+        $data['code']='';
+        $data['name']='';
+        $where='';
+        if(!empty($info['flag'])){
+            $data['flag']=$info['flag'];
+            $where['Flag']=$info['flag']-1;//由于0的特殊性，页面搜索数据全部加1
+        }
+        if(!empty($info['code'])){
+            $data['code']=$info['code'];
+            $where['code']=$info['code'];
+        }
+        if(!empty($info['name'])){
+            $data['name']=$info['name'];
+            $where['name']=['like',"%{$info['name']}%"];//由于0的特殊性，页面搜索数据全部加1
+        }
 
-        $list = Db::table('tag')->field('id,name,code,roles,Flag,userid')->order('createdTime desc')->paginate(20);
+        $list = Db::table('tag')->field('id,name,code,roles,Flag,userid')->where($where)->order('createdTime desc')->paginate(20,false,['query'=>request()->get()]);
 
+        $this->assign('info',$data);
         $this->assign('list',$list);
         $this->assign('typename','标签');
         $this->assign('page',$list->render());

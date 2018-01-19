@@ -6,6 +6,28 @@
     {php}
     $uid = session('admin_uid');
     {/php}
+    <div class="well clearfix">
+        <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
+            <div class="form-group">
+                <label>类型名称</label>
+                <input type="text" class="form-control" placeholder="企业名称" value="{$info.name}" name="name">
+            </div>
+            <div class="form-group">
+                <label>类型代码</label>
+                <input type="text" class="form-control" placeholder="企业代码" value="{$info.code}" name="code">
+            </div>
+            <div class="form-group">
+                <label>状态</label>
+                <select name="flag" class="form-control">
+                    <option value="">--请选择--</option>
+                    <option value="1" {if condition="$info['flag'] eq 1"}selected{/if}>禁用</option>
+                    <option value="2" {if condition="$info['flag'] eq 2"}selected{/if}>启用</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </form>
+    </div>
     <div class="pull-right">
         {php}
         $access = check($uid,'/manage/tasktype/add');

@@ -14,15 +14,16 @@ class Certificate extends Base{
     public function index(){
 
         $info = input('get.');
-
+        $data['category']='';
+        $data['name']='';
         $where = [];
 
-        if(!empty($info['flag'])){
-
-            $where['a.flag'] = ['eq',$info['flag']];
+        if(!empty($info['category'])){
+            $data['category']=$info['category'];
+            $where['d.id'] = ['eq',$info['category']];
         }
         if(!empty($info['name'])){
-
+            $data['name']=$info['name'];
             $where['c.name'] = ['like',"%{$info['name']}%"];
         }
 
@@ -40,6 +41,7 @@ class Certificate extends Base{
         $this->assign('typename','证书记录');
         $this->assign('list',$list);
         $this->assign('userprofile',$userprofile);
+        $this->assign('info',$data);
         $this->assign('category',$category);
         $this->assign('page',$list->render());
 
@@ -154,12 +156,22 @@ class Certificate extends Base{
         }
     }
 
+//    public function upload(){
+//
+//        $id = $_GET['id'];
+//
+//        $file = upload('newfile'.$id,'certificate');
+//        return $file;
+//
+//    }
     public function upload(){
 
-        $id = $_GET['id'];
+        $id = $_GET['id']+0;
+        $file = new Upload();
+        $res = $file->uploadPic($_FILES,'teacherinfo');
 
-        $file = upload('newfile'.$id,'certificate');
-        return $file;
-
+        $res['path'] = $res['newfile'.$id]['path'];
+        $res['code'] = $res['newfile'.$id]['code'];
+        return $res;
     }
 }

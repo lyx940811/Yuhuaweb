@@ -15,10 +15,29 @@ class User extends Base{
 
     public function index(){
 
+        $info=input('get.');
+        $data['type']='';
+        $data['status']='';
+        $data['name']='';
+        $where='';
+        if(!empty($info['type'])){
+            $data['type']=$info['type'];
+            $where['a.type']=$info['type']-1;//由于0的特殊性，页面搜索数据全部加1
+        }
+        if(!empty($info['status'])){
+            $data['status']=$info['status'];
+            $where['a.status']=$info['status']-1;
+        }
+        if(!empty($info['name'])){
+            $data['name']=$info['name'];
+            $where['username']=['like',"%{$info['name']}%"];//由于0的特殊性，页面搜索数据全部加1
+        }
+
         $lists = Db::name('user a')
             ->join('role b','a.roles=b.id','LEFT')
             ->field('a.id,a.username,a.nickname,a.title,a.mobile,a.locked,a.mobile,a.roles,a.type,a.email,a.createdIp,a.createdTime,a.status,b.name')
-            ->order('id desc')->paginate(20);
+            ->where($where)
+            ->order('id desc')->paginate(20,false,['query'=>request()->get()]);
 
 
         $roles = Db::name('role')->field('id,name,code')->select();
@@ -27,6 +46,7 @@ class User extends Base{
         $this->assign('list', $lists);
         $this->assign('roles', $roles);
         $this->assign('types', $types);
+        $this->assign('info',$data);
         $this->assign('typename','用户列表');
         $this->assign('page', $lists->render());
         return $this->fetch('index');

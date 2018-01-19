@@ -13,8 +13,26 @@ use think\Validate;
 class Tasktype extends Base{
 
     public function index(){
+        $info=input('get.');
+        $data['flag']='';
+        $data['code']='';
+        $data['name']='';
+        $where='';
+        if(!empty($info['code'])){
+            $data['code']=$info['code'];
+            $where['code']=$info['code'];//由于0的特殊性，页面搜索数据全部加1
+        }
+        if(!empty($info['flag'])){
+            $data['flag']=$info['flag'];
+            $where['flag']=$info['flag']-1;
+        }
+        if(!empty($info['name'])){
+            $data['name']=$info['name'];
+            $where['name']=['like',"%{$info['name']}%"];//由于0的特殊性，页面搜索数据全部加1
+        }
+        $list = Db::table('task_type')->field('id,name,code,Flag,seq')->where($where)->paginate(20,false,['query'=>request()->get()]);
 
-        $list = Db::table('task_type')->field('id,name,code,Flag,seq')->paginate(20);
+        $this->assign('info',$data);
 
         $this->assign('list',$list);
         $this->assign('page',$list->render());
