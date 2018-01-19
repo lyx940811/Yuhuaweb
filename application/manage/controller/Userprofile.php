@@ -43,7 +43,7 @@ class Userprofile extends Base{
 //        print_r($newlist);exit;
 
         $classroom = Db::table('classroom')->field('id,title')->select();
-        $depart = Db::table('category')->field('id,code,name')->where('grade=1')->select();
+        $depart = Db::table('category')->field('id,code,name')->where('grade=2')->select();
         $category = Db::table('category')->field('code,name')->select();
 
         $this->assign('search',$search);
