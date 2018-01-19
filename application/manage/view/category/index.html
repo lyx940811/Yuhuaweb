@@ -27,7 +27,7 @@
     <div class="pull-right">
         {php}
         if(check($uid,'/manage/category/add')){
-            echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="addSon(0)">新增专业</a>';
+            echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="addSon(0,0)">新增专业</a>';
         }
         {/php}
 
@@ -70,7 +70,7 @@
                         echo '<strong>/</strong>';
                     }
                     if(check($uid,'/manage/category/addson')){
-                        echo '<a href="#" onclick="addSon(\''.$vo['code'].'\')" data-toggle="modal" data-target="#myModal">添加子专业</a>';
+                        echo '<a href="#" onclick="addSon(\''.$vo['code'].'\','.$vo['id'].')" data-toggle="modal" data-target="#myModal">添加子专业</a>';
                     }
                 {/php}
 
@@ -216,8 +216,8 @@
                                 </label>
                             </div>
                         </div>
-                        <input type="hidden" name="parentcode" id="parentcode"/>
-                        <input type="hidden" name="rid" value="" id="selfcode"/>
+                        <input type="hidden" name="parentcode" id="parentcode0"/>
+                        <input type="hidden" name="rid" value="" id="selfcode0"/>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add',0);">添加</button>
@@ -257,12 +257,15 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
-    function addSon(code){
+    function addSon(code,id){
         // alert(code)
+
         if(code==0){
-            $('#parentcode').val('')
+            //如果是新增专业
+            $('#parentcode0').val(0)
         }else{
-            $('#parentcode').val(code)
+            //如果是新增子专业
+            $('#parentcode0').val(code)
         }
 
     }

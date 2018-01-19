@@ -6,7 +6,9 @@
     {php}
     $uid = session('admin_uid');
     {/php}
-    <a href="{:url('')}"  class="btn btn-primary" >返回</a>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{:url('')}" style="cursor: pointer">刷新列表</a></li>
+    </ul>
     <div class="pull-right">
         {php}
         $access = check($uid,'/manage/course/add');
@@ -138,7 +140,6 @@
                                         <label for="categoryId" class="col-sm-2 control-label">所属专业</label>
                                         <div class="col-sm-10">
                                             <select name="categoryId" class="form-control">
-
                                                 {volist name="category" id="c"}
                                                 <option value="{$c.code}"  {if condition="$vo['categoryId'] eq $c['code']"}selected{/if}>{php} echo str_repeat('&nbsp;',$c['grade']*4).'|_'{/php}{$c.name}</option>
                                                 {/volist}

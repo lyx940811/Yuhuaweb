@@ -91,7 +91,7 @@
                                             <select name="categoryId" class="form-control">
                                                 <option value="">--请选择--</option>
                                                 {volist name="category" id="c"}
-                                                <option value="{$c.code}" {if condition="$vo['code'] eq $c['code']"}selected{/if}>{$c.name}</option>
+                                                <option value="{$c.code}" {if condition="$vo['code'] eq $c['code']"}selected{/if}>{$c.levelHtml}{$c.name}</option>
                                                 {/volist}
                                             </select>
                                         </div>
@@ -165,7 +165,7 @@
                                 <select name="categoryId" id="categoryId" class="form-control">
                                     <option value="">--请选择--</option>
                                     {volist name="category" id="c"}
-                                    <option value="{$c.code}">{$c.name}</option>
+                                    <option value="{$c.code}">{$c.levelHtml}{$c.name}</option>
                                     {/volist}
                                 </select>
                             </div>

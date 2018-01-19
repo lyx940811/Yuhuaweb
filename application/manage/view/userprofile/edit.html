@@ -32,6 +32,7 @@
                                 <option value="">--请选择--</option>
                                 <option value="0" {if condition="$vo['sex'] eq 0"} selected {/if}>男</option>
                                 <option value="1" {if condition="$vo['sex'] eq 1"} selected {/if}>女</option>
+                                <option value="2" {if condition="$vo['sex'] eq 2"} selected {/if}>保密</option>
                             </select>
                         </div>
                         <label class="col-sm-2 control-label form-inline">民族</label>
@@ -40,19 +41,33 @@
                                    placeholder="请输入民族">
                         </div>
                     </div>
+                    {php}
+                    $front_pic = '';
+                    $behind_pic = '';
+                    if($vo['cardpic']){
+
+                        $ser = unserialize($vo['cardpic']);
+                        $front_pic = isset($ser['front_pic'])?$ser['front_pic']:'';
+                        $behind_pic = isset($ser['behind_pic'])?$ser['behind_pic']:'';
+
+                    }
+                    {/php}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label form-inline">照片</label>
+                        <label class="col-sm-2 control-label form-inline">身份证正面照</label>
                         <div class="col-sm-4">
-                            <input type="file" id="newfile{$vo.id}" name="newfile" onchange="uploadImage({$vo.id});">
-                            <input type="hidden" name="cardpic" id="pic{$vo.id}">
-                            <div id="showinfoPic{$vo.id}">
-                                {php}
-                                $pic = unserialize($vo['cardpic']);
-                                {/php}
-                                {if condition="isset($pic['front_pic'])"}
-                                <img src="{$pic.front_pic}" width="100%">
-                                {/if}
-                            </div>
+                            <input type="file"  name="newfile{$vo.id}" id="newfile{$vo.id}" onchange="uploadImage({$vo.id});">
+                            <input type="hidden" name="cardpic[]" id="pic{$vo.id}" value="{$front_pic}">
+                            <div id="showinfoPic{$vo.id}">{$front_pic?'<img src="/'.$front_pic.'" width="100%"/>':''}</div>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label form-inline">身份证反面照</label>
+                        <div class="col-sm-4">
+                            {php}$num = $vo['id']+002;{/php}
+                            <input type="file" name="newfile{$num}" id="newfile{$num}" onchange="uploadImage({$num});">
+                            <input type="hidden" name="cardpic[]" id="pic{$num}" value="{$behind_pic}">
+                            <div id="showinfoPic{$num}">{$behind_pic?'<img src="/'.$behind_pic.'" width="100%"/>':''}</div>
                         </div>
 
                     </div>
@@ -98,11 +113,7 @@
                             <input type="text" class="form-control" name="address" value="{$vo.address}"
                                    placeholder="请输入家庭住址">
                         </div>
-                        <!--<label class="col-sm-2 control-label form-inline">学生状态</label>-->
-                        <!--<div class="col-sm-4">-->
-                        <!--<input type="text" class="form-control" name="maritalstatus"-->
-                        <!--placeholder="请输入学生状态">-->
-                        <!--</div>-->
+
                     </div>
 
                     <div class="modal-title">在校信息</div>
@@ -213,7 +224,7 @@
                     <input type="hidden" name="rid" value="{$vo.id}"/>
                     <!-- 模态框底部 -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" onclick="dopost('edit',{$vo.id});">修改</button>
+                        <button type="button" class="btn btn-primary" onclick="dopost('edit',{$vo.id});">修改</button>
                     </div>
                 </form>
                 <table class="table table-bordered table-hover">
@@ -228,6 +239,38 @@
                     {volist name="$vo['home']" id="w"}
                     <tr><td>{$w.name}</td><td>{$w.phone}</td><td>{$w.relation}</td></tr>
                     {/volist}
+                    </tbody>
+
+                </table>
+                <table class="table table-bordered table-hover">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <form class="form-horizontal" role="form" id="formfamily{$vo.id}" method="post">
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label form-inline">姓名</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control" name="name"
+                                               placeholder="请输入姓名">
+                                    </div>
+                                    <label class="col-sm-1 control-label form-inline">联系方式</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control" name="phone"
+                                               placeholder="请输入联系方式">
+                                    </div>
+                                    <label class="col-sm-1 control-label form-inline">亲属关系</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control" name="relation"
+                                               placeholder="请输入亲属关系">
+                                    </div>
+                                    <input type="hidden" name="userid" value="{$vo.userid}"/>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-primary" onclick="addFamily({$vo.id});">添加家庭</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
                     </tbody>
 
                 </table>

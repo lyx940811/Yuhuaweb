@@ -57,7 +57,14 @@ class User extends Base{
         }
 
         $user_table = Db::name('user');
-
+        $is_user= $user_table->field('username')->where("username",$info['user_name'])->find();
+        if($is_user){
+            return ['error'=>'用户名已存在','code'=>'300'];
+        }
+//
+//        if(!$have){//如果没这个code
+//            return ['error'=>'没有此班级','code'=>'300'];
+//        }
 
         $data['username'] = $info['user_name'];
         $data['nickname'] = $info['user_name'];
@@ -128,7 +135,12 @@ class User extends Base{
 
 
         $user_table = Db::name('user');
-
+        $where['username']=$info['user_name'];
+        $where['id']=array('neq',$info['rid']);
+        $is_user= $user_table->field('id,username')->where($where)->find();
+        if($is_user){
+            return ['error'=>'用户名已存在','code'=>'300'];
+        }
         $id = $info['rid']+0;
 
         $have = $user_table->field('id')->where("id='$id'")->find();
