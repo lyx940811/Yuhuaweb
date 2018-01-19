@@ -154,12 +154,22 @@ class Certificate extends Base{
         }
     }
 
+//    public function upload(){
+//
+//        $id = $_GET['id'];
+//
+//        $file = upload('newfile'.$id,'certificate');
+//        return $file;
+//
+//    }
     public function upload(){
 
-        $id = $_GET['id'];
+        $id = $_GET['id']+0;
+        $file = new Upload();
+        $res = $file->uploadPic($_FILES,'teacherinfo');
 
-        $file = upload('newfile'.$id,'certificate');
-        return $file;
-
+        $res['path'] = $res['newfile'.$id]['path'];
+        $res['code'] = $res['newfile'.$id]['code'];
+        return $res;
     }
 }
