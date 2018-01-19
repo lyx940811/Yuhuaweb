@@ -2,7 +2,7 @@
 * @Author: Marte
 * @Date:   2017-12-12 09:56:34
  * @Last Modified by: Benfei Cao
- * @Last Modified time: 2017-12-14 10:40:04
+ * @Last Modified time: 2018-01-19 11:55:38
 */
 ul.nav-tabs li.active{
     border-bottom: 2px solid #43bc60;
@@ -103,4 +103,19 @@ a:hover{ color:#1974A1;  }
     /* 滚动条 */
     height: 200px;
     overflow-y:scroll; 
+}
+/*滚动条样式*/
+.innerbox::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 8px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 4px;
+}
+.innerbox::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.2);
+}
+.innerbox::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 0;
+    background: rgba(0,0,0,0.1);
 }

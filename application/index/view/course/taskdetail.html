@@ -140,9 +140,9 @@
             </ul>
         </div>
         <div class="topic-list tab-content tab-main-content">
-            <div  id="task-list" role="tabpanel" class=" tab-pane active media topic-item" >
-                <div class="task-list-pane-body js-sidebar-pane-body">
-                    <ul class="task-list task-show">
+            <div  id="task-list" role="tabpanel" class="innerbox task-list-pane tab-pane active media topic-item" style="height:100%;overflow-y:scroll">
+                <div class="task-list-pane-body js-sidebar-pane-body" >
+                    <ul class="task-list task-show" >
                         {volist name="tasklist" id="tl"}
                         {if condition="$tl['type'] eq 'mp4' or $tl['type'] eq 'url'"}
                         {present name="tl.plan"}
