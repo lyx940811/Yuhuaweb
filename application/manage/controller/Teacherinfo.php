@@ -21,10 +21,21 @@ class Teacherinfo extends Base{
         $info = input('get.');
 
         $where = [];
+        $data['realname']='';
+        $data['sn']='';
+        $data['sex']='';
         if(!empty($info['realname'])){
+            $data['realname']=$info['realname'];
             $where['realname'] = ['like',"%{$info['realname']}%"];
         }
-
+        if(!empty($info['sn'])){
+            $data['sn']=$info['sn'];
+            $where['a.sn']=['like',"%{$info['sn']}%"];
+        }
+        if(!empty($info['sex'])){
+            $data['sex']=$info['sex'];
+            $where['a.sex']=$info['sex']-1;
+        }
         $list = Db::name('teacher_info a')
             ->join('teacher_level b','a.userid=b.teacherid','LEFT')
             ->where($where)
@@ -42,7 +53,7 @@ class Teacherinfo extends Base{
 //        print_r($newlist[1]['work']);
 //        exit;
 
-
+        $this->assign('info',$data);
         $this->assign('list',$newlist);
         $this->assign('page',$list->render());
         $this->assign('typename','教师管理');
