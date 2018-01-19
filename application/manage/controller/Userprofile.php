@@ -15,12 +15,31 @@ class Userprofile extends Base{
     public function index(){
 
         $info = input('get.');
-        $search='';
         $where = [];
-
+        $data['realname']='';
+        $data['sex']='';
+        $data['depart']='';
+        $data['majors']='';
+        $data['class']='';
         if(!empty($info['realname'])){
-            $search=$info['realname'];
+            $data['realname']=$info['realname'];
             $where['a.realname'] = ['like',"%{$info['realname']}%"];
+        }
+        if(!empty($info['sex'])){
+            $data['sex']=$info['sex'];
+            $where['a.sex']=$info['sex']-1;//由于0的特殊性，页面搜索数据全部加1
+        }
+        if(!empty($info['depart'])){
+            $data['depart']=$info['depart'];
+            $where['b.depart']=$info['depart'];
+        }
+        if(!empty($info['majors'])){
+            $data['majors']=$info['majors'];
+            $where['b.majors']=$info['majors'];
+        }
+        if(!empty($info['class'])){
+            $data['class']=$info['class'];
+            $where['b.class']=$info['class'];
         }
 
         $list = Db::table('user_profile a')
@@ -46,7 +65,7 @@ class Userprofile extends Base{
         $depart = Db::table('category')->field('id,code,name')->where('grade=2')->select();
         $category = Db::table('category')->field('code,name')->select();
 
-        $this->assign('search',$search);
+        $this->assign('info',$data);
         $this->assign('list',$newlist);
         $this->assign('typename','学生列表');
         $this->assign('classroom',$classroom);

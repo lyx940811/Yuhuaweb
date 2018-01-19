@@ -13,11 +13,28 @@ use think\Validate;
 class Course extends Base{
 
     public function index(){
-
+        $info=input('get.');
+        $data['status']='';
+        $data['serializeMode']='';
+        $data['name']='';
+        $where='';
+        if(!empty($info['status'])){
+            $data['status']=$info['status'];
+            $where['c.status']=$info['status']-1;//由于0的特殊性，页面搜索数据全部加1
+        }
+        if(!empty($info['serializeMode'])){
+            $data['serializeMode']=$info['serializeMode'];
+            $where['c.serializeMode']=$info['serializeMode'];
+        }
+        if(!empty($info['name'])){
+            $data['name']=$info['name'];
+            $where['c.title']=['like',"%{$info['name']}%"];//由于0的特殊性，页面搜索数据全部加1
+        }
         $list = Db::table('course c')
             ->field('c.*,tf.realname')
             ->join('teacher_info tf','c.teacherIds=tf.id','LEFT')
-            ->paginate(20);
+            ->where($where)
+            ->paginate(20,false,['query'=>request()->get()]);
 
 
         $category=$this->subtree(0);
@@ -35,7 +52,7 @@ class Course extends Base{
 
 //        print_r($newlist);exit;
 
-
+        $this->assign('info',$data);
         $this->assign('list',$newlist);
         $this->assign('typename','课程列表');
         $this->assign('category',$category);

@@ -12,7 +12,43 @@
         <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
             <div class="form-group">
                 <label>学生名称</label>
-                <input type="text" class="form-control" placeholder="学生名称" value="{$search}" name="realname">
+                <input type="text" class="form-control" placeholder="学生名称" value="{$info['realname']}" name="realname">
+            </div>
+            <div class="form-group">
+                <label>性别</label>
+                <select name="sex" class="form-control">
+                    <option value="">--请选择--</option>
+                    <option value="1" {if condition="$info['sex'] eq 1"}selected{/if}>男</option>
+                    <option value="2" {if condition="$info['sex'] eq 2"}selected{/if}>女</option>
+                    <option value="3" {if condition="$info['sex'] eq 3"}selected{/if}>保密</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>系部</label>
+                <select name="depart"  class="form-control" >
+                    <option value="">--请选择--</option>
+                    {volist name="depart" id="c"}
+                    <option value="{$c.code}" {if condition="$info['depart'] eq $c['code']"}selected{/if}>{$c.name}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>专业</label>
+                <select name="majors"  class="form-control" id="select_sec">
+                    <option value="">--请选择--</option>
+                    {volist name="category" id="c"}
+                    <option value="{$c.code}" {if condition="$info['majors'] eq $c['code']"}selected{/if}>{$c.name}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>班级</label>
+                <select name="class"  class="form-control" >
+                    <option value="">--请选择--</option>
+                    {volist name="classroom" id="c"}
+                    <option value="{$c.id}" {if condition="$info['class'] eq $c['id']"}selected{/if}>{$c.title}</option>
+                    {/volist}
+                </select>
             </div>
             <button type="submit" class="btn btn-primary">搜索</button>
         </form>

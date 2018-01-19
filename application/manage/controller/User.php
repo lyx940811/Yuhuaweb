@@ -29,7 +29,7 @@ class User extends Base{
             $where['a.status']=$info['status']-1;
         }
         if(!empty($info['name'])){
-            $data['username']=$info['name'];
+            $data['name']=$info['name'];
             $where['username']=['like',"%{$info['name']}%"];//由于0的特殊性，页面搜索数据全部加1
         }
 

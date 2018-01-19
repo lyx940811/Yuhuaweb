@@ -3,6 +3,23 @@
 {include file="manage/header" /}
 <body>
 <div class="container-fluid">
+    <div class="well clearfix">
+        <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
+
+            <div class="form-group">
+                <label>课程名称</label>
+                <input type="text" class="form-control" placeholder="课程名称" value="{$info.classname}" name="classname">
+            </div>
+            <div class="form-group">
+                <label>用户</label>
+                <input type="text" class="form-control" placeholder="用户" value="{$info.username}" name="username">
+            </div>
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </form>
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{:url('')}" style="cursor: pointer">刷新列表</a></li>
+    </ul>
     <table class="table table-striped table-hover">
         <thead>
         <tr>
@@ -17,7 +34,7 @@
 
         {volist name="list" id="vo"}
             <tr>
-                <td>{$vo.userid|getUserinfo}</td>
+                <td>{$vo.username}</td>
                 <td>{$vo.title}</td>
                 <td>{$vo.content}</td>
                 <td>{$vo.rating}</td>
