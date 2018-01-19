@@ -61,7 +61,15 @@
                     $newdata = unserialize($vo['data']);
                     $html ='<strong>';
                     foreach($newdata as $k=>$v){
-                    $html .=$k.' : '.$v.' ; ';
+
+                    if(is_array($v)){
+                        foreach($v as $kk=>$vv){
+                        $html .=$kk.' : '.$vv.' ; ';
+                        }
+                    }else{
+                        $html .=$k.' : '.$v.' ; ';
+                    }
+                    //$html .=$k.' : '.$v.' ; ';
                     }
                     $html .='</strong>';
                 }else{
