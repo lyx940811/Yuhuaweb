@@ -37,29 +37,29 @@
       </div>
       <div class="dashboard-body">
             {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
-            <!-- <script src="__JS__video.js"></script>
+            <script src="__JS__video.js"></script>
             <script>
                 videojs.options.flash.swf = "__JS__video-js.swf";
             </script>        
-            <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="640" height="264"
-                poster="http://video-js.zencoder.com/oceans-clip.png"
+            <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="100%" height="100%"
+                poster=""
                 data-setup="{}">
-                <source src="http://la2.indexcom.com/me/flv/guqin.flv" type='video/flv' />
-                <source src="http://video-js.zencoder.com/oceans-clip.webm" type='video/webm' />
+                <source src="http://www.hnhgjx.cn:1706/upload/20180117/20171212011618-1ufwj8.flv" type='video/flv' />
+                <!-- <source src="http://video-js.zencoder.com/oceans-clip.webm" type='video/webm' />
                 <source src="http://video-js.zencoder.com/oceans-clip.ogv" type='video/ogg' />
-                <track kind="subtitles" src="demo.captions.vtt" srclang="en" label="English">
+                <track kind="subtitles" src="demo.captions.vtt" srclang="en" label="English"> -->
                 <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
             </video> 
-            -->
+           
           <!--视频-->
-          <div style="width: 100%; height: 100%; ">
+          <!-- <div style="width: 100%; height: 100%; ">
             <script src="__JS__sewise.player.min.js"></script>
             <script type="text/javascript">
                 SewisePlayer.setup({
                     server: "vod",
                     type: "flv",
                     autostart: "false",
-                    videourl: "http://la2.indexcom.com/me/flv/guqin.flv",
+                    videourl: "http://www.hnhgjx.cn:1706/upload/20180117/20171212011618-1ufwj8.flv",
                     skin: "vodFlowPlayer",
                     fallbackurls:{
                         mp4: "http://www.hnhgjx.cn:1700/player/594/file/xjqAawmONQaExIWWunlXDrF0rnFTTInO",
@@ -68,7 +68,7 @@
                     }
                 });
             </script>
-        </div>
+        </div> -->
           <!-- <video id="my-video" class="video-js" controls preload="auto" style="width:100%;height:100%"
                  poster="m.png" data-setup="{}">
               <source src="{$task->mediaSource}" type="video/mp4">
