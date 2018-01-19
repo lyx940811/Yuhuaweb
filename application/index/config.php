@@ -15,6 +15,7 @@ return[
         '__TEACHERCSS__' => '/static/index/teacher/css/',
         '__TEACHERJS__' => '/static/index/teacher/js/',
         '__TEACHERUPLOAD__' => '/static/index/teacher/webup/',
+        '__VIDEO_HTML__'    =>  './../index/view/course/video-js/',
     ],
 
     'apicode_message'          =>[
