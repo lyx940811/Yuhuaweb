@@ -49,7 +49,6 @@
             <th>性别</th>
             <th>部门</th>
             <th>联系电话</th>
-            <th>学历</th>
             <th>职称</th>
             <th>操作</th>
         </tr>
@@ -63,13 +62,6 @@
             <td>{$vo.sex?'女':'男'}</td>
             <td>{php}echo isset($vo['work'][0])?$vo['work'][0]['depart']:'';{/php}</td>
             <td>{$vo.mobile}</td>
-            <td>
-                {if condition="$vo['education'] eq 0"}初中{/if}
-                {if condition="$vo['education'] eq 1"}高中{/if}
-                {if condition="$vo['education'] eq 2"}中专{/if}
-                {if condition="$vo['education'] eq 3"}专科{/if}
-                {if condition="$vo['education'] eq 4"}本科及以上{/if}
-            </td>
             <td>{php}echo isset($vo['work'][0])?$vo['work'][0]['title']:'';{/php}</td>
             <td>
                 {php}
