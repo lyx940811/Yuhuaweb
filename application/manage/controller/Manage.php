@@ -122,8 +122,8 @@ class Manage extends Base{
 
 //        $roles = [
 //            '用户管理'=>[
-//              'url'=>'/manage/user/index','name'=>'用户列表',
-//              'url'=>'/manage/role/index','name'=>'角色列表',
+//              'url'=>'/manage/user/index','name'=>'用户列表2',
+//              'url'=>'/manage/role/index','name'=>'角色列表2',
 //              'url'=>'/manage/rolefunction/index','name'=>'权限组',
 //
 //            ],
