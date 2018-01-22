@@ -64,6 +64,8 @@ class Login extends Controller{
 
                 session('admin_role',!empty($role['name'])?$role['name']:'其他');
 
+                manage_log('100','008','用户登陆',serialize($info),0);
+
                 return ['info'=>'登陆成功','code'=>'000','url'=>url('Manage/manage/index')];
 
             }else{
@@ -213,9 +215,13 @@ class Login extends Controller{
 
 
     public function logout(){
+        $userid = session('admin_uid');
+        manage_log('999','009','用户登出',serialize(['userid'=>$userid]),0);
+
         session('admin_uid',NULL);
         session('admin_user',NULL);
 //        $this->success('退出成功',url('Manage/login/index'));
+
         return ['info'=>'退出成功','code'=>'000'];
     }
 
