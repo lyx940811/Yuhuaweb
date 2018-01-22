@@ -115,10 +115,6 @@ class Manage extends Base{
                     ['url'=>'/manage/ad/index','name'=>'广告列表'],
                 ]
             ],
-            ['typename'=>'问答管理','url'=>'/manage/questionanswers/question','children'=>[
-                    ['url'=>'/manage/questionanswers/question','name'=>'问答列表'],
-                ]
-            ],
         ];
 
 
