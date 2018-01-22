@@ -140,9 +140,9 @@ class Rolefunction extends Base{
 
         $ok = $role_table->field('functioncode')->where('id',$id)->update(['functioncode'=>$funcs]);
 
-        if($ok){
+        $ok2 = Db::table('role')->where('id='.$have['rolecode'])->update(['name'=>$info['name'],'data'=>$info['name']]);
 
-            Db::table('role')->where('id='.$have['rolecode'])->update(['name'=>$info['name'],'data'=>$info['name']]);
+        if($ok || $ok2){
 
             return ['info'=>'修改成功','code'=>'000'];
         }else{
