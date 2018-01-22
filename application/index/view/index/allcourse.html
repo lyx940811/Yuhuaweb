@@ -60,7 +60,9 @@
                 <div class="course-item">
                     <div class="course-img">
                         <a href="{:url('index/course/catalogue',array('course'=>$course['id']))}">
+                            {if condition="$course['serializeMode'] eq 'finished'"}
                             <span class="tags"><span class="tag-finished"></span></span>
+                            {/if}
                             {notempty name="course.smallPicture"}
                             <img src="/{$course.smallPicture}" alt="{$course.title}" class="img-responsive">
                             {else /}
