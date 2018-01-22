@@ -41,16 +41,17 @@
             <script>
                 videojs.options.flash.swf = "__JS__video-js.swf";
             </script>        
-            <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="100%" height="100%"
-                poster=""
-                data-setup="{}">
-                <source src="http://www.hnhgjx.cn:1706/upload/20180117/20171212011618-1ufwj8.flv" type='video/flv' />
+            <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="100%" height="100%" poster=""  data-setup="{}">
+                {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
+                <source src="{$task->mediaSource}" type='video/mp4' />
+                {else /}
+                <source src="{$task->mediaSource}" type='video/flv' />
+                {/if}
                 <!-- <source src="http://video-js.zencoder.com/oceans-clip.webm" type='video/webm' />
                 <source src="http://video-js.zencoder.com/oceans-clip.ogv" type='video/ogg' />
                 <track kind="subtitles" src="demo.captions.vtt" srclang="en" label="English"> -->
                 <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
-            </video> 
-           
+            </video>
           <!--视频-->
           <!-- <div style="width: 100%; height: 100%; ">
             <script src="__JS__sewise.player.min.js"></script>
