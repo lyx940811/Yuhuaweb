@@ -1,6 +1,7 @@
 <?php
 namespace app\manage\controller;
 use app\manage\model\User;
+use think\captcha\Captcha;
 use think\Controller;
 use think\Validate;
 use think\Db;
@@ -223,6 +224,15 @@ class Login extends Controller{
 //        $this->success('退出成功',url('Manage/login/index'));
 
         return ['info'=>'退出成功','code'=>'000'];
+    }
+
+
+    public function capcha_show(){
+        $captcha = new Captcha();
+        $captcha->fontSize = 30;
+        $captcha->length   = 4;
+        $captcha->useNoise = true;
+        return $captcha->entry();
     }
 
 }
