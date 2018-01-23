@@ -67,6 +67,10 @@ class Manage extends Base{
                     [ 'url'=>'/manage/coursereview/index','name'=>'课程评价'],
                 ]
             ],
+            ['typename'=>'题库管理','url'=>'/manage/question/index','children'=>[
+                    [ 'url'=>'/manage/question/index','name'=>'题目管理'],
+                ]
+            ],
             ['typename'=>'笔记管理','url'=>'/manage/coursenote/index','children'=>[
                     ['url'=>'/manage/coursenote/index','name'=>'笔记列表'],
                 ]
