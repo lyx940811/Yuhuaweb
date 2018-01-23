@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+{include file="manage/header" /}
+<body>
+    <div class="container-fluid">
+        {php}
+        $uid = session('admin_uid');
+        {/php}
+
+        <div class="well clearfix">
+            <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
+                <div class="form-group">
+                    <select name="status" id="mySelect1" class="form-control">
+                        <option value="1" selected >学生</option>
+                        <option value="2">课程</option>
+                        <option value="3">教师</option>
+                    </select>
+                    <select name="status" id="mySelect" class="form-control">
+                        <option value="1">学生性别分布</option>
+                        <option value="2" selected >学生专业分布</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="main" style="width:100%;height:400px;"></div>
+        <input type="hidden" value="{$name}" id="name" name="name"/>
+        <input type="hidden" value="{$num}" id="num" name="num"/>
+        <input type="hidden" value="{$title}" id="title"/>
+        <input type="hidden" value="{$smallt}" id="smallt"/>
+    </div>
+{include file='manage/bottom'}
+<script src="__MANAGE_JS__echarts.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#mySelect").change(function(){
+            var test=$(this).val();
+            if(test==1){
+                window.location.href="{:url('index')}"
+            }
+        });
+        $("#mySelect1").change(function(){
+            var test=$(this).val();
+            if(test==2){
+                window.location.href="{:url('course')}"
+            }else if($test==3){
+                window.locaton.href="{:url('teacher')}"
+            }
+        });
+    })
+</script>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+    var sex={$name};
+    var num={$num};
+    var title=$('#title').val();
+    var smallt=$('#smallt').val();
+    console.log(sex);
+    console.log(num);
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: title
+        },
+        tooltip: {},
+        legend: {
+            data:[]
+        },
+        xAxis: {
+            data: sex
+        },
+        yAxis: {},
+        series: [{
+            name: smallt,
+            type: 'bar',
+            data: num
+        }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+</body>
+</html>
