@@ -11,13 +11,13 @@
                 <select name="type" class="form-control">
                     <option value="">--请选择--</option>
                     {volist name="qtype" id="q"}
-                    <option value="{$q.id}">{$q.name}</option>
+                    <option value="{$q.type}">{$q.name}</option>
                     {/volist}
                 </select>
             </div>
             <div class="form-group">
                 <label>适用课程</label>
-                <select name="courseid" class="form-control">
+                <select name="courseId" class="form-control">
                     <option value="">--请选择--</option>
                     {volist name="course" id="c"}
                     <option value="{$c.id}">{$c.title}</option>
@@ -43,11 +43,12 @@
         <li class="active"><a href="{:url('')}" style="cursor: pointer">刷新列表</a></li>
     </ul>
     <div class="pull-right">
-        {php}
-        if(check($uid,'/manage/question/add')){
-            echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增题干</a>';
-        }
-        {/php}
+        {if condition="check($uid,'/manage/question/add')"}
+        <a class="btn btn-primary" href="{:url('single_choice')}">单选题</a><span> </span>
+        <a class="btn btn-primary" href="{:url('choice')}">多选题</a><span> </span>
+        <a class="btn btn-primary" href="{:url('determine')}">判断题</a><span> </span>
+        <a class="btn btn-primary" href="{:url('essay')}">问答题</a><span> </span>
+        {/if}
     </div>
 
     <table class="table table-striped table-hover">
@@ -69,19 +70,16 @@
             <td>{$vo.type}</td>
             <td>{$vo.stem}</td>
             <td>{$vo.name}</td>
-            <td>{$vo.status?'启用':'禁用'}</td>
+            <td>{$vo.courseSetId?'使用中':'未使用'}</td>
             <td>
-                {php}
-                    if(check($uid,'/manage/question/edit')){
-                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
-                        echo '<strong>/</strong>';
-                    }
-                    if(check($uid,'/manage/question/delete')){
-                        echo '<a href="#" onclick="deleteR('.$vo['id'].');">删除</a>';
-                    }
-                {/php}
+                {if condition="check($uid,'/manage/question/edit')"}
+                        <a href="#" data-toggle="modal" data-target="#myModal_edit{$vo.id}">编辑</a>
+                        <strong>/</strong>
+                {/if}
+                {if condition="check($uid,'/manage/question/delete')"}
+                        <a href="#" onclick="deleteR({$vo.id});">删除</a>
+                {/if}
 
-                <!--修改结束-->
             </td>
         </tr>
         {/volist}
@@ -92,98 +90,9 @@
         {$page}
     </ul>
 
-    <!--新增-->
-    <!-- 模态框 -->
-    <div class="modal fade" id="myModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <!-- 模态框头部 -->
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">新增题干</h4>
-                </div>
-
-                <!-- 模态框主体 -->
-                <div class="modal-body">
-                    <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
-                        <div class="form-group">
-                            <label for="course" class="col-sm-2 control-label">适用课程</label>
-                            <div class="col-sm-10">
-                                <select name="course" id="course" class="form-control">
-                                    <option value="">--请选择--</option>
-                                    {volist name="course" id="c"}
-                                    <option value="{$c.id}">{$c.title}</option>
-                                    {/volist}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="title" class="col-sm-2 control-label">题干</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="title" name="title"
-                                       placeholder="请输入班级名称">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="about" class="col-sm-2 control-label">简介</label>
-                            <div class="col-sm-10">
-                                <textarea cols="30" rows="10" class="form-control" name="about" id="about"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="center-block" style="width: 200px">
-                                <label class="radio-inline">
-                                    <input type="radio" name="status" value="1"> 启用
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="status" value="0" checked> 禁用
-                                </label>
-                            </div>
-                        </div>
-                        <input type="hidden" name="rid" value="" id="selfcode"/>
-                        <!-- 模态框底部 -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add',0);">添加</button>
-                        </div>
-                    </form>
-                </div>
-
-
-
-            </div>
-        </div>
-    </div>
-    <!--添加结束-->
-
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
-
-    function dopost($url,formid) {
-        $url=='add'?"{:url('add')}":"{:url('edit')}";
-
-        $.ajax({
-            url: $url+"?"+Math.random(),
-            type:"post",
-            data:$('#form'+formid).serialize(),
-            success:function(data){
-
-                if(data.code=='000'){
-
-                    alert(data.info)
-                    window.location.reload();
-
-                }else{
-                    alert(data.error)
-                }
-
-            },
-            error:function(e){
-                alert("添加信息错误");
-            }
-        });
-    }
 
     function deleteR(id) {
         if(confirm('确定要删除吗')){
@@ -198,7 +107,6 @@
         }
 
     }
-
 
 </script>
 </body>

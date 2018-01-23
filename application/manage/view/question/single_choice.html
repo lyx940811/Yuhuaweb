@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+{include file="manage/header" /}
+<body>
+<div class="container-fluid">
+
+    <div class="well">
+        <ol class="breadcrumb">
+            <li><a href="{:url('index')}">题目管理</a></li>
+            <li class="active">添加单选题</li>
+        </ol>
+    </div>
+    <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
+        <div class="form-group">
+            <label for="courseId" class="col-sm-2 control-label">适用课程</label>
+            <div class="col-sm-5">
+                <select name="courseId" id="courseId" class="form-control">
+                    <option value="">--请选择--</option>
+                    {volist name="course" id="c"}
+                    <option value="{$c.id}">{$c.title}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="stem" class="col-sm-2 control-label">题干</label>
+            <div class="col-sm-5">
+                <textarea cols="20" rows="5" class="form-control" name="stem" id="stem"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">选项A</label>
+            <div class="col-sm-5">
+                <textarea cols="20" rows="5" class="form-control" name="metas[choices][]"></textarea>
+                <label>
+                    <input  type="radio" name="answer[]" value="0">
+                    正确答案
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">选项B</label>
+            <div class="col-sm-5">
+                <textarea cols="20" rows="5" class="form-control" name="metas[choices][]"></textarea>
+                <label>
+                    <input  type="radio" name="answer[]" value="1">
+                    正确答案
+                </label>
+            </div>
+        </div>
+        <div class="center-block">
+            <button type="button" class="btn btn-primary" onclick="additem();">新增选项</button>
+        </div>
+        <input type="hidden" name="type" value="single_choice"/>
+        <!-- 模态框底部 -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="dopost('addshow',0);">保存继续添加</button>
+            <button type="button" class="btn btn-primary" onclick="dopost('add',0);">保存</button>
+            <a  class="btn btn-primary" href="{:url('index')}"   >返回</a>
+        </div>
+    </form>
+
+
+</div>
+{include file='manage/bottom'}
+<script type="text/javascript">
+
+    var num = 0;
+
+    function additem() {
+
+        var arr = {0:'C',1:'D',2:'E'};
+
+        if(num>=3){
+            alert('太多了');return;
+        }
+        var html = '<div class="form-group">';
+        html += '<label class="col-sm-2 control-label">选项'+arr[num]+'</label>';
+        html += '<div class="col-sm-5">';
+        html += '<textarea cols="20" rows="5" class="form-control" name="metas[choices][]"></textarea>';
+        html += '<label>';
+        html += '<input  type="radio" name="answer[]" value="'+(num+2)+'">';
+        html += '正确答案';
+        html += '</label>';
+        html += '</div>';
+        html += '</div>';
+
+        var last = $('#form0 .form-group').last()
+        $(last).after(html)
+        // console.log(html)
+        num++;
+
+    }
+
+
+    function dopost($type,formid) {
+        if($type=='add' || $type=='addshow'){
+            $url = "{:url('add')}";
+        }else{
+            $url = "{:url('edit')}";
+        }
+
+        $.ajax({
+            url: $url+"?"+Math.random(),
+            type:"post",
+            data:$('#form'+formid).serialize(),
+            success:function(data){
+
+                if(data.code=='000'){
+
+                    alert(data.info)
+                    $('#myModal').modal('hide');
+
+                    window.location.reload()
+
+                }else{
+                    alert(data.error)
+                }
+
+            },
+            error:function(e){
+                alert("添加信息错误");
+            }
+        });
+    }
+
+
+</script>
+</body>
+</html>
