@@ -128,7 +128,7 @@
                             <select name="depart"  class="form-control" >
                                 <option value="">--请选择--</option>
                                 {volist name="depart" id="c"}
-                                <option value="{$c.code}" onclick="sec_depart({$c.id},'{$c.code}',{$vo.id})" {if condition="$vo['depart'] eq $c['code']"}selected="selected"{/if}>{$c.name}</option>
+                                <option value="{$c.code}" onclick="sec_depart({$c.id},'{$c.code}',{$vo.id})" {if condition="$vo['bdepart'] eq $c['code']"}selected="selected"{/if}>{$c.name}</option>
                                 {/volist}
                             </select>
                         </div>
@@ -139,7 +139,7 @@
                             <select name="majors"  class="form-control" id="select_sec{$vo.id}">
                                 <option value="">--请选择--</option>
                                 {volist name="category" id="c"}
-                                <option value="{$c.code}" {if condition="$vo['majors'] eq $c['code']"}selected="selected"{/if}>{$c.name}</option>
+                                <option value="{$c.code}" {if condition="$vo['bmajors'] eq $c['code']"}selected="selected"{/if}>{$c.name}</option>
                                 {/volist}
                             </select>
                         </div>

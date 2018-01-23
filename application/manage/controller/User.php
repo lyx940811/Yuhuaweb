@@ -95,7 +95,12 @@ class User extends Base{
         $data['roles'] = isset($info['user_roles'])?$info['user_roles']:0;
         $data['locked'] = isset($info['user_locked'])?$info['user_locked']:0;
         $data['status'] = isset($info['status'])?$info['status']:0;
-        $data['title'] = $info['userpic'];
+        if(!empty($info['userpic'])){
+            $data['title'] = $info['userpic'];
+        }else{
+            $data['title'] ="static/index/images/avatar.png";
+        }
+
         $data['createdIp'] = request()->ip();
         $data['createdTime'] = date('Y-m-d H:i:s' ,time());
         $data['createUserID'] = session('admin_uid');
@@ -171,7 +176,12 @@ class User extends Base{
 
         $data['nickname'] = $info['user_name'];
         $data['type'] = $info['type'];
-        $data['title']=$info['userpic'];
+        if(!empty($info['userpic'])){
+            $data['title'] = $info['userpic'];
+        }else{
+            $data['title'] ="static/index/images/avatar.png";
+        }
+
         $data['email'] = $info['user_email'];
         $data['mobile'] = $info['mobile'];
         $data['roles'] = isset($info['user_roles'])?$info['user_roles']:0;

@@ -46,7 +46,7 @@ class Userprofile extends Base{
             ->join('student_school b','a.userid=b.userid','LEFT')
             ->join('student_class c','a.userid=c.userid','LEFT')
             ->join('classroom d','c.classid=d.id','LEFT')
-            ->field('a.*,b.grade,b.starttime,b.depart,b.majors,b.culture,b.academic,b.quarter,b.level,b.class,b.style,b.studentstatus,d.title')
+            ->field('a.*,b.grade,b.starttime,b.depart as bdepart,b.majors as bmajors,b.culture,b.academic,b.quarter,b.level,b.class,b.style,b.studentstatus,d.title')
             ->where($where)
             ->order('createdTime desc')
             ->paginate(20,false,['query'=>request()->get()]);
@@ -55,8 +55,8 @@ class Userprofile extends Base{
         foreach ($list as $k=>$v){
             $newlist[$k] = $v;
             $newlist[$k]['home'] = Db::table('student_home')->where('userid',$v['userid'])->select();
-            $newlist[$k]['depart'] = Db::table('category')->where('code',$v['depart'])->value('name');
-            $newlist[$k]['majors'] = Db::table('category')->where('code',$v['majors'])->value('name');
+            $newlist[$k]['depart'] = Db::table('category')->where('code',$v['bdepart'])->value('name');
+            $newlist[$k]['majors'] = Db::table('category')->where('code',$v['bmajors'])->value('name');
         }
 
 //        print_r($newlist);exit;
