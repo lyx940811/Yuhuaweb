@@ -80,7 +80,7 @@ class Manage extends Base{
 //                    ['url'=>'/manage/studyresult/index','name'=>'学习记录列表'],
 //            ]
 //            ],
-            ['typename'=>'积分管理','url'=>'/manage/userprofile/index','children'=>[
+            ['typename'=>'积分管理','url'=>'/manage/integral/index','children'=>[
                 ['url'=>'/manage/integral/index','name'=>'积分记录'],
             ]
             ],
