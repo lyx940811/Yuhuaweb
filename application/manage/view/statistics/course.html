@@ -10,33 +10,29 @@
         <div class="well clearfix">
             <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
                 <div class="form-group">
-                    <select name="status" class="form-control">
+                    <select name="status" id="mySelect1" class="form-control">
                         <option value="1" selected >学生</option>
                         <option value="2">课程</option>
-                        <option value="2">教师</option>
-                    </select>
-                    <select name="status" id="mySelect" class="form-control">
-                        <option value="1" selected >学生性别分布</option>
-                        <option value="2">学生专业分布</option>
+                        <option value="3">教师</option>
                     </select>
                 </div>
             </form>
         </div>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
         <div id="main" style="width: 600px;height:400px;"></div>
-        <input type="hidden" value="{$sex}" id="sex" name="sex"/>
         <input type="hidden" value="{$num}" id="num" name="num"/>
         <input type="hidden" value="{$title}" id="title"/>
-        <input type="hidden" value="{$smallt}" id="smallt"/>
     </div>
 {include file='manage/bottom'}
 <script src="__MANAGE_JS__echarts.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#mySelect").change(function(){
+        $("#mySelect1").change(function(){
             var test=$(this).val();
-            if(test==2){
-                window.location.href="{:url('majors')}"
+            if(test==1){
+                window.location.href="{:url('index')}"
+            }else if($test==3){
+                window.locaton.href="{:url('teacher')}"
             }
         });
     })
@@ -44,12 +40,8 @@
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('main'));
-    var sex={$sex};
     var num={$num};
     var title=$('#title').val();
-    var smallt=$('#smallt').val();
-    console.log(sex);
-    console.log(num);
     // 指定图表的配置项和数据
     var option = {
         title: {
@@ -60,7 +52,7 @@
             data:[]
         },
         xAxis: {
-            data: sex
+            data: ['已学完','学习中']
         },
         yAxis: {},
         series: [{
