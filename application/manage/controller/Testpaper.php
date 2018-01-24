@@ -111,11 +111,17 @@ class Testpaper extends Base{
 
         ];
 
+        Db::startTrans();
         $ok = $role_table->insert($data);
 
         if($ok){
+
+            Db::table('testpaper_item')->insert();
+
+            Db::commit();
             return ['info'=>'添加成功','code'=>'000'];
         }else{
+            Db::rollback();
             return ['error'=>'添加失败','code'=>'300'];
         }
     }
