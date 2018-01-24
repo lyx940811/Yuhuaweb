@@ -60,13 +60,13 @@ class Testpaper extends Base{
         $info = input('post.');
 
         $msg  =   [
-            'courseId.require' => '适用课程不能为空',
-            'courseId.number' => '适用课程必须为数字',
-            'stem.require' => '请填写题干',
+            'name.require' => '请填写试卷名称',
+            'courseid.require' => '适用课程不能为空',
+            'courseid.number' => '适用课程必须为数字',
         ];
         $validate = new Validate([
-            'courseId'  => 'require|number',
-            'stem'   => 'require',
+            'name'   => 'require',
+            'courseid'  => 'require|number',
         ],$msg);
 
         $validate->check($info);
@@ -80,23 +80,48 @@ class Testpaper extends Base{
         $role_table = Db::name('testpaper');
 
 
+        $total = 0;
+        $score = $info['scores'];
+
+        if(isset($info['counts'])){
+            foreach ($info['counts'] as $k=>$v){
+                $total +=$v*$score[$k];
+            }
+        }
+
+        $meta = [
+            'mode'=>$info['mode'],
+            'ranges'=>$info['ranges'],
+            'counts'=>isset($info['counts'])?$info['counts']:'',
+            'scores'=>$info['scores'],
+            'missScores'=>$info['missScores'],
+            'percentages'=>$info['percentages'],
+        ];
+
         $data = [
-            'stem'  => $info['stem'],
-            'metas' => isset($info['metas'])?json_encode($info['metas']):'',
+            'name'  => $info['name'],
+            'description'  => $info['description'],
+            'metas' => json_encode($meta),
+            'courseid'=>$info['courseid'],
             'type'  => $info['type'],
-            'courseId'=>$info['courseId'],
+            'score'  => $total,
+            'itemCount'  => isset($info['counts'])?count($info['counts']):0,
             'createdUserId'=>session('admin_uid'),
-            'answer'=>isset($info['answer'])?json_encode($info['answer']):'',
-            'difficulty'=>'normal',
-            'createdTime'=>date('Y-m-d H:i:s',time()),
+            'createTime'=>date('Y-m-d H:i:s',time()),
 
         ];
 
+        Db::startTrans();
         $ok = $role_table->insert($data);
 
         if($ok){
+
+            Db::table('testpaper_item')->insert();
+
+            Db::commit();
             return ['info'=>'添加成功','code'=>'000'];
         }else{
+            Db::rollback();
             return ['error'=>'添加失败','code'=>'300'];
         }
     }
@@ -108,12 +133,32 @@ class Testpaper extends Base{
         $article = Db::table('testpaper')->where('id',$id)->find();
 
 
+        //单选题
+        $item = Db::table('question')->group('type')->field('count(id) as num,type')->select();
+
+        foreach ($item as $k=>$v){
+
+            if($v['type']=='single_choice'){
+                $item[$k]['name'] = '单选题';
+            }
+            if($v['type']=='choice'){
+                $item[$k]['name'] = '多选题';
+            }
+            if($v['type']=='determine'){
+                $item[$k]['name'] = '判断题';
+            }
+            if($v['type']=='essay'){
+                $item[$k]['name'] = '问答题';
+            }
+        }
+
+
         $metas = !empty($article['metas'])?json_decode($article['metas']):'';
 
         $this->assign('article',$article);
-
         $this->assign('metas',$metas);
         $this->assign('id',$id);
+        $this->assign('item',$item);
         $this->assign('typename','试卷管理');
         $this->assign('course',$course);
         return $this->fetch();
