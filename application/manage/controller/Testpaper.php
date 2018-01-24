@@ -49,7 +49,7 @@ class Testpaper extends Base{
         $this->assign('list',$list);
         $this->assign('page',$list->render());
 
-        $this->assign('typename','题库管理');
+        $this->assign('typename','试卷管理');
         $this->assign('qtype',$qtype);
         $this->assign('uid',session('admin_uid'));
 
@@ -77,7 +77,7 @@ class Testpaper extends Base{
             return ['error'=>$error,'code'=>'200'];
         }
 
-        $role_table = Db::name('question');
+        $role_table = Db::name('testpaper');
 
 
         $data = [
@@ -101,44 +101,27 @@ class Testpaper extends Base{
         }
     }
 
-    public function single_choice(){
+    public function addtest(){
         $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
 
+        $id = request()->get('id');
+        $article = Db::table('testpaper')->where('id',$id)->find();
 
+
+        $metas = !empty($article['metas'])?json_decode($article['metas']):'';
+
+        $this->assign('article',$article);
+
+        $this->assign('metas',$metas);
+        $this->assign('id',$id);
+        $this->assign('typename','试卷管理');
         $this->assign('course',$course);
-
-        return $this->fetch();
-    }
-    public function choice(){
-        $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
-
-
-        $this->assign('course',$course);
-
-        return $this->fetch();
-    }
-
-    public function determine(){
-        $course = Db::table('course')->select();
-
-
-        $this->assign('course',$course);
-
-        return $this->fetch();
-    }
-
-    public function essay(){
-        $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
-
-
-        $this->assign('course',$course);
-
         return $this->fetch();
     }
 
     public function delete(){
         $id = $_GET['rid']+0;
-        $ok = Db::name('question')->where('id',$id)->delete();
+        $ok = Db::name('testpaper')->where('id',$id)->delete();
 
         if(is_numeric($ok)){
             return ['info'=>'删除成功','code'=>'000'];
