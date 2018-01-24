@@ -180,7 +180,17 @@ class Question extends Base{
     public function choice(){
         $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
 
+        $id = request()->get('id');
+        $article = Db::table('question')->where('id',$id)->find();
 
+
+        $metas = !empty($article['metas'])?json_decode($article['metas']):'';
+
+        $this->assign('article',$article);
+
+        $this->assign('metas',$metas);
+        $this->assign('id',$id);
+        $this->assign('typename','多选题');
         $this->assign('course',$course);
 
         return $this->fetch();
