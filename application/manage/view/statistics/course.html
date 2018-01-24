@@ -11,8 +11,8 @@
             <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
                 <div class="form-group">
                     <select name="status" id="mySelect1" class="form-control">
-                        <option value="1" selected >学生</option>
-                        <option value="2">课程</option>
+                        <option value="1">学生</option>
+                        <option value="2" selected >课程</option>
                         <option value="3">教师</option>
                     </select>
                 </div>
@@ -41,6 +41,7 @@
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('main'));
     var num={$num};
+    console.log(num);
     var title=$('#title').val();
     // 指定图表的配置项和数据
     var option = {
@@ -56,7 +57,7 @@
         },
         yAxis: {},
         series: [{
-            name: smallt,
+            name: '课程',
             type: 'bar',
             data: num
         }]
