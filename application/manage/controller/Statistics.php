@@ -130,6 +130,5 @@ class Statistics extends Base{
         $this->assign('title','教师职称分布展示');
         $this->assign('smallt','教师职称');
         return $this->fetch();
-
     }
 }
