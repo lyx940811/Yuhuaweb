@@ -28,7 +28,7 @@ class Coursetask extends Base{
         }
 
         $list = Db::table('course_task a')
-            ->field('a.id,a.title,a.mode,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.chapterid,a.type,a.mediaSource,a.length,a.mediaSource,a.status,a.startTime,a.endTime,cc.title as ctitle')
+            ->field('a.id,a.title,a.mode,a.point,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.chapterid,a.type,a.mediaSource,a.length,a.mediaSource,a.status,a.startTime,a.endTime,cc.title as ctitle')
 //            ->join('course b','a.courseId=b.id','LEFT')
             ->join('course_chapter cc','a.chapterid=cc.id','LEFT')
             ->where($where)
@@ -97,6 +97,7 @@ class Coursetask extends Base{
             'chapterid'=> $info['chapterid'],
             'isFree'=>isset($info['isFree'])?$info['isFree']:0,
 //            'isOptional'=>isset($info['isOptional'])?$info['isOptional']:0,
+            'point'=>$info['point'],
             'mode'=>$info['mode'],
             'type'=>isset($info['type'])?$info['type']:'url',
             'length'=>isset($info['length'])?$info['length']:0,
@@ -168,6 +169,7 @@ class Coursetask extends Base{
             'isFree'=>isset($info['isFree'])?$info['isFree']:0,
 //            'isOptional'=>isset($info['isOptional'])?$info['isOptional']:0,
             'mode'=>$info['mode'],
+            'point'=>$info['point'],
             'type'=>isset($info['type'])?$info['type']:'url',
             'length'=>isset($info['length'])?$info['length']:0,
             'mediaSource'=>isset($info['mediaSource'])?$info['mediaSource']:'',
