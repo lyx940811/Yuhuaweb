@@ -65,6 +65,12 @@ class Statistics extends Base{
             ->group('courseid')
             ->count();
         $num=$test/$data*100;
-        dump($data);die;
+        $test[0]=round($num);
+        $num1=(100-$test)/$data*100;
+        $test[1]=round($num1);
+        $this->assign('num',$test);
+        $this->assign('title','课程分布展示');
+        return $this->fetch();
+    }
     }
 }
