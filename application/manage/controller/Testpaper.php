@@ -117,9 +117,9 @@ class Testpaper extends Base{
         if($ok){
             $sdata = [
                 'paperID'=>$role_table->getLastInsID(),
-                'questionId'=>44,
+                'questionId'=>57,
                 'score'=>$total,
-                'questiontype'=>'choice'
+                'questiontype'=>'determine'
 
             ];
 
