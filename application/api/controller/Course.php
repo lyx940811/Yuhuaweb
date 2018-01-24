@@ -580,14 +580,25 @@ class Course extends Home
                     $t['missScore'] = $value;
                 }
             }
-//            $paper_question[$t['type']] = Db::name('')
+            $paper_question[$t['type']] = Db::name('testpaper_item')
+                ->alias('ti')
+                ->join('question q','q.id=ti.questionId')
+                ->where('ti.questiontype',$t['type'])
+                ->where('paperID',$testpaper['id'])
+                ->field('q.*')
+                ->select();
         }
 
-
-
-
-
-        var_dump($topicType);die;
+        foreach ( $paper_question as &$pq ){
+            foreach ( $pq as &$q ){
+                $q['metas'] = (array)json_decode($q['metas']);
+            }
+        }
+        $data = [
+            'topType'   =>  $topicType
+        ];
+        $data = array_merge($data,$paper_question);
+        var_dump($data);die;
     }
 
 
