@@ -10,7 +10,7 @@ namespace app\manage\controller;
 use think\Db;
 use think\Validate;
 
-class Question extends Base{
+class Testpaper extends Base{
 
     public function index(){
 
@@ -20,21 +20,18 @@ class Question extends Base{
         if(!empty($info['type'])){
             $where['a.type'] = ['eq',$info['type']];
         }
-        if(!empty($info['courseId'])){
-            $where['a.courseId'] = ['eq',$info['courseId']];
+        if(!empty($info['courseid'])){
+            $where['a.courseid'] = ['eq',$info['courseid']];
         }
-//        if(!empty($info['status'])){
-//            $where['a.status'] = ['eq',$info['status']];
-//        }
         if(!empty($info['stem'])){
             $where['a.stem'] = ['like',"%{$info['stem']}%"];
         }
 
-        $list = Db::table('question a')
+        $list = Db::table('testpaper a')
             ->join('course b','a.courseid=b.id','LEFT')
-            ->field('a.*,b.title as name')
+            ->join('user c','a.createdUserId=c.id','LEFT')
+            ->field('a.*,b.title,c.username')
             ->where($where)
-            ->order('a.id desc')
             ->paginate(20);
 
 
@@ -66,12 +63,10 @@ class Question extends Base{
             'courseId.require' => '适用课程不能为空',
             'courseId.number' => '适用课程必须为数字',
             'stem.require' => '请填写题干',
-            'answer.require' => '请填写答案',
         ];
         $validate = new Validate([
             'courseId'  => 'require|number',
             'stem'   => 'require',
-            'answer'   => 'require',
         ],$msg);
 
         $validate->check($info);
@@ -106,73 +101,10 @@ class Question extends Base{
         }
     }
 
-    public function edit(){
-
-        $info = input('post.');
-
-        $msg  =   [
-            'courseId.require' => '适用课程不能为空',
-            'courseId.number' => '适用课程必须为数字',
-            'stem.require' => '请填写题干',
-            'answer.require' => '请填写答案',
-        ];
-        $validate = new Validate([
-            'courseId'  => 'require|number',
-            'stem'   => 'require',
-            'answer'   => 'require',
-        ],$msg);
-
-        $validate->check($info);
-
-        $error = $validate->getError();//打印错误规则
-
-        if(is_string($error)){
-            return ['error'=>$error,'code'=>'200'];
-        }
-
-        $role_table = Db::name('question');
-
-        $id = $info['id']+0;
-
-        $data = [
-            'stem'  => $info['stem'],
-            'metas' => isset($info['metas'])?json_encode($info['metas']):'',
-            'type'  => $info['type'],
-            'courseId'=>$info['courseId'],
-            'answer'=>isset($info['answer'])?json_encode($info['answer']):'',
-//            'difficulty'=>'normal',
-//            'createdUserId'=>session('admin_uid'),
-//            'createdTime'=>date('Y-m-d H:i:s',time()),
-
-        ];
-
-        $ok = $role_table->where('id',$id)->update($data);
-
-        if($ok){
-            return ['info'=>'修改成功','code'=>'000'];
-        }else{
-            return ['error'=>'修改失败','code'=>'300'];
-        }
-
-
-    }
-
-
-
     public function single_choice(){
         $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
 
-        $id = request()->get('id');
-        $article = Db::table('question')->where('id',$id)->find();
 
-
-        $metas = !empty($article['metas'])?json_decode($article['metas']):'';
-
-        $this->assign('article',$article);
-
-        $this->assign('metas',$metas);
-        $this->assign('id',$id);
-        $this->assign('typename','单选题');
         $this->assign('course',$course);
 
         return $this->fetch();

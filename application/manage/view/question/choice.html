@@ -4,12 +4,71 @@
 <body>
 <div class="container-fluid">
 
+    {php}$num=0;{/php}
+    {if condition="isset($id)"}
+    <!--修改-->
+    <div class="well">
+        <ol class="breadcrumb">
+            <li><a href="{:url('index')}">题目管理</a></li>
+            <li class="active">修改多选题</li>
+        </ol>
+    </div>
+    <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('edit')}">
+        <div class="form-group">
+            <label for="courseId" class="col-sm-2 control-label">适用课程</label>
+            <div class="col-sm-5">
+                <select name="courseId" class="form-control">
+                    <option value="">--请选择--</option>
+                    {volist name="course" id="c"}
+                    <option value="{$c.id}" {if condition="$article['courseId'] eq $c['id']"}selected="selected"{/if}>{$c.title}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="stem" class="col-sm-2 control-label">题干</label>
+            <div class="col-sm-5">
+                <textarea cols="20" rows="5" class="form-control" name="stem" >{$article.stem}</textarea>
+            </div>
+        </div>
+        {php}
+        $item = ['A','B','C','D','E'];
+        {/php}
+        {volist name="metas->choices" id="m"}
+        {php}$num++;{/php}
+        <div class="form-group">
+            <label class="col-sm-2 control-label">选项{$item[$key]}</label>
+            <div class="col-md-5 controls radios">
+                <textarea cols="20" rows="5" class="form-control" name="metas[choices][]">{$m}</textarea>
+                <label>{php}$answer = json_decode($article['answer']);{/php}
+                    <input  type="checkbox" name="answer[]" value="{$key}" {if condition="in_array($key,$answer)"}checked="checked"{/if}>
+                    正确答案
+                </label>
+            </div>
+        </div>
+        {/volist}
+
+        <div class="center-block">
+            <button type="button" class="btn btn-primary" onclick="additem();">新增选项</button>
+        </div>
+        <input type="hidden" name="type" value="choice"/>
+        <input type="hidden" name="id" value="{$article.id}"/>
+        <!-- 模态框底部 -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="dopost('editshow',1);">保存继续添加</button>
+            <button type="button" class="btn btn-primary" onclick="dopost('edit',1);">保存</button>
+            <a  class="btn btn-primary" href="{:url('index')}">返回</a>
+        </div>
+    </form>
+    <!--修改-->
+    {else/}
     <div class="well">
         <ol class="breadcrumb">
             <li><a href="{:url('index')}">题目管理</a></li>
             <li class="active">添加多选题</li>
         </ol>
     </div>
+    <!--添加-->
     <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
         <div class="form-group">
             <label for="courseId" class="col-sm-2 control-label">适用课程</label>
@@ -30,7 +89,7 @@
         </div>
         <div class="form-group">
             <label class="col-sm-2 control-label">选项A</label>
-            <div class="col-sm-5">
+            <div class="col-md-5 controls radios">
                 <textarea cols="20" rows="5" class="form-control" name="metas[choices][]"></textarea>
                 <label>
                     <input  type="checkbox" name="answer[]" value="0">
@@ -51,28 +110,30 @@
         <div class="center-block">
             <button type="button" class="btn btn-primary" onclick="additem();">新增选项</button>
         </div>
-
         <input type="hidden" name="type" value="choice"/>
         <!-- 模态框底部 -->
         <div class="modal-footer">
             <button type="button" class="btn btn-primary" onclick="dopost('addshow',0);">保存继续添加</button>
             <button type="button" class="btn btn-primary" onclick="dopost('add',0);">保存</button>
-            <a  class="btn btn-primary" href="{:url('index')}"   >返回</a>
+            <a  class="btn btn-primary" href="{:url('index')}">返回</a>
         </div>
     </form>
-
-
+    <!--添加-->
+    {/if}
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
 
-    var num = 0;
+    var num = {$num};
 
     function additem() {
 
-        var arr = {0:'C',1:'D',2:'E'};
+        var arr = {0:'A',1:'B',2:'C',3:'D',4:'E'};
 
-        if(num>=3){
+        if(num==0){
+            num=2
+        }
+        if(num>4){
             alert('太多了');return;
         }
         var html = '<div class="form-group">';
@@ -86,7 +147,7 @@
         html += '</div>';
         html += '</div>';
 
-        var last = $('#form0 .form-group').last()
+        var last = $('form .form-group').last()
         $(last).after(html)
         // console.log(html)
         num++;
