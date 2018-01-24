@@ -9,11 +9,17 @@
     <!--修改-->
     <div class="well">
         <ol class="breadcrumb">
-            <li><a href="{:url('index')}">题目管理</a></li>
-            <li class="active">修改单选题</li>
+            <li><a href="{:url('index')}">试卷管理</a></li>
+            <li class="active">修改试题</li>
         </ol>
     </div>
     <form class="form-horizontal" role="form" id="form1" method="post" action="{:url('edit')}">
+        <div class="form-group">
+            <label for="stem" class="col-sm-2 control-label">题干</label>
+            <div class="col-sm-5">
+                <textarea cols="20" rows="5" class="form-control" name="stem" >{$article.stem}</textarea>
+            </div>
+        </div>
         <div class="form-group">
             <label for="courseId" class="col-sm-2 control-label">适用课程</label>
             <div class="col-sm-5">
@@ -23,12 +29,6 @@
                     <option value="{$c.id}" {if condition="$article['courseId'] eq $c['id']"}selected="selected"{/if}>{$c.title}</option>
                     {/volist}
                 </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="stem" class="col-sm-2 control-label">题干</label>
-            <div class="col-sm-5">
-                <textarea cols="20" rows="5" class="form-control" name="stem" >{$article.stem}</textarea>
             </div>
         </div>
         {php}
@@ -48,14 +48,10 @@
         </div>
         {/volist}
 
-        <div class="center-block">
-            <button type="button" class="btn btn-primary" onclick="additem();">新增选项</button>
-        </div>
-        <input type="hidden" name="type" value="single_choice"/>
         <input type="hidden" name="id" value="{$article.id}"/>
         <!-- 模态框底部 -->
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" onclick="dopost('editshow',1);">保存继续添加</button>
+            <button type="button" class="btn btn-primary" onclick="dopost('editshow',1);">保存下一步</button>
             <button type="button" class="btn btn-primary" onclick="dopost('edit',1);">保存</button>
             <a  class="btn btn-primary" href="{:url('index')}">返回</a>
         </div>
@@ -64,12 +60,24 @@
     {else/}
     <div class="well">
         <ol class="breadcrumb">
-            <li><a href="{:url('index')}">题目管理</a></li>
-            <li class="active">添加单选题</li>
+            <li><a href="{:url('index')}">试卷管理</a></li>
+            <li class="active">添加试卷</li>
         </ol>
     </div>
     <!--添加-->
     <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
+        <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">试卷名称</label>
+            <div class="col-sm-5">
+                <input type="text" name="name" id="name" class="form-control" placeholder="试卷名称"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="description" class="col-sm-2 control-label">试卷说明</label>
+            <div class="col-sm-5">
+                <input type="text" name="name" id="description" class="form-control" placeholder="试卷说明"/>
+            </div>
+        </div>
         <div class="form-group">
             <label for="courseId" class="col-sm-2 control-label">适用课程</label>
             <div class="col-sm-5">
@@ -82,39 +90,28 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="stem" class="col-sm-2 control-label">题干</label>
-            <div class="col-sm-5">
-                <textarea cols="20" rows="5" class="form-control" name="stem" id="stem"></textarea>
+            <label class="col-xs-2 control-label">题目设置</label>
+            <div class="col-xs-5 controls">
+                <div class="col-xs-2 controls">
+                    <label>单选题                    </label>
+                </div>
+                <div class="col-xs-5 controls">
+                    <label>题目数量：
+                        <input  type="text" name="answer[]" value="0"> /12
+                    </label>
+                </div>
+                <div class="col-xs-5 controls">
+                    <label>题目分值：
+                        <input  type="text" name="answer[]" value="0">
+                    </label>
+                </div>
             </div>
         </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">选项A</label>
-            <div class="col-md-5 controls radios">
-                <textarea cols="20" rows="5" class="form-control" name="metas[choices][]"></textarea>
-                <label>
-                    <input  type="radio" name="answer[]" value="0">
-                    正确答案
-                </label>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">选项B</label>
-            <div class="col-sm-5">
-                <textarea cols="20" rows="5" class="form-control" name="metas[choices][]"></textarea>
-                <label>
-                    <input  type="radio" name="answer[]" value="1">
-                    正确答案
-                </label>
-            </div>
-        </div>
-        <div class="center-block">
-            <button type="button" class="btn btn-primary" onclick="additem();">新增选项</button>
-        </div>
-        <input type="hidden" name="type" value="single_choice"/>
+
+        <input type="hidden" name="type" value=""/>
         <!-- 模态框底部 -->
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" onclick="dopost('addshow',0);">保存继续添加</button>
-            <button type="button" class="btn btn-primary" onclick="dopost('add',0);">保存</button>
+            <button type="button" class="btn btn-primary" onclick="dopost('add',0);">保存下一步</button>
             <a  class="btn btn-primary" href="{:url('index')}">返回</a>
         </div>
     </form>
@@ -123,37 +120,6 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
-
-    var num = {$num};
-
-    function additem() {
-
-        var arr = {0:'A',1:'B',2:'C',3:'D',4:'E'};
-
-        if(num==0){
-            num=2
-        }
-        if(num>4){
-            alert('太多了');return;
-        }
-        var html = '<div class="form-group">';
-        html += '<label class="col-sm-2 control-label">选项'+arr[num]+'</label>';
-        html += '<div class="col-sm-5">';
-        html += '<textarea cols="20" rows="5" class="form-control" name="metas[choices][]"></textarea>';
-        html += '<label>';
-        html += '<input  type="radio" name="answer[]" value="'+(num+2)+'">';
-        html += '正确答案';
-        html += '</label>';
-        html += '</div>';
-        html += '</div>';
-
-        var last = $('form .form-group').last()
-        $(last).after(html)
-        // console.log(html)
-        num++;
-
-    }
-
 
     function dopost($type,formid) {
         if($type=='add' || $type=='addshow'){
