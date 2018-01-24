@@ -25,4 +25,9 @@ class Testpaper extends ThinkModel
     {
         return $this->hasOne('User','id','userid');
     }
+
+    public function question()
+    {
+        return $this->hasMany('Question','paperID','id');
+    }
 }
