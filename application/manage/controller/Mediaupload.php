@@ -104,8 +104,8 @@ class Mediaupload extends Controller
 //            break;
         }
 
-//        $oFInfo    = finfo_open();
-//        $sMimeType = finfo_file($oFInfo, $p_sTmpName, FILEINFO_MIME_TYPE);
+        $oFInfo    = finfo_open();
+        $sMimeType = finfo_file($oFInfo, $p_sTmpName, FILEINFO_MIME_TYPE);
 
         finfo_close($oFInfo);
 
