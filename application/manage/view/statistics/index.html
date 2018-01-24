@@ -10,7 +10,7 @@
         <div class="well clearfix">
             <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
                 <div class="form-group">
-                    <select name="status" class="form-control">
+                    <select name="status" id="mySelect1" class="form-control">
                         <option value="1" selected >学生</option>
                         <option value="2">课程</option>
                         <option value="2">教师</option>
@@ -37,6 +37,14 @@
             var test=$(this).val();
             if(test==2){
                 window.location.href="{:url('majors')}"
+            }
+        });
+        $("#mySelect1").change(function(){
+            var test=$(this).val();
+            if(test==2){
+                window.location.href="{:url('course')}"
+            }else if($test==3){
+                window.locaton.href="{:url('teacher')}"
             }
         });
     })

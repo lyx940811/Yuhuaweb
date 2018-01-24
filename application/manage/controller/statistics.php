@@ -24,7 +24,7 @@ class Statistics extends Base{
         foreach($list as $k=>$v){
             $sex1[$k]=$array[$v['sex']];
             $test=$v['num']/$count*100;
-            $num1[$k]=round($test);
+            $num1[$k]=round($test,1);
         }
         $sex=json_encode($sex1);
         $num=json_encode($num1);
@@ -46,7 +46,7 @@ class Statistics extends Base{
         foreach($list as $k=>$v){
             $name1[$k]=$v['name'];
             $test=$v['num']/$count*100;
-            $num1[$k]=round($test);
+            $num1[$k]=round($test,1);
         }
         $name=json_encode($name1);
         $num=json_encode($num1);
@@ -64,13 +64,15 @@ class Statistics extends Base{
         $data=Db::table('study_result')
             ->group('courseid')
             ->count();
-        $num=$test/$data*100;
-        $test[0]=round($num);
-        $num1=(100-$test)/$data*100;
-        $test[1]=round($num1);
-        $this->assign('num',$test);
+        $num=$list/$data*100;
+//        dump($list);dump($data);dump($num);die;
+        $test[0]=round($num,1);
+        $num1=($data-$list)/$data*100;
+        $test[1]=round($num1,1);
+        $num2=json_encode($test);
+        $this->assign('num',$num2);
         $this->assign('title','课程分布展示');
         return $this->fetch();
-    }
+
     }
 }
