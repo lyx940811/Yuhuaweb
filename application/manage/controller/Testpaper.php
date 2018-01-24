@@ -115,8 +115,15 @@ class Testpaper extends Base{
         $ok = $role_table->insert($data);
 
         if($ok){
+            $sdata = [
+                'paperID'=>$role_table->getLastInsID(),
+                'questionId'=>57,
+                'score'=>$total,
+                'questiontype'=>'determine'
 
-            Db::table('testpaper_item')->insert();
+            ];
+
+            Db::table('testpaper_item')->insert($sdata);
 
             Db::commit();
             return ['info'=>'添加成功','code'=>'000'];
