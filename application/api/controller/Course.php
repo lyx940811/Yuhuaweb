@@ -549,14 +549,45 @@ class Course extends Home
      */
     public function getpaper()
     {
-        $courseid = $this->data['courseid'];
+        $courseid = 36;//$this->data['courseid'];
         if(!CourseModel::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
         if(!Testpaper::get(['courseid'=>$courseid])){
             return json_data(400,$this->codeMessage[400],'');
         }
+        $testpaper = Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->find();
+        $meta = json_decode($testpaper['metas']);
 
+
+        $topicType = [];
+        foreach ( (array)$meta->counts as $key=>$value){
+            $question['type'] = $key;
+            $question['num'] = $value;
+            $topicType[] = $question;
+        }
+
+        $paper_question = array();
+
+        foreach ( $topicType as &$t ){
+            foreach ( (array)$meta->scores as $key=>$value ){
+                if( $t['type']==$key ){
+                    $t['score'] = $value;
+                }
+            }
+            foreach ( (array)$meta->missScores as $key=>$value ){
+                if( $t['type']==$key ){
+                    $t['missScore'] = $value;
+                }
+            }
+//            $paper_question[$t['type']] = Db::name('')
+        }
+
+
+
+
+
+        var_dump($topicType);die;
     }
 
 
