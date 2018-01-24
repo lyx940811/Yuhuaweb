@@ -75,4 +75,58 @@ class Statistics extends Base{
         return $this->fetch();
 
     }
+    public function teacher(){
+        $education1=[];
+        $num1=[];
+        $list = Db::table('teacher_level')
+            ->field('count(education) as num,education')
+            ->group('education')
+            ->select();
+        $count = Db::table('teacher_level')->count();
+        $array=['0'=>'初中','1'=>'高中','2'=>'中专','3'=>'专科','4'=>'本科及以上'];
+        foreach($list as $k=>$v){
+            if(is_numeric($v['education'])){
+                $education1[$k]=$array[$v['education']];
+                $test=$v['num']/$count*100;
+                $num1[$k]=round($test,1);
+            }else{
+                $education1[$k]='未知';
+                $test=$v['num']/$count*100;
+                $num1[$k]=round($test,1);
+            }
+        }
+        $education=json_encode($education1);
+        $num=json_encode($num1);
+        $this->assign('name',$education);
+        $this->assign('num',$num);
+        $this->assign('title','教师学历分布展示');
+        $this->assign('smallt','教师学历');
+        return $this->fetch();
+    }
+    public function title(){
+        $title1=[];
+        $num1=[];
+        $total=0;
+        $list = Db::table('teacher_work')
+            ->field('count(title) as num,title')
+            ->group('title')
+            ->select();
+        $count = Db::table('teacher_info')->count();
+        foreach($list as $k=>$v){
+                $title1[$k]=$v['title'];
+                $total+=$v['num'];
+                $test=$v['num']/$count*100;
+                $num1[$k]=round($test,1);
+        }
+        $title1[]='未知';
+        $test=($count-$total)/$count*100;
+        $num1[]=round($test,1);
+        $title=json_encode($title1);
+        $num=json_encode($num1);
+        $this->assign('name',$title);
+        $this->assign('num',$num);
+        $this->assign('title','教师职称分布展示');
+        $this->assign('smallt','教师职称');
+        return $this->fetch();
+    }
 }
