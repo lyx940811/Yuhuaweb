@@ -16,8 +16,8 @@
                         <option value="3" selected >教师</option>
                     </select>
                     <select name="status" id="mySelect" class="form-control">
-                        <option value="1" selected >教师学历分布</option>
-                        <option value="2">教师职称分布</option>
+                        <option value="1">教师学历分布</option>
+                        <option value="2" selected >教师职称分布</option>
                     </select>
                 </div>
             </form>
@@ -33,8 +33,8 @@
     $(document).ready(function() {
         $("#mySelect").change(function(){
             var test=$(this).val();
-            if(test==2){
-                window.location.href="{:url('title')}"//职称
+            if(test==1){
+                window.location.href="{:url('teacher')}"//职称
             }
         });
         $("#mySelect1").change(function(){
