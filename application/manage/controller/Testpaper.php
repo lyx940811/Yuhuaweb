@@ -32,6 +32,7 @@ class Testpaper extends Base{
             ->join('user c','a.createdUserId=c.id','LEFT')
             ->field('a.*,b.title,c.username')
             ->where($where)
+            ->order('a.id desc')
             ->paginate(20);
 
         $qtype = [
@@ -127,7 +128,7 @@ class Testpaper extends Base{
             foreach ($question as $k=>$v){
 
                 if($v>0){
-                    $questionitem[] = Db::table('question')->field('id,type')->where('type',$k)->order('id desc')->limit($v)->select();
+                    $questionitem[] = Db::table('question')->field('id,type')->where('type',$k)->order('RAND()')->limit($v)->select();
                 }
             }
 
