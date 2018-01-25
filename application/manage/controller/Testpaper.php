@@ -59,6 +59,7 @@ class Testpaper extends Base{
     public function add(){
         $info = input('post.');
 
+
         $msg  =   [
             'name.require' => '请填写试卷名称',
             'courseid.require' => '适用课程不能为空',
@@ -81,7 +82,7 @@ class Testpaper extends Base{
 
 
         $total = 0;
-        $score = $info['scores'];
+        $score = isset($info['scores'])?$info['scores']:0;
 
         if(isset($info['counts'])){
             foreach ($info['counts'] as $k=>$v){
@@ -115,18 +116,38 @@ class Testpaper extends Base{
         $ok = $role_table->insert($data);
 
         if($ok){
-            $sdata = [
-                'paperID'=>$role_table->getLastInsID(),
-                'questionId'=>57,
-                'score'=>$total,
-                'questiontype'=>'determine'
+            $id = $role_table->getLastInsID();//先取testpaper插入的id
+
+            $question = isset($info['counts'])?$info['counts']:0;
+
+            foreach ($question as $k=>$v){
+
+                if($v>0){
+                    $questionitem[] = Db::table('question')->field('id,type')->where('type',$k)->order('id desc')->limit($v)->select();
+                }
+            }
+
+            foreach ($questionitem as $k=>$v){
+
+                foreach ($v as $kk=>$vv){
+
+                Db::table('testpaper_item')->insert(
+                    ['paperID'=>$id,'questionId'=>$vv['id'],'score'=>$score[$vv['type']],'questiontype'=>$vv['type']]
+                );
+                Db::table('question')->where('id',$vv['id'])->update(['score'=>$score[$vv['type']]]);
+
+                }
+            }
+
+            $info = [
+                'id'=>$id,
+                'questionitem'=>$questionitem
 
             ];
 
-            Db::table('testpaper_item')->insert($sdata);
-
             Db::commit();
-            return ['info'=>'添加成功','code'=>'000'];
+            return ['info'=>$info,'code'=>000];
+
         }else{
             Db::rollback();
             return ['error'=>'添加失败','code'=>'300'];
@@ -140,25 +161,16 @@ class Testpaper extends Base{
         $article = Db::table('testpaper')->where('id',$id)->find();
 
 
-        //单选题
-        $item = Db::table('question')->group('type')->field('count(id) as num,type')->select();
+        $item = [
+            ['id'=>1,'name'=>'单选题','type'=>'single_choice'],
+            ['id'=>2,'name'=>'多选题','type'=>'choice'],
+            ['id'=>3,'name'=>'判断题','type'=>'determine'],
+            ['id'=>4,'name'=>'问答题','type'=>'essay'],
+        ];
 
         foreach ($item as $k=>$v){
-
-            if($v['type']=='single_choice'){
-                $item[$k]['name'] = '单选题';
-            }
-            if($v['type']=='choice'){
-                $item[$k]['name'] = '多选题';
-            }
-            if($v['type']=='determine'){
-                $item[$k]['name'] = '判断题';
-            }
-            if($v['type']=='essay'){
-                $item[$k]['name'] = '问答题';
-            }
+            $item[$k]['num'] = Db::table('question')->where('type',$v['type'])->value('count(id) as num');
         }
-
 
         $metas = !empty($article['metas'])?json_decode($article['metas']):'';
 
@@ -169,6 +181,32 @@ class Testpaper extends Base{
         $this->assign('typename','试卷管理');
         $this->assign('course',$course);
         return $this->fetch();
+    }
+
+    public function additem(){
+
+        if(request()->isPost()){
+            $paperid = request()->get('id')+0;
+
+            if(!$paperid){
+                return ['error'=>'请先添加试卷','code'=>200];
+            }
+
+
+            var_dump($paperid);
+
+
+            $this->assign('pid',$paperid);
+            return $this->fetch();
+        }else{
+            $info = input('post.');
+            print_r($info);
+        }
+
+
+
+
+
     }
 
     public function delete(){

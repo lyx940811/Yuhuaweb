@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+{include file="manage/header" /}
+<body>
+<div class="container-fluid">
+
+    <div class="well">
+        <ol class="breadcrumb">
+            <li><a href="{:url('index')}">试卷管理</a></li>
+            <li class="active">试卷管理/添加试卷</li>
+        </ol>
+    </div>
+    <!--添加-->
+    <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
+
+        <input type="hidden" name="id" value="{$Think.get.pid}"/>
+        <!-- 模态框底部 -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="dopost('add',0);">保存下一步</button>
+            <a  class="btn btn-primary" href="{:url('index')}">返回</a>
+        </div>
+    </form>
+    <!--添加-->
+    {/if}
+</div>
+{include file='manage/bottom'}
+<script type="text/javascript">
+
+    function dopost($type,formid) {
+        if($type=='add' || $type=='addshow'){
+            $url = "{:url('add')}";
+        }else{
+            $url = "{:url('edit')}";
+        }
+
+        $.ajax({
+            url: $url+"?"+Math.random(),
+            type:"post",
+            data:$('#form'+formid).serialize(),
+            success:function(data){
+
+                if(data.code=='000'){
+
+                    alert(data.info)
+                    $('#myModal').modal('hide');
+
+                    window.location.reload()
+
+                }else{
+                    alert(data.error)
+                }
+
+            },
+            error:function(e){
+                alert("添加信息错误");
+            }
+        });
+    }
+
+
+</script>
+</body>
+</html>
