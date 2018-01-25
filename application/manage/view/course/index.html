@@ -52,6 +52,7 @@
             <th>价格</th>
             <th>连载状态</th>
             <th>学员数</th>
+            <th>学分</th>
             <th>状态</th>
             <th>创建者</th>
             <th>课程教师</th>
@@ -67,6 +68,7 @@
             <td>{$vo.price}</td>
             <td>{if condition="$vo['serializeMode'] eq 'none'"}非连载课程{elseif condition="$vo['serializeMode'] eq 'serialized'"/}连载课程{else/}已完结{/if}</td>
             <td>{$vo.num}</td>
+            <td>{$vo.point}</td>
             <td>{$vo.status?'启用':'禁用'}</td>
             <td>{$vo.userid|getUserinfo}</td>
             <td>{$vo.realname}</td>
