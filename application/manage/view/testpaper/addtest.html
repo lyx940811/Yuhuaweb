@@ -109,8 +109,10 @@
                     <span class="mlm">题目分值:</span>
                     <input type="text" class="form-control iteminput" name="scores[{$i.type}]"  value="2" data-role="score" />
 
+                    {if condition="$i['type'] eq 'choice'"}
                     <span class="mlm">漏选分值:</span>
                     <input type="text" class="form-control iteminput" name="missScores[choice]"  value="0" data-role="missScore" />
+                    {/if}
                 </li>
                 {/volist}
 

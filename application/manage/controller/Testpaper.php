@@ -23,8 +23,8 @@ class Testpaper extends Base{
         if(!empty($info['courseid'])){
             $where['a.courseid'] = ['eq',$info['courseid']];
         }
-        if(!empty($info['stem'])){
-            $where['a.stem'] = ['like',"%{$info['stem']}%"];
+        if(!empty($info['name'])){
+            $where['a.name'] = ['like',"%{$info['name']}%"];
         }
 
         $list = Db::table('testpaper a')
@@ -33,7 +33,6 @@ class Testpaper extends Base{
             ->field('a.*,b.title,c.username')
             ->where($where)
             ->paginate(20);
-
 
         $qtype = [
             ['id'=>1,'name'=>'单选题','type'=>'single_choice'],
@@ -79,20 +78,25 @@ class Testpaper extends Base{
 
         $role_table = Db::name('testpaper');
 
-
         $total = 0;
         $score = isset($info['scores'])?$info['scores']:0;
+        $counts = isset($info['counts'])?$info['counts']:0;
 
-        if(isset($info['counts'])){
+
+        $num = 0;
+        if($counts){
             foreach ($info['counts'] as $k=>$v){
                 $total +=$v*$score[$k];
+                if($counts[$k]>0){
+                    $num++;
+                }
             }
         }
 
         $meta = [
             'mode'=>$info['mode'],
             'ranges'=>$info['ranges'],
-            'counts'=>isset($info['counts'])?$info['counts']:'',
+            'counts'=>isset($counts)?$counts:'',
             'scores'=>$info['scores'],
             'missScores'=>$info['missScores'],
             'percentages'=>$info['percentages'],
@@ -105,19 +109,20 @@ class Testpaper extends Base{
             'courseid'=>$info['courseid'],
             'type'  => $info['type'],
             'score'  => $total,
-            'itemCount'  => isset($info['counts'])?count($info['counts']):0,
+            'itemCount'  => $num,
             'createdUserId'=>session('admin_uid'),
             'createTime'=>date('Y-m-d H:i:s',time()),
 
         ];
 
+        //开启事务
         Db::startTrans();
         $ok = $role_table->insert($data);
 
         if($ok){
             $id = $role_table->getLastInsID();//先取testpaper插入的id
 
-            $question = isset($info['counts'])?$info['counts']:0;
+            $question = isset($counts)?$counts:0;
 
             foreach ($question as $k=>$v){
 
@@ -126,6 +131,7 @@ class Testpaper extends Base{
                 }
             }
 
+            //循环插入与题目相关联的表里
             foreach ($questionitem as $k=>$v){
 
                 foreach ($v as $kk=>$vv){
@@ -138,27 +144,28 @@ class Testpaper extends Base{
                 }
             }
 
-            $info = [
+            $res = [
                 'id'=>$id,
                 'questionitem'=>$questionitem
 
             ];
 
             Db::commit();
-            return ['info'=>$info,'code'=>000];
-
+            return ['info'=>$res,'code'=>000];
         }else{
             Db::rollback();
             return ['error'=>'添加失败','code'=>'300'];
         }
     }
 
+    /*
+     * 添加试卷页面
+     */
     public function addtest(){
         $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
 
         $id = request()->get('id');
         $article = Db::table('testpaper')->where('id',$id)->find();
-
 
         $item = [
             ['id'=>1,'name'=>'单选题','type'=>'single_choice'],
@@ -182,6 +189,9 @@ class Testpaper extends Base{
         return $this->fetch();
     }
 
+    /*
+     * 添加试卷的下一步页面
+     */
     public function additem(){
         $paperid = request()->param('id')+0;
         if(!$paperid){
@@ -189,6 +199,7 @@ class Testpaper extends Base{
         }
 
         if(request()->get('do')=='savescore'){
+            //点击保存试卷的操作
             $info = input('post.');
 
             $ok = Db::table('testpaper')->where('id',$paperid)->update(
@@ -198,9 +209,9 @@ class Testpaper extends Base{
             );
 
             if(is_numeric($ok)){
-                return ['info'=>'修改成功','code'=>'000'];
+                return ['info'=>'保存成功','code'=>'000'];
             }else{
-                return ['error'=>'修改失败','code'=>'200'];
+                return ['error'=>'保存失败','code'=>'200'];
             }
 
         }else{
@@ -220,7 +231,6 @@ class Testpaper extends Base{
         }
 
     }
-
 
 
 
