@@ -549,7 +549,7 @@ class Course extends Home
      */
     public function getpaper()
     {
-        $courseid = 36;//$this->data['courseid'];
+        $courseid = 35;//$this->data['courseid'];
         if(!CourseModel::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
@@ -585,7 +585,7 @@ class Course extends Home
                 ->join('question q','q.id=ti.questionId')
                 ->where('ti.questiontype',$t['type'])
                 ->where('paperID',$testpaper['id'])
-                ->field('q.*')
+                ->field('q.id,q.type,q.stem,q.metas')
                 ->select();
         }
 
@@ -595,22 +595,100 @@ class Course extends Home
             }
         }
         $data = [
+            'paperID'   =>  $testpaper['id'],
+            'name'      =>  $testpaper['name'],
+            'score'     =>  $testpaper['score'],
             'topType'   =>  $topicType
         ];
         $data = array_merge($data,$paper_question);
-        var_dump($data);die;
+
+        return json_data(0,$this->codeMessage[0],$data);
     }
 
 
     /**
-     * 获得考试试卷的题目
+     * 交卷
      */
-    public function getquestion()
+    public function handpaper()
     {
-        $paperid = $this->data['paperID'];
+        $paperid = 2;//$this->data['paperID'];
+        $score = 0;
         if(!Testpaper::get($paperid)){
             return json_data(400,$this->codeMessage[400],'');
         }
+//        $dopaper = $this->data['dopaper'];
+
+        $dopaper = [
+            44  =>  [1],
+            56  =>  [0,1],
+            57  =>  [1],
+        ];
+
+        $testpaper = Db::name('testpaper')->find($paperid);
+        $meta = json_decode($testpaper['metas']);
+        //$topicType是为了拿每种题型的分值及可能存在的漏选分值
+        $topicType = [];
+        foreach ( (array)$meta->counts as $key=>$value){
+            $question['type'] = $key;
+            $topicType[$key] = '';
+        }
+
+        foreach ( $topicType as $tkey=>$tvalue ){
+            foreach ( (array)$meta->scores as $key=>$value ){
+                if( $tkey==$key ){
+                    $topicType[$tkey]['score'] = $value;
+                }
+            }
+            foreach ( (array)$meta->missScores as $key=>$value ){
+                if( $tkey==$key ){
+                    $topicType[$tkey]['missScore'] = $value;
+                }
+            }
+        }
+
+        //拿到resultid
+
+        foreach ( $dopaper as $key=>$value ){
+            $question = Db::name('question')->find($key);
+            $answer = json_decode($question['answer']);
+            switch ( $question['type'] ){
+                case 'single_choice':
+                    if(empty(array_intersect($answer,$value))){
+                        break;
+                    }
+                    $score = $score+$topicType['single_choice']['score'];
+                    break;
+                case 'choice':
+                    //没答题，直接break
+                    if(empty($value)){
+                        break;
+                    }
+                    //如果填写的答案有在标准答案外的答案的话算错，break
+                    if(!empty(array_diff($value,$answer))){
+                        break;
+                    }
+                    //剩下来的就是在答案内的了，取差集，拿个数
+                    $diffNum = count(array_diff($answer,$value));
+                    if($diffNum==0){
+                        //没有差集，全部答对，得满分
+                        $score = $score+$topicType['choice']['score'];
+                    } else{
+                        //有差集，根据个数来减掉漏选分
+                        $score = ($score+$topicType['choice']['score'])-$diffNum*$topicType['choice']['missScore'];
+                    }
+                    break;
+                case 'determine':
+                    if(empty(array_intersect($answer,$value))){
+                        break;
+                    }
+                    $score = $score+$topicType['determine']['score'];
+                    break;
+            }
+        }
+        $data = [
+            'score' =>  $score
+        ];
+        return json_data(0,$this->codeMessage[0],$data);
     }
 
 
