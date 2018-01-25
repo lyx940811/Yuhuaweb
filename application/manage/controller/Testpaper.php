@@ -280,11 +280,18 @@ class Testpaper extends Base{
 
     public function delete(){
         $id = $_GET['rid']+0;
+
+        Db::startTrans();
         $ok = Db::name('testpaper')->where('id',$id)->delete();
 
         if(is_numeric($ok)){
+
+            Db::table('testpaper_item')->where('paperID',$id)->delete();
+
+            Db::commit();
             return ['info'=>'删除成功','code'=>'000'];
         }else{
+            Db::rollback();
             return ['error'=>'删除失败','code'=>'200'];
         }
     }
