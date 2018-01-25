@@ -77,7 +77,7 @@
             <td>{$vo.courseid?'使用中':'未使用'}</td>
             <td>
                 {if condition="check($uid,'/manage/testpaper/edit')"}
-                        <a href="#" data-toggle="modal" data-target="#myModal_edit{$vo.id}">编辑</a>
+                        <a href="{:url('addtest')}?id={$vo.id}">编辑</a>
                         <strong>/</strong>
                 {/if}
                 {if condition="check($uid,'/manage/testpaper/delete')"}
