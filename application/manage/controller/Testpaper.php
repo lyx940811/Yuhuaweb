@@ -59,7 +59,6 @@ class Testpaper extends Base{
     public function add(){
         $info = input('post.');
 
-
         $msg  =   [
             'name.require' => '请填写试卷名称',
             'courseid.require' => '适用课程不能为空',
@@ -184,30 +183,47 @@ class Testpaper extends Base{
     }
 
     public function additem(){
-
-        if(request()->isPost()){
-            $paperid = request()->get('id')+0;
-
-            if(!$paperid){
-                return ['error'=>'请先添加试卷','code'=>200];
-            }
-
-
-            var_dump($paperid);
-
-
-            $this->assign('pid',$paperid);
-            return $this->fetch();
-        }else{
-            $info = input('post.');
-            print_r($info);
+        $paperid = request()->param('id')+0;
+        if(!$paperid){
+            return ['error'=>'请先添加试卷','code'=>200];
         }
 
+        if(request()->get('do')=='savescore'){
+            $info = input('post.');
 
+            $ok = Db::table('testpaper')->where('id',$paperid)->update(
+                [
+                    'passedScore'=>$info['passedScore']+0,
+                ]
+            );
 
+            if(is_numeric($ok)){
+                return ['info'=>'修改成功','code'=>'000'];
+            }else{
+                return ['error'=>'修改失败','code'=>'200'];
+            }
 
+        }else{
+
+            $list = Db::table('testpaper_item')->field('questionId as qid')->where('paperID',$paperid)->select();
+
+            foreach ($list as $k=>$v){
+                $newlist[] = Db::table('question a')
+                    ->join('course b','a.courseId=b.id','LEFT')
+                    ->field('a.id,a.type,a.stem,a.score,b.title')->where('a.id',$v['qid'])->find();
+            }
+
+            $this->assign('list',$newlist);
+            $this->assign('typename','试卷管理');
+            $this->assign('id',$paperid);
+            return $this->fetch();
+        }
 
     }
+
+
+
+
 
     public function delete(){
         $id = $_GET['rid']+0;

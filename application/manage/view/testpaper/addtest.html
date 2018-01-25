@@ -148,11 +148,11 @@
             success:function(data){
 
                 console.log(data)
-                // if(data.code=='000' && data.info.id){
-                //     window.location.href = "{:url('additem')}?id="+data.info.id
-                // }else{
-                //     alert(data.error)
-                // }
+                if(data.code=='000' && data.info.id){
+                    window.location.href = "{:url('additem')}?id="+data.info.id
+                }else{
+                    alert(data.error)
+                }
 
             },
             error:function(e){
