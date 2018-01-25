@@ -11,6 +11,7 @@ return[
         '__CSS__' => '/static/index/css/',
         '__IMG__' => '/static/index/img/',
         '__JS__' => '/static/index/js/',
+        '__EXAMINATION_JS__'=>'/static/index/examinationjs',
         '__JSS__' => '/static/index/jss/',
         '__TEACHERCSS__' => '/static/index/teacher/css/',
         '__TEACHERJS__' => '/static/index/teacher/js/',
