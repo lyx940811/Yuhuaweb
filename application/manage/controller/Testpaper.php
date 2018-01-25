@@ -158,6 +158,49 @@ class Testpaper extends Base{
         }
     }
 
+
+    public function edit(){
+        $info = input('post.');
+
+        $msg  =   [
+            'name.require' => '请填写试卷名称',
+            'courseid.require' => '适用课程不能为空',
+            'courseid.number' => '适用课程必须为数字',
+        ];
+        $validate = new Validate([
+            'name'   => 'require',
+            'courseid'  => 'require|number',
+        ],$msg);
+
+        $validate->check($info);
+
+        $error = $validate->getError();//打印错误规则
+
+        if(is_string($error)){
+            return ['error'=>$error,'code'=>'200'];
+        }
+
+        $role_table = Db::name('testpaper');
+
+        $data = [
+            'name'  => $info['name'],
+            'description'  => $info['description'],
+            'courseid'=>$info['courseid'],
+//            'createdUserId'=>session('admin_uid'),
+//            'createTime'=>date('Y-m-d H:i:s',time()),
+        ];
+
+        $id = $info['id']+0;
+        $ok = $role_table->where('id',$id)->update($data);
+
+        if($ok){
+
+            return ['info'=>'修改成功','code'=>'000'];
+        }else{
+            return ['error'=>'修改失败','code'=>'300'];
+        }
+    }
+
     /*
      * 添加试卷页面
      */
