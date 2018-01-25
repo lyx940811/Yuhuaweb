@@ -40,7 +40,8 @@
             <label class="col-sm-2 control-label">选项{$item[$key]}</label>
             <div class="col-md-5 controls radios">
                 <textarea cols="20" rows="5" class="form-control" name="metas[choices][]">{$m}</textarea>
-                <label>{php}$answer = json_decode($article['answer']);{/php}
+                {php}$answer = json_decode($article['answer']);{/php}
+                <label>
                     <input  type="radio" name="answer[]" value="{$key}" {if condition="in_array($key,$answer)"}checked="checked"{/if}>
                     正确答案
                 </label>

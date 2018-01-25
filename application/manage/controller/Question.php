@@ -154,65 +154,54 @@ class Question extends Base{
             return ['error'=>'修改失败','code'=>'300'];
         }
 
-
     }
 
 
 
     public function single_choice(){
-        $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
-
-        $id = request()->get('id');
-        $article = Db::table('question')->where('id',$id)->find();
-
-
-        $metas = !empty($article['metas'])?json_decode($article['metas']):'';
-
-        $this->assign('article',$article);
-
-        $this->assign('metas',$metas);
-        $this->assign('id',$id);
-        $this->assign('typename','单选题');
-        $this->assign('course',$course);
+        $this->q_main('单选题');
 
         return $this->fetch();
     }
+
+
     public function choice(){
-        $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
-
-        $id = request()->get('id');
-        $article = Db::table('question')->where('id',$id)->find();
-
-
-        $metas = !empty($article['metas'])?json_decode($article['metas']):'';
-
-        $this->assign('article',$article);
-
-        $this->assign('metas',$metas);
-        $this->assign('id',$id);
-        $this->assign('typename','多选题');
-        $this->assign('course',$course);
+        $this->q_main('多选题');
 
         return $this->fetch();
     }
+
+
 
     public function determine(){
-        $course = Db::table('course')->select();
-
-
-        $this->assign('course',$course);
-
+        $this->q_main('判断题');
         return $this->fetch();
     }
+
+
 
     public function essay(){
-        $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
-
-
-        $this->assign('course',$course);
-
+        $this->q_main('问答题');
         return $this->fetch();
     }
+
+    public function q_main($type){
+        $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
+
+        $id = request()->get('id');
+        $article = Db::table('question')->where('id',$id)->find();
+
+
+        $metas = !empty($article['metas'])?json_decode($article['metas']):'';
+
+        $this->assign('article',$article);
+
+        $this->assign('metas',$metas);
+        $this->assign('id',$id);
+        $this->assign('typename',$type);
+        $this->assign('course',$course);
+    }
+
 
     public function delete(){
         $id = $_GET['rid']+0;

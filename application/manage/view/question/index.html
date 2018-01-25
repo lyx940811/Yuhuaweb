@@ -67,7 +67,17 @@
         {volist name="list" id="vo"}
         <tr>
             <td>{$vo.id}</td>
-            <td>{$vo.type}</td>
+            <td>
+                {if condition="$vo['type'] eq 'single_choice'"}
+                单选题
+                {elseif condition="$vo['type'] eq 'choice'"}
+                多选题
+                {elseif condition="$vo['type'] eq 'determine'"}
+                判断题
+                {elseif condition="$vo['type'] eq 'essay'"}
+                问答题
+                {/if}
+            </td>
             <td>{$vo.stem}</td>
             <td>{$vo.name}</td>
             <td>{$vo.courseId?'使用中':'未使用'}</td>
