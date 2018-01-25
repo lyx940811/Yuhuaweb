@@ -116,17 +116,23 @@
                         </ul>
                     </div>
                     <div class="col-md-2 hidden-xs hidden-sm">
-                        {switch name="coursedata.next_task_id"}
-                        {case value="0"}
-                        <a class="btn btn-primary btn-lg mt10">
-                            没有新课程
-                        </a>
-                        {/case}
-                        {default /}
-                        <a class="btn btn-primary btn-lg mt10" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">
-                            继续学习
-                        </a>
-                        {/switch}
+                        {if condition="$coursedata.plan eq 100"}
+                            <a class="btn btn-primary btn-lg " href="{:url('index/examination/alert',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">
+                                开始考试
+                            </a>
+                        {else}
+                            {switch name="coursedata.next_task_id"}
+                            {case value="0"}
+                            <a class="btn btn-primary btn-lg mt10">
+                                没有新课程
+                            </a>
+                            {/case}
+                            {default /}
+                            <a class="btn btn-primary btn-lg mt10" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">
+                                继续学习
+                            </a>
+                            {/switch}
+                        {/if}
 
                     </div>
                 </div>
@@ -151,17 +157,23 @@
                 </div>
                 <div class="text-right buy-btn-group visible-xs visible-sm">
                     <span class="mr20">完成任务：1 / 11</span>
-                    {switch name="coursedata.next_task_id"}
-                    {case value="0"}
-                    <a class="btn btn-primary btn-lg ">
-                        没有新课程
-                    </a>
-                    {/case}
-                    {default /}
-                    <a class="btn btn-primary btn-lg " href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">
-                        继续学习
-                    </a>
-                    {/switch}
+                    {if condition="$coursedata.plan eq 100"}
+                        <a class="btn btn-primary btn-lg " href="{:url('index/examination/alert',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">
+                            开始考试
+                        </a>
+                    {else}
+                        {switch name="coursedata.next_task_id"}
+                        {case value="0"}
+                        <a class="btn btn-primary btn-lg ">
+                            没有新课程
+                        </a>
+                        {/case}
+                        {default /}
+                        <a class="btn btn-primary btn-lg " href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">
+                            继续学习
+                        </a>
+                        {/switch}
+                    {/if}
 
                 </div>
             </section>
