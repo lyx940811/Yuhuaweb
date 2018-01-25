@@ -32,6 +32,7 @@ class Testpaper extends Base{
             ->join('user c','a.createdUserId=c.id','LEFT')
             ->field('a.*,b.title,c.username')
             ->where($where)
+            ->order('a.id desc')
             ->paginate(20);
 
         $qtype = [
@@ -127,7 +128,7 @@ class Testpaper extends Base{
             foreach ($question as $k=>$v){
 
                 if($v>0){
-                    $questionitem[] = Db::table('question')->field('id,type')->where('type',$k)->order('id desc')->limit($v)->select();
+                    $questionitem[] = Db::table('question')->field('id,type')->where('type',$k)->order('RAND()')->limit($v)->select();
                 }
             }
 
@@ -280,11 +281,18 @@ class Testpaper extends Base{
 
     public function delete(){
         $id = $_GET['rid']+0;
+
+        Db::startTrans();
         $ok = Db::name('testpaper')->where('id',$id)->delete();
 
         if(is_numeric($ok)){
+
+            Db::table('testpaper_item')->where('paperID',$id)->delete();
+
+            Db::commit();
             return ['info'=>'删除成功','code'=>'000'];
         }else{
+            Db::rollback();
             return ['error'=>'删除失败','code'=>'200'];
         }
     }
