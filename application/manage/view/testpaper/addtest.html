@@ -103,7 +103,7 @@
                 <li class="item">
                     <span class="itemsp">{$i.name}</span>
                     <span class="mlm">题目数量:</span>
-                    <input type="text" class="form-control iteminput" name="counts[{$i.type}]" data-role="count"  value="0"  {if condition="$i['num'] eq 0"}disabled{/if}/>/
+                    <input type="text" class="form-control iteminput" name="counts[{$i.type}]" data-role="count"  value="0"  {if condition="$i['num'] eq 0"}readonly{/if}/>/
                     <span class="text-info">{$i.num}</span>
 
                     <span class="mlm">题目分值:</span>
@@ -147,13 +147,9 @@
             data:$('#form'+formid).serialize(),
             success:function(data){
 
-                if(data.code=='000'){
-
-                    alert(data.info)
-                    $('#myModal').modal('hide');
-
-                    window.location.reload()
-
+                console.log(data)
+                if(data.code=='000' && data.info.id){
+                    window.location.href = "{:url('additem')}?id="+data.info.id
                 }else{
                     alert(data.error)
                 }
@@ -164,7 +160,6 @@
             }
         });
     }
-
 
 </script>
 </body>
