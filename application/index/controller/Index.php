@@ -8,6 +8,7 @@ use think\Db;
 use think\Request;
 use app\index\model\Course;
 use app\index\model\User as UserModel;
+use app\index\model\UserProfile;
 class Index extends Home
 {
     public function __construct()
@@ -25,10 +26,21 @@ class Index extends Home
 
         //最新课程
         $courseModel = new Course();
-        $course = $courseModel->limit(12)->where('status',1)->order('createdTime desc')->select();
+        $map['status'] = 1;
+        if(!empty($this->user)){
+            $map['categoryId'] = $this->user->stuclass->majors;
+        }
+        $course = $courseModel->limit(12)->where($map)->order('createdTime desc')->select();
         $this->assign('course',$course);
         //分类
-        $category = Db::name('category')->field('name,code')->where('grade',3)->select();
+
+        if(!empty($this->user)){
+            $condition['code'] = $this->user->stuclass->majors;
+            $category = Db::name('category')->where($condition)->field('name,code')->select();
+        } else{
+            $category = Db::name('category')->field('name,code')->where('grade',3)->select();
+        }
+
         $this->assign('category',$category);
 
         return $this->fetch();
@@ -38,14 +50,18 @@ class Index extends Home
      */
     public function allcourse()
     {
+        $map['status'] = 1;
+        if(!empty($this->user)){
+            $map['categoryId'] = $this->user->stuclass->majors;
+        }
         if($this->request->isAjax()){
 
             $cate = $this->request->param('category');
             if(empty($cate)){
-                $course = Course::order('createdTime desc')->where('status',1)->paginate(20);
+                $course = Course::order('createdTime desc')->where($map)->paginate(20);
             }
             else{
-                $course = Course::where('categoryId',$cate)->where('status',1)->order('createdTime desc')->paginate(20);
+                $course = Course::where('categoryId',$cate)->where($map)->order('createdTime desc')->paginate(20);
             }
 
             $this->assign('course',$course);
@@ -54,10 +70,15 @@ class Index extends Home
             return $this->fetch('allcourseajax');
         }
 
-        $category = Db::name('category')->field('name,code')->where('grade',3)->select();
+        if(!empty($this->user)){
+            $condition['code'] = $this->user->stuclass->majors;
+            $category = Db::name('category')->where($condition)->field('name,code')->select();
+        } else{
+            $category = Db::name('category')->field('name,code')->where('grade',3)->select();
+        }
         $this->assign('category',$category);
 
-        $course = Course::order('createdTime desc')->where('status',1)->paginate(20);
+        $course = Course::order('createdTime desc')->where($map)->paginate(20);
 
         $this->assign('course',$course);
         $this->assign('page',$course->render());
@@ -85,11 +106,18 @@ class Index extends Home
     public function categoryajax()
     {
         $category = $this->request->param('category');
+        $map['status'] = 1;
         if(empty($category)){
-            $course = Db::name('course')->order('createdTime desc')->where('status',1)->limit(8)->select();
+            if(!empty($this->user)){
+                $map['categoryId'] = $this->user->stuclass->majors;
+            }
+            $course = Db::name('course')->order('createdTime desc')->where($map)->limit(8)->select();
         }
         else{
-            $course = Db::name('course')->where('categoryId',$category)->where('status',1)->order('createdTime desc')->limit(8)->select();
+            if(!empty($this->user)){
+                $map['categoryId'] = $this->user->stuclass->majors;
+            }
+            $course = Db::name('course')->where('categoryId',$category)->where($map)->order('createdTime desc')->limit(8)->select();
         }
         $this->assign('course',$course);
         return $this->fetch('categoryajax');
@@ -100,16 +128,21 @@ class Index extends Home
         $data = $this->request->param();
 
         $allow_type = [2,3];
-        if(preg_match('/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/',$data['username'])){
-            $key = 'email';
+//        if(preg_match('/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/',$data['username'])){
+//            $key = 'email';
+//        }
+//        elseif(preg_match('/^[1][3,4,5,7,8][0-9]{9}$/',$data['username'])){
+//            $key = 'mobile';
+//        }
+//        else{
+//            $key = 'username';
+//        }
+        //身份证登陆
+        if(!$user_profile = UserProfile::get(['idcard'=>$data['username']])){
+            return json_data(110,$this->codeMessage[110],'' );
         }
-        elseif(preg_match('/^[1][3,4,5,7,8][0-9]{9}$/',$data['username'])){
-            $key = 'mobile';
-        }
-        else{
-            $key = 'username';
-        }
-        if($user = UserModel::get([ $key => $data['username'] ])){
+
+        if($user = UserModel::get($user_profile['userid'])){
 
             if(!in_array($user['type'],$allow_type)){
                 return json_data(150,$this->codeMessage[150],'');

@@ -3,6 +3,7 @@
 namespace app\api\logic;
 
 use app\index\model\User as UserModel;
+use app\index\model\UserProfile;
 use think\Request;
 use think\Loader;
 use think\Validate;
@@ -57,16 +58,22 @@ class Login extends Base
     public function userLogin($data){
         $user_none = (object)[];
         $allow_type = [2,3];
-        if(preg_match('/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/',$data['username'])){
-            $key = 'email';
+//        if(preg_match('/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/',$data['username'])){
+//            $key = 'email';
+//        }
+//        elseif(preg_match('/^[1][3,4,5,7,8][0-9]{9}$/',$data['username'])){
+//            $key = 'mobile';
+//        }
+//        else{
+//            $key = 'username';
+//        }
+
+        //身份证登陆
+        if(!$user_profile = UserProfile::get(['idcard'=>$data['username']])){
+            return json_data(110,$this->codeMessage[110],$user_none );
         }
-        elseif(preg_match('/^[1][3,4,5,7,8][0-9]{9}$/',$data['username'])){
-            $key = 'mobile';
-        }
-        else{
-            $key = 'username';
-        }
-        if($user = UserModel::get([ $key => $data['username'] ])){
+
+        if($user = UserModel::get($user_profile['userid'])){
 
             if(!in_array($user['type'],$allow_type)){
                 return json_data(150,$this->codeMessage[150],$user_none );
@@ -88,11 +95,11 @@ class Login extends Base
                 //需要对返回数据进行整理，这里需要改成只返回access_token
                 $user_token = [
                     'user_token'    =>  md5($user->id.time().uniqid()),
-                    'expiretime'    =>  time()+7200,
+                    'expiretime'    =>  time()+7*86400,
                 ];
                 $user->save($user_token);
                 unset($user_token['expiretime']);
-                $user_token['expire'] = 7200;
+                $user_token['expire'] = 7*86400;
                 return json_data(0,$this->codeMessage[0],$user_token);
             }
             else{

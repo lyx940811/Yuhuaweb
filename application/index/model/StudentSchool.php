@@ -25,4 +25,9 @@ class StudentSchool extends ThinkModel
     {
         return $this->hasOne('Classroom','id','class');
     }
+
+    public function major()
+    {
+        return $this->hasOne('Category','code','majors');
+    }
 }

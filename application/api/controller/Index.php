@@ -27,7 +27,17 @@ class Index extends Home
      * @return array
      */
     public function getcategory(){
-        $category = Db::name('category')->where('grade',3)->where('Flag',1)->field('name,code')->select();
+
+        if(!empty($this->user)){
+            $map['code'] = $this->user->stuclass->majors;
+            $category = Db::name('category')->where($map)->field('name,code')->select();
+            return json_data(0,$this->codeMessage[0],$category);
+        }
+        $category = Db::name('category')
+            ->where('grade',3)
+            ->where('Flag',1)
+            ->field('name,code')
+            ->select();
         return json_data(0,$this->codeMessage[0],$category);
     }
 
@@ -61,10 +71,12 @@ class Index extends Home
 //        }
 
         $map['status'] = 1;
+        if(!empty($this->user)){
+            $map['categoryId'] = $this->user->stuclass->majors;
+        }
 
         $course = Db::name('course')
             ->where($map)
-            ->where('status=1')
             ->field('id,title,smallPicture,price')
             ->order('createdTime desc')
             ->page($page,6)
@@ -120,9 +132,13 @@ class Index extends Home
         $keywords = $this->data['keywords'];
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $orderby="CONVERT( title USING gbk ) COLLATE gbk_chinese_ci ASC";
+        $map['status'] = 1;
+        if(!empty($this->user)){
+            $map['categoryId'] = $this->user->stuclass->majors;
+        }
         $course = Db::name('course')
             ->where('title','like','%'.$keywords.'%')
-            ->where('status',1)
+            ->where($map)
             ->field('id,title,smallPicture,price')
             ->order($orderby)
             ->page($page,6)

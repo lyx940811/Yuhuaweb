@@ -54,7 +54,7 @@ class User extends Home
             $pic = unserialize($profile['cardpic']);
             $this->assign('pic',$pic);
         }
-        $profile['idcard'] = substr_replace($profile['idcard'],'*****',-5);
+//        $profile['idcard'] = substr_replace($profile['idcard'],'*****',-5);
         $this->assign('profile',$profile);
         return $this->fetch();
     }
@@ -204,6 +204,13 @@ class User extends Home
             $data = ['endtime' => date('Y-m-d H:i:s',$time)];
             if($watch_time>$couse_time){
                 $data['status'] = 1;
+                $pointData = [
+                    'userid'        =>  $this->user->id,
+                    'taskid'        =>  $course['id'],
+                    'point'         =>  $course['point'],
+                    'createTime'    =>  time(),
+                ];
+                Db::name('get_point_log')->insert($pointData);
             }
             StudyResult::update($data,['id'=>$watch['id']]);
             return json_data(0,$this->codeMessage[0],'');

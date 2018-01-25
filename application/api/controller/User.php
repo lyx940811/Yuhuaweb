@@ -275,11 +275,13 @@ class User extends Controller
         else{
             $class = '还未分配班级';
         }
+        !empty($this->user->stuclass->major->name)?$major=$this->user->stuclass->major->name:$major='还未分配专业';
         $data = [
             'username'  =>  $this->user->username,
             'avatar'    =>  $this->request->domain()."/".$this->user->title,
             'mobile'    =>  $this->user->mobile,
             'classname' =>  $class,
+            'major'  =>  $major
         ];
         return json_data(0,$this->codeMessage[0],$data);
     }
@@ -777,6 +779,13 @@ class User extends Controller
                 $data = ['endtime' => date('Y-m-d H:i:s',$time)];
                 if($watch_time>=$couse_time){
                     $data['status'] = 1;
+                    $pointData = [
+                        'userid'        =>  $this->user->id,
+                        'taskid'        =>  $course['id'],
+                        'point'         =>  $course['point'],
+                        'createTime'    =>  time(),
+                    ];
+                    Db::name('get_point_log')->insert($pointData);
                 }
                 StudyResultLog::update($data,['id'=>$watch_log['id']]);
             }
@@ -785,6 +794,40 @@ class User extends Controller
         }
         else{
             return json_data(184,$this->codeMessage[184],'');
+        }
+    }
+
+    /**
+     * 判断用户是否签到
+     */
+    public function ischeckin()
+    {
+        $taskid = $this->data['taskid'];
+        $sql = "select *,from_unixtime(createTime)  from checkin WHERE userid=".$this->user->id." and taskid=".$taskid." and from_unixtime(createTime) BETWEEN '".date('Y-m-d',time())."' and '".date('Y-m-d',time())." 23:59:59'";
+        $res = Db::query($sql);
+        if ($res){
+            //has checkin
+            return json_data(185,$this->codeMessage[185],'');
+        }
+        else{
+            //haven't checkin
+            return json_data(186,$this->codeMessage[186],'');
+        }
+    }
+    /**
+     * 签到动作
+     */
+    public function checkin()
+    {
+        $data = [
+            'userid'    =>  $this->user->id,
+            'taskid'    =>  $this->data['taskid'],
+            'createTime'=>  time(),
+        ];
+        if(Db::name('checkin')->insert($data)){
+            return json_data(0,$this->codeMessage[0],'');
+        } else{
+            return json_data(187,$this->codeMessage[187],'');
         }
     }
 

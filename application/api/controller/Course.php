@@ -549,7 +549,8 @@ class Course extends Home
      */
     public function getpaper()
     {
-        $courseid = 35;//$this->data['courseid'];
+//        $courseid = 35;
+        $courseid = $this->data['courseid'];
         if(!CourseModel::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
@@ -611,18 +612,19 @@ class Course extends Home
      */
     public function handpaper()
     {
-        $paperid = 2;//$this->data['paperID'];
+//        $paperid = 2;
+        $paperid = $this->data['paperID'];
         $score = 0;
         if(!Testpaper::get($paperid)){
             return json_data(400,$this->codeMessage[400],'');
         }
-//        $dopaper = $this->data['dopaper'];
+        $dopaper = $this->data['dopaper'];
 
-        $dopaper = [
-            44  =>  [1],
-            56  =>  [0,1],
-            57  =>  [1],
-        ];
+//        $dopaper = [
+//            44  =>  [1],
+//            56  =>  [0,1],
+//            57  =>  [1],
+//        ];
 
         $testpaper = Db::name('testpaper')->find($paperid);
         $meta = json_decode($testpaper['metas']);
@@ -647,43 +649,79 @@ class Course extends Home
         }
 
         //拿到resultid
+        $lastresultId = Db::name('testpaper_item_result')->order('resultId desc')->limit(1)->value('resultId');
+        empty($lastresultId)?$lastresultId=1:$lastresultId = $lastresultId+1;
 
-        foreach ( $dopaper as $key=>$value ){
-            $question = Db::name('question')->find($key);
-            $answer = json_decode($question['answer']);
-            switch ( $question['type'] ){
-                case 'single_choice':
-                    if(empty(array_intersect($answer,$value))){
+        Db::startTrans();
+        try{
+            foreach ( $dopaper as $key=>$value ){
+                $question = Db::name('question')->find($key);
+                $answer = json_decode($question['answer']);
+
+                $resultData = [
+                    'paperID'       =>    $paperid,
+                    'userid'        =>    $this->user->id,
+                    'answer'        =>    json_encode($value),
+                    'questionId'    =>    $question['id'],
+                    'resultId'      =>    $lastresultId
+                ];
+
+                switch ( $question['type'] ){
+                    case 'single_choice':
+                        if(empty(array_intersect($answer,$value))){
+                            $resultData['score'] = 0;
+                            $resultData['status'] = 3;
+                            break;
+                        }
+                        $resultData['status'] = 1;
+                        $resultData['score'] = $topicType['single_choice']['score'];
+                        $score = $score+$topicType['single_choice']['score'];
                         break;
-                    }
-                    $score = $score+$topicType['single_choice']['score'];
-                    break;
-                case 'choice':
-                    //没答题，直接break
-                    if(empty($value)){
+                    case 'choice':
+                        //没答题，直接break
+                        if(empty($value)){
+                            $resultData['status'] = 4;
+                            $resultData['score'] = 0;
+                            break;
+                        }
+                        //如果填写的答案有在标准答案外的答案的话算错，break
+                        if(!empty(array_diff($value,$answer))){
+                            $resultData['score'] = 0;
+                            $resultData['status'] = 3;
+                            break;
+                        }
+                        //剩下来的就是在答案内的了，取差集，拿个数
+                        $diffNum = count(array_diff($answer,$value));
+                        if($diffNum==0){
+                            //没有差集，全部答对，得满分
+                            $resultData['status'] = 1;
+                            $resultData['score'] = $topicType['choice']['score'];
+                            $score = $score+$topicType['choice']['score'];
+                        } else{
+                            //有差集，根据个数来减掉漏选分
+                            $resultData['status'] = 2;
+                            $resultData['score'] =$topicType['choice']['score']-$diffNum*$topicType['choice']['missScore'];
+                            $score = ($score+$topicType['choice']['score'])-$diffNum*$topicType['choice']['missScore'];
+                        }
                         break;
-                    }
-                    //如果填写的答案有在标准答案外的答案的话算错，break
-                    if(!empty(array_diff($value,$answer))){
+                    case 'determine':
+                        if(empty(array_intersect($answer,$value))){
+                            $resultData['score'] = 0;
+                            $resultData['status'] = 3;
+                            break;
+                        }
+                        $resultData['status'] = 1;
+                        $resultData['score'] = $topicType['determine']['score'];
+                        $score = $score+$topicType['determine']['score'];
                         break;
-                    }
-                    //剩下来的就是在答案内的了，取差集，拿个数
-                    $diffNum = count(array_diff($answer,$value));
-                    if($diffNum==0){
-                        //没有差集，全部答对，得满分
-                        $score = $score+$topicType['choice']['score'];
-                    } else{
-                        //有差集，根据个数来减掉漏选分
-                        $score = ($score+$topicType['choice']['score'])-$diffNum*$topicType['choice']['missScore'];
-                    }
-                    break;
-                case 'determine':
-                    if(empty(array_intersect($answer,$value))){
-                        break;
-                    }
-                    $score = $score+$topicType['determine']['score'];
-                    break;
+                }
+                Db::name('testpaper_item_result')->insert($resultData);
             }
+            // 提交事务
+            Db::commit();
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
         }
         $data = [
             'score' =>  $score
