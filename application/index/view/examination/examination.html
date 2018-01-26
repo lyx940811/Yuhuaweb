@@ -81,14 +81,6 @@
                                     </label>
                                     {/volist}
                                 </div>
-                                <div class="testpaper-question-actions pull-right mts">
-                                  <a class="link-gray js-marking">
-                                    <i class="glyphicon glyphicon-bookmark mr5"></i>标记
-                                  </a>
-                                  <a class="link-gray js-marking hidden">
-                                    <i class="glyphicon glyphicon-bookmark mr5"></i>取消标记
-                                  </a>
-                                </div>
                               </div>
                             </div>
                           </div>
@@ -137,14 +129,6 @@
                                             
 
                                 </div>
-                                <div class="testpaper-question-actions pull-right mts">	
-                                  <a class="link-gray js-marking">
-                                    <i class="glyphicon glyphicon-bookmark mr5"></i>标记
-                                  </a>
-                                  <a class="link-gray js-marking hidden">
-                                    <i class="glyphicon glyphicon-bookmark mr5"></i>取消标记
-                                  </a>
-                                </div>
                               </div>
                           </div>
                         </div>
@@ -188,14 +172,6 @@
                                               <input type="radio" data-type="single_choice" name="data[determine][answer][{$determine.id}]" value="1">
                                               错误
                                           </label>
-                                      </div>
-                                      <div class="testpaper-question-actions pull-right mts">
-                                          <a class="link-gray js-marking">
-                                              <i class="glyphicon glyphicon-bookmark mr5"></i>标记
-                                          </a>
-                                          <a class="link-gray js-marking hidden">
-                                              <i class="glyphicon glyphicon-bookmark mr5"></i>取消标记
-                                          </a>
                                       </div>
                                   </div>
                               </div>
@@ -247,49 +223,12 @@
                     <input type="hidden" name="_csrf_token" value="25FZZOw7upct56pv0pJlOJLBPAjUnBiZsOCVXgfbF7Q">
                   </form>
               </div>
+              <div class="text-right" style="margin-bottom:20px;">
+                <input type="hidden" data-url="/testpaper/result/14/suspend" data-role="test-suspend">
+                <button class="btn btn-primary do-test" id="finishPaper" data-ajax="/testpaper/result/14/submit" data-toggle="modal" data-target="#testpaper-finished-dialog">马上交卷</button>
             </div>
-            <div class="col-md-3">
-              <div class="testpaper-card js-testpaper-card affix mt20">
-                  <div class="testpaper-timer">
-                      <span class="pull-left">倒计时：</span><span class="timer js-testpaper-timer" data-time="120">00:01:43</span>
-                      <a class="btn-pause js-btn-pause" href="javascript:;">
-                          <i class="es-icon es-icon-zanting pause"></i>
-                          <i class="es-icon es-icon-bofang play"></i>
-                      </a>
-                  </div>
-                  <div class="panel panel-default">
-                      <div class="panel-heading">
-                          答题卡
-                          <a class="pull-right link-medium" href="javascript:;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="&lt;div&gt;本次考试共&lt;span class=&quot;color-primary&quot;&gt;3题&lt;/span&gt;，总分&lt;span class=&quot;color-primary&quot;&gt;6.0分&lt;/span&gt;
-                      ，及格为&lt;span class=&quot;color-primary&quot;&gt;4&lt;/span&gt;分
-                。
-                请在&lt;span class=&quot;color-primary&quot;&gt;2分钟&lt;/span&gt;内作答。
-                &lt;/div&gt;" data-original-title="" title=""><i class="es-icon es-icon-info"></i></a>
-                      </div>
-                      <div class="panel-body">
-                          <div class="js-panel-card panel-card ps-container">
-                              <p>单选题</p>
-                              <span href="javascript:;" data-anchor="#question35" class="js-btn-index color-lump mrm mbm lump-card js-answer-notwrong done">
-                      <i class="text-12 glyphicon glyphicon-bookmark marking-card js-marking-card hidden"></i>1
-                  </span>
-                              <p>多选题</p>
-                              <span href="javascript:;" data-anchor="#question36" class="js-btn-index color-lump mrm mbm lump-card js-answer-notwrong">
-                    <i class="text-12 glyphicon glyphicon-bookmark marking-card js-marking-card hidden"></i>2
-                  </span>
-                              <p>问答题</p>
-                              <span href="javascript:;" data-anchor="#question37" class="js-btn-index color-lump mrm mbm lump-card js-answer-notwrong">
-                    <i class="text-12 glyphicon glyphicon-bookmark marking-card js-marking-card hidden"></i>3
-                  </span>
-                          </div>
-                      </div>
-                      <div class="panel-footer text-right">
-                          <input type="hidden" data-url="/testpaper/result/14/suspend" data-role="test-suspend">
-                          <button class="btn btn-primary do-test" id="finishPaper" data-ajax="/testpaper/result/14/submit" data-toggle="modal" data-target="#testpaper-finished-dialog">马上交卷</button>
-                      </div>
-                  </div>
-                 </div>
-              </div>
-          </div>
+            </div>
+           </div>
           <div id="testpaper-finished-dialog" class="modal in" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
