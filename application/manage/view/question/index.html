@@ -120,7 +120,11 @@
                                         {/volist}
                                     </ul>
                                     <div class="panel-body">
-                                        <p>正确答案是<span class="label label-success">{volist name="$answer" id="an"}{$aitem[$an]}&nbsp;{/volist}</span></p>
+                                        <p>正确答案是
+                                            <span class="label label-success">
+                                            {if condition="isset($aitem[$an])"}{volist name="$answer" id="an"}{$aitem[$an]}&nbsp;{/volist}{/if}
+                                            </span>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
