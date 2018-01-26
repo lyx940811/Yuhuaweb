@@ -32,9 +32,10 @@
                                                 <div class="label label-primary">答题中</div>
                                             </div>
                     </div>
-                    <div class="testpaper-description"><p>0066</p></div>
+                    <div class="testpaper-description"><p></p></div>
                   </div>
-                  <form id="teacherCheckForm" autocomplete="off">
+                  <form id="teacherCheckForm" autocomplete="off" action="{:url('examend')}" method="post">
+                    <input type="hidden" name="courseid" value="{$courseid}">
                     <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-single_choice">
                       <div class="panel-heading">
                         <strong class="">单选题</strong>
@@ -42,14 +43,20 @@
                           共{$num.0.num}题，共{$num.0.score}分          </small>
                       </div>
                       {volist name="info" id="sign"}
+                        {if condition='$key eq 0'}
+                            <input type="hidden" name="paperid" value="{$sign.paperID}">
+                            <input type="hidden" name="total" value="{$sign.total}">
+                            <input type="hidden" name="passedscore" value="{$sign.passedScore}">
+                        {/if}
                         {if condition='$sign.questiontype eq "single_choice"'}
+                          <input type="hidden" name="data[sign][question][{$key}]" value="{$sign.questionid}">
                           <div class="panel-body">
                             <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question35">
                               <div class="testpaper-question-body">
                                 <div class="testpaper-question-stem-wrap clearfix">
                                   <div class="testpaper-question-seq-wrap">
                                     <div class="testpaper-question-seq">
-                                      1
+                                      {$key+1}
                                     </div>
                                           <div class="testpaper-question-score">
                                         {$sign.score}分
@@ -69,18 +76,10 @@
                                 <div class="testpaper-question-choice-inputs js-testpaper-question-label">
                                     {volist name="$sign.question" id="vo"}
                                     <label class="radio-inline">
-                                      <input type="radio" data-type="single_choice" name="signchoice" value="0">
+                                      <input type="radio" data-type="single_choice" name="data[sign][answer][{$sign.id}]" value="{$key}">
                                         {$status[$key]}
                                     </label>
                                     {/volist}
-                                </div>
-                                <div class="testpaper-question-actions pull-right mts">
-                                  <a class="link-gray js-marking">
-                                    <i class="glyphicon glyphicon-bookmark mr5"></i>标记
-                                  </a>
-                                  <a class="link-gray js-marking hidden">
-                                    <i class="glyphicon glyphicon-bookmark mr5"></i>取消标记
-                                  </a>
                                 </div>
                               </div>
                             </div>
@@ -96,13 +95,14 @@
                         </div>
                         {volist name="info" id="choice"}
                         {if condition='$choice.questiontype eq "choice"'}
+                        <input type="hidden" name="data[choice][question][{$key}]" value="{$choice.questionid}">
                         <div class="panel-body">
                           <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question36">
                               <div class="testpaper-question-body">
                                 <div class="testpaper-question-stem-wrap clearfix">
                                   <div class="testpaper-question-seq-wrap">
                                     <div class="testpaper-question-seq">
-                                      2
+                                      {$key+1}
                                     </div>
                                           <div class="testpaper-question-score">
                                         {$choice.score}分
@@ -122,20 +122,12 @@
                                 <div class="testpaper-question-choice-inputs js-testpaper-question-label">
                                     {volist name="$choice.question" id="vo"}
                                     <label class="checkbox-inline ">
-                                      <input type="checkbox" data-type="choice" name="choice[]" value="0">
+                                      <input type="checkbox" data-type="choice" name="data[choice][answer][{$choice.id}][{$key}]" value="{$key}">
                                         {$status[$key]}
                                     </label>
                                     {/volist}
                                             
 
-                                </div>
-                                <div class="testpaper-question-actions pull-right mts">	
-                                  <a class="link-gray js-marking">
-                                    <i class="glyphicon glyphicon-bookmark mr5"></i>标记
-                                  </a>
-                                  <a class="link-gray js-marking hidden">
-                                    <i class="glyphicon glyphicon-bookmark mr5"></i>取消标记
-                                  </a>
                                 </div>
                               </div>
                           </div>
@@ -149,46 +141,43 @@
                               <small class="color-gray">
                                   共{$num.2.num}题，共{$num.2.score}分          </small>
                           </div>
+                          {volist name="info" id="determine"}
+                          {if condition='$determine.questiontype eq "determine"'}
+                          <input type="hidden" name="data[determine][question][{$key}]" value="{$determine.questionid}">
                           <div class="panel-body">
                               <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question35">
                                   <div class="testpaper-question-body">
                                       <div class="testpaper-question-stem-wrap clearfix">
                                           <div class="testpaper-question-seq-wrap">
                                               <div class="testpaper-question-seq">
-                                                  1
+                                                  {$key+1}
                                               </div>
                                               <div class="testpaper-question-score">
-                                                  2.0分
+                                                  {$determine.score}分
                                               </div>
                                           </div>
                                           <div class="testpaper-question-stem">
-                                              <p>选出下列描述中正确的一项</p><br>
+                                              <p>{$determine.name}</p><br>
                                           </div>
                                       </div>
                                   </div>
                                   <div class="testpaper-question-footer clearfix">
                                       <div class="testpaper-question-choice-inputs js-testpaper-question-label">
                                           <label class="radio-inline">
-                                              <input type="radio" data-type="single_choice" name="35" value="0">
+                                              <input type="radio" data-type="single_choice" name="data[determine][answer][{$determine.id}]" value="0">
                                               正确
                                           </label>
 
                                           <label class="radio-inline">
-                                              <input type="radio" data-type="single_choice" name="35" value="1">
+                                              <input type="radio" data-type="single_choice" name="data[determine][answer][{$determine.id}]" value="1">
                                               错误
                                           </label>
-                                      </div>
-                                      <div class="testpaper-question-actions pull-right mts">
-                                          <a class="link-gray js-marking">
-                                              <i class="glyphicon glyphicon-bookmark mr5"></i>标记
-                                          </a>
-                                          <a class="link-gray js-marking hidden">
-                                              <i class="glyphicon glyphicon-bookmark mr5"></i>取消标记
-                                          </a>
                                       </div>
                                   </div>
                               </div>
                           </div>
+                          {/if}
+                          {/volist}
                       </div>
                     <!--<div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-essay">-->
                       <!--<div class="panel-heading">-->
@@ -234,49 +223,12 @@
                     <input type="hidden" name="_csrf_token" value="25FZZOw7upct56pv0pJlOJLBPAjUnBiZsOCVXgfbF7Q">
                   </form>
               </div>
+              <div class="text-right" style="margin-bottom:20px;">
+                <input type="hidden" data-url="/testpaper/result/14/suspend" data-role="test-suspend">
+                <button class="btn btn-primary do-test" id="finishPaper" data-ajax="/testpaper/result/14/submit" data-toggle="modal" data-target="#testpaper-finished-dialog">马上交卷</button>
             </div>
-            <div class="col-md-3">
-              <div class="testpaper-card js-testpaper-card affix mt20">
-                <div class="testpaper-timer">
-                  <span class="pull-left">倒计时：</span><span class="timer js-testpaper-timer" data-time="120">00:01:43</span>
-                  <a class="btn-pause js-btn-pause" href="javascript:;">
-                    <i class="es-icon es-icon-zanting pause"></i>
-                    <i class="es-icon es-icon-bofang play"></i>
-                  </a>
-                </div>
-                <div class="panel panel-default">
-                  <div class="panel-heading">
-                    答题卡
-                        <a class="pull-right link-medium" href="javascript:;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="&lt;div&gt;本次考试共&lt;span class=&quot;color-primary&quot;&gt;3题&lt;/span&gt;，总分&lt;span class=&quot;color-primary&quot;&gt;6.0分&lt;/span&gt;
-                          ，及格为&lt;span class=&quot;color-primary&quot;&gt;4&lt;/span&gt;分
-                    。
-                    请在&lt;span class=&quot;color-primary&quot;&gt;2分钟&lt;/span&gt;内作答。
-                    &lt;/div&gt;" data-original-title="" title=""><i class="es-icon es-icon-info"></i></a>
-                  </div>
-                  <div class="panel-body">
-                    <div class="js-panel-card panel-card ps-container">
-                      <p>单选题</p>
-                      <span href="javascript:;" data-anchor="#question35" class="js-btn-index color-lump mrm mbm lump-card js-answer-notwrong done">
-                          <i class="text-12 glyphicon glyphicon-bookmark marking-card js-marking-card hidden"></i>1
-                      </span>												
-                      <p>多选题</p>
-                      <span href="javascript:;" data-anchor="#question36" class="js-btn-index color-lump mrm mbm lump-card js-answer-notwrong">
-                        <i class="text-12 glyphicon glyphicon-bookmark marking-card js-marking-card hidden"></i>2
-                      </span>
-                      <p>问答题</p>
-                      <span href="javascript:;" data-anchor="#question37" class="js-btn-index color-lump mrm mbm lump-card js-answer-notwrong">
-                        <i class="text-12 glyphicon glyphicon-bookmark marking-card js-marking-card hidden"></i>3
-                      </span>		
-                    </div>									
-                  </div>
-                  <div class="panel-footer text-right">
-                    <input type="hidden" data-url="/testpaper/result/14/suspend" data-role="test-suspend">
-                    <button class="btn btn-primary do-test" id="finishPaper" data-ajax="/testpaper/result/14/submit" data-toggle="modal" data-target="#testpaper-finished-dialog">马上交卷</button>
-                  </div>
-                </div>    
-              </div>
             </div>
-          </div>
+           </div>
           <div id="testpaper-finished-dialog" class="modal in" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -292,7 +244,7 @@
                   </div>
                   <div class="text-right mt20">
                     <a href="javascript:;" class="btn btn-link" data-dismiss="modal">取消</a>
-                                        <button class="btn btn-primary" id="testpaper-finish-btn" data-loading-text="正在交卷, 请稍等..." data-role="paper-submit" data-url="/testpaper/result/14/finish" data-goto="/testpaper/result/14/show">
+                                        <button id="save" class="btn btn-primary" id="testpaper-finish-btn" data-loading-text="正在交卷, 请稍等..." data-role="paper-submit" data-url="/testpaper/result/14/finish" data-goto="/testpaper/result/14/show">
                       确认交卷</button>
                                     </div>
                 </div>
@@ -344,9 +296,18 @@
     <div id="login-modal" class="modal" data-url="/login/ajax"></div>
     <div id="modal" class="modal"></div>
     <div id="attachment-modal" class="modal"></div>
-    <script src="__JS__index.js"></script>
-    <script src="__JS__vendor.js"></script>
-    <script src="__JS__common.js"></script>
-    <script src="__JS__main.js"></script>
+
+    <script src="__EXAMINATION_JS__index.js"></script>
+    <script src="__EXAMINATION_JS__vendor.js"></script>
+    <script src="__EXAMINATION_JS__common.js"></script>
+    <script src="__EXAMINATION_JS__main.js"></script>
+    <script src="__MANAGE_JS__jquery.min.js?v=2.1.4"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#save").click(function(){
+                $('#teacherCheckForm').submit();
+            });
+        });
+    </script>
   </body>
 </html>

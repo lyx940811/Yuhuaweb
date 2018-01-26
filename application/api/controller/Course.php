@@ -7,6 +7,7 @@ use app\index\model\User;
 use app\index\model\Testpaper;
 use app\index\model\Like;
 use app\index\model\Course as CourseModel;
+use think\Cache;
 /**
  * Class Course 在教师角色下的我的教学-在教课程-课程管理中的一些功能
  * @package app\index\controller
@@ -86,7 +87,7 @@ class Course extends Home
                 }
             }
         }
-        
+
         return json_data(0,$this->codeMessage[0],$comment);
     }
 
@@ -128,7 +129,7 @@ class Course extends Home
             }
         }
         $comment['son'] = $son;
-        
+
 
         return json_data(0,$this->codeMessage[0],$comment);
     }
@@ -251,13 +252,13 @@ class Course extends Home
             ->page($page,10)
             ->select();
         foreach ($lesson as &$l){
-        if($l['type']!='url'){
-            $l['mediaSource'] = $this->request->domain()."/".$l['mediaSource'];
-        }
-        $l['plan'] = '0';
-        if(!empty($this->user)){
-            
-                
+            if($l['type']!='url'){
+                $l['mediaSource'] = $this->request->domain()."/".$l['mediaSource'];
+            }
+            $l['plan'] = '0';
+            if(!empty($this->user)){
+
+
                 if($watch_log = Db::name('study_result')->where(['userid'=>$this->user->id,'courseid'=>$l['courseid'],'chapterid'=>$l['chapterid']])->find()){
                     if($watch_log['status']==1){
                         $l['plan'] = '100';
@@ -279,8 +280,8 @@ class Course extends Home
                 else{
                     $l['plan'] = '0';
                 }
-                unset($l['length'],$l['seq']); 
-        }
+                unset($l['length'],$l['seq']);
+            }
         }
         return json_data(0,$this->codeMessage[0],$lesson);
     }
@@ -310,7 +311,7 @@ class Course extends Home
 
         empty($task)?$next_task='还未有新课程':$next_task = $task[0]['title'];
         empty($task)?$learn_taskid='0':$learn_taskid = $task[0]['id'];
-        
+
         //假如登陆了
         if(!empty($this->user)){
             $learn_task = Db::name('study_result')
@@ -402,7 +403,7 @@ class Course extends Home
         $courseid = $this->data['courseid'];
         //为了拿顶部的title
         $course = Db::name('course')->field('title,categoryId')->find($courseid);
-        
+
         //课程下的所有任务，为了计算时间
         $task = Db::name('course_task')
             ->where('courseId',$courseid)
@@ -606,25 +607,140 @@ class Course extends Home
         return json_data(0,$this->codeMessage[0],$data);
     }
 
+    public function pap(){
+        dump(Cache::get('dopaper'));
+    }
 
     /**
      * 交卷
      */
     public function handpaper()
     {
-//        $paperid = 2;
         $paperid = $this->data['paperID'];
+//        $paperid = 81;
         $score = 0;
         if(!Testpaper::get($paperid)){
             return json_data(400,$this->codeMessage[400],'');
         }
-        $dopaper = $this->data['dopaper'];
-
+        $dopaper = json_decode($this->data['dopaper']);
+        $dopaper = (array)$dopaper;
 //        $dopaper = [
-//            44  =>  [1],
-//            56  =>  [0,1],
+//            64  =>  ["1"],
+//            56  =>  ["0","1"],
 //            57  =>  [1],
 //        ];
+        Cache::set('dopaper',$dopaper,3600);
+//        var_dump($dopaper);die;
+        $testpaper = Db::name('testpaper')->find($paperid);
+        $meta = json_decode($testpaper['metas']);
+        //$topicType是为了拿每种题型的分值及可能存在的漏选分值
+        $topicType = [];
+        foreach ( (array)$meta->counts as $key=>$value){
+            $question['type'] = $key;
+            $topicType[$key] = '';
+        }
+
+        foreach ( $topicType as $tkey=>$tvalue ){
+            foreach ( (array)$meta->scores as $key=>$value ){
+                if( $tkey==$key ){
+                    $topicType[$tkey]['score'] = $value;
+                }
+            }
+            foreach ( (array)$meta->missScores as $key=>$value ){
+                if( $tkey==$key ){
+                    $topicType[$tkey]['missScore'] = $value;
+                }
+            }
+        }
+
+        //拿到resultid
+        $lastresultId = Db::name('testpaper_item_result')->order('resultId desc')->limit(1)->value('resultId');
+        empty($lastresultId)?$lastresultId=1:$lastresultId = $lastresultId+1;
+
+        foreach ( $dopaper as $key=>$value ){
+            $question = Db::name('question')->find($key);
+            $answer = json_decode($question['answer']);
+
+            $resultData = [
+                'paperID'       =>    $paperid,
+                'userid'        =>    $this->user->id,
+                'answer'        =>    json_encode($value),
+                'questionId'    =>    $question['id'],
+                'resultId'      =>    $lastresultId
+            ];
+
+            switch ( $question['type'] ){
+                case 'single_choice':
+                    if(empty(array_intersect($answer,$value))){
+                        $resultData['score'] = 0;
+                        $resultData['status'] = 3;
+                        break;
+                    }
+                    $resultData['status'] = 1;
+                    $resultData['score'] = $topicType['single_choice']['score'];
+                    $score = $score+$topicType['single_choice']['score'];
+                    break;
+                case 'choice':
+                    //没答题，直接break
+                    if(empty($value)){
+                        $resultData['status'] = 4;
+                        $resultData['score'] = 0;
+                        break;
+                    }
+                    //如果填写的答案有在标准答案外的答案的话算错，break
+                    if(!empty(array_diff($value,$answer))){
+                        $resultData['score'] = 0;
+                        $resultData['status'] = 3;
+                        break;
+                    }
+                    //剩下来的就是在答案内的了，取差集，拿个数
+                    $diffNum = count(array_diff($answer,$value));
+                    if($diffNum==0){
+                        //没有差集，全部答对，得满分
+                        $resultData['status'] = 1;
+                        $resultData['score'] = $topicType['choice']['score'];
+                        $score = $score+$topicType['choice']['score'];
+                    } else{
+                        //有差集，根据个数来减掉漏选分
+                        $resultData['status'] = 2;
+                        $resultData['score'] =$topicType['choice']['score']-$diffNum*$topicType['choice']['missScore'];
+                        $score = ($score+$topicType['choice']['score'])-$diffNum*$topicType['choice']['missScore'];
+                    }
+                    break;
+                case 'determine':
+                    if(empty(array_intersect($answer,$value))){
+                        $resultData['score'] = 0;
+                        $resultData['status'] = 3;
+                        break;
+                    }
+                    $resultData['status'] = 1;
+                    $resultData['score'] = $topicType['determine']['score'];
+                    $score = $score+$topicType['determine']['score'];
+                    break;
+            }
+            Db::name('testpaper_item_result')->insert($resultData);
+        }
+        $data = [
+            'score' =>  $score
+        ];
+        return json_data(0,$this->codeMessage[0],$data);
+    }
+
+    public function handpaper_abandoned()
+    {
+        $paperid = 78;
+//        $paperid = $this->data['paperID'];
+        $score = 0;
+        if(!Testpaper::get($paperid)){
+            return json_data(400,$this->codeMessage[400],'');
+        }
+//        $dopaper = $this->data['dopaper'];
+
+        $dopaper = [
+            64  =>  [1],
+            56  =>  [0,1],
+//            57  =>  [1],
+        ];
 
         $testpaper = Db::name('testpaper')->find($paperid);
         $meta = json_decode($testpaper['metas']);
@@ -719,14 +835,16 @@ class Course extends Home
             }
             // 提交事务
             Db::commit();
+            $data = [
+                'score' =>  $score
+            ];
+            return json_data(0,$this->codeMessage[0],$data);
         } catch (\Exception $e) {
             // 回滚事务
             Db::rollback();
+            return json_data(2000,'error','');
         }
-        $data = [
-            'score' =>  $score
-        ];
-        return json_data(0,$this->codeMessage[0],$data);
+
     }
 
 

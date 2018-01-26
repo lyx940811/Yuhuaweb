@@ -18,6 +18,7 @@
     {/block}
 </head>
 <body class="es-main-default es-nav-default course-dashboard-page">
+
 {block name="script"}
 
 {/block}
@@ -128,7 +129,7 @@
                             </a>
                             {/case}
                             {default /}
-                            <a class="btn btn-primary btn-lg mt10" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">
+                            <a class="btn btn-primary btn-lg mt10" id="study">
                                 继续学习
                             </a>
                             {/switch}
@@ -316,12 +317,84 @@
 
 
 
-
-
-<div id="login-modal" class="modal" data-url="/login/ajax"></div>
-<div id="modal" class="modal"></div>
-<div id="attachment-modal" class="modal"></div>
+<div class="modal in" style="display: none; padding-left: 17px;">
+    <div class="modal-dialog  modal-message task-state-modal modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">  <i class="es-icon es-icon-iccheckcircleblack24px color-success mrs" style="display: none"></i>点击签到</h4>
+                <img src="__IMG__sign_on.png" alt="" class="">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop in" style="display: none;"></div>
 <script src="__JS__jquery-1.11.3.min.js"></script>
+<script>
+    $(function(){
+        var userid;
+        var html = "{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}";
+        {present name="user"}
+            userid = {$user.id};
+        {/present}
+        $('#study').click(function(){
+             if(userid!='undefined'){
+                 console.log(userid);
+                 var taskid = {$coursedata.next_task_id};
+                 $.post(
+                     "{:url('index/user/ischeckin')}",
+                     {'taskid':taskid},
+                     function(data){
+                         console.log(data);
+                         if(data['code']==185){
+                             window.location.href = html;
+                         }else if(data['code']==186){
+                            $('.modal').show();
+                            $('.modal-backdrop').show();
+                         }
+                     },
+                     "json"
+                 );
+             }
+        });
+
+        $(".modal-title").bind("click",function(){
+            alert(1)
+            var taskid = {$coursedata.next_task_id};
+            $.post(
+                "{:url('index/user/checkin')}",
+                {'taskid':taskid},
+                function(data){
+                    console.log(data);
+                    if(data['code']==187){
+                        alert("签到发生错误！");
+                    }else if(data['code']==0){
+                        $('.modal').hide();
+                        window.location.href = html;
+                    }
+                },
+                "json"
+            );
+        });
+
+//        $('.modal-title').click(function(){
+//            var taskid = {$coursedata.next_task_id};
+//            $.post(
+//                "{:url('index/user/checkin')}",
+//                {'taskid':taskid},
+//                function(data){
+//                    console.log(data);
+//                    if(data['code']==187){
+//                        alert("签到发生错误！");
+//                    }else if(data['code']==0){
+//                        $('.modal').hide();
+//                        window.location.href = "{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}";
+//                    }
+//                },
+//                "json"
+//            );
+//        });
+    })
+</script>
 {block name="javascript"}
 
 {/block}
