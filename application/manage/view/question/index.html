@@ -105,23 +105,27 @@
                             <!-- 模态框主体 -->
                             <div class="modal-body">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">{$vo.stem}</div>
-
+                                    <div class="panel-heading">适用课程：{$vo.name}</div>
+                                    <div class="panel-body">
+                                        <p>{$vo.stem}</p>
+                                    </div>
                                     {php}
                                     $arr = json_decode($vo['metas'],true);
                                     $answer = json_decode($vo['answer'],true);
                                     $aitem = ['A','B','C','D','E'];
                                     {/php}
-
-                                    <div class="panel-body">
-                                        <p>正确答案是<span class="label label-success">{volist name="$answer" id="an"}{$aitem[$an]}&nbsp;{/volist}</span></p>
-                                    </div>
-
                                     <ul class="list-group">
                                         {volist name="$arr.choices" id="a"}
                                         <li class="list-group-item">{$aitem[$key]}：{$a}</li>
                                         {/volist}
                                     </ul>
+                                    <div class="panel-body">
+                                        <p>正确答案是
+                                            <span class="label label-success">
+                                            {if condition="isset($aitem[$an])"}{volist name="$answer" id="an"}{$aitem[$an]}&nbsp;{/volist}{/if}
+                                            </span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
