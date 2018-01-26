@@ -69,7 +69,7 @@ class Examination extends Home{
     }
     //结束考试
     public function examend(){
-        $info=input('post.');
+        $info=input('get.');
         $list=Db::name('testpaper')
                 ->where('id',$info['paperid'])
                 ->find();
@@ -144,7 +144,7 @@ class Examination extends Home{
         $examination=[];
         foreach($data['data'] as $key=>$val){
             foreach($val['question'] as $k=>$v){
-                if(!empty($val['answer'][$v])) {
+                if(isset($val['answer'][$v])) {
                     $list = Db::name('question')->where('id', $v)->find();
                     $info['paperID'] = $data['paperid'];
                     $info['itemID'] = 0;
