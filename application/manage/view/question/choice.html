@@ -55,7 +55,6 @@
         <input type="hidden" name="id" value="{$article.id}"/>
         <!-- 模态框底部 -->
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" onclick="dopost('editshow',1);">保存继续添加</button>
             <button type="button" class="btn btn-primary" onclick="dopost('edit',1);">保存</button>
             <a  class="btn btn-primary" href="{:url('index')}">返回</a>
         </div>
@@ -141,7 +140,7 @@
         html += '<div class="col-sm-5">';
         html += '<textarea cols="20" rows="5" class="form-control" name="metas[choices][]"></textarea>';
         html += '<label>';
-        html += '<input  type="checkbox" name="answer[]" value="'+(num+2)+'">';
+        html += '<input  type="checkbox" name="answer[]" value="'+(num)+'">';
         html += '正确答案';
         html += '</label>';
         html += '</div>';
@@ -171,9 +170,10 @@
                 if(data.code=='000'){
 
                     alert(data.info)
-                    $('#myModal').modal('hide');
-
-                    window.location.reload()
+                    // $('#myModal').modal('hide');
+                    //
+                    // window.location.reload()
+                    window.location.href="{:url('index')}"
 
                 }else{
                     alert(data.error)

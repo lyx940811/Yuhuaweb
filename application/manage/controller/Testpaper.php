@@ -106,7 +106,7 @@ class Testpaper extends Base{
         $data = [
             'name'  => $info['name'],
             'description'  => $info['description'],
-            'metas' => json_encode($meta),
+            'metas' => json_encode($meta,true),
             'courseid'=>$info['courseid'],
             'type'  => $info['type'],
             'score'  => $total,

@@ -87,11 +87,11 @@ class Question extends Base{
 
         $data = [
             'stem'  => $info['stem'],
-            'metas' => isset($info['metas'])?json_encode($info['metas']):'',
+            'metas' => isset($info['metas'])?json_encode($info['metas'],true):'',
             'type'  => $info['type'],
             'courseId'=>$info['courseId'],
             'createdUserId'=>session('admin_uid'),
-            'answer'=>isset($info['answer'])?json_encode($info['answer']):'',
+            'answer'=>isset($info['answer'])?json_encode($info['answer'],true):'',
             'difficulty'=>'normal',
             'createdTime'=>date('Y-m-d H:i:s',time()),
 
@@ -136,10 +136,10 @@ class Question extends Base{
 
         $data = [
             'stem'  => $info['stem'],
-            'metas' => isset($info['metas'])?json_encode($info['metas']):'',
+            'metas' => isset($info['metas'])?json_encode($info['metas'],true):'',
             'type'  => $info['type'],
             'courseId'=>$info['courseId'],
-            'answer'=>isset($info['answer'])?json_encode($info['answer']):'',
+            'answer'=>isset($info['answer'])?json_encode($info['answer'],true):'',
 //            'difficulty'=>'normal',
 //            'createdUserId'=>session('admin_uid'),
 //            'createdTime'=>date('Y-m-d H:i:s',time()),
