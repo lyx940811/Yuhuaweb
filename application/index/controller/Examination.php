@@ -69,7 +69,7 @@ class Examination extends Home{
     }
     //结束考试
     public function examend(){
-        $info=input('get.');
+        $info=input('post.');
         $list=Db::name('testpaper')
                 ->where('id',$info['paperid'])
                 ->find();
@@ -195,7 +195,16 @@ class Examination extends Home{
                             }
                         }
                     }
-//                    $save = DB::table('testpaper_item_result')->insert($info);
+                    $where['paperID']=$info['paperID'];
+                    $where['questionId']=$info['questionId'];
+                    $paper=DB::table('testpaper_item_result')->where($where)->find();
+                    if(!empty($paper)){
+                        $info['resultId']=$paper['resultId']+1;
+                        $save= DB::table('testpaper_item_result')->where('id',$paper['id'])->update($info);
+                    }else{
+                        $save = DB::table('testpaper_item_result')->insert($info);
+                    }
+//
                 }else{
                     if($key=='sign'){
                         $signnone+=1;
