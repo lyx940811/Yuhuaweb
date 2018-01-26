@@ -89,7 +89,47 @@
                 {if condition="check($uid,'/manage/question/delete')"}
                         <a href="#" onclick="deleteR({$vo.id});">删除</a>
                 {/if}
+                {if condition="check($uid,'/manage/question/show')"}
+                <a href="#" data-toggle="modal" data-target="#myModal{$vo.id}">查看</a>
+                {/if}
+                <div class="modal fade" id="myModal{$vo.id}">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
 
+                            <!-- 模态框头部 -->
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">题目预览</h4>
+
+                            </div>
+                            <!-- 模态框主体 -->
+                            <div class="modal-body">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">{$vo.stem}</div>
+                                    {php}
+                                    $arr = json_decode($vo['metas'],true);
+
+                                    $answer = json_decode($vo['answer'],true);
+                                    $aitem = ['A','B','C','D','E'];
+
+                                    {/php}
+                                    <div class="panel-body">
+                                        <p>正确答案是<span class="label label-success">{volist name="$answer" id="an"}{$aitem[$an]} {/volist}</span></p>
+                                    </div>
+
+                                    <ul class="list-group">
+
+                                        {volist name="$arr.choices" id="a"}
+
+                                        <li class="list-group-item">{$aitem[$key]}：{$a}</li>
+                                        {/volist}
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </td>
         </tr>
         {/volist}
