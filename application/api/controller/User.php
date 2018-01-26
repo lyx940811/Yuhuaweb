@@ -783,9 +783,11 @@ class User extends Controller
                         'userid'        =>  $this->user->id,
                         'taskid'        =>  $course['id'],
                         'point'         =>  $course['point'],
-                        'createTime'    =>  time(),
                     ];
-                    Db::name('get_point_log')->insert($pointData);
+                    if(!Db::name('get_point_log')->where($pointData)->find()){
+                        $pointData['createTime']    =  time();
+                        Db::name('get_point_log')->insert($pointData);
+                    }
                 }
                 StudyResultLog::update($data,['id'=>$watch_log['id']]);
             }

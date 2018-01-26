@@ -208,9 +208,11 @@ class User extends Home
                     'userid'        =>  $this->user->id,
                     'taskid'        =>  $course['id'],
                     'point'         =>  $course['point'],
-                    'createTime'    =>  time(),
                 ];
-                Db::name('get_point_log')->insert($pointData);
+                if(!Db::name('get_point_log')->where($pointData)->find()){
+                    $pointData['createTime']    =  time();
+                    Db::name('get_point_log')->insert($pointData);
+                }
             }
             StudyResult::update($data,['id'=>$watch['id']]);
             return json_data(0,$this->codeMessage[0],'');
