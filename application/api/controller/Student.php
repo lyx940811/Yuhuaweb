@@ -281,7 +281,7 @@ class Student extends User
         $note = Db::name('course_note')
             ->alias('cn')
             ->where($map)
-            ->order('cn.lessonid')
+            ->order('cn.createdTime desc')
             ->field('cn.content,cn.id,cn.lessonid,cn.courseId,cn.createdTime')
             ->page($page,10)
             ->select();

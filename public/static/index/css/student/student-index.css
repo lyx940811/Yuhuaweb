@@ -119,3 +119,15 @@ a:hover{ color:#1974A1;  }
     border-radius: 0;
     background: rgba(0,0,0,0.1);
 }
+.modal .modal-title{
+    position:absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -46px;
+    margin-top: -8px;
+    color: #43bc60;
+    font-weight: bold;
+}
+.modal .modal-dialog{
+    z-index: 1050;
+}

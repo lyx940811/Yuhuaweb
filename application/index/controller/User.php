@@ -220,6 +220,42 @@ class User extends Home
         }
     }
 
+    /**
+     * 判断用户是否签到
+     */
+    public function ischeckin()
+    {
+        $taskid = $this->request->param('taskid');
+
+        $sql = "select *,from_unixtime(createTime)  from checkin WHERE userid=".$this->user->id." and taskid=".$taskid." and from_unixtime(createTime) BETWEEN '".date('Y-m-d',time())."' and '".date('Y-m-d',time())." 23:59:59'";
+        $res = Db::query($sql);
+
+        if ($res){
+            //has checkin
+            return json_data(185,$this->codeMessage[185],'');
+        }
+        else{
+            //haven't checkin
+            return json_data(186,$this->codeMessage[186],'');
+        }
+    }
+    /**
+     * 签到动作
+     */
+    public function checkin()
+    {
+        $data = [
+            'userid'    =>  $this->user->id,
+            'taskid'    =>  $this->request->param('taskid'),
+            'createTime'=>  time(),
+        ];
+        if(Db::name('checkin')->insert($data)){
+            return json_data(0,$this->codeMessage[0],'');
+        } else{
+            return json_data(187,$this->codeMessage[187],'');
+        }
+    }
+
 
 
 }
