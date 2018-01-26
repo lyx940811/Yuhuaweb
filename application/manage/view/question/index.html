@@ -106,21 +106,19 @@
                             <div class="modal-body">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">{$vo.stem}</div>
+
                                     {php}
                                     $arr = json_decode($vo['metas'],true);
-
                                     $answer = json_decode($vo['answer'],true);
                                     $aitem = ['A','B','C','D','E'];
-
                                     {/php}
+
                                     <div class="panel-body">
-                                        <p>正确答案是<span class="label label-success">{volist name="$answer" id="an"}{$aitem[$an]} {/volist}</span></p>
+                                        <p>正确答案是<span class="label label-success">{volist name="$answer" id="an"}{$aitem[$an]}&nbsp;{/volist}</span></p>
                                     </div>
 
                                     <ul class="list-group">
-
                                         {volist name="$arr.choices" id="a"}
-
                                         <li class="list-group-item">{$aitem[$key]}：{$a}</li>
                                         {/volist}
                                     </ul>
