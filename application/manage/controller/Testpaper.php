@@ -46,7 +46,7 @@ class Testpaper extends Base{
         $nlist = [];
         foreach ($list as $k=>$v){
             $nlist[$k] = $v;
-            $nlist[$k]['qid'] = Db::table('question a')
+            $nlist[$k]['qinfo'] = Db::table('question a')
                 ->join('testpaper_item b','a.id=b.questionId','LEFT')
                 ->field('a.id,a.stem,a.metas,a.answer,a.type')
                 ->group('a.id')
@@ -70,11 +70,12 @@ class Testpaper extends Base{
 
         $msg  =   [
             'name.require' => '请填写试卷名称',
+            'name.length' => '试卷名称长度不符合',
             'courseid.require' => '适用课程不能为空',
             'courseid.number' => '适用课程必须为数字',
         ];
         $validate = new Validate([
-            'name'   => 'require',
+            'name'   => 'require|length:2,100',
             'courseid'  => 'require|number',
         ],$msg);
 
@@ -174,11 +175,12 @@ class Testpaper extends Base{
 
         $msg  =   [
             'name.require' => '请填写试卷名称',
+            'name.length' => '试卷名称长度不符合',
             'courseid.require' => '适用课程不能为空',
             'courseid.number' => '适用课程必须为数字',
         ];
         $validate = new Validate([
-            'name'   => 'require',
+            'name'   => 'require|length:2,100',
             'courseid'  => 'require|number',
         ],$msg);
 

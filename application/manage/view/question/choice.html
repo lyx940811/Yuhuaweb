@@ -106,6 +106,26 @@
                 </label>
             </div>
         </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">选项C</label>
+            <div class="col-sm-5">
+                <textarea cols="20" rows="5" class="form-control" name="metas[choices][]"></textarea>
+                <label>
+                    <input  type="checkbox" name="answer[]" value="2">
+                    正确答案
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">选项D</label>
+            <div class="col-sm-5">
+                <textarea cols="20" rows="5" class="form-control" name="metas[choices][]"></textarea>
+                <label>
+                    <input  type="checkbox" name="answer[]" value="3">
+                    正确答案
+                </label>
+            </div>
+        </div>
         <div class="center-block">
             <button type="button" class="btn btn-primary" onclick="additem();">新增选项</button>
         </div>
@@ -130,7 +150,7 @@
         var arr = {0:'A',1:'B',2:'C',3:'D',4:'E'};
 
         if(num==0){
-            num=2
+            num=4
         }
         if(num>4){
             alert('太多了');return;
@@ -170,10 +190,11 @@
                 if(data.code=='000'){
 
                     alert(data.info)
-                    // $('#myModal').modal('hide');
-                    //
-                    // window.location.reload()
-                    window.location.href="{:url('index')}"
+                    if($type=='addshow'){
+                        window.location.href = "{:url('choice')}"
+                    }else{
+                        window.location.href="{:url('index')}"
+                    }
 
                 }else{
                     alert(data.error)

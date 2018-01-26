@@ -173,7 +173,12 @@
                     alert(data.info)
                     // $('#myModal').modal('hide');
 
-                    window.location.href="{:url('index')}"
+                    if($type=='addshow'){
+                        window.location.href = "{:url('single_choice')}"
+                    }else{
+                        window.location.href="{:url('index')}"
+                    }
+
 
                 }else{
                     alert(data.error)
