@@ -43,10 +43,19 @@ class Testpaper extends Base{
         ];
         $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
 
+        $nlist = [];
+        foreach ($list as $k=>$v){
+            $nlist[$k] = $v;
+            $nlist[$k]['qid'] = Db::table('question a')
+                ->join('testpaper_item b','a.id=b.questionId','LEFT')
+                ->field('a.id,a.stem,a.metas,a.answer,a.type')
+                ->group('a.id')
+                ->where('b.paperId',$v['id'])->select();
+        }
 
         $this->assign('course',$course);
 
-        $this->assign('list',$list);
+        $this->assign('list',$nlist);
         $this->assign('page',$list->render());
 
         $this->assign('typename','试卷管理');

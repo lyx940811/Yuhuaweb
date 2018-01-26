@@ -78,11 +78,77 @@
             <td>
                 {if condition="check($uid,'/manage/testpaper/edit')"}
                         <a href="{:url('addtest')}?id={$vo.id}">编辑</a>
-                        <strong>/</strong>
                 {/if}
                 {if condition="check($uid,'/manage/testpaper/delete')"}
                         <a href="#" onclick="deleteR({$vo.id});">删除</a>
                 {/if}
+                {if condition="check($uid,'/manage/testpaper/show')"}
+                <a href="#" data-toggle="modal" data-target="#myModal{$vo.id}">查看</a>
+                {/if}
+                <div class="modal fade" id="myModal{$vo.id}">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <!-- 模态框头部 -->
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">试卷预览</h4>
+
+                            </div>
+                            <!-- 模态框主体 -->
+                            <div class="modal-body">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                试卷名称：{$vo.name}
+                                            </div>
+                                            <div class="col-lg-6">
+                                                适用课程：{$vo.title}
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="panel-body">
+                                        <p>{$vo.description}</p>
+                                    </div>
+                                </div>
+
+                                {volist name="$vo.qid" id="q"}
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        {if condition="$q['type'] eq 'single_choice'"}
+                                        单选题
+                                        {elseif condition="$q['type'] eq 'choice'"}
+                                        多选题
+                                        {elseif condition="$q['type'] eq 'determine'"}
+                                        判断题
+                                        {elseif condition="$q['type'] eq 'essay'"}
+                                        问答题
+                                        {/if}
+                                    </div>
+                                    <div class="panel-body">
+                                        <p>{$q.stem}</p>
+                                    </div>
+                                    {php}
+                                    $arr = json_decode($q['metas'],true);
+                                    $eitem = ['A','B','C','D','E'];
+                                    {/php}
+                                    <ul class="list-group">
+                                        {volist name="$arr.choices" id="m"}
+                                        <li class="list-group-item">{$eitem[$key]} :{$m}</li>
+                                        {/volist}
+                                    </ul>
+                                </div>
+
+                                {/volist}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
 
             </td>
         </tr>
