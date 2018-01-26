@@ -46,7 +46,7 @@ class Testpaper extends Base{
         $nlist = [];
         foreach ($list as $k=>$v){
             $nlist[$k] = $v;
-            $nlist[$k]['qid'] = Db::table('question a')
+            $nlist[$k]['qinfo'] = Db::table('question a')
                 ->join('testpaper_item b','a.id=b.questionId','LEFT')
                 ->field('a.id,a.stem,a.metas,a.answer,a.type')
                 ->group('a.id')

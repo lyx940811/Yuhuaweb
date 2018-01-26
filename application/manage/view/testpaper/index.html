@@ -116,7 +116,10 @@
                                     </div>
                                 </div>
 
-                                {volist name="$vo.qid" id="q"}
+                                {volist name="$vo.qinfo" id="q"}
+                                {php}
+                                //print_r($q);
+                                {/php}
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         {if condition="$q['type'] eq 'single_choice'"}
