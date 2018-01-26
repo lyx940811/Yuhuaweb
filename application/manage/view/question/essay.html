@@ -107,7 +107,11 @@
                 if(data.code=='000'){
 
                     alert(data.info)
-                    window.location.reload()
+                    if($type=='addshow'){
+                        window.location.href = "{:url('essay')}"
+                    }else{
+                        window.location.href="{:url('index')}"
+                    }
 
                 }else{
                     alert(data.error)

@@ -66,11 +66,12 @@ class Question extends Base{
             'courseId.require' => '适用课程不能为空',
             'courseId.number' => '适用课程必须为数字',
             'stem.require' => '请填写题干',
+            'stem.length' => '题干长度不符合',
             'answer.require' => '请填写答案',
         ];
         $validate = new Validate([
             'courseId'  => 'require|number',
-            'stem'   => 'require',
+            'stem'   => 'require|length:2,100',
             'answer'   => 'require',
         ],$msg);
 
@@ -114,11 +115,12 @@ class Question extends Base{
             'courseId.require' => '适用课程不能为空',
             'courseId.number' => '适用课程必须为数字',
             'stem.require' => '请填写题干',
+            'stem.length' => '题干长度不符合',
             'answer.require' => '请填写答案',
         ];
         $validate = new Validate([
             'courseId'  => 'require|number',
-            'stem'   => 'require',
+            'stem'   => 'require|length:2,100',
             'answer'   => 'require',
         ],$msg);
 

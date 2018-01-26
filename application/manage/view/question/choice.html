@@ -170,10 +170,11 @@
                 if(data.code=='000'){
 
                     alert(data.info)
-                    // $('#myModal').modal('hide');
-                    //
-                    // window.location.reload()
-                    window.location.href="{:url('index')}"
+                    if($type=='addshow'){
+                        window.location.href = "{:url('choice')}"
+                    }else{
+                        window.location.href="{:url('index')}"
+                    }
 
                 }else{
                     alert(data.error)
