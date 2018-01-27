@@ -120,6 +120,9 @@
                                         {/volist}
                                     </ul>
                                     <div class="panel-body">
+                                        {if condition="$vo.type eq 'determine'"}
+                                        回答: <span class="label label-success" style="white-space: normal">{if condition="$answer[0] eq 0"}正确{else/}错误{/if}</span>
+                                        {else/}
                                         <p>正确答案是
                                             <span class="label label-success" style="white-space: normal">
                                                 {volist name="$answer" id="an"}
@@ -131,6 +134,8 @@
                                                 {/volist}
                                             </span>
                                         </p>
+                                        {/if}
+
                                     </div>
                                 </div>
                             </div>
