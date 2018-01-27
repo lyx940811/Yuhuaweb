@@ -144,7 +144,7 @@ class Examination extends Home{
         $examination=[];
         foreach($data['data'] as $key=>$val){
             foreach($val['question'] as $k=>$v){
-                if(!empty($val['answer'][$v])) {
+                if(isset($val['answer'][$v])) {
                     $list = Db::name('question')->where('id', $v)->find();
                     $info['paperID'] = $data['paperid'];
                     $info['itemID'] = 0;
@@ -195,7 +195,16 @@ class Examination extends Home{
                             }
                         }
                     }
-//                    $save = DB::table('testpaper_item_result')->insert($info);
+                    $where['paperID']=$info['paperID'];
+                    $where['questionId']=$info['questionId'];
+                    $paper=DB::table('testpaper_item_result')->where($where)->find();
+                    if(!empty($paper)){
+                        $info['resultId']=$paper['resultId']+1;
+                        $save= DB::table('testpaper_item_result')->where('id',$paper['id'])->update($info);
+                    }else{
+                        $save = DB::table('testpaper_item_result')->insert($info);
+                    }
+//
                 }else{
                     if($key=='sign'){
                         $signnone+=1;
