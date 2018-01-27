@@ -96,7 +96,7 @@ class Testpaper extends Base{
 
         $num = 0;
         if($counts){
-            foreach ($info['counts'] as $k=>$v){
+            foreach ($counts as $k=>$v){
                 $total +=$v*$score[$k];
                 if($counts[$k]>0){
                     $num++;
@@ -138,7 +138,13 @@ class Testpaper extends Base{
             foreach ($question as $k=>$v){
 
                 if($v>0){
-                    $questionitem[] = Db::table('question')->field('id,type')->where('type',$k)->order('RAND()')->limit($v)->select();
+                    $qwhere = [
+                        'type'=>$k,
+                        'courseId'=>$info['courseid']
+                    ];
+
+                    $questionitem[] = Db::table('question')->field('id,type')->where($qwhere)->order('RAND()')->limit($v)->select();
+
                 }
             }
 
@@ -147,10 +153,10 @@ class Testpaper extends Base{
 
                 foreach ($v as $kk=>$vv){
 
-                Db::table('testpaper_item')->insert(
-                    ['paperID'=>$id,'questionId'=>$vv['id'],'score'=>$score[$vv['type']],'questiontype'=>$vv['type']]
-                );
-                Db::table('question')->where('id',$vv['id'])->update(['score'=>$score[$vv['type']]]);
+                    Db::table('testpaper_item')->insert(
+                        ['paperID'=>$id,'questionId'=>$vv['id'],'score'=>$score[$vv['type']],'questiontype'=>$vv['type']]
+                    );
+                    Db::table('question')->where('id',$vv['id'])->update(['score'=>$score[$vv['type']]]);
 
                 }
             }
@@ -257,6 +263,10 @@ class Testpaper extends Base{
             //点击保存试卷的操作
             $info = input('post.');
 
+            if($info['passedScore']>$info['paperscore']){
+                return ['error'=>'及格分数不能大于试卷总和','code'=>200];
+            }
+
             $ok = Db::table('testpaper')->where('id',$paperid)->update(
                 [
                     'passedScore'=>$info['passedScore']+0,
@@ -273,15 +283,19 @@ class Testpaper extends Base{
 
             $list = Db::table('testpaper_item')->field('questionId as qid')->where('paperID',$paperid)->select();
 
+            $newlist = [];
             foreach ($list as $k=>$v){
                 $newlist[] = Db::table('question a')
                     ->join('course b','a.courseId=b.id','LEFT')
                     ->field('a.id,a.type,a.stem,a.score,b.title')->where('a.id',$v['qid'])->find();
             }
 
+            $paperscore = Db::table('testpaper')->where('id',$paperid)->value('score');
+
             $this->assign('list',$newlist);
             $this->assign('typename','试卷管理');
             $this->assign('id',$paperid);
+            $this->assign('paperscore',$paperscore);
             return $this->fetch();
         }
 

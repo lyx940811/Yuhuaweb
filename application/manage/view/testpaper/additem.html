@@ -55,8 +55,9 @@
             </tbody>
         </table>
         <p>
-            全部客观题试卷总分XXX分，达到
+            全部客观题试卷达到
             <input type="text" name="passedScore" class="form-control width-150 mhs" value="0" data-score-total="0" />分，即可认定合格！
+            <input type="hidden" value="{$paperscore}" name="paperscore">
             <input type="hidden" value="{$id}" name="id">
         </p>
         <p class="text-right"><button type="button" class="btn btn-primary" onclick="dopost('add',0)">保存试卷</button></p>
