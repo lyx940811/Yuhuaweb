@@ -61,11 +61,13 @@ class User extends Base{
         //错误信息提示
         $msg  =   [
             'user_name.require' => '用户名不能为空',
+            'card.require' => '身份证不能为空',
             'user_name.length' => '用户名长度太短',
         ];
 
         $validate = new Validate([
             'user_name'  => 'require|length:2,20', //我这里的token是令牌验证
+            'card'=>'require',
         ],$msg);
 
         $validate->check($info);
@@ -108,10 +110,10 @@ class User extends Base{
         $ok = $user_table->field('nickname,username,password,email,mobile,roles,type,locked,status,title,createdIp,createdTime,createUserID')->insert($data);
 
         if($ok){
-
             if($info['type']==3){//3为学生
                 $sdata['userid'] = $user_table->getLastInsID();
                 $sdata['mobile'] = $info['mobile'];
+                $sdata['idcard']=$info['card'];
                 $sdata['createdTime'] = date('Y-m-d H:i:s' ,time());
                 Db::table('user_profile')->insert($sdata);
 
@@ -120,6 +122,7 @@ class User extends Base{
                 $sdata['userid'] = $user_table->getLastInsID();
                 $sdata['realname'] = $info['user_name'];
                 $sdata['mobile'] = $info['mobile'];
+                $sdata['card']=$info['card'];
                 $sdata['createdTime'] = date('Y-m-d H:i:s' ,time());
                 Db::table('teacher_info')->insert($sdata);
             }
