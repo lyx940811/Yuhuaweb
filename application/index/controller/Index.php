@@ -123,26 +123,41 @@ class Index extends Home
         return $this->fetch('categoryajax');
     }
 
+    public function pre(){
+        $pre = '370303199401220638';
+        if(preg_match('/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/',$pre)){
+            echo $key = 'idcard';
+        }
+        elseif(preg_match('/^[1][3,4,5,7,8][0-9]{9}$/',$pre)){
+            echo $key = 'mobile';
+        }
+    }
+
     public function loginajax()
     {
         $data = $this->request->param();
 
         $allow_type = [2,3];
-//        if(preg_match('/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/',$data['username'])){
-//            $key = 'email';
-//        }
-//        elseif(preg_match('/^[1][3,4,5,7,8][0-9]{9}$/',$data['username'])){
-//            $key = 'mobile';
-//        }
-//        else{
-//            $key = 'username';
-//        }
-        //身份证登陆
-        if(!$user_profile = UserProfile::get(['idcard'=>$data['username']])){
-            return json_data(110,$this->codeMessage[110],'' );
+        if(preg_match('/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/',$data['username'])){
+            $key = 'email';
+        }
+        elseif(preg_match('/^[1][3,4,5,7,8][0-9]{9}$/',$data['username'])){
+            $key = 'mobile';
+        }
+        else{
+            $key = 'username';
+        }
+        if(isset($key)){
+            $user = UserModel::get([ $key => $data['username'] ]);
         }
 
-        if($user = UserModel::get($user_profile['userid'])){
+        //身份证登陆
+        if(preg_match('/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/',$data['username'])){
+            $user_profile = UserProfile::get(['idcard'=>$data['username']]);
+            $user = UserModel::get($user_profile['userid']);
+        }
+
+        if(isset($user)){
 
             if(!in_array($user['type'],$allow_type)){
                 return json_data(150,$this->codeMessage[150],'');
