@@ -15,8 +15,10 @@ class Statistics extends Base{
     {
         $sex1=[];
         $num1=[];
+        $where['sex']=array('neq','');
         $list = Db::table('user_profile')
                 ->field('sex,count(id) as num')
+                ->where($where)
                 ->group('sex')
                 ->select();
         $count = Db::table('user_profile')->count();
