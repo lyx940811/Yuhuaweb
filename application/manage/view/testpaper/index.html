@@ -76,14 +76,8 @@
             <td>{$vo.username}</td>
             <td>{$vo.courseid?'使用中':'未使用'}</td>
             <td>
-                {if condition="check($uid,'/manage/testpaper/edit')"}
-                        <a href="{:url('addtest')}?id={$vo.id}">编辑</a>
-                {/if}
-                {if condition="check($uid,'/manage/testpaper/delete')"}
-                        <a href="#" onclick="deleteR({$vo.id});">删除</a>
-                {/if}
                 {if condition="check($uid,'/manage/testpaper/show')"}
-                <a href="#" data-toggle="modal" data-target="#myModal{$vo.id}">查看</a>
+                <a href="#" data-toggle="modal" data-target="#myModal{$vo.id}">预览</a>
                 {/if}
                 <div class="modal fade" id="myModal{$vo.id}">
                     <div class="modal-dialog">

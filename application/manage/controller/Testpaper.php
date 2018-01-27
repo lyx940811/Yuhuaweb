@@ -71,11 +71,13 @@ class Testpaper extends Base{
         $msg  =   [
             'name.require' => '请填写试卷名称',
             'name.length' => '试卷名称长度不符合',
+            'description.length' => '试卷说明长度不符合',
             'courseid.require' => '适用课程不能为空',
             'courseid.number' => '适用课程必须为数字',
         ];
         $validate = new Validate([
-            'name'   => 'require|length:2,100',
+            'name'   => 'require|length:2,20',
+            'description'   => 'length:2,20',
             'courseid'  => 'require|number',
         ],$msg);
 
@@ -102,6 +104,9 @@ class Testpaper extends Base{
                     $num++;
                 }
             }
+        }
+        if($num<1){
+            return ['error'=>'请填写相关题目数量','code'=>'300'];
         }
 
         $meta = [
@@ -134,7 +139,7 @@ class Testpaper extends Base{
             $id = $role_table->getLastInsID();//先取testpaper插入的id
 
             $question = isset($counts)?$counts:0;
-
+            $questionitem = [];
             foreach ($question as $k=>$v){
 
                 if($v>0){
@@ -182,11 +187,13 @@ class Testpaper extends Base{
         $msg  =   [
             'name.require' => '请填写试卷名称',
             'name.length' => '试卷名称长度不符合',
+            'description.length' => '试卷说明长度不符合',
             'courseid.require' => '适用课程不能为空',
             'courseid.number' => '适用课程必须为数字',
         ];
         $validate = new Validate([
-            'name'   => 'require|length:2,100',
+            'name'   => 'require|length:2,20',
+            'description'   => 'length:2,20',
             'courseid'  => 'require|number',
         ],$msg);
 
