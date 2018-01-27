@@ -266,9 +266,9 @@ class User extends Controller
      * 【部分APP功能】
      */
     /**
-     * APP-得到个人信息
+     * APP-得到个人信息(新版，增加了专业属性)
      */
-    public function getmyinfo(){
+    public function getmyinfo_new(){
         if(!empty($this->user->stuclass->classname->title)){
             $class = $this->user->stuclass->classname->title;
         }
@@ -282,6 +282,25 @@ class User extends Controller
             'mobile'    =>  $this->user->mobile,
             'classname' =>  $class,
             'major'  =>  $major
+        ];
+        return json_data(0,$this->codeMessage[0],$data);
+    }
+
+    /**
+     * APP-得到个人信息（旧版）
+     */
+    public function getmyinfo(){
+        if(!empty($this->user->stuclass->classname->title)){
+            $class = $this->user->stuclass->classname->title;
+        }
+        else{
+            $class = '还未分配班级';
+        }
+        $data = [
+            'username'  =>  $this->user->username,
+            'avatar'    =>  $this->request->domain()."/".$this->user->title,
+            'mobile'    =>  $this->user->mobile,
+            'classname' =>  $class,
         ];
         return json_data(0,$this->codeMessage[0],$data);
     }
