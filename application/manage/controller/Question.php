@@ -23,9 +23,21 @@ class Question extends Base{
         if(!empty($info['courseId'])){
             $where['a.courseId'] = ['eq',$info['courseId']];
         }
-//        if(!empty($info['status'])){
-//            $where['a.status'] = ['eq',$info['status']];
-//        }
+        if(!empty($info['status'])){
+            $titem = Db::table('testpaper_item')->field('questionId')->group('questionId')->select();
+
+            $arr = '';
+            foreach ($titem as $k=>$v){
+                $arr.= ','.$v['questionId'];
+            }
+            $arr = trim($arr,',');
+            if($info['status']==1){
+                $where['a.id'] = ['not in',$arr];
+            }else{
+                $where['a.id'] = ['in',$arr];
+            }
+
+        }
         if(!empty($info['stem'])){
             $where['a.stem'] = ['like',"%{$info['stem']}%"];
         }
@@ -35,8 +47,8 @@ class Question extends Base{
             ->field('a.*,b.title as name')
             ->where($where)
             ->order('a.id desc')
+            ->group('a.id')
             ->paginate(20);
-
 
         $qtype = [
             ['id'=>1,'name'=>'单选题','type'=>'single_choice'],
@@ -46,10 +58,15 @@ class Question extends Base{
         ];
         $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
 
+        $nlist = [];
+        foreach ($list as $k=>$v){
+            $nlist[$k] = $v;
+            $nlist[$k]['isuse'] = Db::table('testpaper_item')->where('questionId',$v['id'])->count();
+        }
 
         $this->assign('course',$course);
 
-        $this->assign('list',$list);
+        $this->assign('list',$nlist);
         $this->assign('page',$list->render());
 
         $this->assign('typename','题库管理');
