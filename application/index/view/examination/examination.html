@@ -36,7 +36,8 @@
                   </div>
                   <form id="teacherCheckForm" autocomplete="off" action="{:url('examend')}" method="post">
                     <input type="hidden" name="courseid" value="{$courseid}">
-                    <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-single_choice">
+                    {if condition="!empty($num['0'])"}
+                      <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-single_choice">
                       <div class="panel-heading">
                         <strong class="">单选题</strong>
                         <small class="color-gray">
@@ -87,7 +88,9 @@
                           {/if}
                       {/volist}
                     </div>
-                    <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-choice">
+                    {/if}
+                    {if condition="!empty($num['1'])"}
+                      <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-choice">
                         <div class="panel-heading">
                           <strong class="">多选题</strong>
                           <small class="color-gray">
@@ -135,6 +138,8 @@
                         {/if}
                         {/volist}
                       </div>
+                    {/if}
+                    {if condition="!empty($num['2'])"}
                       <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-single_choice">
                           <div class="panel-heading">
                               <strong class="">判断</strong>
@@ -179,6 +184,7 @@
                           {/if}
                           {/volist}
                       </div>
+                    {/if}
                     <!--<div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-essay">-->
                       <!--<div class="panel-heading">-->
                         <!--<strong class="">问答题</strong>-->
