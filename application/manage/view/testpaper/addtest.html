@@ -93,8 +93,8 @@
                 <li class="item">
                     <span class="itemsp">{$i.name}</span>
                     <span class="mlm">题目数量:</span>
-                    <input type="text" class="form-control iteminput change" name="counts[{$i.type}]" data-role="count"  value="0"  {if condition="$i['num'] eq 0"}readonly{/if}/>/
-                    <span class="text-info">{$i.num}</span>
+                    <input type="text" class="form-control iteminput" name="counts[{$i.type}]" data-role="count"  value="0"  readonly/>/
+                    <span class="text-info">0</span>
 
                     <span class="mlm">题目分值:</span>
                     <input type="text" class="form-control iteminput" name="scores[{$i.type}]"  value="2" data-role="score" />
@@ -125,6 +125,39 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
+
+    $('select[name="courseid"]').change(function () {
+        var id = $(this).val()
+        $.get("{:url('requestnum')}?courseid="+id,function (data) {
+            // console.log(data)
+
+
+            if(data.code=='000'){
+
+                var info = data.info;
+
+                $.each($('.text-info'),function (id,item) {
+                    $(this).text(0)
+                    $(this).text(info[id].num)
+                        // $(this)[0].removeAttr('readonly')
+                        // $(this).attr("readonly","")
+                    if(info[id].num){
+                        $(item).prev().removeAttr('readonly')
+                    }else{
+                        $(item).prev().attr("readonly","readonly")
+                    }
+
+                })
+
+
+            }else{
+                alert(data.error)
+            }
+        })
+    })
+
+    
+    
     $(document).ready(function(){
         $('.change').change(function(){
             var num=$(this).val();

@@ -72,7 +72,7 @@ class Testpaper extends Base{
             'name.require' => '请填写试卷名称',
             'name.length' => '试卷名称长度不符合',
             'description.length' => '试卷说明长度不符合',
-            'courseid.require' => '适用课程不能为空',
+            'courseid.require' => '请先选择适用课程',
             'courseid.number' => '适用课程必须为数字',
         ];
         $validate = new Validate([
@@ -242,9 +242,9 @@ class Testpaper extends Base{
             ['id'=>4,'name'=>'问答题','type'=>'essay'],
         ];
 
-        foreach ($item as $k=>$v){
-            $item[$k]['num'] = Db::table('question')->where('type',$v['type'])->value('count(id) as num');
-        }
+//        foreach ($item as $k=>$v){
+//            $item[$k]['num'] = Db::table('question')->where('type',$v['type'])->value('count(id) as num');
+//        }
 
         $metas = !empty($article['metas'])?json_decode($article['metas']):'';
 
@@ -256,6 +256,41 @@ class Testpaper extends Base{
         $this->assign('course',$course);
         return $this->fetch();
     }
+
+
+    /*
+     * 点击适用课程请求题目数量
+     */
+    public function requestnum(){
+
+        $courseid = request()->get('courseid')+0;
+        $info = Db::table('question')->where('courseId',$courseid)->field('count(id) as num,type')->group('type')->select();
+
+        $qtype = [
+            ['id'=>1,'name'=>'单选题','type'=>'single_choice'],
+            ['id'=>2,'name'=>'多选题','type'=>'choice'],
+            ['id'=>3,'name'=>'判断题','type'=>'determine'],
+            ['id'=>4,'name'=>'问答题','type'=>'essay'],
+        ];
+
+        $aItem = [];
+        foreach ($qtype as $k=>$v){
+
+            foreach ($info as $kk=>$vv){
+                if(in_array($v['type'],$vv)){
+                    $qtype[$k]['num'] = $vv['num'];
+                }
+            }
+
+        }
+
+        if($info){
+            return ['info'=>$qtype,'code'=>'000'];
+        }else{
+            return ['error'=>'没找到数据','code'=>'200'];
+        }
+    }
+
 
     /*
      * 添加试卷的下一步页面
