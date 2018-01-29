@@ -44,8 +44,8 @@ class Userprofile extends Base{
 
         $list = Db::table('user_profile a')
             ->join('student_school b','a.userid=b.userid','LEFT')
-            ->join('student_class c','a.userid=c.userid','LEFT')
-            ->join('classroom d','c.classid=d.id','LEFT')
+//            ->join('student_class c','a.userid=c.userid','LEFT')
+            ->join('classroom d','b.class=d.id','LEFT')
             ->field('a.*,b.grade,b.starttime,b.depart as bdepart,b.majors as bmajors,b.culture,b.academic,b.quarter,b.level,b.class,b.style,b.studentstatus,d.title')
             ->where($where)
             ->order('createdTime desc')
