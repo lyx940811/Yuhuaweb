@@ -238,9 +238,19 @@ class Course extends Home
                 unset($l['seq']);
             }
         }
-
+        //查看是否已考试
+        $examination=$this->isNoExamination($courseid);
+        $this->assign('count',$examination);
         $this->assign('task',$lesson);
         return $this->fetch();
+    }
+    //查看是否以考试
+    public function isNoExamination($courseid){
+        $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->find();
+        $where['userid']=$this->user->id;
+        $where['paperID']=$list['id'];
+        $count=Db::name('testpaper_item_result')->where($where)->count();
+        return $count;
     }
     public function discussion()
     {
