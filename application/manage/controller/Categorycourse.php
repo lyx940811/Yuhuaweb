@@ -37,7 +37,7 @@ class Categorycourse extends Base{
 
 
         $list = Db::table('categorycourse a')
-            ->field('a.id,c.id as cid,c.title,b.name,c.type,b.studyTimes,b.point,b.code,d.realname,a.Flag')
+            ->field('a.id,c.id as cid,c.title,a.courseID,b.name,c.type,b.studyTimes,b.point,b.code,d.realname,a.Flag')
             ->join('category b','a.categoryID = b.code','LEFT')
             ->join('course c','a.courseID = c.id','LEFT')
             ->join('teacher_info d','c.teacherIds = d.id','LEFT')

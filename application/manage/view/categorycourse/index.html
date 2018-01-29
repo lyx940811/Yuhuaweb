@@ -75,12 +75,9 @@
             <td>{$vo.realname}</td>
             <td>{$vo.Flag?'启用':'禁用'}</td>
             <td>
-                {php}
-                    if(check($uid,'/manage/categorycourse/edit')){
-                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
-
-                    }
-                {/php}
+                {if condition="check($uid,'/manage/categorycourse/edit')"}
+                    <a href="#" data-toggle="modal" data-target="#myModal_edit{$vo.id}">编辑</a>
+                {/if}
                 <!--修改开始-->
                 <!-- 模态框 -->
                 <div class="modal fade" id="myModal_edit{$vo.id}">
@@ -101,7 +98,7 @@
                                         <div class="col-sm-10">
                                             <select name="code" class="form-control">
                                                 {volist name='courselist' id='c'}
-                                                <option value="{$c.id}" {if condition="$vo['id'] eq $c['id']"}selected{/if}>{$c.title}</option>
+                                                <option value="{$c.id}" {if condition="$vo['courseID'] eq $c['id']"}selected{/if}>{$c.title}</option>
                                                 {/volist}
                                             </select>
                                         </div>

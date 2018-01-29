@@ -71,6 +71,7 @@ class StudentEnroll2 extends Base{
             'mobile'=> $info['telephone'],
             'type'=>3,
             'roles'=>5,//5为学员
+            'title'=>'static/index/images/avatar.png',
             'createdIp'=>request()->ip(),
             'createdTime'=>date('Y-m-d H:i:s',time()),
             'createUserID'=>session('admin_uid'),
