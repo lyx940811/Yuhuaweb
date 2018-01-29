@@ -84,7 +84,7 @@
 
         {volist name="list" id="vo"}
             <tr>
-                <td>{$vo.sn}</td>
+                <td>{$vo.idcard}</td>
                 <td>{$vo.realname}</td>
                 <td>{if condition="$vo['sex'] eq 0"}男{elseif condition="$vo['sex'] eq 1"}女{else/}保密{/if}</td>
                 <td>{$vo.depart}</td>

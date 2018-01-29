@@ -107,6 +107,7 @@ class StudentEnroll2 extends Base{
                 'userid' => $userid,
                 'createuserid'=>session('admin_uid'),
                 'createTime'=>date('Y-m-d H:i:s',time()),
+                'majors'  =>$info['categoryID'],
             ];
             Db::table('student_school')->field('userid,createuserid,createTime')->insert($data3);
 

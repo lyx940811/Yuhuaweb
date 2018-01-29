@@ -26,13 +26,13 @@
         <div class="form-group">
             <label for="stem" class="col-sm-2 control-label">题干</label>
             <div class="col-sm-5">
-                <textarea cols="20" rows="5" class="form-control" name="stem" >{$article.stem}</textarea>
+                <textarea cols="20" rows="5" class="form-control" name="stem" placeholder="请输入题干，100个汉字之内">{$article.stem}</textarea>
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-2 control-label">参考答案</label>
             <div class="col-sm-5">{php}$answer = json_decode($article['answer']);{/php}
-                <textarea name="answer[]" class="form-control" cols="30" rows="10">{$answer[0]}</textarea>
+                <textarea name="answer[]" class="form-control" cols="30" rows="10" placeholder="请输入参考答案，100个汉字之内">{$answer[0]}</textarea>
             </div>
 
         </div>
@@ -66,13 +66,13 @@
         <div class="form-group">
             <label for="stem" class="col-sm-2 control-label">题干</label>
             <div class="col-sm-5">
-                <textarea cols="20" rows="5" class="form-control" name="stem" id="stem"></textarea>
+                <textarea cols="20" rows="5" class="form-control" name="stem" id="stem" placeholder="请输入题干，100个汉字之内"></textarea>
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-2 control-label">参考答案</label>
             <div class="col-sm-5">
-                <textarea name="answer[]" class="form-control" cols="30" rows="10"></textarea>
+                <textarea name="answer[]" class="form-control" cols="30" rows="10" placeholder="请输入参考答案，100个汉字之内"></textarea>
             </div>
 
         </div>

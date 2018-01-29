@@ -93,7 +93,7 @@
                 <li class="item">
                     <span class="itemsp">{$i.name}</span>
                     <span class="mlm">题目数量:</span>
-                    <input type="text" class="form-control iteminput" name="counts[{$i.type}]" data-role="count"  value="0"  {if condition="$i['num'] eq 0"}readonly{/if}/>/
+                    <input type="text" class="form-control iteminput change" name="counts[{$i.type}]" data-role="count"  value="0"  {if condition="$i['num'] eq 0"}readonly{/if}/>/
                     <span class="text-info">{$i.num}</span>
 
                     <span class="mlm">题目分值:</span>
@@ -125,7 +125,16 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
-
+    $(document).ready(function(){
+        $('.change').change(function(){
+            var num=$(this).val();
+            var maxnum=$(this).next().html();
+            if(num>maxnum){
+                $(this).val(0);
+                alert('请不要超过'+maxnum+'道题。');
+            }
+        })
+    });
     function dopost($type,formid) {
         if($type=='add' || $type=='addshow'){
             $url = "{:url('add')}";
