@@ -84,11 +84,11 @@ class Coursetask extends Base{
 
         $role_table = Db::name('course_task');
 
-        $have = $role_table->field('id')->where("chapterid='{$info['chapterid']}'")->find();
-
-        if($have){//如果没这个code
-            return ['error'=>'已经有此章节','code'=>'300'];
-        }
+//        $have = $role_table->field('id')->where("chapterid='{$info['chapterid']}'")->find();
+//
+//        if($have){//如果没这个code
+//            return ['error'=>'已经有此章节','code'=>'300'];
+//        }
 
         $data = [
             'title' => $info['title'],
