@@ -100,7 +100,7 @@ class StudentEnroll2 extends Base{
             ];
 
             $user_profile = Db::table('user_profile');
-            $user_profile->field('userid,idcard,birthday,mobile,mobile,sex,age,school,address,realname,createdTime')->insert($data2);
+            $user_profile->field('userid,idcard,birthday,mobile,sex,age,school,address,realname,createdTime')->insert($data2);
 
             //再插入学生在校表
             $data3 = [
@@ -109,7 +109,7 @@ class StudentEnroll2 extends Base{
                 'createTime'=>date('Y-m-d H:i:s',time()),
                 'majors'  =>$info['categoryID'],
             ];
-            Db::table('student_school')->field('userid,createuserid,createTime')->insert($data3);
+            Db::table('student_school')->insert($data3);
 
             $s['status'] = 2;
             $s['userid'] = $userid;
