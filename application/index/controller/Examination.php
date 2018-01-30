@@ -81,24 +81,16 @@ class Examination extends Home{
         $marking=$this->isNotMarking($list['id']);
         $test=$this->getExamresults($list['id']);
         if($marking>0){
-//            if(!empty($list)){
-//                $where['createTime']=$list['createTime'];
-//            }
-//            $where['id']=$info['paperid'];
-//            $list=Db::name('testpaper')
-//                ->where($where)
-//                ->find();
-//            $data=json_decode($list['metas'],true);
-
-
+            $this->assign('type',1);
+            $this->assign('title',$test);
+            $this->assign('list',$list);
         }else{
-
             $examination=$this->selectExamination($test['myscore'],$courseid,$list['createTime']);//查询题目;
             $array=['0'=>'A','1'=>'B','2'=>'C','3'=>'D','4'=>'E'];
             $num=$this->getExamination($courseid);//查询每种题型有几个积分
             $this->assign('num',$num);
             $this->assign('status',$array);
-
+            $this->assign('type',2);
             $this->assign('myscore',$test['myscore']);
             unset($test['myscore']);
             $this->assign('title',$test);
@@ -122,11 +114,10 @@ class Examination extends Home{
         $where['userid']=$this->user->id;
         $where1=$where;
         $where1['status']=1;
-        $where['status']=3;
-        $data['myscore']=Db::name('testpaper_item_result tir')->where($where1)->sum('score');
+        $myscore=Db::name('testpaper_item_result tir')->where($where1)->sum('score');
         $test=$this->selectQuesNum($where);
-        $test1=$this->selectQuesNum($where1);
-        dump($test1);dump($test);die;
+        $test['myscore']=$myscore;
+        return $test;
     }
     public function selectQuesNum($where){
         $list=Db::name('testpaper_item_result tir')
@@ -135,7 +126,21 @@ class Examination extends Home{
             ->where($where)
             ->group('q.type')
             ->select();
-        return $list;
+        $info=[];
+        foreach($list as $k=>$v){
+            $where['q.type']=$v['type'];
+            $where['tir.status']=1;
+            $data=Db::name('testpaper_item_result tir')
+               ->join('question q','tir.questionId=q.id')
+               ->where($where)
+               ->group('q.type')
+               ->count();
+            $info[$v['type']]=$v;
+            $info[$v['type']]['true']=$data;
+            $info[$v['type']]['flase']=$v['count']-$data;
+
+        }
+        return $info;
     }
     //结束考试
     public function examend(){
