@@ -92,9 +92,9 @@ class Teacherinfo extends Base{
 
         $role_table = Db::name('teacher_info');
 
-        $is_have = $role_table->field('id')->where(['idcard'=>['eq',$info['idcard']]])->find();
+        $is_have = $role_table->field('id')->where('idcard',$info['idcard'])->find();
 
-        if($is_have){//如果这个code有
+        if($is_have && !empty($info['idcard'])){//如果这个code有
             return ['error'=>'已经有此身份证号','code'=>'300'];
         }
 
