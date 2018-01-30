@@ -80,7 +80,7 @@ class StudentEnroll2 extends Base{
 
         $user = Db::table('user');
         Db::startTrans();//开启事务
-        $ok = $user->field('username,nickname,password,mobile,type,roles,createdIp,createdTime,createUserID,status')->insert($data);
+        $ok = $user->insert($data);
 
         if($ok){
             $userid = $user->getLastInsID();//添加的user表里的id
