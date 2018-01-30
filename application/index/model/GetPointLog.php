@@ -17,22 +17,9 @@ use think\Model as ThinkModel;
  * 用户模型
  * @package app\cms\model
  */
-class User extends ThinkModel
+class GetPointLog extends ThinkModel
 {
     // 自动写入时间戳
 //    protected $autoWriteTimestamp = true;
-    public function profile()
-    {
-        return $this->hasOne('UserProfile','userid','id');
-    }
-
-    public function stuclass()
-    {
-        return $this->hasOne('StudentSchool','userid','id');
-    }
-    public function point()
-    {
-        return $this->hasMany('GetPointLog','userid','id');
-    }
 
 }

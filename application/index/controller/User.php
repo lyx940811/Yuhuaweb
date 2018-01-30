@@ -86,14 +86,9 @@ class User extends Home
         return $res;
     }
 
-
-
     public function userlayout(){
         return $this->fetch();
     }
-
-
-
 
     /**
      * 个人设置页面的ajax

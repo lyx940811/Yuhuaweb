@@ -5,6 +5,7 @@ use Flc\Alidayu\Client;
 use Flc\Alidayu\App;
 use Flc\Alidayu\Requests\AlibabaAliqinFcSmsNumSend;
 use Flc\Alidayu\Requests\IRequest;
+use think\Config;
 
 /**
  * Class Course 在教师角色下的我的教学-在教课程-课程管理中的一些功能
@@ -12,27 +13,46 @@ use Flc\Alidayu\Requests\IRequest;
  */
 class Plugin extends Home
 {
-    public function sendtext()
+    public function sendtext($phone)
     {
+
         // 配置信息
-        $config = [
-            'app_key'    => '23953147',
-            'app_secret' => '3904c9cae716283181c0465bb0df45c4',
-            // 'sandbox'    => true,  // 是否为沙箱环境，默认false
-        ];
+        $config = Config::get('alidayu');
 
         // 使用方法一
         $client = new Client(new App($config));
         $req    = new AlibabaAliqinFcSmsNumSend;
 
-        $req->setRecNum('17600738252')
+        $code = rand(100000, 999999);
+
+        $req->setRecNum($phone)
             ->setSmsParam([
-                'num' => rand(100000, 999999)
+                'num' => $code,
             ])
             ->setSmsFreeSignName("觅食森林")
             ->setSmsTemplateCode('SMS_70250225');
 
         $resp = $client->execute($req);
-        var_dump($resp);
+        $resp = (array)$resp;
+        if(isset($resp['result'])){
+            $resp['result'] = (array)$resp['result'];
+            if($resp['result']['err_code']==0){
+                //set redis
+                $redis = new \Redis();
+                $redis->connect('127.0.0.1', 6379);
+                $redis->setex($phone, 900, $code);
+
+                return $data = [
+                    'code'  =>  0,
+                    'message'   =>  'success',
+                ];
+            }
+        }else{
+            //send error,     'sub_msg' is detail error message
+            return $data = [
+                'code'      =>  999,
+                'message'   =>  $resp['sub_msg'],
+            ];
+        }
     }
 }
