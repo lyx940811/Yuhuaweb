@@ -80,7 +80,7 @@ class StudentEnroll2 extends Base{
 
         $user = Db::table('user');
         Db::startTrans();//开启事务
-        $ok = $user->field('username,nickname,password,mobile,type,roles,createdIp,createdTime,createUserID,status')->insert($data);
+        $ok = $user->insert($data);
 
         if($ok){
             $userid = $user->getLastInsID();//添加的user表里的id
@@ -101,7 +101,7 @@ class StudentEnroll2 extends Base{
             ];
 
             $user_profile = Db::table('user_profile');
-            $user_profile->field('userid,idcard,birthday,mobile,sex,age,school,address,realname,createdTime')->insert($data2);
+            $user_profile->insert($data2);
 
             //再插入学生在校表
             $data3 = [
@@ -115,7 +115,7 @@ class StudentEnroll2 extends Base{
             $s['status'] = 2;
             $s['userid'] = $userid;
 
-            Db::name('student_enroll')->field('status,userid')->where('id',$id)->update($s);
+            Db::name('student_enroll')->where('id',$id)->update($s);
 
             Db::commit();
             return ['info'=>'授理成功','code'=>'000'];
