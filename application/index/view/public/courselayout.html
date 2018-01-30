@@ -118,9 +118,15 @@
                     </div>
                     <div class="col-md-2 hidden-xs hidden-sm">
                         {if condition="$coursedata.plan eq 100"}
-                            <a class="btn btn-primary btn-lg " href="{:url('index/examination/alert',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">
-                                开始考试
-                            </a>
+                            {if condition="$count gt 0"}
+                                <a class="btn btn-primary btn-lg " href="{:url('index/examination/examresults',array('course'=>$course['id']))}">
+                                    查看成绩
+                                </a>
+                            {else}
+                                <a class="btn btn-primary btn-lg " href="{:url('index/examination/alert',array('course'=>$course['id']))}">
+                                    开始考试
+                                </a>
+                            {/if}
                         {else}
                             {switch name="coursedata.next_task_id"}
                             {case value="0"}

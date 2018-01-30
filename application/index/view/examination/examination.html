@@ -64,7 +64,7 @@
                                       </div>
                                   </div>
                                   <div class="testpaper-question-stem">
-                                    <p>{$sign.name}</p><br>
+                                    <p>{$sign.stem}</p><br>
                                   </div>
                                 </div>
                                 <ul class="testpaper-question-choices js-testpaper-question-list">
@@ -112,7 +112,7 @@
                                       </div>
                                   </div>
                                   <div class="testpaper-question-stem">
-                                            <p>{$choice.name}</p><br>
+                                            <p>{$choice.stem}</p><br>
                                   </div>
                                 </div>
                                 <ul class="testpaper-question-choices js-testpaper-question-list">
@@ -121,7 +121,7 @@
                                     {/volist}
                                 </ul>
                               </div>
-                              <div class="testpaper-question-footer clearfix">
+                              <div class="testpaper-question-footer  clearfix">
                                 <div class="testpaper-question-choice-inputs js-testpaper-question-label">
                                     {volist name="$choice.question" id="vo"}
                                     <label class="checkbox-inline ">
@@ -162,7 +162,7 @@
                                               </div>
                                           </div>
                                           <div class="testpaper-question-stem">
-                                              <p>{$determine.name}</p><br>
+                                              <p>{$determine.stem}</p><br>
                                           </div>
                                       </div>
                                   </div>
@@ -185,47 +185,46 @@
                           {/volist}
                       </div>
                     {/if}
-                    <!--<div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-essay">-->
-                      <!--<div class="panel-heading">-->
-                        <!--<strong class="">问答题</strong>-->
-                        <!--<small class="color-gray">-->
-                          <!--共1题，共2分          </small>-->
-                      <!--</div>-->
-                      <!--<div class="panel-body">-->
-                        <!--<div class="testpaper-question testpaper-question-essay js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question37">-->
-                          <!--<div class="testpaper-question-body">-->
-                            <!--<div class="testpaper-question-stem-wrap clearfix">-->
-                                <!--<div class="testpaper-question-seq-wrap">-->
-                                  <!--<div class="testpaper-question-seq">-->
-                                    <!--3-->
-                                  <!--</div>-->
-                                        <!--<div class="testpaper-question-score">-->
-                                      <!--2.0分-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                                <!--<div class="testpaper-question-stem">-->
-                                          <!--<p><strong>overfitting怎么解决？</strong></p><br>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                          <!--</div>-->
-                          <!--<div class="testpaper-question-footer clearfix">-->
-                            <!--<div class="testpaper-question-essay-inputs" data-role="js-answer-div-37">-->
-                              <!--<textarea class="form-control essay-input-short" rows="1" style="overflow:hidden;line-height:20px;"></textarea>-->
-                              <!--<textarea id="question-input-long-37" class="form-control essay-input-long" data-type="essay" name="37" style="display:none;" ></textarea>-->
-                              <!--<br>-->
-                            <!--</div>-->
-                            <!--<div class="testpaper-question-actions pull-right mts">	-->
-                              <!--<a class="link-gray js-marking">-->
-                                <!--<i class="glyphicon glyphicon-bookmark mr5"></i>标记-->
-                              <!--</a>-->
-                              <!--<a class="link-gray js-marking hidden">-->
-                                <!--<i class="glyphicon glyphicon-bookmark mr5"></i>取消标记-->
-                              <!--</a>-->
-                            <!--</div>-->
-                          <!--</div>-->
-                        <!--</div>                                           -->
-                      <!--</div>-->
-                    <!--</div>-->
+                    {if condition="!empty($num['2'])"}
+                      <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-essay">
+                          <div class="panel-heading">
+                            <strong class="">问答题</strong>
+                            <small class="color-gray">
+                                共{$num.3.num}题，共{$num.3.score}分           </small>
+                          </div>
+                          {volist name="info" id="essay"}
+                          {if condition='$essay.questiontype eq "essay"'}
+                          <input type="hidden" name="data[essay][question][{$key}]" value="{$essay.questionid}">
+                          <div class="panel-body">
+                            <div class="testpaper-question testpaper-question-essay js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question37">
+                              <div class="testpaper-question-body">
+                                <div class="testpaper-question-stem-wrap clearfix">
+                                    <div class="testpaper-question-seq-wrap">
+                                      <div class="testpaper-question-seq">
+                                        {$key+1}
+                                      </div>
+                                            <div class="testpaper-question-score">
+                                          {$essay.score}分
+                                        </div>
+                                    </div>
+                                    <div class="testpaper-question-stem">
+                                              <p><strong>{$essay.stem}</strong></p><br>
+                                    </div>
+                                </div>
+                              </div>
+                              <div class="testpaper-question-footer clearfix">
+                                <div class="testpaper-question-essay-inputs" data-role="js-answer-div-37">
+                                  <textarea class="form-control essay-input-short" name="data[essay][answer][{$essay.id}]" rows="1" style="overflow:hidden;line-height:20px;"></textarea>
+                                  <textarea id="question-input-long-37" class="form-control essay-input-long" data-type="essay" name="37" style="display:none;" ></textarea>
+                                  <br>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {/if}
+                          {/volist}
+                        </div>
+                    {/if}
                     <input type="hidden" name="_csrf_token" value="25FZZOw7upct56pv0pJlOJLBPAjUnBiZsOCVXgfbF7Q">
                   </form>
               </div>
@@ -311,6 +310,22 @@
     <script type="text/javascript">
         $(document).ready(function(){
             $("#save").click(function(){
+                // var val=$('input:radio[name="sex"]:checked').val();
+                // if(val==null){
+                //     alert("什么也没选中!");
+                //     return false;
+                // }
+                // else{
+                //     alert(val);
+                // }
+                // var list= $('input:radio[name="list"]:checked').val();
+                // if(list==null){
+                //     alert("请选中一个!");
+                //     return false;
+                // }
+                // else{
+                //     alert(list);
+                // }
                 $('#teacherCheckForm').submit();
             });
         });

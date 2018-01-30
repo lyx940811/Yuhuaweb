@@ -13,7 +13,7 @@ class Examination extends Home{
     public function alert(){
         $courseid=$this->request->param('course');
         $where['courseid']=$courseid;
-        $list=Db::name('testpaper')->where($where)->find();
+        $list=Db::name('testpaper')->where($where)->order('createTime desc')->find();
         $list['count']=Db::name('testpaper_item')->where('paperId',$list['id'])->count();
         $this->assign('list',$list);
         $this->assign('courseid',$courseid);
@@ -24,6 +24,11 @@ class Examination extends Home{
     public function examination(){
         $courseid=$this->request->param('course');
         $where['t.courseid']=$courseid;
+        $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->field('createTime')->find();
+        if(!empty($list)){
+            $where['t.createTime']=$list['createTime'];
+        }
+
         $info=Db::name('testpaper_item as ti')
             ->join('testpaper t','ti.paperID=t.id')
             ->join('question q','ti.questionId=q.id')
@@ -53,6 +58,10 @@ class Examination extends Home{
 //    //考试页面数据处理
     public function getExamination($courseid){
         $where['t.courseid']=$courseid;
+        $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->field('createTime')->find();
+        if(!empty($list)){
+            $where['t.createTime']=$list['createTime'];
+        }
         $info=Db::name('testpaper_item as ti')
             ->join('testpaper t','ti.paperID=t.id')
             ->field('count(ti.id) as num,sum(ti.score) as score,questiontype')
@@ -65,17 +74,84 @@ class Examination extends Home{
     }
     //考试成绩
     public function examresults(){
+
+        $courseid=$this->request->param('course');
+        $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->find();
+        //查询是否完成阅卷
+        $marking=$this->isNotMarking($list['id']);
+        $test=$this->getExamresults($list['id']);
+        if($marking>0){
+//            if(!empty($list)){
+//                $where['createTime']=$list['createTime'];
+//            }
+//            $where['id']=$info['paperid'];
+//            $list=Db::name('testpaper')
+//                ->where($where)
+//                ->find();
+//            $data=json_decode($list['metas'],true);
+
+
+        }else{
+
+            $examination=$this->selectExamination($test['myscore'],$courseid,$list['createTime']);//查询题目;
+            $array=['0'=>'A','1'=>'B','2'=>'C','3'=>'D','4'=>'E'];
+            $num=$this->getExamination($courseid);//查询每种题型有几个积分
+            $this->assign('num',$num);
+            $this->assign('status',$array);
+
+            $this->assign('myscore',$test['myscore']);
+            unset($test['myscore']);
+            $this->assign('title',$test);
+            $this->assign('list',$list);
+            $this->assign('info',$examination);
+        }
         return $this->fetch();
+    }
+    //查看是否完成阅卷
+    public function isNotMarking($testpaperid){
+
+        $where['userid']=$this->user->id;
+        $where['paperID']=$testpaperid;
+        $where['status']=0;
+        $count=Db::name('testpaper_item_result')->where($where)->count();
+        return $count;
+    }
+    //查询考试成绩
+    public function getExamresults($paperid){
+        $where['paperID']=$paperid;
+        $where['userid']=$this->user->id;
+        $where1=$where;
+        $where1['status']=1;
+        $where['status']=3;
+        $data['myscore']=Db::name('testpaper_item_result tir')->where($where1)->sum('score');
+        $test=$this->selectQuesNum($where);
+        $test1=$this->selectQuesNum($where1);
+        dump($test1);dump($test);die;
+    }
+    public function selectQuesNum($where){
+        $list=Db::name('testpaper_item_result tir')
+            ->join('question q','tir.questionId=q.id')
+            ->field('count(q.type) as count,q.type,sum(tir.score) as totalscore')
+            ->where($where)
+            ->group('q.type')
+            ->select();
+        return $list;
     }
     //结束考试
     public function examend(){
         $info=input('post.');
+        $list=Db::name('testpaper')->where('courseid',$info['courseid'])->order('createTime desc')->field('createTime')->find();
+        if(!empty($list)){
+            $where['createTime']=$list['createTime'];
+        }
+        $where['id']=$info['paperid'];
         $list=Db::name('testpaper')
-                ->where('id',$info['paperid'])
+                ->where($where)
                 ->find();
         $data=json_decode($list['metas'],true);
         $test=$this->getExamend($info,$data);
-        $examination=$this->selectExamination($test['myscore'],$info['courseid']);//查询题目;
+        $examination=$this->selectExamination($test['myscore'],$info['courseid'],$list['createTime']);//查询题目;
+//        dump($examination);
         $array=['0'=>'A','1'=>'B','2'=>'C','3'=>'D','4'=>'E'];
         $num=$this->getExamination($info['courseid']);//查询每种题型有几个积分
         $this->assign('num',$num);
@@ -90,8 +166,9 @@ class Examination extends Home{
     }
 
     //查询题目一级
-    public function selectExamination($myscore,$courseid){
+    public function selectExamination($myscore,$courseid,$createtime){
         $where['t.courseid']=$courseid;
+        $where['t.createTime']=$createtime;
         $info=Db::name('testpaper_item as ti')
             ->join('testpaper t','ti.paperID=t.id')
             ->join('question q','ti.questionId=q.id')
@@ -116,6 +193,8 @@ class Examination extends Home{
                 $name='choice';
             }elseif($v['questiontype']=='determine'){
                 $name='determine';
+            }elseif($v['questiontype']=='essay'){
+                $name='essay';
             }
             $data[$name][$k]=$v;
             $data[$name][$k]['answer']=json_decode($v['answer'],true);
@@ -150,7 +229,15 @@ class Examination extends Home{
                     $info['itemID'] = 0;
                     $info['userid'] = $this->user->id;
                     $info['questionId'] = $v;
-                    $info['answer'] = json_encode($val['answer'][$v]);
+                    if(is_array($val['answer'][$v])){
+                        foreach($val['answer'][$v] as $ka=>$va){
+                            $ans[]=$va;
+                        }
+                        $answer=$ans;
+                    }else{
+                        $answer=[$val['answer'][$v]];
+                    }
+                    $info['answer'] = json_encode($answer,true);
                     $info['resultId'] = 1;
                     if ($key == 'choice') {
                         $test = $val['answer'][$v];
@@ -171,7 +258,10 @@ class Examination extends Home{
                             $info['status'] = 2;
                             $choicetrue = $choicetrue + 1;//多选答对几道题
                         }
-                    } else {
+                    }elseif($key == 'essay'){
+                        $info['score'] = 0;
+                        $info['status'] = 0;
+                    }else {
                         $test = $val['answer'][$v];
                         $type = json_decode($list['answer'], true);
 
