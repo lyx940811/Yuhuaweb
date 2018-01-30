@@ -29,23 +29,25 @@ class Coursetask extends Base{
 
         $list = Db::table('course_task a')
             ->field('a.id,a.title,a.mode,a.point,a.maxPoint,a.isOptional,a.isFree,a.maxOnlineNum,a.courseId,a.chapterid,a.type,a.mediaSource,a.length,a.mediaSource,a.status,a.startTime,a.endTime,cc.title as ctitle')
-//            ->join('course b','a.courseId=b.id','LEFT')
             ->join('course_chapter cc','a.chapterid=cc.id','LEFT')
             ->where($where)
+            ->order('a.id desc')
             ->paginate(20,['query'=>$info]);
 
         $course = Db::table('course')->field('id,title')->where('id',$id)->find();
-        //这里冲突了
+
         $chapter = Db::table('course_chapter')->field('id,title')->where('courseid',$id)->select();
-        //$chapter = Db::table('course_chapter')->field('id,title')->where('courseid='.request()->get('cid'))->select();
         $taskmode = Db::table('task_mode')->field('id,name')->select();
+        $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$id)->select();
+
+        $this->assign('testpaper',$testpaper);
 
         $this->assign('list',$list);
-//        $this->assign('course',$course);
         $this->assign('chapter',$chapter);
         $this->assign('taskmode',$taskmode);
         $this->assign('tit',$course['title']);
         $this->assign('typename',$course['title'].'-课程任务');
+        $this->assign('courseId',$id);
         $this->assign('page',$list->render());
         return $this->fetch();
     }
@@ -54,21 +56,18 @@ class Coursetask extends Base{
     public function add(){
         $info = input('post.');
 
-
         $msg  =   [
             'title.require'     => '任务名称不能为空',
             'title.length'      => '任务名称长度太短',
-//            'startTime.require' => '开始时间不能为空',
-//            'endTime.require'   => '结束时间不能为空',
             'courseId.require'  => '课程不能为空',
+            'mode.require'  => '任务模式不能为空',
             'chapterid.require'  => '课程章必须选择',
             'mediaSource.require'  => '媒体资源必须填写',
         ];
         $validate = new Validate([
             'title'     => 'require|length:2,20',
-//            'startTime' => 'require',
-//            'endTime'   => 'require',
             'courseId'  => 'require',
+            'mode'  => 'require',
             'chapterid'  => 'require',
             'mediaSource'  => 'require'
 
@@ -84,30 +83,19 @@ class Coursetask extends Base{
 
         $role_table = Db::name('course_task');
 
-//        $have = $role_table->field('id')->where("chapterid='{$info['chapterid']}'")->find();
-//
-//        if($have){//如果没这个code
-//            return ['error'=>'已经有此章节','code'=>'300'];
-//        }
-
         $data = [
             'title' => $info['title'],
-//            'startTime' => $info['startTime'],
-//            'endTime'=> $info['endTime'],
             'chapterid'=> $info['chapterid'],
             'isFree'=>isset($info['isFree'])?$info['isFree']:0,
-//            'isOptional'=>isset($info['isOptional'])?$info['isOptional']:0,
             'point'=>$info['point'],
             'mode'=>$info['mode'],
             'type'=>isset($info['type'])?$info['type']:'url',
             'length'=>isset($info['length'])?$info['length']:0,
             'mediaSource'=>isset($info['mediaSource'])?$info['mediaSource']:'',
-//            'maxOnlineNum'=>$info['maxOnlineNum']+0,
-//            'maxPoint'=>$info['maxPoint']+0,
             'courseId'=>$info['courseId']+0,
             'createdUserId'=>session('admin_uid'),
             'createdTime'=>date('Y-m-d H:i:s',time()),
-            'status'=>$info['status'],
+            'status'=>isset($info['status'])?$info['status']:0,
         ];
 
         $ok = $role_table->insert($data);
@@ -128,8 +116,6 @@ class Coursetask extends Base{
             'rid'               =>'任务id不能为空',
             'title.require'     => '任务名称不能为空',
             'title.length'      => '任务名称长度太短',
-//            'startTime.require' => '开始时间不能为空',
-//            'endTime.require'   => '结束时间不能为空',
             'courseId.require'  => '课程不能为空',
             'chapterid.require'  => '课程章必须选择',
             'mediaSource.require'  => '媒体资源必须填写',
@@ -137,8 +123,6 @@ class Coursetask extends Base{
         $validate = new Validate([
             'rid'       => 'require',
             'title'     => 'require|length:2,20',
-//            'startTime' => 'require',
-//            'endTime'   => 'require',
             'courseId'  => 'require',
             'chapterid'  => 'require',
             'mediaSource'  => 'require'
@@ -163,18 +147,13 @@ class Coursetask extends Base{
 
         $data = [
             'title' => $info['title'],
-//            'startTime' => $info['startTime'],
-//            'endTime'=> $info['endTime'],
             'chapterid'=> $info['chapterid'],
             'isFree'=>isset($info['isFree'])?$info['isFree']:0,
-//            'isOptional'=>isset($info['isOptional'])?$info['isOptional']:0,
             'mode'=>$info['mode'],
             'point'=>$info['point'],
             'type'=>isset($info['type'])?$info['type']:'url',
             'length'=>isset($info['length'])?$info['length']:0,
             'mediaSource'=>isset($info['mediaSource'])?$info['mediaSource']:'',
-//            'maxOnlineNum'=>$info['maxOnlineNum']+0,
-//            'maxPoint'=>$info['maxPoint']+0,
             'courseId'=>$info['courseId']+0,
             'status'=>$info['status']
         ];
@@ -186,6 +165,25 @@ class Coursetask extends Base{
         }else{
             return ['error'=>'修改失败','code'=>'200'];
         }
+    }
+
+    public function editshow(){
+        $id = request()->get('id')+0;
+        $cid = request()->get('cid')+0;
+
+        $info = Db::table('course_task')->where('id',$id)->find();
+
+        $taskmode = Db::table('task_mode')->field('id,name')->select();
+        $chapter = Db::table('course_chapter')->field('id,title')->where('courseid',$cid)->select();
+        $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$cid)->select();
+
+        $this->assign('chapter',$chapter);
+        $this->assign('a',$info);
+        $this->assign('typename','课程任务修改');
+        $this->assign('taskmode',$taskmode);
+        $this->assign('testpaper',$testpaper);
+        $this->assign('uid',session('admin_uid'));
+        return $this->fetch();
     }
 
     public function delete(){
