@@ -49,10 +49,6 @@ class Teacherinfo extends Base{
             $newlist[$k]['work'] = Db::table('teacher_work')->where('teacherid='.$v['id'])->select();
         }
 
-
-//        print_r($newlist[1]['work']);
-//        exit;
-
         $this->assign('info',$data);
         $this->assign('list',$newlist);
         $this->assign('page',$list->render());
@@ -68,21 +64,21 @@ class Teacherinfo extends Base{
             'sn.require' => '工号不能为空',
             'sn.length' => '工号长度太短',
             'realname.require' => '真实姓名能为空',
-            'sex.require' => '性别不能为空',
-            'nation.require' => '民族不能为空',
-            'birthday.require' => '生日不能为空',
-            'idcard.require' => '身份证号必须填写',
-            'idcard.length' => '身份证号太短',
-            'policy.require' => '政治面貌不能为空',
+//            'sex.require' => '性别不能为空',
+//            'nation.require' => '民族不能为空',
+//            'birthday.require' => '生日不能为空',
+//            'idcard.require' => '身份证号必须填写',
+//            'idcard.length' => '身份证号太短',
+//            'policy.require' => '政治面貌不能为空',
         ];
         $validate = new Validate([
             'sn'  => 'require|length:2,20',
             'realname'   => 'require',
-            'sex'   => 'require',
-            'nation'   => 'require',
-            'birthday'   => 'require',
-            'idcard'  => 'require|length:18,21',
-            'policy'   => 'require',
+//            'sex'   => 'require',
+//            'nation'   => 'require',
+//            'birthday'   => 'require',
+//            'idcard'  => 'require|length:18,21',
+//            'policy'   => 'require',
 
         ],$msg);
 
@@ -96,9 +92,9 @@ class Teacherinfo extends Base{
 
         $role_table = Db::name('teacher_info');
 
-        $is_have = $role_table->field('id')->where(['idcard'=>['eq',$info['idcard']]])->find();
+        $is_have = $role_table->field('id')->where('idcard',$info['idcard'])->find();
 
-        if($is_have){//如果这个code有
+        if($is_have && !empty($info['idcard'])){//如果这个code有
             return ['error'=>'已经有此身份证号','code'=>'300'];
         }
 
@@ -139,7 +135,7 @@ class Teacherinfo extends Base{
                 'userid'=> $userid,
                 'sn' => $info['sn'],
                 'realname' => $info['realname'],
-                'sex'=> $info['sex'],
+                'sex'=> isset($info['sex'])?$info['sex']:0,
                 'nation'=>$info['nation'],
                 'birthday'=>$info['birthday'],
                 'idcard'=>$info['idcard'],
@@ -170,21 +166,21 @@ class Teacherinfo extends Base{
             'sn.require' => '工号不能为空',
             'sn.length' => '工号长度太短',
             'realname.require' => '真实姓名不能为空',
-            'sex.require' => '性别不能为空',
-            'nation.require' => '民族不能为空',
-            'birthday.require' => '生日不能为空',
-            'idcard.require' => '身份证号必须填写',
-            'idcard.length' => '身份证号太短',
-            'policy.require' => '政治面貌不能为空',
+//            'sex.require' => '性别不能为空',
+//            'nation.require' => '民族不能为空',
+//            'birthday.require' => '生日不能为空',
+//            'idcard.require' => '身份证号必须填写',
+//            'idcard.length' => '身份证号太短',
+//            'policy.require' => '政治面貌不能为空',
         ];
         $validate = new Validate([
             'sn'  => 'require|length:2,20',
             'realname'   => 'require',
-            'sex'   => 'require',
-            'nation'   => 'require',
-            'birthday'   => 'require',
-            'idcard'  => 'require|length:18,21',
-            'policy'   => 'require',
+//            'sex'   => 'require',
+//            'nation'   => 'require',
+//            'birthday'   => 'require',
+//            'idcard'  => 'require|length:18,21',
+//            'policy'   => 'require',
 
         ],$msg);
 
@@ -214,8 +210,6 @@ class Teacherinfo extends Base{
             $ser = unserialize($have['cardpic']);
             $cardpic_ser = serialize(['front_pic'=>isset($cardpic[0])?$cardpic[0]:isset($ser['front_pic'])?$ser['front_pic']:'','behind_pic'=>isset($cardpic[1])?$cardpic[1]:isset($ser['behind_pic'])?$ser['behind_pic']:'']);
         }
-
-
 
         $sdata = [
             'sn' => $info['sn'],

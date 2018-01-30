@@ -23,6 +23,9 @@ class Testpaper extends Base{
         if(!empty($info['courseid'])){
             $where['a.courseid'] = ['eq',$info['courseid']];
         }
+        if(!empty($info['status'])){
+//            $where['a.name'] = ['like',"%{$info['name']}%"];
+        }
         if(!empty($info['name'])){
             $where['a.name'] = ['like',"%{$info['name']}%"];
         }
@@ -35,6 +38,7 @@ class Testpaper extends Base{
             ->order('a.id desc')
             ->paginate(20);
 
+//        echo Db::table('testpaper a')->getLastSql();exit;
         $qtype = [
             ['id'=>1,'name'=>'单选题','type'=>'single_choice'],
             ['id'=>2,'name'=>'多选题','type'=>'choice'],

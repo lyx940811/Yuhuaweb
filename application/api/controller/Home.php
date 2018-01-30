@@ -64,10 +64,8 @@ class Home extends Controller
         return $res;
 
     }
-    
-    public function ss(){
-      phpinfo();
-    }
+
+
 
     /**
      * 验证user，通过验证后赋值全局user信息

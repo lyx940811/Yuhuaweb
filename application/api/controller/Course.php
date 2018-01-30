@@ -196,7 +196,7 @@ class Course extends Home
     /**
      * 获得课程目录(加了进度),abandoned use rebuild version
      */
-    public function getcourselesson_abandoned(){
+/*    public function getcourselesson_abandoned(){
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $courseid = $this->data['courseid'];
         if(!$course = CourseModel::get($courseid)){
@@ -232,7 +232,7 @@ class Course extends Home
             }
         }
         return json_data(0,$this->codeMessage[0],$lesson);
-    }
+    }*/
     //rebuild version use this
     public function getcourselesson(){
         $video_type = ['mp4','url'];
@@ -287,7 +287,7 @@ class Course extends Home
     }
 
     //abandoned , use the rebuild version
-    public function getcoursetop_abandoned(){
+/*    public function getcoursetop_abandoned(){
         $course_all_time = 0;
         $courseid = $this->data['courseid'];
         //为了拿顶部的title
@@ -395,7 +395,7 @@ class Course extends Home
             'next_task_id'  =>  $learn_taskid,
         ];
         return json_data(0,$this->codeMessage[0],$data);
-    }
+    }*/
 
     //rebuild version,use this
     public function getcoursetop(){
@@ -726,7 +726,7 @@ class Course extends Home
         return json_data(0,$this->codeMessage[0],$data);
     }
 
-    public function handpaper_abandoned()
+/*    public function handpaper_abandoned()
     {
         $paperid = 78;
 //        $paperid = $this->data['paperID'];
@@ -845,6 +845,34 @@ class Course extends Home
             return json_data(2000,'error','');
         }
 
+    }*/
+
+
+
+
+    public function get_course_lesson_v13(){
+        $courseid = 5;//$this->data['courseid'];
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $chapter = Db::name('course_chapter')
+            ->where('courseid',$courseid)
+            ->where('flag',1)
+            ->field('id as chapterid,title')
+            ->page($page,10)
+            ->select();
+
+        foreach ( $chapter as &$c ){
+            $c['task'] = Db::name('course_task')
+                ->where('courseid',$courseid)
+                ->where('chapterid',$c['chapterid'])
+                ->where('status',1)
+                ->field('id as taskid,title,type,length')
+                ->order('sort asc')
+                ->select();
+            foreach ( $c['task'] as &$task){
+                $task['plan'] = 0;
+            }
+        }
+        var_dump($chapter[2]);die;
     }
 
 

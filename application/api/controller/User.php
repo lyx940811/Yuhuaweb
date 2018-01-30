@@ -207,29 +207,6 @@ class User extends Controller
 
 
     /**
-     * 获得个人主页内容（type传入不同的选项来获得下方不同的内容）
-     */
-    public function getuserpage(){
-        $data['type'] = 'following';
-        $data['userid'] = 3;//登陆的uid
-        $data['touserid'] = 2;//查看用户的uid
-
-        $base_profile   =   $this->LogicUser->getBaseUserinfo($data);
-        $contain        =   $this->LogicUser->getUserTypeInfo($data);
-        $is_follow      =   $this->LogicUser->isFollow($data);
-
-        $user_profile = [
-            'base_profile'  =>  $base_profile,
-            'is_follow'     =>  $is_follow,
-            'contain'       =>  $contain
-        ];
-
-        var_dump($user_profile);
-//        return $user_profile;
-
-    }
-
-    /**
      * 【关注功能】
      */
 
@@ -269,19 +246,29 @@ class User extends Controller
      * APP-得到个人信息(新版，增加了专业属性)
      */
     public function getmyinfo_new(){
+        //班级名
         if(!empty($this->user->stuclass->classname->title)){
             $class = $this->user->stuclass->classname->title;
-        }
-        else{
+        }else{
             $class = '还未分配班级';
         }
+        //专业名
         !empty($this->user->stuclass->major->name)?$major=$this->user->stuclass->major->name:$major='还未分配专业';
+        //学分
+        if($credit = $this->user->point()->field('point')->select()){
+            $credit = array_column($credit,'point');
+            $credit = array_sum($credit);
+        }else{
+            $credit = 0;
+        }
+
         $data = [
             'username'  =>  $this->user->username,
             'avatar'    =>  $this->request->domain()."/".$this->user->title,
             'mobile'    =>  $this->user->mobile,
             'classname' =>  $class,
-            'major'  =>  $major
+            'major'  =>  $major,
+            'credit'    =>  $credit
         ];
         return json_data(0,$this->codeMessage[0],$data);
     }

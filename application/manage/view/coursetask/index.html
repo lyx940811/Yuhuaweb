@@ -3,9 +3,7 @@
 {include file="manage/header" /}
 <link href="__MANAGE_JS__datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <body>
-<style>
 
-</style>
 <div class="container-fluid">
     {php}
     $uid = session('admin_uid');
@@ -25,12 +23,9 @@
     </div>
 
     <div class="pull-right">
-
-        {php}
-        if(check($uid,'/manage/coursetask/add')){
-            echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增任务</a>';
-        }
-        {/php}
+        {if condition="check($uid,'/manage/coursetask/add')"}
+        <a class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增任务</a>
+        {/if}
 
     </div>
 
@@ -59,160 +54,12 @@
             <!--<td>{$vo.endTime}</td>-->
             <td>{$vo.status?'启用':'禁用'}</td>
             <td>
-                {php}
-                    if(check($uid,'/manage/coursetask/edit')){
-                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'" >编辑</a>';
-                        echo '<strong>/</strong>';
-                    }
-                    if(check($uid,'/manage/coursetask/delete')){
-                        echo '<a href="#" onclick="deleteR('.$vo['id'].');">删除</a>';
-                    }
-                {/php}
-                <!--修改-->
-                <!-- 模态框 -->
-                <div class="modal fade" id="myModal_edit{$vo.id}" data-mid="{$vo.id}">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-
-                            <!-- 模态框头部 -->
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">修改任务</h4>
-                            </div>
-
-                            <!-- 模态框主体 -->
-                            <div class="modal-body">
-                                <form class="form-horizontal" role="form" id="form{$vo.id}" method="post" action="{:url('edit')}">
-                                    <div class="form-group">
-                                        <label for="title" class="col-sm-2 control-label">任务名称</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="title" value="{$vo.title}"
-                                                   placeholder="请输入任务名称">
-                                        </div>
-                                    </div>
-                                   <!-- <div class="form-group">
-                                        <label for="startTime" class="col-sm-2 control-label">开始时间</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control form_datetime" name="startTime"
-                                                   placeholder="请输入开始时间">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="endTime" class="col-sm-2 control-label">结束时间</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control form_datetime" name="endTime"
-                                                   placeholder="请输入开始时间">
-                                        </div>
-                                    </div>-->
-                                    <div class="form-group">
-                                        <label for="isFree" class="col-sm-2 control-label">是否免费</label>
-                                        <div class="col-sm-10">
-                                            <label class="radio-inline">
-                                                <input type="radio" name="isFree" class="isFree" value="1" {if condition="$vo['isFree'] eq 1"}checked{/if}> 是
-                                            </label>
-                                            <label class="radio-inline">
-                                                <input type="radio" name="isFree" class="isFree" value="0" {if condition="$vo['isFree'] eq 0"}checked{/if}> 否
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <!--<div class="form-group">
-                                        <label for="isFree" class="col-sm-2 control-label">是否必修</label>
-                                        <div class="col-sm-10">
-                                            <label class="radio-inline">
-                                                <input type="radio" name="isOptional" class="isOptional" value="1"> 是
-                                            </label>
-                                            <label class="radio-inline">
-                                                <input type="radio" name="isOptional" class="isOptional" value="0"> 否
-                                            </label>
-                                        </div>
-                                    </div>-->
-                                    <div class="form-group">
-                                        <label for="mode" class="col-sm-2 control-label">任务模式</label>
-                                        <div class="col-sm-10">
-                                            <select name="mode" class="form-control">
-                                                <option value="">--请选择--</option>
-                                                {volist name="taskmode" id="t"}
-                                                <option value="{$t.id}" {if condition="$t['id'] eq $vo['mode']"}selected="selected"{/if}>{$t.name}</option>
-                                                {/volist}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">媒体文件来源</label>
-                                        <div class="col-sm-10">
-                                            <label class="radio-inline">
-                                                <input type="radio" class="mediatype" name="mediatype" value="1" {if condition="strpos($vo['mediaSource'],'http')===false"}checked="checked"{/if}> 本地.mp4、doc等文件上传
-                                            </label>
-                                            <label class="radio-inline">
-                                                <input type="radio" class="mediatype" name="mediatype" value="2" {if condition="strpos($vo['mediaSource'],'http')!==false"}checked="checked"{/if}> 优酷等媒体链接
-                                            </label>
-                                            <div id="picker{$vo.id}" class="mediaHtmlc" data-mid="{$vo.id}">
-                                                <input type="file" name="media"/>
-                                                <input type="text" id="length{$vo.id}" name="length" class="form-control" placeholder="媒体长度" value="{$vo.length}"/>
-                                                <input type="text" id="mediaSource{$vo.id}" name="mediaSource" class="form-control" placeholder="媒体资源" value="{$vo.mediaSource}"/>
-                                                <input type="text" id="type{$vo.id}" name="type" class="form-control" placeholder="类型" value="{$vo.type}"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--<div class="form-group">
-                                        <label for="maxOnlineNum" class="col-sm-2 control-label">最大人数</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="maxOnlineNum"
-                                                   placeholder="任务最大可同时进行的人数">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="maxPoint" class="col-sm-2 control-label">最大分值</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="maxPoint"
-                                                   placeholder="最大分值">
-                                        </div>
-                                    </div>-->
-                                    <div class="form-group">
-                                        <label for="maxPoint" class="col-sm-2 control-label">课程章</label>
-                                        <div class="col-sm-10">
-                                            <select name="chapterid" class="form-control">
-                                                <option value="">--请选择--</option>
-                                                {volist name="chapter" id="c"}
-                                                <option value="{$c.id}" {if condition="$vo['chapterid'] eq $c['id']"}selected="selected"{/if}>{$c.title}</option>
-                                                {/volist}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="title" class="col-sm-2 control-label">学分</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="point" value="{$vo.point}"
-                                                   placeholder="请输入学分">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="status" class="col-sm-2 control-label">状态</label>
-                                        <div class="col-sm-10">
-                                            <label class="radio-inline">
-                                                <input type="radio" name="status" value="1" {if condition="$vo['status'] eq 1"}checked{/if}> 启用
-                                            </label>
-                                            <label class="radio-inline">
-                                                <input type="radio" name="status" value="0" {if condition="$vo['status'] eq 0"}checked{/if}> 禁用
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <input type="hidden" name="rid" value="{$vo.id}" />
-                                    <input type="hidden" name="courseId" value="{$vo.courseId}"/>
-                                    <!-- 模态框底部 -->
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" onclick="dopost('edit',{$vo.id})">修改</button>
-                                    </div>
-                                </form>
-                            </div>
-
-
-
-                        </div>
-                    </div>
-                </div>
-                <!--修改结束-->
+                {if condition="check($uid,'/manage/coursetask/edit')"}
+                    <a href="{:url('editshow')}?id={$vo.id}&cid={$courseId}" >编辑</a>
+                {/if}
+                {if condition="check($uid,'/manage/coursetask/delete')"}
+                       <a href="#" onclick="deleteR({$vo.id});">删除</a>
+                {/if}
             </td>
         </tr>
         {/volist}
@@ -245,20 +92,7 @@
                                        placeholder="请输入任务名称">
                             </div>
                         </div>
-                        <!--<div class="form-group">
-                            <label for="startTime" class="col-sm-2 control-label">开始时间</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control form_datetime" id="startTime" name="startTime"
-                                       placeholder="请输入开始时间">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="endTime" class="col-sm-2 control-label">结束时间</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control form_datetime" id="endTime" name="endTime"
-                                       placeholder="请输入开始时间">
-                            </div>
-                        </div>-->
+
                         <div class="form-group">
                             <label for="isFree" class="col-sm-2 control-label">是否免费</label>
                             <div class="col-sm-10">
@@ -270,17 +104,7 @@
                                 </label>
                             </div>
                         </div>
-                        <!--<div class="form-group">
-                            <label for="isFree" class="col-sm-2 control-label">是否必修</label>
-                            <div class="col-sm-10">
-                                <label class="radio-inline">
-                                    <input type="radio" name="isOptional" class="isOptional" value="1"> 是
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="isOptional" class="isOptional" value="0"> 否
-                                </label>
-                            </div>
-                        </div>-->
+
                         <div class="form-group">
                             <label for="mode" class="col-sm-2 control-label">任务模式</label>
                             <div class="col-sm-10">
@@ -292,37 +116,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">媒体文件来源</label>
-                            <div class="col-sm-10">
-                                <label class="radio-inline">
-                                    <input type="radio" class="mediatype" name="mediatype" value="1"> 本地.mp4、doc等文件上传
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" class="mediatype" name="mediatype" value="2"> 优酷等媒体链接
-                                </label>
-                                <div id="picker0" class="mediaHtmlc" data-mid="0">
-                                    <input type="file" name="media"/>
-                                    <input type="text" id="length0" name="length" class="form-control" placeholder="媒体长度"/>
-                                    <input type="text" id="mediaSource0" name="mediaSource" class="form-control" placeholder="媒体资源"/>
-                                    <input type="text" id="type0" name="type" class="form-control" placeholder="类型"/>
-                                </div>
-                            </div>
-                        </div>
-                        <!--<div class="form-group">
-                            <label for="maxOnlineNum" class="col-sm-2 control-label">最大人数</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="maxOnlineNum" name="maxOnlineNum"
-                                       placeholder="任务最大可同时进行的人数">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="maxPoint" class="col-sm-2 control-label">最大分值</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="maxPoint" name="maxPoint"
-                                       placeholder="最大分值">
-                            </div>
-                        </div>-->
+                        <div id="html_exam_media"></div>
                         <div class="form-group">
                             <label for="maxPoint" class="col-sm-2 control-label">课程章</label>
                             <div class="col-sm-10">
@@ -352,16 +146,20 @@
                                 </label>
                             </div>
                         </div>
-
-                        <input type="hidden" name="rid" value="" id="selfcode"/>
-                        <input type="hidden" name="courseId" value="{$Think.get.cid}" id="courseId"/>
+                        <div class="form-group">
+                            <label for="sort" class="col-sm-2 control-label">排序</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="sort" value="0"
+                                       placeholder="请输入排序">
+                            </div>
+                        </div>
+                        <input type="hidden" name="courseId" value="{$courseId}" id="courseId"/>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" id="add_role" onclick="dopost('add',0);">添加</button>
                         </div>
                     </form>
                 </div>
-
 
 
             </div>
@@ -371,71 +169,90 @@
 
 </div>
 {include file='manage/bottom'}
-<script type="text/javascript" src="__MANAGE_JS__datetimepicker/bootstrap-datetimepicker.min.js"></script>
 <script type="text/javascript" src="__MANAGE_JS__Webuploader/webuploader.js"></script>
 <script type="text/javascript">
-    $(".form_datetime").datetimepicker({
-        weekStart: 1,
-        todayBtn:  1,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 2,
-        minView: 0,
-        forceParse: 0
-    });
 
     var uploader='';
-    $(".modal").on("shown.bs.modal",function(){
+    $('select[name="mode"]').change(function () {
 
-        var mid = $(this).data('mid')
-
-        uploader = WebUploader.create({
-            pick: '#picker'+mid,
-            server: '{:url("upload")}?'+Math.random(),
-            auto: true,
-            chunked: true,
-            swf: '__MANAGE_JS__Webuploader/Uploader.swf',
-        }).on('fileQueued', function( file ) {
-            var start =  +new Date();
-            console.log(file);
-
-            // 返回的是 promise 对象
-            this.md5File(file, 0, 1 * 1024 * 1024)
-
-            // 处理完成后触发
-                .then(function(ret) {
-                    console.log('md5:', ret);
-
-                    var end = +new Date();
-                });
-        }).on('uploadSuccess', function (file, response) {
-
-            console.log(response); //这里可以得到后台返回的数据
-
-            var info = response.fileinfo;
-
-            if(info.duration){
-                $('#length'+mid).val(info.duration)
-            }else{
-                $('#length'+mid).val('')
+        if($(this).val()=='4'||$(this).val()=='5'){
+            var exam = '';
+            if($(this).val()==4){
+                exam = 'test';
             }
-            $('#mediaSource'+mid).val(info.name)
-            $('#type'+mid).val(info.type)
-        });
-        uploader.refresh()
-    })
+            if($(this).val()==5){
+                exam = 'exam';
+            }
+            var html_exam = '<div class="form-group">';
+            html_exam += '<label class="col-sm-2 control-label">试卷名称</label>';
+            html_exam += '<div class="col-sm-10">';
+            html_exam += '<select name="paperid" class="form-control">';
+            html_exam += '<option value="">--请选择--</option>';
+            html_exam += '{volist name="testpaper" id="t"}';
+            html_exam += '<option value="{$t.id}">{$t.name}</option>';
+            html_exam += '{/volist}';
+            html_exam += '</select>';
+            html_exam += '</div>';
+            html_exam += '<input type="hidden" id="type" name="type" class="form-control" placeholder="类型" value="'+exam+'"/></div>';
+            $('#html_exam_media').html(html_exam)
+        }else if($(this).val()=='6'){
+            var html_url = ' <div class="form-group">\n' +
+                '                <label class="col-sm-2 control-label">媒体链接</label>\n' +
+                '                <div class="col-sm-10">\n' +
+                '                        <input type="text" id="mediaSource" name="mediaSource" class="form-control" placeholder="媒体链接" value=""/>\n' +
+                '                        <input type="hidden" id="type" name="type" class="form-control" placeholder="类型" value="url"/>\n' +
+                '                </div>\n' +
+                '            </div>';
+            $('#html_exam_media').html(html_url)
+        }else{
 
+            var html_media = '<div class="form-group">\n' +
+                '                <label class="col-sm-2 control-label">媒体文件</label>\n' +
+                '                <div class="col-sm-10">\n' +
+                '                    <div id="picker" class="mediaHtmlc">\n' +
+                '                        <input type="file" name="media"/>\n' +
+                '                        <input type="text" id="length" name="length" class="form-control" placeholder="媒体长度" value=""/>\n' +
+                '                        <input type="text" id="mediaSource" name="mediaSource" class="form-control" placeholder="媒体资源" value=""/>\n' +
+                '                        <input type="hidden" id="type" name="type" class="form-control" placeholder="类型" value=""/>\n' +
+                '                    </div>\n' +
+                '                </div>\n' +
+                '            </div>';
+            $('#html_exam_media').html(html_media)
+            uploader = WebUploader.create({
+                pick: '#picker',
+                server: '{:url("upload")}?'+Math.random(),
+                auto: true,
+                chunked: true,
+                swf: '__MANAGE_JS__Webuploader/Uploader.swf',
+            }).on('fileQueued', function( file ) {
+                var start =  +new Date();
+                // console.log(file);
 
+                // 返回的是 promise 对象
+                this.md5File(file, 0, 1 * 1024 * 1024)
 
-    /*
-    * 媒体资源上传
-    * */
-    $('.mediatype').click(function () {
-        uploader.refresh();
-        // $('input[name="length"]').val('')
-        // $('input[name="mediaSource"]').val('')
-        // $('input[name="type"]').val('')
-        // uploader.refresh()
+                // 处理完成后触发
+                    .then(function(ret) {
+                        // console.log('md5:', ret);
+
+                        // var end = +new Date();
+                    });
+            }).on('uploadSuccess', function (file, response) {
+
+                console.log(response); //这里可以得到后台返回的数据
+
+                var info = response.fileinfo;
+
+                if(info.duration){
+                    $('#length').val(info.duration)
+                }else{
+                    $('#length').val('')
+                }
+                $('#mediaSource').val(info.name)
+                $('#type').val(info.type)
+            });
+
+        }
     })
 
     $('.modal').on('hide.bs.modal', function () {
@@ -455,10 +272,6 @@
                 if(data.code=='000'){
 
                     alert(data.info)
-
-                    // $('#selfcode').val('')//必须清空
-                    //
-                    // $('#myModal').modal('hide')
                     window.location.reload();
 
                 }else{
@@ -477,7 +290,6 @@
             $.get("{:url('delete')}?rid="+id,function (data) {
                 if(data.code=='000'){
                     alert(data.info)
-                    // $('#myModal2').modal('hide')
                     window.location.reload()
                 }else{
                     alert(data.error)

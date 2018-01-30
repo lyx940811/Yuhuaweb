@@ -45,7 +45,6 @@
         </div>
 
         <input type="hidden" name="id" value="{$id}">
-        <input type="hidden" name="type" value="testpaper"/>
         <!-- 模态框底部 -->
         <div class="modal-footer">
             <button type="button" class="btn btn-primary" onclick="dopost('edit',1);">保存</button>
@@ -73,6 +72,16 @@
             <label for="description" class="col-sm-2 control-label">试卷说明</label>
             <div class="col-sm-5">
                 <input type="text" name="description" id="description" class="form-control" placeholder="请输入试卷说明，20汉字以内，必填"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="type" class="col-sm-2 control-label">试卷类型</label>
+            <div class="col-sm-5">
+                <select name="type" id="type" class="form-control">
+                    <option value="">--请选择--</option>
+                    <option value="exam">考试</option>
+                    <option value="test">测验</option>
+                </select>
             </div>
         </div>
         <div class="form-group">
@@ -113,7 +122,6 @@
 
         </div>
 
-        <input type="hidden" name="type" value="testpaper"/>
         <!-- 模态框底部 -->
         <div class="modal-footer">
             <button type="button" class="btn btn-primary" onclick="dopost('add',0);">保存下一步</button>
