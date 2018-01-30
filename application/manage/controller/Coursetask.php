@@ -62,14 +62,14 @@ class Coursetask extends Base{
             'courseId.require'  => '课程不能为空',
             'mode.require'  => '任务模式不能为空',
             'chapterid.require'  => '课程章必须选择',
-            'mediaSource.require'  => '媒体资源必须填写',
+//            'mediaSource.require'  => '媒体资源必须填写',
         ];
         $validate = new Validate([
             'title'     => 'require|length:2,20',
             'courseId'  => 'require',
             'mode'  => 'require',
             'chapterid'  => 'require',
-            'mediaSource'  => 'require'
+//            'mediaSource'  => 'require'
 
         ],$msg);
 
@@ -89,6 +89,7 @@ class Coursetask extends Base{
             'isFree'=>isset($info['isFree'])?$info['isFree']:0,
             'point'=>$info['point'],
             'sort'=>$info['sort'],
+            'paperid'=>isset($info['paperid'])?$info['paperid']:0,
             'mode'=>$info['mode'],
             'type'=>isset($info['type'])?$info['type']:'url',
             'length'=>isset($info['length'])?$info['length']:0,
@@ -119,14 +120,14 @@ class Coursetask extends Base{
             'title.length'      => '任务名称长度太短',
             'courseId.require'  => '课程不能为空',
             'chapterid.require'  => '课程章必须选择',
-            'mediaSource.require'  => '媒体资源必须填写',
+//            'mediaSource.require'  => '媒体资源必须填写',
         ];
         $validate = new Validate([
             'rid'       => 'require',
             'title'     => 'require|length:2,20',
             'courseId'  => 'require',
             'chapterid'  => 'require',
-            'mediaSource'  => 'require'
+//            'mediaSource'  => 'require'
         ],$msg);
 
         $validate->check($info);
@@ -153,6 +154,7 @@ class Coursetask extends Base{
             'mode'=>$info['mode'],
             'point'=>$info['point'],
             'sort'=>$info['sort'],
+            'paperid'=>isset($info['paperid'])?$info['paperid']:0,
             'type'=>isset($info['type'])?$info['type']:'url',
             'length'=>isset($info['length'])?$info['length']:0,
             'mediaSource'=>isset($info['mediaSource'])?$info['mediaSource']:'',
