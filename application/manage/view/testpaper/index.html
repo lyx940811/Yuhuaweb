@@ -74,7 +74,7 @@
             <td>{$vo.title}</td>
             <td>{$vo.createTime}</td>
             <td>{$vo.username}</td>
-            <td>{$vo.courseid?'使用中':'未使用'}</td>
+            <td>{$vo.pid?'使用中':'未使用'}</td>
             <td>
                 {if condition="check($uid,'/manage/testpaper/show')"}
                 <a href="#" data-toggle="modal" data-target="#myModal{$vo.id}">预览</a>

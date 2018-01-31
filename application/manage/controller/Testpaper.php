@@ -24,8 +24,14 @@ class Testpaper extends Base{
             $where['a.courseid'] = ['eq',$info['courseid']];
         }
         if(!empty($info['status'])){
-//            $where['a.name'] = ['like',"%{$info['name']}%"];
+            if($info['status']==1){
+                $where['d.id']=array('EXP','IS NULL');
+            }
+            if($info['status']==2){
+                $where['d.id'] = ['neq',''];
+            }
         }
+
         if(!empty($info['name'])){
             $where['a.name'] = ['like',"%{$info['name']}%"];
         }
@@ -33,10 +39,11 @@ class Testpaper extends Base{
         $list = Db::table('testpaper a')
             ->join('course b','a.courseid=b.id','LEFT')
             ->join('user c','a.createdUserId=c.id','LEFT')
-            ->field('a.*,b.title,c.username')
+            ->join('course_task d','d.paperid=a.id','LEFT')
+            ->field('a.*,b.title,c.username,d.id as pid')
             ->where($where)
             ->order('a.id desc')
-            ->paginate(20);
+            ->paginate(20,false,['query'=>request()->get()]);
 
 //        echo Db::table('testpaper a')->getLastSql();exit;
         $qtype = [
