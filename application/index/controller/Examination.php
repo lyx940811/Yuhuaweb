@@ -7,6 +7,7 @@ use think\Db;
 use think\Validate;
 use think\Requst;
 
+
 class Examination extends Home{
 
     //跳转考试弹框
@@ -22,6 +23,7 @@ class Examination extends Home{
 
     //考试页面
     public function examination(){
+        $date=date('Y-m-d H:i:s');
         $courseid=$this->request->param('course');
         $where['t.courseid']=$courseid;
         $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->field('createTime')->find();
@@ -49,6 +51,7 @@ class Examination extends Home{
             }
 
         }
+        $this->assign('time',$date);
         $this->assign('courseid',$courseid);
         $this->assign('num',$num);
         $this->assign('info',$data);
@@ -82,6 +85,8 @@ class Examination extends Home{
         $test=$this->getExamresults($list['id']);
         if($marking>0){
             $this->assign('type',1);
+            $this->assign('myscore',$test['myscore']);
+            unset($test['myscore']);
             $this->assign('title',$test);
             $this->assign('list',$list);
         }else{
@@ -224,6 +229,7 @@ class Examination extends Home{
     //计算成绩存表
     public function getExamend($data,$mater){
         $info=[];
+        $essay=2;
         $choicetrue=$signtrue=$determinetrue=$choiceflase=$signflase=$determineflase=$choicenone=$signnone=$determinenone=$choicescore=$signscore=$determinescore=0;
         $examination=[];
         foreach($data['data'] as $key=>$val){
@@ -265,6 +271,7 @@ class Examination extends Home{
                             $choicetrue = $choicetrue + 1;//多选答对几道题
                         }
                     }elseif($key == 'essay'){
+                        $essay=1;
                         $info['score'] = 0;
                         $info['status'] = 0;
                     }else {
@@ -316,6 +323,24 @@ class Examination extends Home{
         $examination['sign']=['signtrue'=>$signtrue,'signflase'=>$signflase,'signnone'=>$signnone,'signscore'=>$signscore];
         $examination['choice']=['choicetrue'=>$choicetrue,'choiceflase'=>$choiceflase,'choicenone'=>$choicenone,'choicescore'=>$choicescore];
         $examination['determine']=['determinetrue'=>$determinetrue,'determineflase'=>$determineflase,'determinenone'=>$determinenone,'determinescore'=>$determinescore];
-        return $examination;
+        $list=[];
+        $list['paperID']=$data['paperid'];
+        $list['userid']=$this->user->id;
+        $list['score']=$examination['myscore'];
+        if($essay==1){
+            $list['Flag']=0;
+        }else{
+            $list['Flag']=1;
+        }
+        $list['subjectiveScore']=$examination['myscore'];
+        $list['beginTime']=$data['starttime'];
+        $list['endTime']=date('Y-m-d H:i:s');
+        $savatr=DB::name('testpapter_result')->insert($list);
+        if($savatr){
+            return $examination;
+        }else{
+            exit;
+        }
+
     }
 }

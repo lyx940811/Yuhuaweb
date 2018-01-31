@@ -50,7 +50,8 @@
             <th>试卷名称</th>
             <th>试卷类型</th>
             <th>考试得分</th>
-            <th>总分</th>
+            <th>客观题得分</th>
+            <th>主观题得分</th>
             <th>状态</th>
             <th>操作</th>
         </tr>
@@ -69,14 +70,15 @@
                 考试
                 {/if}
             </td>
-            <td>{$vo.myscore}</td>
             <td>{$vo.score}</td>
-            {if condition="$vo['type'] eq 1"}
+            <td>{$vo.subjectiveScore}</td>
+            <td>{$vo.objectiveScore}</td>
+            {if condition="$vo['Flag'] eq 1"}
             <td>已批阅</td>
-            {elseif condition="$vo['type'] eq 2"}
+            {elseif condition="$vo['Flag'] eq 0"}
             <td>未批阅</td>
             {/if}
-            <td><a class="btn btn-primary" href="{:url('paperexamines')}?userid={$vo.userid}&paperid={$vo.paperid}&courseid={$vo['courseid']}&name={$vo.realname}&title={$vo.title}">待阅</a></td>
+            <td><a class="btn btn-primary" href="{:url('paperexamines')}?userid={$vo.userid}&paperid={$vo.paperID}&courseid={$vo['courseid']}&name={$vo.realname}&title={$vo.title}">待阅</a></td>
         </tr>
         {/volist}
         </tbody>

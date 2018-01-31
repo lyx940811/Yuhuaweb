@@ -19,18 +19,7 @@ class Paperexamines extends Base{
         $list["courseid"] ='';
         $list["status"] ='';
         $list["name"] ='';
-        $data=$this->selectList($info);
-        $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
-
-        $this->assign('course',$course);
-        $this->assign('page',$data['rander']);
-        unset($data['rander']);
-        $this->assign('data',$data);
-        return $this->fetch();
-    }
-
-    public function selectList($list){
-        $data=[];
+//        $data=$this->selectList($info);
         $where=[];
         if(!empty($list['type'])){
             $where['t.type']=$list['type'];
@@ -43,33 +32,48 @@ class Paperexamines extends Base{
         if(!empty($list['name'])){
             $where['t.name']=['like',"%{$list['name']}%"];
         }
-        $info=Db::name('testpaper_item_result tir')
-            ->join('user_profile up','tir.userid=up.userid','LEFT')
-            ->join('student_school ss','up.userid=ss.userid','LEFT')
-            ->join('testpaper t','tir.paperid=t.id','LEFT')
-            ->join('classroom c','ss.class=c.id','LEFT')
-            ->field('tir.userid,tir.paperid,sum(tir.score) as myscore,t.courseid,tir.status,t.name,t.score,t.type as ttype,up.realname,c.title')
-            ->order('tir.paperid')
-            ->where($where)
-            ->group('tir.userid,tir.paperid')
-            ->paginate(20);
-
-        foreach($info as $k=>$v){
-            $where=[];
-            $where['userid']=$v['userid'];
-            $where['paperid']=$v['paperid'];
-            $where['status']=0;
-            $type=DB::name('testpaper_item_result')
-                ->where($where)
-                ->count();//查询是否阅卷
-            $data[$k]=$v;
-            if($type>0){
-                $data[$k]['type']=2;//未阅卷
-            }else{
-                $data[$k]['type']=1;
-            }
+        if(!empty($list['status'])){
+            $where['tr.Flag']=$list['status']-1;
         }
-        $data['rander']=$info->render();
+        $info=Db::name('testpapter_result tr')
+            ->join('user_profile up','tr.userid=up.userid','LEFT')
+            ->join('student_school ss','up.userid=ss.userid','LEFT')
+            ->join('testpaper t','tr.paperid=t.id','LEFT')
+            ->join('classroom c','ss.class=c.id','LEFT')
+            ->field('tr.*,t.courseid,t.name,t.score,t.type as ttype,up.realname,c.title')
+            ->order('tr.endTime')
+            ->where($where)
+            ->paginate(20);
+        $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
+        $this->assign('course',$course);
+        $this->assign('data',$info);
+        $this->assign('page',$info->render());
+        return $this->fetch();
+    }
+
+    public function selectList($list){
+        $where=[];
+        if(!empty($list['type'])){
+            $where['t.type']=$list['type'];
+        }
+        if(!empty($list['courseid'])){
+            $where['t.courseid']=$list['courseid'];
+        }
+        if(!empty($list['status'])){
+        }
+        if(!empty($list['name'])){
+            $where['t.name']=['like',"%{$list['name']}%"];
+        }
+        $info=Db::name('testpapter_result tr')
+            ->join('user_profile up','tr.userid=up.userid','LEFT')
+            ->join('student_school ss','up.userid=ss.userid','LEFT')
+            ->join('testpaper t','tr.paperid=t.id','LEFT')
+            ->join('classroom c','ss.class=c.id','LEFT')
+            ->field('tr.*,t.courseid,t.name,t.score,t.type as ttype,up.realname,c.title')
+            ->order('tr.endTime')
+            ->where($where)
+            ->paginate(20);
+        $info['rander']=$info->render();
        return $data;
     }
 
