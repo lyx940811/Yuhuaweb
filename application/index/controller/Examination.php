@@ -239,6 +239,7 @@ class Examination extends Home{
                             $ans[]=$va;
                         }
                         $answer=$ans;
+                        $ans=[];
                     }else{
                         $answer=[$val['answer'][$v]];
                     }
