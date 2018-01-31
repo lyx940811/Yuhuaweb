@@ -14,8 +14,15 @@
       <link href="__CSS__vendor.css" rel="stylesheet">
       <link href="__CSS__app-bootstrap.css" rel="stylesheet">
       <link href="__CSS__main.css" rel="stylesheet">
+      <link href="__CSS__student/toast.style.css" rel="stylesheet">
+      <style>
+        .active2{
+          background: #eee;
+        }
+      </style>
   </head>
   <body class="es-main-default es-nav-default task-testpaper-body-iframe js-task-testpaper-body js-task-testpaper-body-iframe"> 
+      
     <div class="iframe-parent-content">
       <div class="container ">
           <div class="row">
@@ -74,7 +81,7 @@
                                 </ul>
                               </div>
                               <div class="testpaper-question-footer clearfix">
-                                <div class="testpaper-question-choice-inputs js-testpaper-question-label">
+                                <div class="testpaper-question-choice-inputs js-testpaper-question-label js-radio-label">
                                     {volist name="$sign.question" id="vo"}
                                     <label class="radio-inline">
                                       <input type="radio" data-type="single_choice" name="data[sign][answer][{$sign.id}]" value="{$key}">
@@ -214,7 +221,7 @@
                               </div>
                               <div class="testpaper-question-footer clearfix">
                                 <div class="testpaper-question-essay-inputs" data-role="js-answer-div-37">
-                                  <textarea class="form-control essay-input-short" name="data[essay][answer][{$essay.id}]" rows="1" style="overflow:hidden;line-height:20px;"></textarea>
+                                  <textarea class="form-control essay-input-short" name="data[essay][answer][{$essay.id}]" rows="1" style="overflow:hidden;line-height:20px;height:200px;"></textarea>
                                   <textarea id="question-input-long-37" class="form-control essay-input-long" data-type="essay" name="37" style="display:none;" ></textarea>
                                   <br>
                                 </div>
@@ -298,34 +305,43 @@
       </div>
     </div>
     <input type="hidden" name="testSuspend" data-url="/testpaper/result/14/suspend">
+    <input type="hidden"  value="9" id="examinationLength">
     <div id="login-modal" class="modal" data-url="/login/ajax"></div>
     <div id="modal" class="modal"></div>
     <div id="attachment-modal" class="modal"></div>
-
-    <script src="__EXAMINATION_JS__index.js"></script>
-    <script src="__EXAMINATION_JS__vendor.js"></script>
-    <script src="__EXAMINATION_JS__common.js"></script>
-    <script src="__EXAMINATION_JS__main.js"></script>
     <script src="__MANAGE_JS__jquery.min.js?v=2.1.4"></script>
+    <script src="__EXAMINATION_JS__vendor.js"></script>
+    <script src="__JS__toast.script.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            $("#save").click(function(){
-                // var val=$('input:radio[name="sex"]:checked').val();
-                // if(val==null){
-                //     alert("什么也没选中!");
-                //     return false;
-                // }
-                // else{
-                //     alert(val);
-                // }
-                // var list= $('input:radio[name="list"]:checked').val();
-                // if(list==null){
-                //     alert("请选中一个!");
-                //     return false;
-                // }
-                // else{
-                //     alert(list);
-                // }
+            $(".testpaper-question-choice-inputs label").on("click",function(){
+              $(this).addClass("active").siblings().removeClass("active");
+            })
+            $("#finishPaper").click(function(){
+              console.log($.trim($("#examinationLength").val()))
+                if($(".testpaper-question-choice-inputs label.active").length < $.trim($("#examinationLength").val()) ){
+                     $.Toast("", "请认真完成试题再进行提交", "success", {
+                          stack: true,
+                          has_icon:true,
+                          has_close_btn:true,
+                          fullscreen:false,
+                          timeout:1500,
+                          sticky:false,
+                      });
+
+                    return false;
+                  }
+                if($.trim($(".form-control").val()) == '' || $.trim($(".form-control").val()) == null){
+                  $.Toast("", "请认真完成问答题部分，再进行提交", "success", {
+                      stack: true,
+                      has_icon:true,
+                      has_close_btn:true,
+                      fullscreen:false,
+                      timeout:1500,
+                      sticky:false,
+                  });
+                  return false;
+                }
                 $('#teacherCheckForm').submit();
             });
         });
