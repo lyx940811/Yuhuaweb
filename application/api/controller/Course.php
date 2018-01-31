@@ -283,6 +283,7 @@ class Course extends Home
                 unset($l['length'],$l['seq']);
             }
         }
+
         return json_data(0,$this->codeMessage[0],$lesson);
     }
 
@@ -607,9 +608,7 @@ class Course extends Home
         return json_data(0,$this->codeMessage[0],$data);
     }
 
-    public function pap(){
-        dump(Cache::get('dopaper'));
-    }
+
 
     /**
      * 交卷
@@ -849,7 +848,7 @@ class Course extends Home
 
 
 
-
+    //1.3版本的得到课程详情目录
     public function get_course_lesson_v13(){
         $courseid = 5;//$this->data['courseid'];
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
@@ -857,22 +856,107 @@ class Course extends Home
             ->where('courseid',$courseid)
             ->where('flag',1)
             ->field('id as chapterid,title')
+            ->order('seq asc')
             ->page($page,10)
             ->select();
 
         foreach ( $chapter as &$c ){
             $c['task'] = Db::name('course_task')
-                ->where('courseid',$courseid)
+                ->where('courseId',$courseid)
                 ->where('chapterid',$c['chapterid'])
                 ->where('status',1)
-                ->field('id as taskid,title,type,length')
+                ->field('id as taskid,title,type')
                 ->order('sort asc')
                 ->select();
             foreach ( $c['task'] as &$task){
+                //赋值基底，没有登陆的时候进度为0
                 $task['plan'] = 0;
+                //当登陆时取记录
+                if(!empty($this->user)){
+                    $map = [
+                        'userid'    =>  $this->user-id,
+                        'taskid'    =>  $task['taskid'],
+                        'is_del'    =>  0,
+                    ];
+                    if($ratio = Db::name('study_result_v13')->where($map)->order('createTime desc')->limit(1)->value('ratio')){
+                        $task['plan'] = $ratio;
+                    }else{
+                        $task['plan'] = 0;
+                    }
+                }
             }
         }
-        var_dump($chapter[2]);die;
+        return json_data(0,$this->codeMessage[0],$chapter);
+    }
+
+    public function getcoursetop_v13()
+    {
+        $doneNum  = 0;
+        $plan     = 0;
+        $learn_taskid = 0;
+        $next_task = '还未有新课程';
+        $courseid = 5;//$this->data['courseid'];
+        $course = CourseModel::get($courseid);
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+
+        //拿所有任务,把考试和测验算在内
+        $map = [
+            'courseId'  =>  $courseid,
+            'status'    =>  1,
+        ];
+        $task = Db::name('course_task')
+            ->where($map)
+            ->column('id');
+
+        $taskNum = count($task);
+
+        if(!empty($this->user)){
+            //拿完成的比例
+            foreach ( $task as $t ){
+                if($study_result = Db::name('study_result_v13')->where('userid',$this->user->id)->where('taskid',$t)->find()){
+                    if($study_result['ratio']==100){
+                        $doneNum++;
+                    }else{
+                        $doneNum = $doneNum + round($study_result['ratio']/100,2);
+                    }
+                }
+            }
+            $plan = round($doneNum/$taskNum,2)*100;
+            //拿下一任务名、任务id
+            //拿看过的最高章节，最高小节的任务
+            $sql = 'select id,title,courseId,type,chapterid,sort from course_task where courseId=5 and chapterid=(select chapterid from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId=5 and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid=1 ORDER BY chapterseq desc limit 1) and sort=(select sort from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId=5 and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid=1 and chapterid=(select chapterid from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId=5 and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid=1 ORDER BY chapterseq desc limit 1) ORDER BY sort desc limit 1) limit 1';
+            $high_task = Db::query($sql);
+            if($high_task){
+                //找到了，判断这个学习记录是不是100，如果是的话，拿下一节（或下一章的下一节），不是的话，把本章传过去
+                $high_task = $high_task[0];
+                $condition = [
+                    'userid'    =>$this->user->id,
+                    'taskid'    =>$high_task['id']
+                ];
+                $watch_log = Db::name('study_result_v13')->where($condition)->find();
+
+                if($watch_log['ratio']==100){
+                    //拿下一节（如果没找到，拿下一章的下一节，如果还没找到，则为最后一节）
+                }
+                else{
+                    $learn_taskid = $watch_log['taskid'];
+                }
+            }else{
+                //没找到，拿第一节课的内容
+            }
+        }
+
+        $data = [
+            'categoryId'=>  $course['categoryId'],
+            'title'     =>  $course['title'],
+            'plan'      =>  $plan,
+            'has_done'  =>  $doneNum."/".$taskNum,
+            'next_task' =>  $next_task,
+            'next_task_id'  =>  $learn_taskid,
+        ];
+
+        var_dump($taskNum,$data,$task);die;
+
     }
 
 
