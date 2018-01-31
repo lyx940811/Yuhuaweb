@@ -318,7 +318,6 @@
               $(this).addClass("active").siblings().removeClass("active");
             })
             $("#finishPaper").click(function(){
-              console.log($.trim($("#examinationLength").val()))
                 if($(".testpaper-question-choice-inputs label.active").length < $.trim($("#examinationLength").val()) ){
                      $.Toast("", "请认真完成试题再进行提交", "success", {
                           stack: true,
@@ -342,6 +341,22 @@
                   });
                   return false;
                 }
+                // var val=$('input:radio[name="sex"]:checked').val();
+                // if(val==null){
+                //     alert("什么也没选中!");
+                //     return false;
+                // }
+                // else{
+                //     alert(val);
+                // }
+                // var list= $('input:radio[name="list"]:checked').val();
+                // if(list==null){
+                //     alert("请选中一个!");
+                //     return false;
+                // }
+                // else{
+                //     alert(list);
+                // }
                 $('#teacherCheckForm').submit();
             });
         });
