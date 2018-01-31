@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+{include file="manage/header" /}
+<body>
+<div class="container-fluid">
+    <div class="well">
+        <ol class="breadcrumb">
+            <li><a href="{:url('index')}">试卷列表</a></li>
+            <li><a href="{:url('paperexamines')}?userid={$userid}&paperid={$paperid}">试卷批阅</a></li>
+            <li class="active">查看试卷</li>
+        </ol>
+    </div>
+    <form class="form-horizontal" role="form" id="myform" method="post" action="{:url('add')}">
+        <p style="font-size:16px;margin-left:80px;">{$title}：{$name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;主观题得分：{$subjective}分&nbsp;&nbsp;客观题得分：{$objective}分&nbsp;&nbsp;总分：{$subjective+$objective}分</p>
+        {volist name='examination' id='vo'}
+            {if condition='$key eq "single"'}
+                {if condition="!empty($num['0'])"}
+                    <p style="margin-left:150px;margin-top:40px;font-size:16px;">单选题（共{$num.0.num}题，共{$num.0.score}分）</p>
+                    {volist name="$vo" id="single"}
+                        <div>
+                            <p style="margin-left:150px;margin-top:40px;font-size:16px;">{$key+1}. {$single.stem}（正确答案为：{$status[$single.answer.0]}）</p>
+                            <div style="margin-left:180px;margin-top:10px;font-size:16px;width:17%;">
+                                {volist name="$single.question" id="question"}
+                                    <span style="margin-top:10px;width:100%;display: block;"> <input type="radio" disabled="disabled" {if condition="in_array($key,$single.myanswer)"}checked{/if} value="">{$status[$key]}.{$question}</span>
+                                {/volist}
+                            </div>
+                        </div>
+                    {/volist}
+                {/if}
+            {/if}
+            {if condition='$key eq "choice"'}
+                {if condition="!empty($num['1'])"}
+                    <p style="margin-left:150px;margin-top:40px;font-size:16px;">多选题（共{$num.1.num}题，共{$num.1.score}分）</p>
+                    {volist name="$vo" id="choice"}
+                         <div class="form-group">
+                            <p style="margin-left:150px;margin-top:40px;font-size:16px;">
+                                {$key+1}. {$choice.stem}
+                                （正确答案为：
+                                    {volist name="$choice.answer" id="answer"}
+                                    {$status[$answer]},
+                                    {/volist}
+                                ）
+                            </p>
+                            <div style="margin-left:180px;margin-top:10px;font-size:16px;width:17%;">
+                                {volist name="$single.question" id="question"}
+                                <span style="margin-top:10px;width:100%;display: block;"> <input type="checkbox" disabled="disabled" {if condition="in_array($key,$choice.myanswer)"}checked{/if} value="">{$status[$key]}.{$question}</span>
+                                {/volist}
+                            </div>
+                        </div>
+                     {/volist}
+                {/if}
+            {/if}
+            {if condition='$key eq "determine"'}
+                {if condition="!empty($num['2'])"}
+                    <p style="margin-left:150px;margin-top:40px;font-size:16px;">判断题（共{$num.2.num}题，共{$num.2.score}分）</p>
+                    {volist name="$vo" id="determine"}
+                        <div class="form-group">
+                            <p style="margin-left:150px;margin-top:40px;font-size:16px;">{$key+1}. {$determine.stem}（正确答案为：{if condition="$determine['answer'][0] eq 1"}"错误"{else}"正确"{/if}）</p>
+                            <div style="margin-left:180px;margin-top:10px;font-size:16px;width:17%">
+                                <span style="margin-top:10px;width:100%;display: block;"> <input type="radio" value="" {if condition="in_array(0,$determine.myanswer)"}checked{/if} disabled="disabled"> A.正确</span>
+                                <span style="margin-top:10px;width:100%;display: block;"> <input type="radio" value="" {if condition="in_array(1,$determine.myanswer)"}checked{/if} disabled="disabled"> B.错误</span>
+                            </div>
+                        </div>
+                    {/volist}
+                {/if}
+            {/if}
+            {if condition='$key eq "essay"'}
+                {if condition="!empty($num['2'])"}
+                    {volist name="$vo" id="essay"}
+                        <div class="form-group">
+                            <p style="margin-left:150px;margin-top:40px;font-size:16px;">问答题（共{$num.3.num}题，共{$num.3.score}分）</p>
+                            <p style="margin-left:150px;margin-top:40px;font-size:16px;">{$key+1}. {$essay.stem}</p>
+                            <div style="margin-left:150px;margin-top:10px;font-size:16px;width:600px;">
+                                <textarea style="height:200px;width:400px;" cols="20" rows="5" class="form-control" id="stem" disabled="disabled">{$essay.myanswer.0}</textarea>
+                            </div>
+                        </div>
+                    {/volist}
+                {/if}
+            {/if}
+        {/volist}
+        <!-- 模态框底部 -->
+            <a  class="btn btn-primary"  style="margin-left:700px;margin-top:60px;" href="{:url('paperexamines')}?userid={$userid}&paperid={$paperid}">返回</a>
+
+    </form>
+
+</div>
+{include file='manage/bottom'}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.myscore').change(function(){
+            var num=$(this).val();
+            var maxnum=$(this).next().val();
+            if(num>maxnum){
+                $(this).val('');
+                alert('请不要超过'+maxnum+'分。');
+            }
+        })
+    });
+    function dopost($type) {
+        $(".myscore").each(function(){
+            if ($(this).val() == "") {
+                alert("不能为空！");
+                return false;
+            }
+        });
+        if($type=='add'){
+            $url = "{:url('add')}";
+        }
+
+        $.ajax({
+            url: $url+"?"+Math.random(),
+            type:"get",
+            data:$('#myform').serialize(),
+            success:function(data){
+
+                if(data.code=='000'){
+
+                    alert(data.info);
+                    window.location.href = "{:url('index')}"
+
+                }else{
+                    alert(data.error)
+                }
+
+            },
+            error:function(e){
+                alert("添加信息错误");
+            }
+        });
+    }
+
+
+</script>
+</body>
+</html>

@@ -9,51 +9,62 @@
             <li class="active">试卷批阅</li>
         </ol>
     </div>
-    <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
+    <form class="form-horizontal" role="form" id="myform" method="post" action="{:url('add')}">
         {volist name="info" id="vo"}
+        <input type="hidden" value="{$vo.id}" name="{$key}[id]">
         <div class="form-group">
             <label style="margin-left:50px;margin-top:40px;font-size:16px;">{$key+1}.{$vo.stem}</label>
             <div style="margin-left:50px;margin-top:10px;font-size:16px;width:600px;">
-                <textarea style="height:200px;" cols="20" rows="5" class="form-control" name="stem" id="stem" placeholder="请输入题干，100个汉字之内"></textarea>
+                <textarea style="height:200px;" cols="20" rows="5" class="form-control"  id="stem">{$vo.answer.0}</textarea>
             </div>
             <p style="font-size:16px;margin-left:70px;margin-top:20px;">
                得分：
-                <input type="text" name="passedScore" value="0" data-score-total="0" style="width:40px;"/>/{$vo.scores}
+                <input type="text" name="{$key}[passedscores]" class="myscore" {if condition="$vo.status neq 0"}value="{$vo.score}"{else}value=""{/if} data-score-total="0" style="width:40px;"/>/{$vo.scores}
+                <input type="hidden" value="{$vo.scores}"/>
             </p>
         </div>
         {/volist}
-        <input type="hidden" name="type" value="essay"/>
         <!-- 模态框底部 -->
         <div>
-            <button type="button" class="btn btn-primary" style="margin-left:580px;margin-top:30px;" onclick="dopost('add',0);">保存</button>
+            <button type="button" class="btn btn-primary" style="margin-left:480px;margin-top:30px;" onclick="dopost('add');">保存</button>
+            <a  class="btn btn-primary"  style="margin-left:30px;margin-top:30px;" href="{:url('lookpaper')}?userid={$userid}&paperid={$paperid}&courseid={$courseid}&name={$name}&title={$title}">查看试卷</a>
         </div>
     </form>
 
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
-
-    function dopost($type,formid) {
-        if($type=='add' || $type=='addshow'){
+    $(document).ready(function(){
+        $('.myscore').change(function(){
+            var num=$(this).val();
+            var maxnum=$(this).next().val();
+            if(num>maxnum){
+                $(this).val('');
+                alert('请不要超过'+maxnum+'分。');
+            }
+        })
+    });
+    function dopost($type) {
+        $(".myscore").each(function(){
+            if ($(this).val() == "") {
+                alert("不能为空！");
+                return false;
+            }
+        });
+        if($type=='add'){
             $url = "{:url('add')}";
-        }else{
-            $url = "{:url('edit')}";
         }
 
         $.ajax({
             url: $url+"?"+Math.random(),
-            type:"post",
-            data:$('#form'+formid).serialize(),
+            type:"get",
+            data:$('#myform').serialize(),
             success:function(data){
 
                 if(data.code=='000'){
 
-                    alert(data.info)
-                    if($type=='addshow'){
-                        window.location.href = "{:url('essay')}"
-                    }else{
-                        window.location.href="{:url('index')}"
-                    }
+                    alert(data.info);
+                    window.location.href = "{:url('index')}"
 
                 }else{
                     alert(data.error)

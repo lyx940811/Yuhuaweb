@@ -76,7 +76,7 @@
             {elseif condition="$vo['type'] eq 2"}
             <td>未批阅</td>
             {/if}
-            <td><a class="btn btn-primary" href="{:url('paperexamines')}?userid={$vo.userid}&paperid={$vo.paperid}">待阅</a></td>
+            <td><a class="btn btn-primary" href="{:url('paperexamines')}?userid={$vo.userid}&paperid={$vo.paperid}&courseid={$vo['courseid']}&name={$vo.realname}&title={$vo.title}">待阅</a></td>
         </tr>
         {/volist}
         </tbody>
