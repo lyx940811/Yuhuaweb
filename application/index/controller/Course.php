@@ -267,7 +267,7 @@ class Course extends Home
                 $data[$key]['section']=$v;
                 $progress=DB::name('study_result_v13')->where('userid',$this->user->id)
                     ->where('taskid',$v['id'])->find();
-                $data[$key]['see']=0;
+                $data[$key]['section']['see']=0;
                 if(!empty($progress) || $a==1){
                     if($progress['ratio']==100){
                         $data[$key]['section']['see']=1;
