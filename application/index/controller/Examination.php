@@ -15,6 +15,7 @@ class Examination extends Home{
         $courseid=$this->request->param('course');
         $where['courseid']=$courseid;
         $list=Db::name('testpaper')->where($where)->order('createTime desc')->find();
+        $this->isnotexit($list['id']);//如果已考过试，就不能再显示考试页面
         $list['count']=Db::name('testpaper_item')->where('paperId',$list['id'])->count();
         $this->assign('list',$list);
         $this->assign('courseid',$courseid);
@@ -342,7 +343,7 @@ class Examination extends Home{
         $examination['choice']=['choicetrue'=>$choicetrue,'choiceflase'=>$choiceflase,'choicenone'=>$choicenone,'choicescore'=>$choicescore];
         $examination['determine']=['determinetrue'=>$determinetrue,'determineflase'=>$determineflase,'determinenone'=>$determinenone,'determinescore'=>$determinescore];
         $list=[];
-        $querytest=DB::name('testpapter_result')->where('userid',$this->user->id)->where('paperID',$paperid)->count();
+        $querytest=DB::name('testpapter_result')->where('userid',$this->user->id)->where('paperID',$data['paperid'])->count();
         $list['paperID']=$data['paperid'];
         $list['userid']=$this->user->id;
         $list['score']=$examination['myscore'];
@@ -354,7 +355,7 @@ class Examination extends Home{
         $list['subjectiveScore']=$examination['myscore'];
         $list['beginTime']=$data['starttime'];
         $list['endTime']=date('Y-m-d H:i:s');
-        if($querytest){
+        if($querytest>0){
             $savatr=DB::name('testpapter_result')->where('userid',$this->user->id)->where('paperID',$paperid)->update($list);
         }else{
             $savatr=DB::name('testpapter_result')->insert($list);
