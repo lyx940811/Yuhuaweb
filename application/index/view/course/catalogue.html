@@ -6,16 +6,26 @@
         {volist name="task" id="task"}
         {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
         <li class="task-item task-content mouse-control">
-            <i class="es-icon es-icon-undone-check color-gray left-menu"></i>
+            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
             <a class="title"> <!--href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$task['taskid']))}"-->
                 {$task.chapter}： {$task.title}
             </a>
             <span class="right-menu color-gray ">{$task.length|video_time_trans}<i class="es-icon es-icon es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i></span>
             <span class="right-menu mouse-enter"></span>
+            <ul class="joint-content">
+                <li class="task-item task-content mouse-control">
+                    <i class="es-icon es-icon-doing color-primary"></i>
+                    <a style="color: #616161;" href="#">&nbsp;1-2&nbsp;课前必读</a>
+                </li>
+                <li>
+                    <i class="es-icon es-icon-doing color-primary"></i>
+                    <a style="color: #616161;" href="#">&nbsp;1-2&nbsp;课前必读</a>
+                </li>
+            </ul>
         </li>
         {else /}
         <li class="task-item task-content mouse-control">
-            <i class="es-icon es-icon-undone-check color-gray left-menu"></i>
+            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
             <a class="title"><!--href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$task['taskid']))}"-->
                 {$task.chapter}： {$task.title}
             </a>

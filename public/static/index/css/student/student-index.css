@@ -146,3 +146,9 @@ a img{border:0;}
 img{vertical-align:top;}
 .clearfix:after{display:block; content:''; clear:both;}
 .clearfix{zoom:1;}
+.joint-content{
+    margin-left: 44px;
+}
+.joint-content li{
+    line-height: 26px;
+}
