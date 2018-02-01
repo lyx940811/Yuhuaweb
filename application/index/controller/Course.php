@@ -191,59 +191,100 @@ class Course extends Home
         ];
     }
 
-    public function catalogue()
-    {
-        $video_type = ['mp4','url'];
+//    public function catalogue()
+//    {
+//        $video_type = ['mp4','url'];
+//        $courseid = $this->course['id'];
+//        $examination=0;
+//        if(!$course = CourseModel::get($courseid)){
+//            return json_data(200,$this->codeMessage[200],'');
+//        }
+//        $fields = 'ct.id as taskid,ct.courseid,ct.length,ct.type,ct.chapterid,ct.title,cc.title as chapter,cc.seq,ct.mediaSource,ct.status';
+//        $lesson = Db::name('course_task')
+//            ->alias('ct')
+//            ->join('course_chapter cc','ct.chapterid = cc.id')
+//            ->field($fields)
+//            ->order('cc.seq')
+//            ->where('ct.courseid',$courseid)
+//            ->where('ct.status',1)
+//            ->select();
+//
+//
+//        if(!empty($this->user)){
+//            foreach ($lesson as &$l){
+//                if($course['type']!='url'){
+//                    $l['mediaSource'] = $this->request->domain()."/".$l['mediaSource'];
+//                }
+//                if($watch_log = Db::name('study_result')->where(['userid'=>$this->user->id,'courseid'=>$l['courseid'],'chapterid'=>$l['chapterid']])->find()){
+//                    if($watch_log['status']==1){
+//                        $l['plan'] = '100';
+//                    }
+//                    else{
+//                        //这个是还没学完的课程
+//                        if(!in_array($l['type'],$video_type)){
+//                            $l['plan'] = '100';
+//                        }
+//                        else{
+//                            $length = explode(':',$l['length']);
+//                            $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
+//
+//                            $watch_time = strtotime($watch_log['endtime'])-strtotime($watch_log['starttime']);
+//                            $l['plan'] = (round($watch_time/$couse_time,2)*100);
+//                        }
+//                    }
+//                }
+//                else{
+//                    $l['plan'] = '0';
+//                }
+//                unset($l['seq']);
+//            }
+//            $examination=$this->isNoExamination($courseid);
+//        }
+//        //查看是否已考试
+//
+////        $this->assign('count',$examination);
+//        $this->assign('task',$lesson);
+//        return $this->fetch();
+//    }
+    public function catalogue(){
+        $data=[];
+        $type='';
         $courseid = $this->course['id'];
-        $examination=0;
-        if(!$course = CourseModel::get($courseid)){
-            return json_data(200,$this->codeMessage[200],'');
-        }
-        $fields = 'ct.id as taskid,ct.courseid,ct.length,ct.type,ct.chapterid,ct.title,cc.title as chapter,cc.seq,ct.mediaSource,ct.status';
-        $lesson = Db::name('course_task')
-            ->alias('ct')
-            ->join('course_chapter cc','ct.chapterid = cc.id')
-            ->field($fields)
-            ->order('cc.seq')
-            ->where('ct.courseid',$courseid)
-            ->where('ct.status',1)
+        $list=Db::name('course_chapter')
+            ->where('courseid',$courseid)
+            ->order('seq')
             ->select();
+        $a=1;
+        foreach($list as $key=>$value){
+            $info=DB::name('course_task')
+                ->where('courseId',$value['courseid'])
+                ->where('chapterid',$value['id'])
+                ->order('sort')
+                ->select();
+            $data[$key]['chaptername']=$value['title'];
 
-
-        if(!empty($this->user)){
-            foreach ($lesson as &$l){
-                if($course['type']!='url'){
-                    $l['mediaSource'] = $this->request->domain()."/".$l['mediaSource'];
-                }
-                if($watch_log = Db::name('study_result')->where(['userid'=>$this->user->id,'courseid'=>$l['courseid'],'chapterid'=>$l['chapterid']])->find()){
-                    if($watch_log['status']==1){
-                        $l['plan'] = '100';
-                    }
-                    else{
-                        //这个是还没学完的课程
-                        if(!in_array($l['type'],$video_type)){
-                            $l['plan'] = '100';
-                        }
-                        else{
-                            $length = explode(':',$l['length']);
-                            $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
-
-                            $watch_time = strtotime($watch_log['endtime'])-strtotime($watch_log['starttime']);
-                            $l['plan'] = (round($watch_time/$couse_time,2)*100);
-                        }
+            foreach($info as $k=>$v){
+                $data[$key]['section']=$v;
+                $progress=DB::name('study_result_v13')->where('userid',$this->user->id)
+                    ->where('taskid',$v['id'])->find();
+                $data[$key]['section']['see']=0;
+                if(!empty($progress) || $a==1){
+                    if($progress['ratio']==100){
+                        $data[$key]['section']['see']=1;
+                    }else{
+                        $data[$key]['section']['see']=1;
+                        $type=$v['type'];
+                        $a=2;
                     }
                 }
-                else{
-                    $l['plan'] = '0';
-                }
-                unset($l['seq']);
+
             }
-            $examination=$this->isNoExamination($courseid);
-        }
-        //查看是否已考试
 
-        $this->assign('count',$examination);
-        $this->assign('task',$lesson);
+        }
+        dump($data);
+        $this->assign('type',$type);
+        $this->assign('data',$data);
+
         return $this->fetch();
     }
     //查看是否已经考试
