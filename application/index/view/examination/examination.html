@@ -22,289 +22,297 @@
       </style>
   </head>
   <body class="es-main-default es-nav-default task-testpaper-body-iframe js-task-testpaper-body js-task-testpaper-body-iframe"> 
-      
-    <div class="iframe-parent-content">
-      <div class="container ">
-          <div class="row">
-            <div class="col-md-9 prevent-copy">
-              <div class="testpaper-body js-testpaper-body mt20 " data-copy="0">
-                  <div class="es-section testpaper-heading js-testpaper-heading">
-                    <div class="testpaper-titlebar clearfix">
-                      <h1 class="testpaper-title">
-                        入学考试 <br>
-                        <small class="text-sm">
-                                                </small>
-                      </h1>
-                      <div class="testpaper-status">
-                                                <div class="label label-primary">答题中</div>
-                                            </div>
-                    </div>
-                    <div class="testpaper-description"><p></p></div>
-                  </div>
-                  <form id="teacherCheckForm" autocomplete="off" action="{:url('examend')}" method="post">
-                    <input type="hidden" name="courseid" value="{$courseid}">
-                    <input type="hidden" name="starttime" value="{$time}"/>
-                    {if condition="!empty($num['0'])"}
-                      <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-single_choice">
-                      <div class="panel-heading">
-                        <strong class="">单选题</strong>
-                        <small class="color-gray">
-                          共{$num.0.num}题，共{$num.0.score}分          </small>
-                      </div>
-                      {volist name="info" id="sign"}
-                        {if condition='$key eq 0'}
-                            <input type="hidden" name="paperid" value="{$sign.paperID}">
-                            <input type="hidden" name="total" value="{$sign.total}">
-                            <input type="hidden" name="passedscore" value="{$sign.passedScore}">
-                        {/if}
-                        {if condition='$sign.questiontype eq "single_choice"'}
-                          <input type="hidden" name="data[sign][question][{$key}]" value="{$sign.questionid}">
-                          <div class="panel-body">
-                            <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question35">
-                              <div class="testpaper-question-body">
-                                <div class="testpaper-question-stem-wrap clearfix">
-                                  <div class="testpaper-question-seq-wrap">
-                                    <div class="testpaper-question-seq">
-                                      {$key+1}
-                                    </div>
-                                          <div class="testpaper-question-score">
-                                        {$sign.score}分
-                                      </div>
-                                  </div>
-                                  <div class="testpaper-question-stem">
-                                    <p>{$sign.stem}</p><br>
-                                  </div>
-                                </div>
-                                <ul class="testpaper-question-choices js-testpaper-question-list">
-                                    {volist name="$sign.question" id="vo"}
-                                    <li class=""><span class="testpaper-question-choice-index">{$status[$key]}.</span> <p>{$vo}</p></li>
-                                    {/volist}
-                                </ul>
-                              </div>
-                              <div class="testpaper-question-footer clearfix">
-                                <div class="testpaper-question-choice-inputs js-testpaper-question-label js-radio-label">
-                                    {volist name="$sign.question" id="vo"}
-                                    <label class="radio-inline">
-                                      <input type="radio" data-type="single_choice" name="data[sign][answer][{$sign.id}]" value="{$key}">
-                                        {$status[$key]}
-                                    </label>
-                                    {/volist}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          {/if}
-                      {/volist}
-                    </div>
-                    {/if}
-                    {if condition="!empty($num['1'])"}
-                      <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-choice">
-                        <div class="panel-heading">
-                          <strong class="">多选题</strong>
-                          <small class="color-gray">
-                              共{$num.1.num}题，共{$num.1.score}分          </small>
+      <div class="task-dashboard-page js-task-dashboard-page" style="position:absolute;">
+          <div class="dashboard-content" id="dashboard-content" style="right: 35px;">
+            <div class="dashboard-header">
+              <a class="back-link" href="javascript:history.back();">
+                <i class="es-icon es-icon-chevronleft"></i>返回课程
+              </a>
+              任务1：入学考试
+            </div>
+          </div>
+          <div class="container" style="margin-top:54px;">
+              <div class="row">
+                <div class="col-md-9 prevent-copy">
+                  <div class="testpaper-body js-testpaper-body mt20 " data-copy="0">
+                      <div class="es-section testpaper-heading js-testpaper-heading">
+                        <div class="testpaper-titlebar clearfix">
+                          <h1 class="testpaper-title">
+                            入学考试 <br>
+                            <small class="text-sm">
+                                                    </small>
+                          </h1>
+                          <div class="testpaper-status">
+                                                    <div class="label label-primary">答题中</div>
+                                                </div>
                         </div>
-                        {volist name="info" id="choice"}
-                        {if condition='$choice.questiontype eq "choice"'}
-                        <input type="hidden" name="data[choice][question][{$key}]" value="{$choice.questionid}">
-                        <div class="panel-body">
-                          <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question36">
-                              <div class="testpaper-question-body">
-                                <div class="testpaper-question-stem-wrap clearfix">
-                                  <div class="testpaper-question-seq-wrap">
-                                    <div class="testpaper-question-seq">
-                                      {$key+1}
-                                    </div>
-                                          <div class="testpaper-question-score">
-                                        {$choice.score}分
-                                      </div>
-                                  </div>
-                                  <div class="testpaper-question-stem">
-                                            <p>{$choice.stem}</p><br>
-                                  </div>
-                                </div>
-                                <ul class="testpaper-question-choices js-testpaper-question-list">
-                                    {volist name="$choice.question" id="vo"}
-                                    <li class=""><span class="testpaper-question-choice-index">{$status[$key]}.</span> <p>{$vo}</p></li>
-                                    {/volist}
-                                </ul>
-                              </div>
-                              <div class="testpaper-question-footer  clearfix">
-                                <div class="testpaper-question-choice-inputs js-testpaper-question-label">
-                                    {volist name="$choice.question" id="vo"}
-                                    <label class="checkbox-inline ">
-                                      <input type="checkbox" data-type="choice" name="data[choice][answer][{$choice.id}][{$key}]" value="{$key}">
-                                        {$status[$key]}
-                                    </label>
-                                    {/volist}
-                                            
-
-                                </div>
-                              </div>
-                          </div>
-                        </div>
-                        {/if}
-                        {/volist}
+                        <div class="testpaper-description"><p></p></div>
                       </div>
-                    {/if}
-                    {if condition="!empty($num['2'])"}
-                      <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-single_choice">
+                      <form id="teacherCheckForm" autocomplete="off" action="{:url('examend')}" method="post">
+                        <input type="hidden" name="courseid" value="{$courseid}">
+                        <input type="hidden" name="starttime" value="{$time}"/>
+                        {if condition="!empty($num['0'])"}
+                          <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-single_choice">
                           <div class="panel-heading">
-                              <strong class="">判断</strong>
-                              <small class="color-gray">
-                                  共{$num.2.num}题，共{$num.2.score}分          </small>
+                            <strong class="">单选题</strong>
+                            <small class="color-gray">
+                              共{$num.0.num}题，共{$num.0.score}分          </small>
                           </div>
-                          {volist name="info" id="determine"}
-                          {if condition='$determine.questiontype eq "determine"'}
-                          <input type="hidden" name="data[determine][question][{$key}]" value="{$determine.questionid}">
-                          <div class="panel-body">
-                              <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question35">
+                          {volist name="info" id="sign"}
+                            {if condition='$key eq 0'}
+                                <input type="hidden" name="paperid" value="{$sign.paperID}">
+                                <input type="hidden" name="total" value="{$sign.total}">
+                                <input type="hidden" name="passedscore" value="{$sign.passedScore}">
+                            {/if}
+                            {if condition='$sign.questiontype eq "single_choice"'}
+                              <input type="hidden" name="data[sign][question][{$key}]" value="{$sign.questionid}">
+                              <div class="panel-body">
+                                <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question35">
                                   <div class="testpaper-question-body">
-                                      <div class="testpaper-question-stem-wrap clearfix">
-                                          <div class="testpaper-question-seq-wrap">
-                                              <div class="testpaper-question-seq">
-                                                  {$key+1}
-                                              </div>
+                                    <div class="testpaper-question-stem-wrap clearfix">
+                                      <div class="testpaper-question-seq-wrap">
+                                        <div class="testpaper-question-seq">
+                                          {$key+1}
+                                        </div>
                                               <div class="testpaper-question-score">
-                                                  {$determine.score}分
-                                              </div>
-                                          </div>
-                                          <div class="testpaper-question-stem">
-                                              <p>{$determine.stem}</p><br>
+                                            {$sign.score}分
                                           </div>
                                       </div>
+                                      <div class="testpaper-question-stem">
+                                        <p>{$sign.stem}</p><br>
+                                      </div>
+                                    </div>
+                                    <ul class="testpaper-question-choices js-testpaper-question-list">
+                                        {volist name="$sign.question" id="vo"}
+                                        <li class=""><span class="testpaper-question-choice-index">{$status[$key]}.</span> <p>{$vo}</p></li>
+                                        {/volist}
+                                    </ul>
                                   </div>
                                   <div class="testpaper-question-footer clearfix">
-                                      <div class="testpaper-question-choice-inputs js-testpaper-question-label">
-                                          <label class="radio-inline">
-                                              <input type="radio" data-type="single_choice" name="data[determine][answer][{$determine.id}]" value="0">
-                                              正确
-                                          </label>
-
-                                          <label class="radio-inline">
-                                              <input type="radio" data-type="single_choice" name="data[determine][answer][{$determine.id}]" value="1">
-                                              错误
-                                          </label>
+                                    <div class="testpaper-question-choice-inputs js-testpaper-question-label js-radio-label">
+                                        {volist name="$sign.question" id="vo"}
+                                        <label class="radio-inline">
+                                          <input type="radio" data-type="single_choice" name="data[sign][answer][{$sign.id}]" value="{$key}">
+                                            {$status[$key]}
+                                        </label>
+                                        {/volist}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              {/if}
+                          {/volist}
+                        </div>
+                        {/if}
+                        {if condition="!empty($num['1'])"}
+                          <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-choice">
+                            <div class="panel-heading">
+                              <strong class="">多选题</strong>
+                              <small class="color-gray">
+                                  共{$num.1.num}题，共{$num.1.score}分          </small>
+                            </div>
+                            {volist name="info" id="choice"}
+                            {if condition='$choice.questiontype eq "choice"'}
+                            <input type="hidden" name="data[choice][question][{$key}]" value="{$choice.questionid}">
+                            <div class="panel-body">
+                              <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question36">
+                                  <div class="testpaper-question-body">
+                                    <div class="testpaper-question-stem-wrap clearfix">
+                                      <div class="testpaper-question-seq-wrap">
+                                        <div class="testpaper-question-seq">
+                                          {$key+1}
+                                        </div>
+                                              <div class="testpaper-question-score">
+                                            {$choice.score}分
+                                          </div>
+                                      </div>
+                                      <div class="testpaper-question-stem">
+                                                <p>{$choice.stem}</p><br>
+                                      </div>
+                                    </div>
+                                    <ul class="testpaper-question-choices js-testpaper-question-list">
+                                        {volist name="$choice.question" id="vo"}
+                                        <li class=""><span class="testpaper-question-choice-index">{$status[$key]}.</span> <p>{$vo}</p></li>
+                                        {/volist}
+                                    </ul>
+                                  </div>
+                                  <div class="testpaper-question-footer  clearfix">
+                                    <div class="testpaper-question-choice-inputs js-testpaper-question-label">
+                                        {volist name="$choice.question" id="vo"}
+                                        <label class="checkbox-inline ">
+                                          <input type="checkbox" data-type="choice" name="data[choice][answer][{$choice.id}][{$key}]" value="{$key}">
+                                            {$status[$key]}
+                                        </label>
+                                        {/volist}
+                                                
+    
+                                    </div>
+                                  </div>
+                              </div>
+                            </div>
+                            {/if}
+                            {/volist}
+                          </div>
+                        {/if}
+                        {if condition="!empty($num['2'])"}
+                          <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-single_choice">
+                              <div class="panel-heading">
+                                  <strong class="">判断</strong>
+                                  <small class="color-gray">
+                                      共{$num.2.num}题，共{$num.2.score}分          </small>
+                              </div>
+                              {volist name="info" id="determine"}
+                              {if condition='$determine.questiontype eq "determine"'}
+                              <input type="hidden" name="data[determine][question][{$key}]" value="{$determine.questionid}">
+                              <div class="panel-body">
+                                  <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question35">
+                                      <div class="testpaper-question-body">
+                                          <div class="testpaper-question-stem-wrap clearfix">
+                                              <div class="testpaper-question-seq-wrap">
+                                                  <div class="testpaper-question-seq">
+                                                      {$key+1}
+                                                  </div>
+                                                  <div class="testpaper-question-score">
+                                                      {$determine.score}分
+                                                  </div>
+                                              </div>
+                                              <div class="testpaper-question-stem">
+                                                  <p>{$determine.stem}</p><br>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="testpaper-question-footer clearfix">
+                                          <div class="testpaper-question-choice-inputs js-testpaper-question-label">
+                                              <label class="radio-inline">
+                                                  <input type="radio" data-type="single_choice" name="data[determine][answer][{$determine.id}]" value="0">
+                                                  正确
+                                              </label>
+    
+                                              <label class="radio-inline">
+                                                  <input type="radio" data-type="single_choice" name="data[determine][answer][{$determine.id}]" value="1">
+                                                  错误
+                                              </label>
+                                          </div>
                                       </div>
                                   </div>
                               </div>
+                              {/if}
+                              {/volist}
                           </div>
-                          {/if}
-                          {/volist}
-                      </div>
-                    {/if}
-                    {if condition="!empty($num['2'])"}
-                      <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-essay">
-                          <div class="panel-heading">
-                            <strong class="">问答题</strong>
-                            <small class="color-gray">
-                                共{$num.3.num}题，共{$num.3.score}分           </small>
-                          </div>
-                          {volist name="info" id="essay"}
-                          {if condition='$essay.questiontype eq "essay"'}
-                          <input type="hidden" name="data[essay][question][{$key}]" value="{$essay.questionid}">
-                          <div class="panel-body">
-                            <div class="testpaper-question testpaper-question-essay js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question37">
-                              <div class="testpaper-question-body">
-                                <div class="testpaper-question-stem-wrap clearfix">
-                                    <div class="testpaper-question-seq-wrap">
-                                      <div class="testpaper-question-seq">
-                                        {$key+1}
-                                      </div>
-                                            <div class="testpaper-question-score">
-                                          {$essay.score}分
+                        {/if}
+                        {if condition="!empty($num['2'])"}
+                          <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-essay">
+                              <div class="panel-heading">
+                                <strong class="">问答题</strong>
+                                <small class="color-gray">
+                                    共{$num.3.num}题，共{$num.3.score}分           </small>
+                              </div>
+                              {volist name="info" id="essay"}
+                              {if condition='$essay.questiontype eq "essay"'}
+                              <input type="hidden" name="data[essay][question][{$key}]" value="{$essay.questionid}">
+                              <div class="panel-body">
+                                <div class="testpaper-question testpaper-question-essay js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question37">
+                                  <div class="testpaper-question-body">
+                                    <div class="testpaper-question-stem-wrap clearfix">
+                                        <div class="testpaper-question-seq-wrap">
+                                          <div class="testpaper-question-seq">
+                                            {$key+1}
+                                          </div>
+                                                <div class="testpaper-question-score">
+                                              {$essay.score}分
+                                            </div>
+                                        </div>
+                                        <div class="testpaper-question-stem">
+                                                  <p><strong>{$essay.stem}</strong></p><br>
                                         </div>
                                     </div>
-                                    <div class="testpaper-question-stem">
-                                              <p><strong>{$essay.stem}</strong></p><br>
+                                  </div>
+                                  <div class="testpaper-question-footer clearfix">
+                                    <div class="testpaper-question-essay-inputs" data-role="js-answer-div-37">
+                                      <textarea class="form-control essay-input-short" name="data[essay][answer][{$essay.id}]" rows="1" style="overflow:hidden;line-height:20px;height:200px;"></textarea>
+                                      <textarea id="question-input-long-37" class="form-control essay-input-long" data-type="essay" name="37" style="display:none;" ></textarea>
+                                      <br>
                                     </div>
+                                  </div>
                                 </div>
                               </div>
-                              <div class="testpaper-question-footer clearfix">
-                                <div class="testpaper-question-essay-inputs" data-role="js-answer-div-37">
-                                  <textarea class="form-control essay-input-short" name="data[essay][answer][{$essay.id}]" rows="1" style="overflow:hidden;line-height:20px;height:200px;"></textarea>
-                                  <textarea id="question-input-long-37" class="form-control essay-input-long" data-type="essay" name="37" style="display:none;" ></textarea>
-                                  <br>
-                                </div>
-                              </div>
+                              {/if}
+                              {/volist}
                             </div>
-                          </div>
-                          {/if}
-                          {/volist}
+                        {/if}
+                        <input type="hidden" name="_csrf_token" value="25FZZOw7upct56pv0pJlOJLBPAjUnBiZsOCVXgfbF7Q">
+                      </form>
+                  </div>
+                  <div class="text-right" style="margin-bottom:20px;">
+                    <input type="hidden" data-url="/testpaper/result/14/suspend" data-role="test-suspend">
+                    <button class="btn btn-primary do-test" id="finishPaper" data-ajax="/testpaper/result/14/submit" data-toggle="modal" data-target="#testpaper-finished-dialog">马上交卷</button>
+                </div>
+                </div>
+                </div>
+              <div id="testpaper-finished-dialog" class="modal in" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-body task-state-modal">
+                      <div class="title font-blod">
+                        <i class="es-icon es-icon-zanting1 color-warning"></i>
+                        确认交卷
+                      </div>
+                      <div class="content">
+                        <div class="text-16">
+                          您真的要交卷吗？
                         </div>
-                    {/if}
-                    <input type="hidden" name="_csrf_token" value="25FZZOw7upct56pv0pJlOJLBPAjUnBiZsOCVXgfbF7Q">
-                  </form>
-              </div>
-              <div class="text-right" style="margin-bottom:20px;">
-                <input type="hidden" data-url="/testpaper/result/14/suspend" data-role="test-suspend">
-                <button class="btn btn-primary do-test" id="finishPaper" data-ajax="/testpaper/result/14/submit" data-toggle="modal" data-target="#testpaper-finished-dialog">马上交卷</button>
-            </div>
-            </div>
-           </div>
-          <div id="testpaper-finished-dialog" class="modal in" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-body task-state-modal">
-                  <div class="title font-blod">
-                    <i class="es-icon es-icon-zanting1 color-warning"></i>
-                    确认交卷
-                  </div>
-                  <div class="content">
-                    <div class="text-16">
-                      您真的要交卷吗？
+                      </div>
+                      <div class="text-right mt20">
+                        <a href="javascript:;" class="btn btn-link" data-dismiss="modal">取消</a>
+                                            <button id="save" class="btn btn-primary" id="testpaper-finish-btn" data-loading-text="正在交卷, 请稍等..." data-role="paper-submit" data-url="/testpaper/result/14/finish" data-goto="/testpaper/result/14/show">
+                          确认交卷</button>
+                                        </div>
                     </div>
-                  </div>
-                  <div class="text-right mt20">
-                    <a href="javascript:;" class="btn btn-link" data-dismiss="modal">取消</a>
-                                        <button id="save" class="btn btn-primary" id="testpaper-finish-btn" data-loading-text="正在交卷, 请稍等..." data-role="paper-submit" data-url="/testpaper/result/14/finish" data-goto="/testpaper/result/14/show">
-                      确认交卷</button>
-                                    </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div id="time-finish-dialog" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-body task-state-modal">
-                  <div class="title font-blod">
-                    <i class="es-icon es-icon-zanting1 color-warning"></i>考试结束
-                  </div>
-                  <div class="content">
-                    <div class="text-16">
-                      考试已结束，您的试卷已提交，请点击下面的按钮查看结果！
-                    </div>
-                  </div>
-                  <div class="text-right mt20">
-                                        <a href="http://www.hnhgjx.cn:1700/testpaper/result/14/show" class="btn btn-info">查看结果</a>
-                                      
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div id="time-pause-dialog" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
-            <div class="modal-dialog" style="display: none;">
-              <div class="modal-content">
-                <div class="modal-body task-state-modal">
-                  <div class="title font-blod">
-                    <i class="es-icon es-icon-zanting1 color-warning"></i>暂停
-                  </div>
-                  <div class="content">
-                    <div class="text-16">
-                      考试已暂停，请尽快回来哦！
+              <div id="time-finish-dialog" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-body task-state-modal">
+                      <div class="title font-blod">
+                        <i class="es-icon es-icon-zanting1 color-warning"></i>考试结束
+                      </div>
+                      <div class="content">
+                        <div class="text-16">
+                          考试已结束，您的试卷已提交，请点击下面的按钮查看结果！
+                        </div>
+                      </div>
+                      <div class="text-right mt20">
+                                            <a href="http://www.hnhgjx.cn:1700/testpaper/result/14/show" class="btn btn-info">查看结果</a>
+                                          
+                      </div>
                     </div>
-                  </div>
-                  <div class="text-right mt20">
-                    <a class="btn btn-primary js-btn-resume" href="javascript:;">继续考试</a>
                   </div>
                 </div>
               </div>
-            </div>
+              <div id="time-pause-dialog" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog" style="display: none;">
+                  <div class="modal-content">
+                    <div class="modal-body task-state-modal">
+                      <div class="title font-blod">
+                        <i class="es-icon es-icon-zanting1 color-warning"></i>暂停
+                      </div>
+                      <div class="content">
+                        <div class="text-16">
+                          考试已暂停，请尽快回来哦！
+                        </div>
+                      </div>
+                      <div class="text-right mt20">
+                        <a class="btn btn-primary js-btn-resume" href="javascript:;">继续考试</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
           </div>
       </div>
-    </div>
+      
     <input type="hidden" name="testSuspend" data-url="/testpaper/result/14/suspend">
     <input type="hidden"  value="{$num.0.num+$num.1.num+$num.2.num}" id="examinationLength">
     <div id="login-modal" class="modal" data-url="/login/ajax"></div>
