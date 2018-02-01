@@ -11,336 +11,351 @@
     <link href="__CSS__main.css" rel="stylesheet">
   </head>  
   <body class="es-main-default es-nav-default ">
-    <div class="container ">
-      <div class="row">
-        <div class="col-md-9 prevent-copy">
-          <div class="testpaper-body js-testpaper-body mt20 " data-copy="0">
-            <div class="es-section testpaper-heading js-testpaper-heading">
-                <div class="testpaper-titlebar clearfix">
-                  <h1 class="testpaper-title">入学考试 <br>
-                    <small class="text-sm">
-                        答题人：admin 
-                        交卷时间：2018-1-23 10:02 
-                        用时：33秒
-                    </small>
-                  </h1>
-                  <div class="testpaper-status"><div class="label label-info">批阅中</div></div>
-                </div>                        
-                <div class="media testpaper-result">
-                  <div class="testpaper-result-total">
-                    <div class="well">
-                      <div class="testpaper-result-total-score">
-                        {if condition='$type eq 1'}
-                          ?
-                        {else}
-                          {$myscore}
-                        {/if}
-                          <small>分</small>
-                      </div>
-                      <small class="color-gray">总分{$list.score}分</small>
-                    </div>
-                  </div>
-                  <div class="media-body">
-                    <div class="table-responsive">
-                      <table class="table table-bordered table-condensed testpaper-result-table">
-                        <thead>
-                          <tr>
-                              <th></th>
-                              <th>单选题 <small class="color-gray">({$title.single_choice.count}道)</small></th>
-                              <th>多选题 <small class="color-gray">({$title.choice.count}道)</small></th>
-                              <th>判断题 <small class="color-gray">({$title.determine.count}道)</small></th>
-                              <th>问答题 <small class="color-gray">({$title.essay.count}道)</small></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <th>答对</th>
-                            <td><span class="color-success">{$title.single_choice.true} <small>道</small></span></td>
-                            <td><span class="color-success">{$title.choice.true} <small>道</small></span></td>
-                            <td><span class="color-success">{$title.determine.true}<small>道</small></span></td>
-                            {if condition="$type eq 1"}
-                            <td rowspan="4" style="vertical-align:middle"><span class="color-success" style="font-size:40px">?</span></td>
-                            {else}
-                            <td><span class="color-success">{$title.essay.true} <small>道</small></span></td>
-                            {/if}
-                          </tr>
-                          <tr>
-                            <th>答错</th>
-                            <td><span class="color-danger">{$title.single_choice.flase}<small>道</small></span></td>
-                            <td><span class="color-danger">{$title.choice.flase}<small>道</small></span></td>
-                            <td><span class="color-danger">{$title.determine.flase} <small>道</small></span></td>
-                            {if condition="$type neq 1"}
-                            <td><span class="color-danger">{$title.essay.flase}<small>道</small></span></td>
-                            {/if}
-                          </tr>
-                          <tr>
-                            <th>得分</th>
-                            <td><span class="text-score">{$title.single_choice.totalscore} <small>分</small></span></td>
-                            <td><span class="text-score">{$title.choice.totalscore}  <small>分</small></span></td>
-                            <td><span class="text-score">{$title.determine.totalscore}  <small>分</small></span></td>
-                            {if condition="$type neq 1"}
-                            <td><span class="text-score">{$title.essay.totalscore}  <small>分</small></span></td>
-                            {/if}
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-
-              {if condition="$myscore egt $list['passedScore']"}
-              <div class="alert alert-success">恭喜您已通过本次考试。</div>
-              {elseif condition="$type eq 1"}
-              <div class="alert alert-warning">老师正在批阅试卷，批阅完成后会以站内私信通知您批阅结果，请稍等。</div>
-              {else}
-              <div class="alert alert-danger">很遗憾您未通过本次考试！</div>
-              {/if}
+      <div class="task-dashboard-page js-task-dashboard-page">
+          <div class="dashboard-content" id="dashboard-content" style="right: 35px;">
+            <div class="dashboard-header">
+              <a class="back-link" href="javascript:history.back();">
+                <i class="es-icon es-icon-chevronleft"></i>返回课程
+              </a>
+              任务1：入学考试
             </div>
-            {if condition="$type eq 2"}
-            <form id="teacherCheckForm" autocomplete="off">
-              {volist name='info' id='vo'}
-              {if condition='$key eq "single"'}
-              {if condition="!empty($num['0'])"}
-              <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-choice">
-                <div class="panel-heading">
-                  <strong class="">单选题</strong>
-                  <small class="color-gray">
-                    共{$num.0.num}题，共{$num.0.score}分          </small>
-                </div>
-                {volist name='$vo' id="single"}
-                <div class="panel-body">
-                  <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question35">
-                    <div class="testpaper-question-body">
-                      <div class="testpaper-question-stem-wrap clearfix">
-                        <div class="testpaper-question-seq-wrap">
-                          <div class="testpaper-question-seq">{$key+1}</div>
-                          <div class="testpaper-question-score">{$single.score}分</div>
-                        </div>
-                        <div class="testpaper-question-stem">
-                          <p>{$single.stem}</p><br>
-                        </div>
-                      </div>
-                      <ul class="testpaper-question-choices js-testpaper-question-list">
-                        {volist name="$single.question" id="question"}
-                        <li {if condition="in_array($key,$single.answer)"}class="testpaper-question-choice-right"{/if}><span class="testpaper-question-choice-index">{$status[$key]}.</span> <p>{$question}</p></li>
-                        {/volist}
-                      </ul>
-                    </div>
-                    <div class="testpaper-question-footer clearfix">
-                      <div class="testpaper-question-result">正确答案是 <strong class="color-success">{$status[$single.answer.0]}</strong>，{if condition="$single['status'] eq 1 || $single['status'] eq 2"}回答正确{else}回答错误{/if}</div>
-
-                    </div>
-                    <div class="testpaper-question-analysis js-testpaper-question-analysis" style="display: none;">
-                      <div class="well mb0">
-                        无解析
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/volist}
-              </div>
-              {/if}
-              {/if}
-              {if condition='$key eq "determine"'}
-              {if condition="!empty($num['2'])"}
-              <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-essay">
-                <div class="panel-heading">
-                  <strong class="">判断题</strong>
-                  <small class="color-gray">
-                    共{$num.2.num}题，共{$num.2.score}分          </small>
-                </div>
-                {volist name='$vo' id="determine"}
-                <div class="panel-body">
-                  <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question35">
-                    <div class="testpaper-question-body">
-                      <div class="testpaper-question-stem-wrap clearfix">
-                        <div class="testpaper-question-seq-wrap">
-                          <div class="testpaper-question-seq">{$key+1}</div>
-                          <div class="testpaper-question-score">{$determine.score}分</div>
-                        </div>
-                        <div class="testpaper-question-stem">
-                          <p>{$determine.stem}</p><br>
-                        </div>
-                      </div>
-                      <ul class="testpaper-question-choices js-testpaper-question-list">
-                        <li {if condition="in_array(0,$determine.answer)"}class="testpaper-question-choice-right"{/if}><span class="testpaper-question-choice-index">1.</span> <p>正确</p></li>
-                        <li {if condition="in_array(1,$determine.answer)"}class="testpaper-question-choice-right"{/if}><span class="testpaper-question-choice-index">2.</span> <p>错误</p></li>
-                      </ul>
-                    </div>
-                    <div class="testpaper-question-footer clearfix">
-                      <div class="testpaper-question-result">正确答案是 <strong class="color-success">{if condition="$determine['answer'][0] eq 1"}"错误"{else}"正确"{/if}</strong>，{if condition="$determine['status'] eq 1 || $determine['status'] eq 2"}回答正确{else}回答错误{/if}</div>
-                    </div>
-                    <div class="testpaper-question-analysis js-testpaper-question-analysis" style="display: none;">
-                      <div class="well mb0">
-                        无解析
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/volist}
-              </div>
-              {/if}
-              {/if}
-              {if condition='$key eq "essay"'}
-              {if condition="!empty($num['1'])"}
-              <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-essay">
-                <div class="panel-heading">
-                  <strong class="">问答题</strong>
-                  <small class="color-gray">
-                    共{$num.3.num}题，共{$num.3.score}分           </small>
-                </div>
-                {volist name="$vo" id="essay"}
-                <input type="hidden" name="data[essay][question][{$key}]" value="{$essay.questionid}">
-                <div class="panel-body">
-                  <div class="testpaper-question testpaper-question-essay js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question37">
-                    <div class="testpaper-question-body">
-                      <div class="testpaper-question-stem-wrap clearfix">
-                        <div class="testpaper-question-seq-wrap">
-                          <div class="testpaper-question-seq">
-                            {$key+1}
-                          </div>
-                          <div class="testpaper-question-score">
-                            {$essay.score}分
-                          </div>
-                        </div>
-                        <div class="testpaper-question-stem">
-                          <p><strong>{$essay.stem}</strong></p><br>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="testpaper-question-footer clearfix">
-                      <div class="testpaper-question-essay-inputs" data-role="js-answer-div-37">
-                        <textarea class="form-control essay-input-short" rows="1" style="overflow:hidden;line-height:20px;" disabled="disabled">{$essay.answer.0}</textarea>
-                        <textarea id="question-input-long-37" class="form-control essay-input-long" data-type="essay" name="37" style="display:none;" ></textarea>
-                        <br>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/volist}
-              </div>
-              {/if}
-              {/if}
-              {if condition='$key eq "choice"'}
-              {if condition="!empty($num['1'])"}
-              <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-choice">
-                <div class="panel-heading">
-                  <strong class="">多选题</strong>
-                  <small class="color-gray">
-                    共{$num.1.num}题，共{$num.1.score}分          </small>
-                </div>
-                {volist name='$vo' id="choice"}
-                <div class="panel-body">
-                  <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question36">
-                    <div class="testpaper-question-body">
-                      <div class="testpaper-question-stem-wrap clearfix">
-                        <div class="testpaper-question-seq-wrap">
-                          <div class="testpaper-question-seq">{$key+1}</div>
-                          <div class="testpaper-question-score">{$choice.score}分</div>
-                        </div>
-                        <div class="testpaper-question-stem">
-                          <p>{$choice.stem}</p><br>
-                        </div>
-                      </div>
-                      <ul class="testpaper-question-choices js-testpaper-question-list">
-                        {volist name="$choice.question" id="question"}
-                        <li {if condition="in_array($key,$choice.answer)"}class="testpaper-question-choice-right"{/if}><span class="testpaper-question-choice-index">{$status[$key]}.</span> <p>{$question}</p></li>
-                        {/volist}
-                      </ul>
-                    </div>
-                    <div class="testpaper-question-footer clearfix">
-                      <div class="testpaper-question-result">
-                        正确答案是 <strong class="color-success">
-                        {volist name="$choice.answer" id="answer"}
-                        {$status[$answer]},
-                        {/volist}
-                      </strong>
-                        {if condition="$choice['status'] eq 1 || $choice['status'] eq 2"}回答正确{else}回答错误{/if}
-                      </div>
-
-                    </div>
-                    <div class="testpaper-question-analysis js-testpaper-question-analysis" style="display: none;">
-                      <div class="well mb0">
-                        无解析
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/volist}
-              </div>
-              {/if}
-              {/if}
-
-              <input type="hidden" name="_csrf_token" value="Taq3lq_yFPH-oGhg7Lb3oe-fXTd-dWZ6b16j4RFICnw">
-              {/volist}
-            </form>
-            {/if}
           </div>
-        </div>
-        <div class="col-md-3">
-        </div>
-      </div>
-      <div id="testpaper-finished-dialog" class="modal in" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-body task-state-modal">
-              <div class="title font-blod">
-                <i class="es-icon es-icon-zanting1 color-warning"></i>
-                确认交卷
-              </div>
-              <div class="content">
-                <div class="text-16">
-                  您真的要交卷吗？
-                </div>
-              </div>
-              <div class="text-right mt20">
-                <a href="javascript:;" class="btn btn-link" data-dismiss="modal">取消</a>
-                                    <button class="btn btn-primary" id="testpaper-finish-btn" data-loading-text="正在交卷, 请稍等..." data-role="paper-submit" data-url="/testpaper/result/10/finish" data-goto="/testpaper/result/10/show">
-                  确认交卷</button>
+          <div class="dashboard-body" style="margin-top: 54px;height: 100%;background: #fff;">
+              <div class=" mobile-scroll-wrapper  all-wrapper">
+                  <div class="container ">
+                      <div class="row">
+                        <div class="col-md-9 prevent-copy">
+                          <div class="testpaper-body js-testpaper-body mt20 " data-copy="0">
+                            <div class="es-section testpaper-heading js-testpaper-heading">
+                                <div class="testpaper-titlebar clearfix">
+                                  <h1 class="testpaper-title">入学考试 <br>
+                                    <small class="text-sm">
+                                        答题人：admin 
+                                        交卷时间：2018-1-23 10:02 
+                                        用时：33秒
+                                    </small>
+                                  </h1>
+                                  <div class="testpaper-status"><div class="label label-info">批阅中</div></div>
+                                </div>                        
+                                <div class="media testpaper-result">
+                                  <div class="testpaper-result-total">
+                                    <div class="well">
+                                      <div class="testpaper-result-total-score">
+                                        {if condition='$type eq 1'}
+                                          ?
+                                        {else}
+                                          {$myscore}
+                                        {/if}
+                                          <small>分</small>
+                                      </div>
+                                      <small class="color-gray">总分{$list.score}分</small>
+                                    </div>
+                                  </div>
+                                  <div class="media-body">
+                                    <div class="table-responsive">
+                                      <table class="table table-bordered table-condensed testpaper-result-table">
+                                        <thead>
+                                          <tr>
+                                              <th></th>
+                                              <th>单选题 <small class="color-gray">({$title.single_choice.count}道)</small></th>
+                                              <th>多选题 <small class="color-gray">({$title.choice.count}道)</small></th>
+                                              <th>判断题 <small class="color-gray">({$title.determine.count}道)</small></th>
+                                              <th>问答题 <small class="color-gray">({$title.essay.count}道)</small></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr>
+                                            <th>答对</th>
+                                            <td><span class="color-success">{$title.single_choice.true} <small>道</small></span></td>
+                                            <td><span class="color-success">{$title.choice.true} <small>道</small></span></td>
+                                            <td><span class="color-success">{$title.determine.true}<small>道</small></span></td>
+                                            {if condition="$type eq 1"}
+                                            <td rowspan="4" style="vertical-align:middle"><span class="color-success" style="font-size:40px">?</span></td>
+                                            {else}
+                                            <td><span class="color-success">{$title.essay.true} <small>道</small></span></td>
+                                            {/if}
+                                          </tr>
+                                          <tr>
+                                            <th>答错</th>
+                                            <td><span class="color-danger">{$title.single_choice.flase}<small>道</small></span></td>
+                                            <td><span class="color-danger">{$title.choice.flase}<small>道</small></span></td>
+                                            <td><span class="color-danger">{$title.determine.flase} <small>道</small></span></td>
+                                            {if condition="$type neq 1"}
+                                            <td><span class="color-danger">{$title.essay.flase}<small>道</small></span></td>
+                                            {/if}
+                                          </tr>
+                                          <tr>
+                                            <th>得分</th>
+                                            <td><span class="text-score">{$title.single_choice.totalscore} <small>分</small></span></td>
+                                            <td><span class="text-score">{$title.choice.totalscore}  <small>分</small></span></td>
+                                            <td><span class="text-score">{$title.determine.totalscore}  <small>分</small></span></td>
+                                            {if condition="$type neq 1"}
+                                            <td><span class="text-score">{$title.essay.totalscore}  <small>分</small></span></td>
+                                            {/if}
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
                                 </div>
-            </div>
+                
+                              {if condition="$myscore egt $list['passedScore']"}
+                              <div class="alert alert-success">恭喜您已通过本次考试。</div>
+                              {elseif condition="$type eq 1"}
+                              <div class="alert alert-warning">老师正在批阅试卷，批阅完成后会以站内私信通知您批阅结果，请稍等。</div>
+                              {else}
+                              <div class="alert alert-danger">很遗憾您未通过本次考试！</div>
+                              {/if}
+                            </div>
+                            {if condition="$type eq 2"}
+                            <form id="teacherCheckForm" autocomplete="off">
+                              {volist name='info' id='vo'}
+                              {if condition='$key eq "single"'}
+                              {if condition="!empty($num['0'])"}
+                              <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-choice">
+                                <div class="panel-heading">
+                                  <strong class="">单选题</strong>
+                                  <small class="color-gray">
+                                    共{$num.0.num}题，共{$num.0.score}分          </small>
+                                </div>
+                                {volist name='$vo' id="single"}
+                                <div class="panel-body">
+                                  <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question35">
+                                    <div class="testpaper-question-body">
+                                      <div class="testpaper-question-stem-wrap clearfix">
+                                        <div class="testpaper-question-seq-wrap">
+                                          <div class="testpaper-question-seq">{$key+1}</div>
+                                          <div class="testpaper-question-score">{$single.score}分</div>
+                                        </div>
+                                        <div class="testpaper-question-stem">
+                                          <p>{$single.stem}</p><br>
+                                        </div>
+                                      </div>
+                                      <ul class="testpaper-question-choices js-testpaper-question-list">
+                                        {volist name="$single.question" id="question"}
+                                        <li {if condition="in_array($key,$single.answer)"}class="testpaper-question-choice-right"{/if}><span class="testpaper-question-choice-index">{$status[$key]}.</span> <p>{$question}</p></li>
+                                        {/volist}
+                                      </ul>
+                                    </div>
+                                    <div class="testpaper-question-footer clearfix">
+                                      <div class="testpaper-question-result">正确答案是 <strong class="color-success">{$status[$single.answer.0]}</strong>，{if condition="$single['status'] eq 1 || $single['status'] eq 2"}回答正确{else}回答错误{/if}</div>
+                
+                                    </div>
+                                    <div class="testpaper-question-analysis js-testpaper-question-analysis" style="display: none;">
+                                      <div class="well mb0">
+                                        无解析
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                {/volist}
+                              </div>
+                              {/if}
+                              {/if}
+                              {if condition='$key eq "determine"'}
+                              {if condition="!empty($num['2'])"}
+                              <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-essay">
+                                <div class="panel-heading">
+                                  <strong class="">判断题</strong>
+                                  <small class="color-gray">
+                                    共{$num.2.num}题，共{$num.2.score}分          </small>
+                                </div>
+                                {volist name='$vo' id="determine"}
+                                <div class="panel-body">
+                                  <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question35">
+                                    <div class="testpaper-question-body">
+                                      <div class="testpaper-question-stem-wrap clearfix">
+                                        <div class="testpaper-question-seq-wrap">
+                                          <div class="testpaper-question-seq">{$key+1}</div>
+                                          <div class="testpaper-question-score">{$determine.score}分</div>
+                                        </div>
+                                        <div class="testpaper-question-stem">
+                                          <p>{$determine.stem}</p><br>
+                                        </div>
+                                      </div>
+                                      <ul class="testpaper-question-choices js-testpaper-question-list">
+                                        <li {if condition="in_array(0,$determine.answer)"}class="testpaper-question-choice-right"{/if}><span class="testpaper-question-choice-index">1.</span> <p>正确</p></li>
+                                        <li {if condition="in_array(1,$determine.answer)"}class="testpaper-question-choice-right"{/if}><span class="testpaper-question-choice-index">2.</span> <p>错误</p></li>
+                                      </ul>
+                                    </div>
+                                    <div class="testpaper-question-footer clearfix">
+                                      <div class="testpaper-question-result">正确答案是 <strong class="color-success">{if condition="$determine['answer'][0] eq 1"}"错误"{else}"正确"{/if}</strong>，{if condition="$determine['status'] eq 1 || $determine['status'] eq 2"}回答正确{else}回答错误{/if}</div>
+                                    </div>
+                                    <div class="testpaper-question-analysis js-testpaper-question-analysis" style="display: none;">
+                                      <div class="well mb0">
+                                        无解析
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                {/volist}
+                              </div>
+                              {/if}
+                              {/if}
+                              {if condition='$key eq "essay"'}
+                              {if condition="!empty($num['1'])"}
+                              <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-essay">
+                                <div class="panel-heading">
+                                  <strong class="">问答题</strong>
+                                  <small class="color-gray">
+                                    共{$num.3.num}题，共{$num.3.score}分           </small>
+                                </div>
+                                {volist name="$vo" id="essay"}
+                                <input type="hidden" name="data[essay][question][{$key}]" value="{$essay.questionid}">
+                                <div class="panel-body">
+                                  <div class="testpaper-question testpaper-question-essay js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question37">
+                                    <div class="testpaper-question-body">
+                                      <div class="testpaper-question-stem-wrap clearfix">
+                                        <div class="testpaper-question-seq-wrap">
+                                          <div class="testpaper-question-seq">
+                                            {$key+1}
+                                          </div>
+                                          <div class="testpaper-question-score">
+                                            {$essay.score}分
+                                          </div>
+                                        </div>
+                                        <div class="testpaper-question-stem">
+                                          <p><strong>{$essay.stem}</strong></p><br>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="testpaper-question-footer clearfix">
+                                      <div class="testpaper-question-essay-inputs" data-role="js-answer-div-37">
+                                        <textarea class="form-control essay-input-short" rows="1" style="overflow:hidden;line-height:20px;" disabled="disabled">{$essay.answer.0}</textarea>
+                                        <textarea id="question-input-long-37" class="form-control essay-input-long" data-type="essay" name="37" style="display:none;" ></textarea>
+                                        <br>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                {/volist}
+                              </div>
+                              {/if}
+                              {/if}
+                              {if condition='$key eq "choice"'}
+                              {if condition="!empty($num['1'])"}
+                              <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-choice">
+                                <div class="panel-heading">
+                                  <strong class="">多选题</strong>
+                                  <small class="color-gray">
+                                    共{$num.1.num}题，共{$num.1.score}分          </small>
+                                </div>
+                                {volist name='$vo' id="choice"}
+                                <div class="panel-body">
+                                  <div class="testpaper-question testpaper-question-choice  js-testpaper-question " data-watermark-url="/cloud/testpaper_watermark" id="question36">
+                                    <div class="testpaper-question-body">
+                                      <div class="testpaper-question-stem-wrap clearfix">
+                                        <div class="testpaper-question-seq-wrap">
+                                          <div class="testpaper-question-seq">{$key+1}</div>
+                                          <div class="testpaper-question-score">{$choice.score}分</div>
+                                        </div>
+                                        <div class="testpaper-question-stem">
+                                          <p>{$choice.stem}</p><br>
+                                        </div>
+                                      </div>
+                                      <ul class="testpaper-question-choices js-testpaper-question-list">
+                                        {volist name="$choice.question" id="question"}
+                                        <li {if condition="in_array($key,$choice.answer)"}class="testpaper-question-choice-right"{/if}><span class="testpaper-question-choice-index">{$status[$key]}.</span> <p>{$question}</p></li>
+                                        {/volist}
+                                      </ul>
+                                    </div>
+                                    <div class="testpaper-question-footer clearfix">
+                                      <div class="testpaper-question-result">
+                                        正确答案是 <strong class="color-success">
+                                        {volist name="$choice.answer" id="answer"}
+                                        {$status[$answer]},
+                                        {/volist}
+                                      </strong>
+                                        {if condition="$choice['status'] eq 1 || $choice['status'] eq 2"}回答正确{else}回答错误{/if}
+                                      </div>
+                
+                                    </div>
+                                    <div class="testpaper-question-analysis js-testpaper-question-analysis" style="display: none;">
+                                      <div class="well mb0">
+                                        无解析
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                {/volist}
+                              </div>
+                              {/if}
+                              {/if}
+                
+                              <input type="hidden" name="_csrf_token" value="Taq3lq_yFPH-oGhg7Lb3oe-fXTd-dWZ6b16j4RFICnw">
+                              {/volist}
+                            </form>
+                            {/if}
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                        </div>
+                      </div>
+                      <div id="testpaper-finished-dialog" class="modal in" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-body task-state-modal">
+                              <div class="title font-blod">
+                                <i class="es-icon es-icon-zanting1 color-warning"></i>
+                                确认交卷
+                              </div>
+                              <div class="content">
+                                <div class="text-16">
+                                  您真的要交卷吗？
+                                </div>
+                              </div>
+                              <div class="text-right mt20">
+                                <a href="javascript:;" class="btn btn-link" data-dismiss="modal">取消</a>
+                                                    <button class="btn btn-primary" id="testpaper-finish-btn" data-loading-text="正在交卷, 请稍等..." data-role="paper-submit" data-url="/testpaper/result/10/finish" data-goto="/testpaper/result/10/show">
+                                  确认交卷</button>
+                                                </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="time-finish-dialog" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-body task-state-modal">
+                              <div class="title font-blod">
+                                <i class="es-icon es-icon-zanting1 color-warning"></i>考试结束
+                              </div>
+                              <div class="content">
+                                <div class="text-16">
+                                  考试已结束，您的试卷已提交，请点击下面的按钮查看结果！
+                                </div>
+                              </div>
+                              <div class="text-right mt20">
+                                                    <a href="http://www.hnhgjx.cn:1700/testpaper/result/10/show" class="btn btn-info">查看结果</a>
+                                                  
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="time-pause-dialog" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-body task-state-modal">
+                              <div class="title font-blod">
+                                <i class="es-icon es-icon-zanting1 color-warning"></i>暂停
+                              </div>
+                              <div class="content">
+                                <div class="text-16">
+                                  考试已暂停，请尽快回来哦！
+                                </div>
+                              </div>
+                              <div class="text-right mt20">
+                                <a class="btn btn-primary js-btn-resume" href="javascript:;">继续考试</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+              </div>
           </div>
-        </div>
       </div>
-      <div id="time-finish-dialog" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-body task-state-modal">
-              <div class="title font-blod">
-                <i class="es-icon es-icon-zanting1 color-warning"></i>考试结束
-              </div>
-              <div class="content">
-                <div class="text-16">
-                  考试已结束，您的试卷已提交，请点击下面的按钮查看结果！
-                </div>
-              </div>
-              <div class="text-right mt20">
-                                    <a href="http://www.hnhgjx.cn:1700/testpaper/result/10/show" class="btn btn-info">查看结果</a>
-                                  
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="time-pause-dialog" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-body task-state-modal">
-              <div class="title font-blod">
-                <i class="es-icon es-icon-zanting1 color-warning"></i>暂停
-              </div>
-              <div class="content">
-                <div class="text-16">
-                  考试已暂停，请尽快回来哦！
-                </div>
-              </div>
-              <div class="text-right mt20">
-                <a class="btn btn-primary js-btn-resume" href="javascript:;">继续考试</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    
   </body>
 </html>
