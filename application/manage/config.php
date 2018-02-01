@@ -12,7 +12,7 @@ return[// 视图输出字符串内容替换
         '__MANAGE_JS__' => '/static/manage/js/',
        // '__JSS__' => '/static/index/jss/',
     ],
-
+    'app_trace'              => true,
     'default_filter'         => 'htmlspecialchars',
 
 
