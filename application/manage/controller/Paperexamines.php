@@ -14,31 +14,33 @@ class Paperexamines extends Base{
 
     public function index(){
 
-        $info = input('get.');
-        $list["type"] ='';
-        $list["courseid"] ='';
-        $list["status"] ='';
-        $list["name"] ='';
+        $list = input('get.');
+        $info["type"] ='';
+        $info["courseid"] ='';
+        $info["status"] ='';
+        $info["name"] ='';
 //        $data=$this->selectList($info);
         $where=[];
         if(!empty($list['type'])){
             $where['t.type']=$list['type'];
+            $info["type"] = $list['type'];
         }
         if(!empty($list['courseid'])){
             $where['t.courseid']=$list['courseid'];
-        }
-        if(!empty($list['status'])){
+            $info['courseid']=$list['courseid'];
         }
         if(!empty($list['name'])){
             $where['t.name']=['like',"%{$list['name']}%"];
+            $info['name']=$list['name'];
         }
         if(!empty($list['status'])){
             $where['tr.Flag']=$list['status']-1;
+            $info['status']=$list['status'];
         }
-        $info=Db::name('testpapter_result tr')
+        $data=Db::name('testpapter_result tr')
             ->join('user_profile up','tr.userid=up.userid','LEFT')
             ->join('student_school ss','up.userid=ss.userid','LEFT')
-            ->join('testpaper t','tr.paperid=t.id','LEFT')
+            ->join('testpaper t','tr.paperid=t.id')
             ->join('classroom c','ss.class=c.id','LEFT')
             ->field('tr.*,t.courseid,t.name,t.score,t.type as ttype,up.realname,c.title')
             ->order('tr.endTime')
@@ -46,8 +48,9 @@ class Paperexamines extends Base{
             ->paginate(20);
         $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
         $this->assign('course',$course);
-        $this->assign('data',$info);
-        $this->assign('page',$info->render());
+        $this->assign('data',$data);
+        $this->assign('info',$info);
+        $this->assign('page',$data->render());
         return $this->fetch();
     }
 
@@ -117,6 +120,9 @@ class Paperexamines extends Base{
     //试卷批阅
     public function add(){
         $info=input('get.');
+        $userid=$info['userid'];
+        $paperid=$info['paperid'];
+        $objectivescore=0;
         foreach($info as $k=>$v){
             if(is_array($v)) {
                 $data = [];
@@ -125,6 +131,7 @@ class Paperexamines extends Base{
                 } else {
                     $data['status'] = 3;
                 }
+                $objectivescore+=$v['passedscores'];
                 $data['score'] = $v['passedscores'];
                 $save = DB::table('testpaper_item_result')->where('id', $v['id'])->update($data);
                 if (!is_numeric($save)) {
@@ -134,7 +141,20 @@ class Paperexamines extends Base{
                 unset($info[$k]);
             }
         }
-        return ['info'=>'保存成功','code'=>'000'];
+        $data=[];
+        $data['Flag']=1;
+        $data['objectiveScore']=$objectivescore;
+        $data['checkedTime']=date('Y-m-d H:i:s');
+        $data['checkTeacherId']=session('admin_uid');
+        $test=DB::table('testpapter_result')
+            ->where('paperID',$paperid)
+            ->where('userid',$userid)
+            ->update($data);
+        if(is_numeric($test)){
+            return ['info'=>'保存成功','code'=>'000'];
+        }else{
+            return ['error' => '保存失败', 'code' => '200'];
+        }
     }
 
     //查看考生试卷

@@ -10,6 +10,8 @@
         </ol>
     </div>
     <form class="form-horizontal" role="form" id="myform" method="post" action="{:url('add')}">
+        <input type="hidden" value="{$userid}" name="userid">
+        <input type="hidden" value="{$paperid}" name="paperid">
         {volist name="info" id="vo"}
         <input type="hidden" value="{$vo.id}" name="{$key}[id]">
         <div class="form-group">

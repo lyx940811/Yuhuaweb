@@ -195,6 +195,7 @@ class Course extends Home
     {
         $video_type = ['mp4','url'];
         $courseid = $this->course['id'];
+        $examination=0;
         if(!$course = CourseModel::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
@@ -237,14 +238,15 @@ class Course extends Home
                 }
                 unset($l['seq']);
             }
+            $examination=$this->isNoExamination($courseid);
         }
         //查看是否已考试
-        $examination=$this->isNoExamination($courseid);
+
         $this->assign('count',$examination);
         $this->assign('task',$lesson);
         return $this->fetch();
     }
-    //查看是否以考试
+    //查看是否已经考试
     public function isNoExamination($courseid){
         $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->find();
         $where['userid']=$this->user->id;
