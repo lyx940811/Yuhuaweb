@@ -1,6 +1,7 @@
 <?php
 namespace app\api\controller;
 
+use app\index\model\CourseTask;
 use think\Loader;
 use think\Db;
 use app\index\model\User;
@@ -551,7 +552,7 @@ class Course extends Home
      */
     public function getpaper()
     {
-//        $courseid = 35;
+//        $courseid = 31;
         $courseid = $this->data['courseid'];
         if(!CourseModel::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
@@ -616,7 +617,7 @@ class Course extends Home
     public function handpaper()
     {
         $paperid = $this->data['paperID'];
-//        $paperid = 81;
+//        $paperid = 82;
         $score = 0;
         if(!Testpaper::get($paperid)){
             return json_data(400,$this->codeMessage[400],'');
@@ -629,9 +630,10 @@ class Course extends Home
 //            57  =>  [1],
 //        ];
         Cache::set('dopaper',$dopaper,3600);
-//        var_dump($dopaper);die;
+
         $testpaper = Db::name('testpaper')->find($paperid);
         $meta = json_decode($testpaper['metas']);
+        
         //$topicType是为了拿每种题型的分值及可能存在的漏选分值
         $topicType = [];
         foreach ( (array)$meta->counts as $key=>$value){
@@ -847,9 +849,12 @@ class Course extends Home
     }*/
 
 
+    /**
+     *      【v1.3 api】
+     */
 
     //1.3版本的得到课程详情目录
-    public function get_course_lesson_v13(){
+    public function getcourselesson_v13(){
         $courseid = 5;//$this->data['courseid'];
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $chapter = Db::name('course_chapter')
@@ -868,17 +873,17 @@ class Course extends Home
                 ->field('id as taskid,title,type')
                 ->order('sort asc')
                 ->select();
-            foreach ( $c['task'] as &$task){
+            foreach ( $c['task'] as &$task ){
                 //赋值基底，没有登陆的时候进度为0
                 $task['plan'] = 0;
                 //当登陆时取记录
                 if(!empty($this->user)){
                     $map = [
-                        'userid'    =>  $this->user-id,
+                        'userid'    =>  $this->user->id,
                         'taskid'    =>  $task['taskid'],
                         'is_del'    =>  0,
                     ];
-                    if($ratio = Db::name('study_result_v13')->where($map)->order('createTime desc')->limit(1)->value('ratio')){
+                    if($ratio = Db::name('study_result_v13')->where($map)->order('ratio desc')->limit(1)->value('ratio')){
                         $task['plan'] = $ratio;
                     }else{
                         $task['plan'] = 0;
@@ -889,6 +894,7 @@ class Course extends Home
         return json_data(0,$this->codeMessage[0],$chapter);
     }
 
+    //stupid structure always changing ，mf ceo assistant
     public function getcoursetop_v13()
     {
         $doneNum  = 0;
@@ -924,7 +930,7 @@ class Course extends Home
             $plan = round($doneNum/$taskNum,2)*100;
             //拿下一任务名、任务id
             //拿看过的最高章节，最高小节的任务
-            $sql = 'select id,title,courseId,type,chapterid,sort from course_task where courseId=5 and chapterid=(select chapterid from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId=5 and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid=1 ORDER BY chapterseq desc limit 1) and sort=(select sort from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId=5 and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid=1 and chapterid=(select chapterid from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId=5 and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid=1 ORDER BY chapterseq desc limit 1) ORDER BY sort desc limit 1) limit 1';
+            $sql = 'select id,title,courseId,type,chapterid,sort from course_task where courseId='.$courseid.' and chapterid=(select chapterid from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId='.$courseid.' and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid='.$this->user->id.' ORDER BY chapterseq desc limit 1) and sort=(select sort from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId='.$courseid.' and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid='.$this->user->id.' and chapterid=(select chapterid from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId='.$courseid.' and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid='.$this->user->id.' ORDER BY chapterseq desc limit 1) ORDER BY sort desc limit 1) limit 1';
             $high_task = Db::query($sql);
             if($high_task){
                 //找到了，判断这个学习记录是不是100，如果是的话，拿下一节（或下一章的下一节），不是的话，把本章传过去
@@ -937,12 +943,44 @@ class Course extends Home
 
                 if($watch_log['ratio']==100){
                     //拿下一节（如果没找到，拿下一章的下一节，如果还没找到，则为最后一节）
+                    $planTask = CourseTask::get($watch_log['taskid']);
+                    $where = [
+                        'courseId'  =>  $courseid,
+                        'chapterid' =>  $planTask['chapterid'],
+                        'sort'      =>  ['>',$planTask['sort']]
+                    ];
+                    $find_next_task = Db::name('course_task')->where($where)->find();
+                    if($find_next_task){
+                        //找到了下一节
+                        $learn_taskid = $find_next_task['id'];
+                        $next_task    = $find_next_task['title'];
+                    }else{
+                        //没找到，拿下一章的下一节
+                        $next_chapter_task_sql = 'select * from course_task where courseId='.$courseid.' and chapterid=(select id from course_chapter where courseid='.$courseid.' and flag=1 and seq>(select seq from course_chapter where id='.$planTask['chapterid'].') limit 1) order by sort asc limit 1';
+                        $next_chapter_task = Db::query($next_chapter_task_sql);
+                        if($next_chapter_task){
+                            //找到了
+                            $next_chapter_task = $next_chapter_task[0];
+                            $learn_taskid = $next_chapter_task['id'];
+                            $next_task    = $next_chapter_task['title'];
+                        }
+                    }
                 }
                 else{
+                    //这一节还没看完，返回这一节的任务id
                     $learn_taskid = $watch_log['taskid'];
+                    $thisCourse = CourseTask::get($learn_taskid);
+                    $next_task = $thisCourse['title'];
                 }
             }else{
                 //没找到，拿第一节课的内容
+                $firse_task_sql = 'select * from course_task where courseId='.$courseid.' and chapterid=(select id from course_chapter where courseid='.$courseid.' order by seq limit 1) order by sort limit 1';
+                $firse_task = Db::query($firse_task_sql);
+                if($firse_task){
+                    $firse_task = $firse_task[0];
+                    $learn_taskid = $firse_task['id'];
+                    $next_task    = $firse_task['title'];
+                }
             }
         }
 
@@ -955,9 +993,11 @@ class Course extends Home
             'next_task_id'  =>  $learn_taskid,
         ];
 
+        return json_data(0,$this->codeMessage[0],$data);
         var_dump($taskNum,$data,$task);die;
 
     }
+
 
 
 
