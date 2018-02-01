@@ -320,7 +320,7 @@
             })
             $("#finishPaper").click(function(){
                 if($(".testpaper-question-choice-inputs label.active").length < $.trim($("#examinationLength").val()) ){
-                     $.Toast("", "请认真完成试题再进行提交", "success", {
+                     $.Toast("", "抱歉，必须所有试题全部答完才可以提交。", "success", {
                           stack: true,
                           has_icon:true,
                           has_close_btn:true,
@@ -332,7 +332,7 @@
                     return false;
                   }
                 if($.trim($(".form-control").val()) == '' || $.trim($(".form-control").val()) == null){
-                  $.Toast("", "请认真完成问答题部分，再进行提交", "success", {
+                  $.Toast("", "抱歉，必须所有试题全部答完才可以提交。", "success", {
                       stack: true,
                       has_icon:true,
                       has_close_btn:true,
