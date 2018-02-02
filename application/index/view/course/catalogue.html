@@ -4,28 +4,40 @@
 <div class="course-detail-content">
     <ul class="task-list task-list-md task-list-hover">
         {volist name="data" id="vo"}
+        <li class="task-item task-content mouse-control">
+            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
+            <a class="title">
+                {$vo.chaptername}
+            </a>
+            <!--<span class="right-menu color-gray ">1111<i class="es-icon es-icon es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i></span>-->
+            <span class="right-menu mouse-enter"></span>
+            {if condition="!empty($vo.section)"}
+            {volist name='$vo.section' id='section'}
+            {if condition="$section['type'] eq 'mp4' or $section['type'] eq 'url'"}
+            <ul class="joint-content">
                 <li class="task-item task-content mouse-control">
-                    <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
-                    <a class="title">
-                        {$vo.chaptername}
-                    </a>
-                    <!--<span class="right-menu color-gray ">1111<i class="es-icon es-icon es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i></span>-->
-                    <span class="right-menu mouse-enter"></span>
-                    {if condition="!empty($vo.section)"}
-                        {volist name='$vo.section' id='section'}
-                            {if condition="$section['type'] eq 'mp4' or $section['type'] eq 'url'"}
-                            <ul class="joint-content">
-                                <li class="task-item task-content mouse-control">
-                                    <i class="es-icon es-icon-doing color-primary"></i>
-                                    <a style="color: #616161;" {if condtion="$section['see'] eq 1"}href="#"{/if}>&nbsp;&nbsp;{$section['title']}</a>
-                                </li>
-                            </ul>
-                            {else if condition="$section['type'] eq 'test' or $section['type'] eq 'exam'"}
-
-                            {/if}
-                        {/volist}
-                    {/if}
+                    <i class="es-icon es-icon-doing color-primary"></i>
+                    <a style="color: #616161;" {if condition="$section['see'] eq 1"}href="#"{/if}>&nbsp;&nbsp;{$section['title']}</a>
                 </li>
+            </ul>
+            {elseif condition="$section['type'] eq 'test' or $section['type'] eq 'exam'"}
+            <ul class="joint-content">
+                <li class="task-item task-content mouse-control">
+                    <i class="es-icon es-icon-doing color-primary"></i>
+                    <a style="color: #616161;" {if condition="$section['see'] eq 1"}href="#"{/if}>&nbsp;&nbsp;{$section['title']}</a>
+                </li>
+            </ul>
+            {else}
+            <ul class="joint-content">
+                <li class="task-item task-content mouse-control">
+                    <i class="es-icon es-icon-doing color-primary"></i>
+                    <a style="color: #616161;" {if condition="$section['see'] eq 1"}href="#"{/if}>&nbsp;&nbsp;{$section['title']}</a>
+                </li>
+            </ul>
+            {/if}
+            {/volist}
+            {/if}
+        </li>
         {/volist}
 
     </ul>

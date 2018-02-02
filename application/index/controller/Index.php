@@ -59,7 +59,9 @@ class Index extends Home
     {
         $map['status'] = 1;
         if(!empty($this->user)){
-            $map['categoryId'] = $this->user->stuclass->majors;
+            if(!empty($this->user->stuclass->majors)){
+                $map['categoryId'] = $this->user->stuclass->majors;
+            }
         }
         if($this->request->isAjax()){
 
@@ -78,14 +80,26 @@ class Index extends Home
         }
 
         if(!empty($this->user)){
-            $condition['code'] = $this->user->stuclass->majors;
+            $condition['Flag'] = 1;
+            if(!empty($this->user->stuclass->majors)){
+                $condition['code'] = $this->user->stuclass->majors;
+            }
             $category = Db::name('category')->where($condition)->field('name,code')->select();
         } else{
             $category = Db::name('category')->field('name,code')->where('grade',3)->select();
         }
         $this->assign('category',$category);
 
-        $course = Course::order('createdTime desc')->where($map)->paginate(20);
+        $courseModel = new Course();
+        $map['status'] = 1;
+        if(!empty($this->user)){
+            if($this->user->type==3) {
+                if(!empty($this->user->stuclass->majors)){
+                    $map['categoryId'] = $this->user->stuclass->majors;
+                }
+            }
+        }
+        $course = $courseModel->where($map)->order('createdTime desc')->paginate(20);
 
         $this->assign('course',$course);
         $this->assign('page',$course->render());

@@ -65,130 +65,116 @@ class Course extends Home
 
     protected function getcourseinfo($courseid)
     {
-        //course top begin
-        $video_type = ['mp4','url'];
-        //为了拿顶部的title
-        $course = Db::name('course')->field('title')->find($courseid);
-        //课程下的所有任务，为了计算时间
-        $task = Db::name('course_task')
-            ->where('courseId',$courseid)
-            ->where('status',1)
-            ->field('id,courseId,chapterid,length,title,status')
-            ->order('chapterid asc')
-            ->select();
+        //基底数据
+        $doneNum  = 0;
+        $plan     = 0;
+        $learn_taskid = 0;
+        $next_task = '还未有新课程';
+        $next_task_type = 'none';
+        $next_task_paper = 0;
 
-        //为了计算任务比需要的分母
+        $course = CourseModel::get($courseid);
+//        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+
+        //拿所有任务,把考试和测验算在内
+        $map = [
+            'courseId'  =>  $courseid,
+            'status'    =>  1,
+        ];
+        $task = Db::name('course_task')
+            ->where($map)
+            ->column('id');
+
         $taskNum = count($task);
 
-        empty($task)?$next_task='还未有新课程':$next_task = $task[0]['title'];
-        empty($task)?$learn_taskid='0':$learn_taskid = $task[0]['id'];
-
-        //假如登陆了
         if(!empty($this->user)){
-            $learn_task = Db::name('study_result')
-                ->where('courseid',$courseid)
-                ->where('userid',$this->user->id)
-                ->order('chapterid desc')
-                ->find();
-            //找到最后一条学习记录
-            if($learn_task){
-                //找到学习记录了，所以在做百分比计算的时候除数绝对不可能是0
-                if($learn_task['status']==0){
-                    //还没学完,需要拿这一节课得名字
-                    $next_task = Db::name('course_task')
-                        ->where('courseid',$courseid)
-                        ->where('chapterid',$learn_task['chapterid'])
-                        ->find();
-                    $learn_taskid = $next_task['id'];
-                    $next_task    = $next_task['title'];
+            //拿完成的比例
+            foreach ( $task as $t ){
+                if($study_result = Db::name('study_result_v13')->where('userid',$this->user->id)->where('taskid',$t)->find()){
+                    if($study_result['ratio']==100){
+                        $doneNum++;
+                    }else{
+                        $doneNum = $doneNum + round($study_result['ratio']/100,2);
+                    }
+                }
+            }
+            $plan = round($doneNum/$taskNum,2)*100;
+            //拿下一任务名、任务id
+            //拿看过的最高章节，最高小节的任务
+            $sql = 'select id,title,courseId,type,chapterid,sort from course_task where courseId='.$courseid.' and chapterid=(select chapterid from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId='.$courseid.' and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid='.$this->user->id.' ORDER BY chapterseq desc limit 1) and sort=(select sort from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId='.$courseid.' and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid='.$this->user->id.' and chapterid=(select chapterid from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId='.$courseid.' and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid='.$this->user->id.' ORDER BY chapterseq desc limit 1) ORDER BY sort desc limit 1) limit 1';
+            $high_task = Db::query($sql);
+            if($high_task){
+                //找到了，判断这个学习记录是不是100，如果是的话，拿下一节（或下一章的下一节），不是的话，把本章传过去
+                $high_task = $high_task[0];
+                $condition = [
+                    'userid'    =>$this->user->id,
+                    'taskid'    =>$high_task['id']
+                ];
+                $watch_log = Db::name('study_result_v13')->where($condition)->find();
+
+                if($watch_log['ratio']==100){
+                    //拿下一节（如果没找到，拿下一章的下一节，如果还没找到，则为最后一节）
+                    $planTask = CourseTask::get($watch_log['taskid']);
+                    $where = [
+                        'courseId'  =>  $courseid,
+                        'chapterid' =>  $planTask['chapterid'],
+                        'sort'      =>  ['>',$planTask['sort']]
+                    ];
+                    $find_next_task = Db::name('course_task')->where($where)->find();
+                    if($find_next_task){
+                        //找到了下一节
+                        $learn_taskid = $find_next_task['id'];
+                        $next_task    = $find_next_task['title'];
+                        $next_task_type = $find_next_task['type'];
+                        $next_task_paper = $find_next_task['paperid'];
+                    }else{
+                        //没找到，拿下一章的下一节
+                        $next_chapter_task_sql = 'select * from course_task where courseId='.$courseid.' and chapterid=(select id from course_chapter where courseid='.$courseid.' and flag=1 and seq>(select seq from course_chapter where id='.$planTask['chapterid'].') limit 1) order by sort asc limit 1';
+                        $next_chapter_task = Db::query($next_chapter_task_sql);
+                        if($next_chapter_task){
+                            //找到了
+                            $next_chapter_task = $next_chapter_task[0];
+                            $learn_taskid = $next_chapter_task['id'];
+                            $next_task    = $next_chapter_task['title'];
+                            $next_task_type = $next_chapter_task['type'];
+                            $next_task_paper = $next_chapter_task['paperid'];
+                        }
+                    }
                 }
                 else{
-                    //学完了，需要拿下一节课得名字
-                    $next_task = Db::name('course_task')
-                        ->where('courseid',$courseid)
-                        ->where('status',1)
-                        ->where('chapterid','>',$learn_task['chapterid'])
-                        ->find();
-                    //找到下一节课了，拿到并赋值
-                    if(!empty($next_task)){
-                        $learn_taskid = $next_task['id'];
-                        $next_task = $next_task['title'];
-                    }
-                    else{
-                        //没有找到下一节课的名字，代表是最后一节课了
-                        $next_task = '已学完';
-                        $learn_taskid = 0;
-                    }
+                    //这一节还没看完，返回这一节的任务id
+                    $learn_taskid = $watch_log['taskid'];
+                    $thisCourse = CourseTask::get($learn_taskid);
+                    $next_task = $thisCourse['title'];
+                    $next_task_type = $thisCourse['type'];
+                    $next_task_paper = $thisCourse['paperid'];
                 }
-                //还需要算进度
-                //拿出所有学习记录
-                $learn_task = Db::name('study_result')
-                    ->where('courseid',$courseid)
-                    ->where('userid',$this->user->id)
-                    ->order('chapterid desc')
-                    ->select();
-                //先预定学完的课程为0，学完的课程+1
-                $has_learn_time = 0;
-                if($learn_task){
-                    //循环学习记录，每一条对应该课程下的每个task的学习情况
-                    foreach ( $learn_task as $t){
-                        //如果没有学完的话
-                        if($t['status']==0){
-                            //先选出type，判断是否为视频
-                            $task = Db::name('course_task')
-                                ->where('courseid',$t['courseid'])
-                                ->where('chapterid',$t['chapterid'])
-                                ->field('type,length')
-                                ->find();
-                            //不是视频，直接完成数目+1
-                            if(!in_array($task['type'],$video_type)){
-                                $has_learn_time = $has_learn_time+1;
-                            }
-                            else{
-                                //视频类型，计算看过的时间/该task的总时间，得到比例，取两位小数
-                                $watch_time = strtotime($t['endtime'])-strtotime($t['starttime']);
-                                $length = explode(':',$task['length']);
-                                $task_all_time = $length[2]+$length[1]*60+$length[0]*3600;
-                                $has_learn_time = $has_learn_time+round(($watch_time/$task_all_time),2);
-                            }
-                        }
-                        else{
-                            //如果学完了得话，直接完成课目+1
-                            $has_learn_time = $has_learn_time+1;
-                        }
-                    }
+            }else{
+                //没找到，拿第一节课的内容
+                $firse_task_sql = 'select * from course_task where courseId='.$courseid.' and chapterid=(select id from course_chapter where courseid='.$courseid.' order by seq limit 1) order by sort limit 1';
+                $firse_task = Db::query($firse_task_sql);
+                if($firse_task){
+                    $firse_task = $firse_task[0];
+                    $learn_taskid = $firse_task['id'];
+                    $next_task    = $firse_task['title'];
+                    $next_task_type = $firse_task['type'];
+                    $next_task_paper = $firse_task['paperid'];
                 }
-                //345
-                $plan = (round($has_learn_time/$taskNum,2)*100);
-
-                //拿到完成的任务比（1/30）
-                $has_done_task = Db::name('study_result')
-                    ->where('courseid',$courseid)
-                    ->where('userid',$this->user->id)
-                    ->where('status',1)
-                    ->select();
-                $has_done = count($has_done_task);
             }
-            else{
-                //没找到学习记录
-                $plan = '0';
-                $has_done = 0;
-            }
-        }
-        else{
-            //没登陆
-            $plan = '0';
-            $has_done = 0;
         }
 
         return $data = [
+            'categoryId'=>  $course['categoryId'],
             'title'     =>  $course['title'],
             'plan'      =>  $plan,
-            'has_done'  =>  $has_done,
+            'has_done'  =>  $doneNum,
             'task_num'  =>  $taskNum,
             'next_task' =>  $next_task,
-            'next_task_id'    =>  $learn_taskid,
+            'next_task_id'  =>  $learn_taskid,
+            'next_task_type'=>  $next_task_type,
+            'paperID'   =>  $next_task_paper
         ];
+
     }
 
 //    public function catalogue()
@@ -280,7 +266,7 @@ class Course extends Home
 
             }
 
-        }dump($data);die;
+        }
         $this->assign('type',$type);
         $this->assign('data',$data);
 
@@ -399,6 +385,7 @@ class Course extends Home
     {
         $taskid = $this->request->param('taskid');
         $task = CourseTask::get($taskid);
+        dump($task);die;
         if($task['type']!='url'){
             $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
         }
