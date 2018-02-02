@@ -67,10 +67,42 @@ class Usercenter extends Home
         return $this->fetch();
     }
     /**
-     * 我的积分
+     * 我的学分
      * @return mixed
      */
     public function integral(){
+
+        $title = input('get.title');
+
+        $where = [];
+        $where['a.userid'] = ['eq',$this->user->id];
+        if(isset($title)){
+            $where['c.title'] = ['like',"%$title%"];
+        }
+
+        $list = Db::table('get_point_log a')
+            ->join('course_task b','a.taskid=b.id','LEFT')
+            ->join('course c','b.courseId=c.id','LEFT')
+            ->field('a.*,b.point as bpoint,c.title')
+            ->where($where)->paginate(8);
+
+        $major = Db::table('course a')
+            ->join('student_school b','a.categoryId=b.majors','LEFT')
+            ->field('a.id,a.title')->where('b.userid',$this->user->id)->select();
+
+        $totalpoint = 0;
+        foreach ($major as $k=>$v){
+            $coursepoint = Db::table('course_task')->field('id,title,courseId,point')->where('courseId',$v['id'])->sum('point');
+            $totalpoint = $totalpoint + $coursepoint;
+        }
+
+        $totalcredit = Db::table('get_point_log')->where('userid',$this->user->id)->sum('point');
+
+
+        $this->assign('totalpoint',$totalpoint);
+        $this->assign('totalcredit',$totalcredit);
+        $this->assign('list',$list);
+        $this->assign('page',$list->render());
         return $this->fetch();
     }
 

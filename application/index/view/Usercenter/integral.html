@@ -1,5 +1,5 @@
 {extend name="public/spacelayout"}
-{block name="title"}{/block}
+{block name="title"}我的学分{/block}
 {block name="link"}
 <link href="__CSS__gradeSave1.css" type="text/css" rel="stylesheet">
 {/block}
@@ -11,14 +11,14 @@
     <div class="gradeWrapper">
         <div class="content">
             <div class="title clearfix">
-                <div class="left dueCredithour">应修积分：<span>60分</span></div>
-                <div class="left">已修积分：<span>20分</span></div>
+                <div class="left dueCredithour">应修积分：<span>{$totalpoint}分</span></div>
+                <div class="left">已修积分：<span>{$totalcredit}分</span></div>
             </div>
             <div class="tableContent">
                 <div class="search">
-                    <form action="#" class="form-inline">
+                    <form action="" class="form-inline" method="get">
                         <div class="form-group">
-                            <input type="text" class="form-control" id="endTime" style="width:280px;padding-left:20px"  placeholder="请在这里输入用户名">
+                            <input type="text" class="form-control" name="title" id="endTime" style="width:280px;padding-left:20px"  placeholder="请在这里输入课程名">
                         </div>
                         <button type="submit" class="btn btn-default" style="background:#428bca;color:#fff;width:114px;height:34px;margin-left:168px;">查询</button>
                     </form>
@@ -32,65 +32,20 @@
                                 <th style="vertical-align: middle;text-align: center;">已修学分</th>
                                 <th style="vertical-align: middle;text-align: center;">获取时间</th>
                             </tr>
+                            {volist name="list" id="vo"}
                             <tr>
-                                <td>课程一</td>
-                                <td>+15</td>
-                                <td>2</td>
-                                <td>2017-6-15 12:00</td>
+                                <td>{$vo.title}</td>
+                                <td>+{$vo.bpoint}</td>
+                                <td>{$vo.point}</td>
+                                <td>{$vo.createTime|date="Y-m-d H:i:s",###}</td>
                             </tr>
-                            <tr>
-                                <td>课程一</td>
-                                <td>+15</td>
-                                <td>2</td>
-                                <td>2017-6-15 12:00</td>
-                            </tr>
-                            <tr>
-                                <td>课程一</td>
-                                <td>+15</td>
-                                <td>2</td>
-                                <td>2017-6-15 12:00</td>
-                            </tr>
-                            <tr>
-                                <td>课程一</td>
-                                <td>+15</td>
-                                <td>2</td>
-                                <td>2017-6-15 12:00</td>
-                            </tr>  
-                            <tr>
-                                <td>课程一</td>
-                                <td>+15</td>
-                                <td>2</td>
-                                <td>2017-6-15 12:00</td>
-                            </tr>  
-                            <tr>
-                                <td>课程一</td>
-                                <td>+15</td>
-                                <td>2</td>
-                                <td>2017-6-15 12:00</td>
-                            </tr>  
-                            <tr>
-                                <td>课程一</td>
-                                <td>+15</td>
-                                <td>2</td>
-                                <td>2017-6-15 12:00</td>
-                            </tr>  
-                            <tr>
-                                <td>课程一</td>
-                                <td>+15</td>
-                                <td>2</td>
-                                <td>2017-6-15 12:00</td>
-                            </tr>  
-                            <tr>
-                                <td>课程一</td>
-                                <td>+15</td>
-                                <td>2</td>
-                                <td>2017-6-15 12:00</td>
-                            </tr>  
+                            {/volist}
                     </tbody>
                     </table>
                 </div>
                 <div class="container" style="text-align: center;width: 83%;margin-top: 0;">
 
+                    {$page}
                 </div>
             </div>
         </div>

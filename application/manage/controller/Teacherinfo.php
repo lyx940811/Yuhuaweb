@@ -100,7 +100,7 @@ class Teacherinfo extends Base{
 
         $data = [
             'nickname'=>$info['realname'],
-            'username' => $info['mobile'],
+            'username' => $info['sn'],
             'password' => password_hash('123456',PASSWORD_DEFAULT),
             'type'=> 2,
             'roles'=>0,
@@ -242,7 +242,7 @@ class Teacherinfo extends Base{
 
             $data = [
                 'nickname'=>$info['realname'],
-//                'username' => $info['mobile'],
+                'username' => $info['sn'],
                 'mobile'=>$info['mobile'],
             ];
 
