@@ -98,7 +98,7 @@ class Manage extends Base{
                     ['url'=>'/manage/classroom/index','name'=>'班级管理'],
                 ]
             ],
-            ['typename'=>'数据统计','url'=>'/manage/data/statistics','children'=>[
+            ['typename'=>'数据统计','url'=>'/manage/statistics/index','children'=>[
                 ['url'=>'/manage/statistics/index','name'=>'数据统计'],
             ]
             ],
