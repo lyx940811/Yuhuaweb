@@ -21,8 +21,14 @@ class Channel extends Base{
         if(!empty($info['salary'])){
             $where['salary'] = ['eq',$info['salary']];
         }
+        if(!empty($info['type'])){
+            $where['type'] = ['eq',$info['type']];
+        }
+        if(!empty($info['title'])){
+            $where['title'] = ['like',"%{$info['title']}%"];
+        }
 
-        $list = channelmodel::where($where)->paginate(20);
+        $list = channelmodel::where($where)->order('id desc')->paginate(20);
 
 
         $type = Db::table('channel_type')->select();
@@ -67,5 +73,61 @@ class Channel extends Base{
         }
 
 
+    }
+
+    public function edit(){
+        $info = input('post.');
+
+        $data = [
+            'title'=>$info['title'],
+            'type'=>$info['type'],
+            'level'=>$info['level'],
+            'salary'=>$info['salary'],
+            'linker'=>$info['linker'],
+            'phone'=>$info['phone'],
+            'area'=>$info['area'],
+        ];
+
+        $validate = Loader::validate('Channel');
+
+        if(!$validate->check($info)){
+            return ['error'=>$validate->getError(),'code'=>200];
+        }
+
+        $id = $info['id']+0;
+        $ok = channelmodel::update($data,['id'=>$id]);
+        if($ok){
+            return ['info'=>'修改成功','code'=>'000'];
+        }else{
+            return ['error'=>'修改失败','code'=>'200'];
+        }
+
+
+    }
+
+    public function showedit(){
+        $id = $this->request->get('id')+0;
+        $a = channelmodel::get($id);
+        $type = Db::table('channel_type')->select();
+        $salary = Db::table('channel_salary')->select();
+        $level = Db::table('channel_level')->select();
+
+        $this->assign('type',$type);
+        $this->assign('salary',$salary);
+        $this->assign('level',$level);
+        $this->assign('a',$a);
+        return $this->fetch();
+
+    }
+
+    public function delete(){
+
+        $id = $_GET['rid']+0;
+        $ok = channelmodel::destroy($id);
+        if(is_numeric($ok)){
+            return ['info'=>'删除成功','code'=>'000'];
+        }else{
+            return ['error'=>'删除失败','code'=>'200'];
+        }
     }
 }
