@@ -385,7 +385,6 @@ class Course extends Home
     {
         $taskid = $this->request->param('taskid');
         $task = CourseTask::get($taskid);
-        dump($task);die;
         if($task['type']!='url'){
             $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
         }
@@ -402,25 +401,22 @@ class Course extends Home
             ->join('course_chapter cc','ct.chapterid = cc.id')
             ->field($fields)
             ->order('cc.seq')
-            ->where('ct.courseid',$courseid)
+            ->where('ct.id',$taskid)
             ->where('ct.status',1)
             ->select();
-
         if(!empty($this->user)){
             foreach ($lesson as &$l){
                 if($course['type']!='url'){
                     $l['mediaSource'] = $this->request->domain()."/".$l['mediaSource'];
                 }
-                if($watch_log = Db::name('study_result')->where(['userid'=>$this->user->id,'courseid'=>$l['courseid'],'chapterid'=>$l['chapterid']])->find()){
-                    if($watch_log['status']==1){
+                if($watch_log = Db::name('study_result_v13')->where(['userid'=>$this->user->id,'taskid'=>$l['taskid']])->find()){
+                    if($watch_log['ratio']==100){
                         $l['plan'] = '100';
-                    }
-                    else{
+                    }else{
                         //这个是还没学完的课程
                         if(!in_array($l['type'],$video_type)){
                             $l['plan'] = '100';
-                        }
-                        else{
+                        }else{
                             $length = explode(':',$l['length']);
                             $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
 
@@ -428,14 +424,13 @@ class Course extends Home
                             $l['plan'] = (round($watch_time/$couse_time,2)*100);
                         }
                     }
-                }
-                else{
+                }else{
                     $l['plan'] = '0';
                 }
                 unset($l['seq']);
             }
         }
-
+        dump($lesson);
         $this->assign('tasklist',$lesson);
 //        var_dump($lesson);die;
         $this->assign('domain',$this->request->domain());
