@@ -906,6 +906,8 @@ class Course extends Home
                 ->field('id as taskid,title,type')
                 ->order('sort asc')
                 ->select();
+            $chapterTaskNum = count($c['task']);
+            $doneChapterNum = 0;
             foreach ( $c['task'] as &$task ){
                 //赋值基底，没有登陆的时候进度为0
                 $task['plan'] = 0;
@@ -918,25 +920,37 @@ class Course extends Home
                     ];
                     if($ratio = Db::name('study_result_v13')->where($map)->order('ratio desc')->limit(1)->value('ratio')){
                         $task['plan'] = $ratio;
+                        $doneChapterNum = $doneChapterNum+$ratio/100;
                     }else{
                         $task['plan'] = 0;
                     }
                 }
             }
+            if($doneChapterNum!=0){
+                $c['plan'] = round($doneChapterNum/$chapterTaskNum,2)*100;
+            }else{
+                $c['plan'] = 0;
+            }
         }
+
         return json_data(0,$this->codeMessage[0],$chapter);
     }
 
     //stupid structure always changing ，mf ceo assistant
     public function getcoursetop_v13()
     {
+        //基底数据
         $doneNum  = 0;
         $plan     = 0;
         $learn_taskid = 0;
         $next_task = '还未有新课程';
+        $next_task_type = 'none';
+        $next_task_paper = 0;
+
+
         $courseid = 5;//$this->data['courseid'];
         $course = CourseModel::get($courseid);
-        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+//        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
 
         //拿所有任务,把考试和测验算在内
         $map = [
@@ -987,6 +1001,8 @@ class Course extends Home
                         //找到了下一节
                         $learn_taskid = $find_next_task['id'];
                         $next_task    = $find_next_task['title'];
+                        $next_task_type = $find_next_task['type'];
+                        $next_task_paper = $find_next_task['paperid'];
                     }else{
                         //没找到，拿下一章的下一节
                         $next_chapter_task_sql = 'select * from course_task where courseId='.$courseid.' and chapterid=(select id from course_chapter where courseid='.$courseid.' and flag=1 and seq>(select seq from course_chapter where id='.$planTask['chapterid'].') limit 1) order by sort asc limit 1';
@@ -996,6 +1012,8 @@ class Course extends Home
                             $next_chapter_task = $next_chapter_task[0];
                             $learn_taskid = $next_chapter_task['id'];
                             $next_task    = $next_chapter_task['title'];
+                            $next_task_type = $next_chapter_task['type'];
+                            $next_task_paper = $next_chapter_task['paperid'];
                         }
                     }
                 }
@@ -1004,6 +1022,8 @@ class Course extends Home
                     $learn_taskid = $watch_log['taskid'];
                     $thisCourse = CourseTask::get($learn_taskid);
                     $next_task = $thisCourse['title'];
+                    $next_task_type = $thisCourse['type'];
+                    $next_task_paper = $thisCourse['paperid'];
                 }
             }else{
                 //没找到，拿第一节课的内容
@@ -1013,6 +1033,8 @@ class Course extends Home
                     $firse_task = $firse_task[0];
                     $learn_taskid = $firse_task['id'];
                     $next_task    = $firse_task['title'];
+                    $next_task_type = $firse_task['type'];
+                    $next_task_paper = $firse_task['paperid'];
                 }
             }
         }
@@ -1024,6 +1046,8 @@ class Course extends Home
             'has_done'  =>  $doneNum."/".$taskNum,
             'next_task' =>  $next_task,
             'next_task_id'  =>  $learn_taskid,
+            'next_task_type'=>  $next_task_type,
+            'paperID'   =>  $next_task_paper
         ];
 
         return json_data(0,$this->codeMessage[0],$data);
