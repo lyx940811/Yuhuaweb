@@ -28,17 +28,24 @@ class Index extends Home
         $courseModel = new Course();
         $map['status'] = 1;
         if(!empty($this->user)){
-            $map['categoryId'] = $this->user->stuclass->majors;
+            if($this->user->type==3) {
+                if(!empty($this->user->stuclass->majors)){
+                    $map['categoryId'] = $this->user->stuclass->majors;
+                }
+            }
         }
         $course = $courseModel->limit(12)->where($map)->order('createdTime desc')->select();
         $this->assign('course',$course);
         //分类
 
-        if(!empty($this->user)){
-            $condition['code'] = $this->user->stuclass->majors;
+        if(!empty($this->user)&&$this->user->type==3){
+            $condition['Flag'] = 1;
+            if(!empty($this->user->stuclass->majors)){
+                $condition['code'] = $this->user->stuclass->majors;
+            }
             $category = Db::name('category')->where($condition)->field('name,code')->select();
         } else{
-            $category = Db::name('category')->field('name,code')->where('grade',3)->select();
+            $category = Db::name('category')->field('name,code')->where('grade',3)->where('Flag',1)->select();
         }
 
         $this->assign('category',$category);

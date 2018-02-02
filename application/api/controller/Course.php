@@ -619,6 +619,7 @@ class Course extends Home
         $paperid = $this->data['paperID'];
 //        $paperid = 82;
         $score = 0;
+        $not_now = false;
         if(!Testpaper::get($paperid)){
             return json_data(400,$this->codeMessage[400],'');
         }
@@ -718,13 +719,45 @@ class Course extends Home
                     $resultData['score'] = $topicType['determine']['score'];
                     $score = $score+$topicType['determine']['score'];
                     break;
+                default:
+                    $not_now = true;
             }
             Db::name('testpaper_item_result')->insert($resultData);
         }
+        //直接插入试卷结果总记录
+        $paper_result_data = [
+            'paperID'   =>  $paperid,
+            'userid'    =>  $this->user->id,
+            'score'     =>  $score,
+            'status'    =>  3,
+            'Flag'      =>  1,
+            'subjectiveScore'   =>  $score,
+            'endTime'       =>  date('Y-m-d H:i:s',time()),
+            'checkedTime'   =>  date('Y-m-d H:i:s',time()),
+
+        ];
+
         $data = [
             'score' =>  $score
         ];
-        return json_data(0,$this->codeMessage[0],$data);
+        if($not_now){
+            $paper_result_data['Flag'] = 0;
+            if(Db::name('testpaper_result')->where(['paperID'=>$paperid,'userid'=>$this->user->id])->find()){
+                Db::name('testpaper_result')->where(['paperID'=>$paperid,'userid'=>$this->user->id])->update($paper_result_data);
+            }else{
+                Db::name('testpaper_result')->insert($paper_result_data);
+            }
+            return json_data(410,$this->codeMessage[410],[]);
+        }else{
+            $paper_result_data['Flag'] = 1;
+            if(Db::name('testpaper_result')->where(['paperID'=>$paperid,'userid'=>$this->user->id])->find()){
+                Db::name('testpaper_result')->where(['paperID'=>$paperid,'userid'=>$this->user->id])->update($paper_result_data);
+            }else{
+                Db::name('testpaper_result')->insert($paper_result_data);
+            }
+            return json_data(0,$this->codeMessage[0],$data);
+        }
+
     }
 
 /*    public function handpaper_abandoned()
@@ -994,8 +1027,23 @@ class Course extends Home
         ];
 
         return json_data(0,$this->codeMessage[0],$data);
-        var_dump($taskNum,$data,$task);die;
+//        var_dump($taskNum,$data,$task);die;
 
+    }
+
+    public function getgrade()
+    {
+        $paperID = $this->data['paperID'];
+        $paper_result = Db::name('testpaper_result')->where(['userid'=>$this->user->id,'paperID'=>$paperID,])->find();
+        if($paper_result){
+            if($paper_result['Flag']==1){
+                return json_data(0,$this->codeMessage[0],['score'=>$paper_result['score']]);
+            }else{
+                return json_data(410,$this->codeMessage[410],[]);
+            }
+        }else{
+            return json_data(420,$this->codeMessage[420],[]);
+        }
     }
 
 

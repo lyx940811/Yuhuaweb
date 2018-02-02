@@ -9,6 +9,7 @@
 
     {case value="3"}
     <li><a href="{:url('index/usercenter/onstudy',array('user'=>$theuser['id']))}">在学课程</a></li>
+    <li><a href="{:url('index/usercenter/integral',array('user'=>$theuser['id']))}">我的积分</a></li>
     <!--<li><a href="{:url('index/usercenter/learning',array('user'=>$theuser['id']))}">在学班级</a></li>-->
     {/case}
     {/switch}
@@ -19,7 +20,7 @@
 
     {present name="user"}
     {if condition="$user['id'] eq $theuser['id']"}
-    <!--<li><a href="{:url('index/usercenter/integral',array('user'=>$theuser['id']))}">我的积分</a></li>-->
+
     <!--<li><a href="{:url('index/usercenter/certificate',array('user'=>$theuser['id']))}">我的证书</a></li>-->
     {/if}
     {/present}
