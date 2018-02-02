@@ -264,15 +264,15 @@ class Course extends Home
             $data[$key]['chaptername']=$value['title'];
 
             foreach($info as $k=>$v){
-                $data[$key]['section']=$v;
+                $data[$key]['section'][$k]=$v;
                 $progress=DB::name('study_result_v13')->where('userid',$this->user->id)
                     ->where('taskid',$v['id'])->find();
-                $data[$key]['section']['see']=0;
+                $data[$key]['section'][$k]['see']=0;
                 if(!empty($progress) || $a==1){
                     if($progress['ratio']==100){
-                        $data[$key]['section']['see']=1;
+                        $data[$key]['section'][$k]['see']=1;
                     }else{
-                        $data[$key]['section']['see']=1;
+                        $data[$key]['section'][$k]['see']=1;
                         $type=$v['type'];
                         $a=2;
                     }
@@ -281,7 +281,6 @@ class Course extends Home
             }
 
         }
-        dump($data);
         $this->assign('type',$type);
         $this->assign('data',$data);
 
