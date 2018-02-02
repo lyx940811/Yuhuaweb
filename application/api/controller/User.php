@@ -929,7 +929,7 @@ class User extends Controller
         }
 
         return json_data(0,$this->codeMessage[0],$finalCourse);
-        var_dump($finalCourse);die;
+//        var_dump($finalCourse);die;
     }
 
     public function endwatch_v13()
