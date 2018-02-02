@@ -48,7 +48,8 @@
         <thead>
         <tr>
             <th>用户ID</th>
-            <th>用户名/昵称</th>
+            <th>用户名</th>
+            <th>昵称</th>
             <th>用户头像</th>
             <th>手机号</th>
             <th>所属用户组</th>
@@ -64,7 +65,8 @@
         {volist name="list" id="vo"}
         <tr>
             <td>{$vo.id}</td>
-            <td>{$vo.username}</a>(<small>{$vo.nickname}</small>)</td>
+            <td>{$vo.username}</td>
+            <td>{$vo.nickname}</td>
             <td><img src="__ROOT__/{$vo.title}" title="用户头像" width="80px" height="70px"/></td>
             <td>{$vo.mobile}</td>
             <td>{$vo.name}</td>
