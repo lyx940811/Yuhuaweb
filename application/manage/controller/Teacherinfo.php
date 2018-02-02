@@ -99,7 +99,7 @@ class Teacherinfo extends Base{
         }
 
         $data = [
-            'nickname'=>$info['realname'],
+            'nickname'=>$info['sn']+$info['realname'],
             'username' => $info['mobile'],
             'password' => password_hash('123456',PASSWORD_DEFAULT),
             'type'=> 2,
@@ -241,7 +241,7 @@ class Teacherinfo extends Base{
             Db::table('teacher_level')->where('teacherid',$have['userid'])->update($leveldata);
 
             $data = [
-                'nickname'=>$info['realname'],
+                'nickname'=>$info['sn']+$info['realname'],
 //                'username' => $info['mobile'],
                 'mobile'=>$info['mobile'],
             ];
