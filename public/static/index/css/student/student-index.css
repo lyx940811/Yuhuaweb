@@ -123,10 +123,11 @@ a:hover{ color:#1974A1;  }
     position:absolute;
     left: 50%;
     top: 50%;
-    margin-left: -46px;
-    margin-top: -8px;
+    margin-left: -37px;
+    margin-top: -4px;
     color: #43bc60;
     font-weight: bold;
+    cursor: pointer;
 }
 .modal .modal-dialog{
     z-index: 1050;
