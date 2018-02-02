@@ -7,6 +7,7 @@ use think\Loader;
 use think\Db;
 use app\index\model\User as UserModel;
 use app\index\model\StudyResult;
+use app\index\model\StudyResultLog;
 use app\index\model\UserProfile;
 use app\index\model\TeacherInfo;
 class User extends Home
@@ -253,6 +254,67 @@ class User extends Home
         }
     }
 
+    //课程如果是文档时，下载后修改数据
+    public function filedown(){
+        $courseid  = $this->request->param('courseid');
+        $chapterid = $this->request->param('chapterid');
+        $taskid  = $this->request->param('taskid');
+        $time = time();
+        $data = [
+            'userid'    =>  $this->user->id,
+            'starttime' => $time,
+            'endtime'   => $time,
+            'courseid'=>$courseid,
+            'chapterid'=>$chapterid,
+            'status'=>1,
+        ];
+        StudyResultLog::create($data);
+        if($watch = StudyResult::get(['userid'=>$this->user->id,'courseid'=>$courseid,'chapterid'=>$chapterid])){
+            if($watch['status']!=1){
+                $data1 = [
+                    'starttime' => $time,
+                    'endtime'   => $time,
+                    'status'=>1,
+                ];
+                StudyResult::update($data1,['id'=>$watch['id']]);
+            }
+//            return json_data(0,$this->codeMessage[0],'');
+        }else{
+            $task = Db::name('course_task')->where(['courseId'=>$courseid,'chapterid'=>$chapterid])->find();
+            $video_type = ['mp4','url'];
 
+            if(!in_array($task['type'],$video_type)){
+                $data['status'] = 1;
+            }
+            StudyResult::create($data);
+        }
+        $this->studyresultv13($taskid);
+        return json_data(0,$this->codeMessage[0],'');
 
+    }
+
+    public function studyresultv13($taskid){
+        $info=Db::name('study_result_v13')
+                ->where('taskid',$taskid)
+                ->where('userid',$this->user->id)
+                ->find();
+        $time = date('Y-m-d H:i:s',time());
+        $data = [
+            'userid'    =>  $this->user->id,
+            'ratio' => 100,
+            'createTime'=>$time,
+            'taskid' => $taskid,
+        ];
+        $save=DB::name('study_result_v13_log')->insert($data);
+        if(!empty($info)){
+            $data['createTime']=$info['createTime'];
+            $save1=DB::name('study_result_v13')
+                ->where('taskid',$taskid)
+                ->where('userid',$this->user->id)
+                ->update($data);
+        }else{
+            $save1=DB::name('study_result_v13')->insert($data);
+        }
+        return $save1;
+    }
 }
