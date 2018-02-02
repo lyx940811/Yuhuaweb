@@ -25,7 +25,6 @@
             </div>
             <div class="form-group">
                 <label>系部</label>
-                <select name="depart"  class="form-control" >
                     <option value="">--请选择--</option>
                     {volist name="depart" id="c"}
                     <option value="{$c.code}" {if condition="$info['depart'] eq $c['code']"}selected{/if}>{$c.name}</option>
