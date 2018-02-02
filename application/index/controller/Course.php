@@ -72,7 +72,7 @@ class Course extends Home
         //课程下的所有任务，为了计算时间
         $task = Db::name('course_task')
             ->where('courseId',$courseid)
-            ->where('status',1)
+            ->where('status',  1)
             ->field('id,courseId,chapterid,length,title,status')
             ->order('chapterid asc')
             ->select();
@@ -280,7 +280,7 @@ class Course extends Home
 
             }
 
-        }dump($data);die;
+        }
         $this->assign('type',$type);
         $this->assign('data',$data);
 
@@ -399,6 +399,7 @@ class Course extends Home
     {
         $taskid = $this->request->param('taskid');
         $task = CourseTask::get($taskid);
+        dump($task);die;
         if($task['type']!='url'){
             $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
         }
