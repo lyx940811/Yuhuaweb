@@ -1,6 +1,7 @@
 <?php
 namespace app\api\controller;
 
+use app\index\model\CourseTask;
 use think\Controller;
 use app\index\model\UserProfile;
 use think\Loader;
@@ -839,6 +840,123 @@ class User extends Controller
         }
     }
 
+
+
+
+    /**
+     * 【v1.3 api】
+     */
+
+    public function mystudy_v13()
+    {
+        $finalCourse = [];
+        $study_course = Db::name('study_result_v13')
+            ->alias('sr')
+            ->join('course_task ct','sr.taskid=ct.id')
+            ->where('sr.userid',$this->user->id)
+            ->group('ct.courseId')
+            ->column('ct.courseId');
+        if($study_course){
+            foreach ($study_course as $s){
+                $course = Db::name('course')->where('id',$s)->field('id,title,smallPicture')->find();
+                $course['smallPicture'] = $this->request->domain()."/".$course['smallPicture'];
+                //总课程数
+                $courseNum = Db::name('course_task')->where('courseId',$s)->where('status',1)->count();
+                //完成数
+                $doneNum = Db::name('study_result_v13')
+                    ->alias('sr')
+                    ->join('course_task ct','sr.taskid=ct.id')
+                    ->where('sr.userid',$this->user->id)
+                    ->where('ct.courseId',$s)
+                    ->where('ratio',100)
+                    ->count();
+                $plan = $doneNum/$courseNum*100;
+                if($plan!=100){
+                    $course['plan'] = $plan;
+                    $learnNum = Db::name('study_result_v13')
+                        ->alias('sr')
+                        ->join('course_task ct','sr.taskid=ct.id')
+                        ->where('ct.courseId',$s)
+                        ->group('sr.userid')
+                        ->count();
+                    $course['learnNum'] = $learnNum;
+                    $finalCourse[] = $course;
+                }
+            }
+        }
+
+        return json_data(0,$this->codeMessage[0],$finalCourse);
+        var_dump($finalCourse);die;
+    }
+
+
+    public function donestudy_v13()
+    {
+        $finalCourse = [];
+        $study_course = Db::name('study_result_v13')
+            ->alias('sr')
+            ->join('course_task ct','sr.taskid=ct.id')
+            ->where('sr.userid',$this->user->id)
+            ->group('ct.courseId')
+            ->column('ct.courseId');
+        if($study_course){
+            foreach ($study_course as $s){
+                $course = Db::name('course')->where('id',$s)->field('id,title,smallPicture')->find();
+                $course['smallPicture'] = $this->request->domain()."/".$course['smallPicture'];
+                //总课程数
+                $courseNum = Db::name('course_task')->where('courseId',$s)->where('status',1)->count();
+                //完成数
+                $doneNum = Db::name('study_result_v13')
+                    ->alias('sr')
+                    ->join('course_task ct','sr.taskid=ct.id')
+                    ->where('sr.userid',$this->user->id)
+                    ->where('ct.courseId',$s)
+                    ->where('ratio',100)
+                    ->count();
+                $plan = $doneNum/$courseNum*100;
+                if($plan==100){
+                    $course['plan'] = $plan;
+                    $learnNum = Db::name('study_result_v13')
+                        ->alias('sr')
+                        ->join('course_task ct','sr.taskid=ct.id')
+                        ->where('ct.courseId',$s)
+                        ->group('sr.userid')
+                        ->count();
+                    $course['learnNum'] = $learnNum;
+                    $finalCourse[] = $course;
+                }
+            }
+        }
+
+        return json_data(0,$this->codeMessage[0],$finalCourse);
+//        var_dump($finalCourse);die;
+    }
+
+    public function endwatch_v13()
+    {
+        if(!CourseTask::get($this->data['taskid'])){
+            return json_data(200,$this->codeMessage[200],'');
+        }
+        $log_result = [
+            'ratio'         =>  $this->data['ratio'],
+            'watchTime'     =>  $this->data['watchTime'],
+            'createTime'    =>  time(),
+        ];
+        if($this->data['ratio']==100){
+            $log_result['is_done'] = 1;
+        }
+        //study_result_v13只存最高进度
+        if($study_result = Db::name('study_result_v13')->where(['userid'=>$this->user->id,'taskid'=>$this->data['taskid'],'is_del'=>0])->find()){
+            if($this->data['ratio']>$study_result['ratio']){
+                Db::name('study_result_v13')->where(['userid'=>$this->user->id,'taskid'=>$this->data['taskid'],'is_del'=>0])->update($log_result);
+            }
+        }
+        //study_result_v13_log存所有的观看记录
+        $log_result['userid'] = $this->user->id;
+        $log_result['taskid'] = $this->data['taskid'];
+        Db::name('study_result_v13_log')->insert($log_result);
+        return json_data(0,$this->codeMessage[0],'');
+    }
 
 
 

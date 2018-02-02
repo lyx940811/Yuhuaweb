@@ -82,7 +82,6 @@ class Manage extends Base{
             ],
             ['typename'=>'学生管理','url'=>'/manage/userprofile/index','children'=>[
                     ['url'=>'/manage/userprofile/index','name'=>'学生列表'],
-//                    ['url'=>'/manage/studyresult/index','name'=>'学习记录'],
                 ]
             ],
 
@@ -94,11 +93,11 @@ class Manage extends Base{
                     ['url'=>'/manage/dormitory/index','name'=>'宿舍管理'],
                 ]
             ],
-            ['typename'=>'班级管理','url'=>'/manage/user/index','children'=>[
+            ['typename'=>'班级管理','url'=>'/manage/classroom/index','children'=>[
                     ['url'=>'/manage/classroom/index','name'=>'班级管理'],
                 ]
             ],
-            ['typename'=>'数据统计','url'=>'/manage/data/statistics','children'=>[
+            ['typename'=>'数据统计','url'=>'/manage/statistics/index','children'=>[
                 ['url'=>'/manage/statistics/index','name'=>'数据统计'],
             ]
             ],

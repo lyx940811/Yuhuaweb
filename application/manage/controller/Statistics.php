@@ -24,7 +24,12 @@ class Statistics extends Base{
         $count = Db::table('user_profile')->count();
         $array=['0'=>'男','1'=>'女','2'=>'保密'];
         foreach($list as $k=>$v){
-            $sex1[$k]=$array[$v['sex']];
+            if(is_numeric($v['sex'])){
+                $sex1[$k]=$array[$v['sex']];
+            }else{
+                $sex1[$k]=$array[2];
+            }
+
             $test=$v['num']/$count*100;
             $num1[$k]=round($test,1);
         }
@@ -113,8 +118,7 @@ class Statistics extends Base{
             ->field('count(title) as num,title')
             ->group('title')
             ->select();
-        $a=Db::query(' SELECT title,count(title) as num FROM (SELECT teacherid, COUNT(teacherid) AS t FROM teacher_work GROUP BY teacherid) AS nt WHERE nt.t<=1 group by title');
-        dump($a);die;
+
         $count = Db::table('teacher_info')->count();
         foreach($list as $k=>$v){
                 $title1 [$k]=$v['title'];

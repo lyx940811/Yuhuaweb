@@ -13,5 +13,7 @@ class Channel extends Validate{
 
     protected $rule = [
         'title|标题' => 'require|length:1,30',
+        'linker|联系人' => 'require|length:1,30',
+        'phone|联系人' => 'require',
     ];
 }
