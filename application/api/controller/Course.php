@@ -75,6 +75,7 @@ class Course extends Home
             foreach ($comment as &$c){
                 $user = User::get($c['userid']);
                 $c['username'] = $user->username;
+                $c['createdTime'] = date('Y.m.d',strtotime($c['createdTime']));
                 $c['avatar']   = $this->request->domain()."/".$user->title;
                 $c['sonreviewNum']   = Db::name('course_review')->where('parentid',$c['id'])->count();
                 $c['likeNum']   = Db::name('like')->where('type','comment')->where('articleid',$c['id'])->count();
@@ -111,6 +112,7 @@ class Course extends Home
         $user = User::get($comment['userid']);
         $comment['username']       = $user->username;
         $comment['avatar']         = $this->request->domain()."/".$user->title;
+        $comment['createdTime']    = date('Y.m.d',strtotime($comment['createdTime']));
         $comment['sonreviewNum']   = Db::name('course_review')->where('parentid',$comment['id'])->count();
         $comment['likeNum']        = Db::name('like')->where('type','comment')->where('articleid',$comment['id'])->count();
         if(!empty($this->user)){
@@ -152,6 +154,7 @@ class Course extends Home
         foreach ($askList as &$a){
             $user = User::get($a['userID']);
             $a['username'] = $user->username;
+            $a['addtime'] = date('Y.m.d',strtotime($a['addtime']));
             $a['avatar']   = $this->request->domain()."/".$user->title;
             $a['category'] = Db::name('category')->where('code',$a['category_id'])->value('name');
             unset($a['category_id'],$a['userID'],$a['courseid']);

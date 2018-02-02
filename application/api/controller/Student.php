@@ -286,6 +286,7 @@ class Student extends User
             ->page($page,10)
             ->select();
         foreach ( $note as &$n ){
+            $n['createdTime'] = date('Y.m.d',strtotime($n['createdTime']));
             $n['title']   = Db::name('course_task')->where(['courseId'=>$n['courseId'],'chapterid'=>$n['lessonid']])->value('title');
             $n['chapter'] = Db::name('course_chapter')->where(['courseid'=>$n['courseId'],'id'=>$n['lessonid']])->value('title');
         }

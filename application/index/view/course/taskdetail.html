@@ -40,7 +40,7 @@
             <script src="__JS__video.js"></script>
             <script>
                 videojs.options.flash.swf = "__JS__video-js.swf";
-            </script>        
+            </script>
             <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="100%" height="100%" poster=""  data-setup="{}">
                 {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
                 <source src="{$task->mediaSource}" type='video/mp4' />

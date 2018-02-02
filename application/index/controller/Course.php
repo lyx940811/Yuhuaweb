@@ -385,7 +385,7 @@ class Course extends Home
     {
         $taskid = $this->request->param('taskid');
         $task = CourseTask::get($taskid);
-        dump($task);die;
+
         if($task['type']!='url'){
             $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
         }

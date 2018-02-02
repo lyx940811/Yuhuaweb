@@ -47,6 +47,7 @@ class Ask extends Home
         }
 
         return json_data(0,$this->codeMessage[0],$category);
+
     }
 
     /**
