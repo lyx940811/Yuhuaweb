@@ -118,8 +118,7 @@ class Statistics extends Base{
             ->field('count(title) as num,title')
             ->group('title')
             ->select();
-        $a=Db::query(' SELECT title,count(title) as num FROM (SELECT teacherid, COUNT(teacherid) AS t FROM teacher_work GROUP BY teacherid) AS nt WHERE nt.t<=1 group by title');
-        dump($a);die;
+
         $count = Db::table('teacher_info')->count();
         foreach($list as $k=>$v){
                 $title1 [$k]=$v['title'];

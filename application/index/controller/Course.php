@@ -280,7 +280,7 @@ class Course extends Home
 
             }
 
-        }
+        }dump($data);die;
         $this->assign('type',$type);
         $this->assign('data',$data);
 

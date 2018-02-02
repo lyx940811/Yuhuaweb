@@ -9,7 +9,7 @@
                     <a class="title">
                         {$vo.chaptername}
                     </a>
-                    <span class="right-menu color-gray ">1111<i class="es-icon es-icon es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i></span>
+                    <!--<span class="right-menu color-gray ">1111<i class="es-icon es-icon es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i></span>-->
                     <span class="right-menu mouse-enter"></span>
                     {if condition="!empty($vo.section)"}
                         {volist name='$vo.section' id='section'}
@@ -17,7 +17,7 @@
                             <ul class="joint-content">
                                 <li class="task-item task-content mouse-control">
                                     <i class="es-icon es-icon-doing color-primary"></i>
-                                    <a style="color: #616161;" href="#">&nbsp;&nbsp;{$section['title']}</a>
+                                    <a style="color: #616161;" {if condtion="$section['see'] eq 1"}href="#"{/if}>&nbsp;&nbsp;{$section['title']}</a>
                                 </li>
                             </ul>
                             {else if condition="$section['type'] eq 'test' or $section['type'] eq 'exam'"}
