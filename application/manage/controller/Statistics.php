@@ -24,7 +24,12 @@ class Statistics extends Base{
         $count = Db::table('user_profile')->count();
         $array=['0'=>'男','1'=>'女','2'=>'保密'];
         foreach($list as $k=>$v){
-            $sex1[$k]=$array[$v['sex']];
+            if(is_numeric($v['sex'])){
+                $sex1[$k]=$array[$v['sex']];
+            }else{
+                $sex1[$k]=$array[2];
+            }
+
             $test=$v['num']/$count*100;
             $num1[$k]=round($test,1);
         }
