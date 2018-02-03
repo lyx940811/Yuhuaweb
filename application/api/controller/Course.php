@@ -919,8 +919,10 @@ class Course extends Home
                 $task['is_test'] = false;
                 $task['score'] = false;
                 $task['is_lock'] = true;
+                //如果不是考试或者测验的话进行拼域名
                 if(!in_array($task['type'],['text','exam'])){
                     if($task['type']!='url'){
+                        //如果不是外链的话，拼域名
                         $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
                     }
                 }
