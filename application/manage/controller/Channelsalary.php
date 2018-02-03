@@ -6,16 +6,16 @@
  * Time: 10:05
  */
 namespace app\manage\controller;
-use app\manage\model\ChannelLevel as channellevelmodel;
+use app\manage\model\ChannelSalary as channelsalarymodel;
 use think\Loader;
 
-class Channellevel extends Base{
+class Channelsalary extends Base{
 
     public function index(){
 
 
         $where = [];
-        $list = channellevelmodel::where($where)->order('id desc')->paginate(20);
+        $list = channelsalarymodel::where($where)->order('id desc')->paginate(20);
 
 
         $this->assign('list',$list);
@@ -32,13 +32,13 @@ class Channellevel extends Base{
             'code'=>$info['code'],
         ];
 
-        $validate = Loader::validate('Channellevel');
+        $validate = Loader::validate('Channelsalary');
 
         if(!$validate->check($info)){
             return ['error'=>$validate->getError(),'code'=>200];
         }
 
-        $ok = channellevelmodel::create($data);
+        $ok = channelsalarymodel::create($data);
         if($ok){
             return ['info'=>'添加成功','code'=>'000'];
         }else{
@@ -56,14 +56,14 @@ class Channellevel extends Base{
             'code'=>$info['code'],
         ];
 
-        $validate = Loader::validate('Channellevel');
+        $validate = Loader::validate('Channelsalary');
 
         if(!$validate->check($info)){
             return ['error'=>$validate->getError(),'code'=>200];
         }
 
         $id = $info['id']+0;
-        $ok = channellevelmodel::update($data,['id'=>$id]);
+        $ok = channelsalarymodel::update($data,['id'=>$id]);
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];
         }else{
@@ -75,7 +75,7 @@ class Channellevel extends Base{
 
     public function showedit(){
         $id = $this->request->get('id')+0;
-        $a = channellevelmodel::get($id);
+        $a = channelsalarymodel::get($id);
 
         $this->assign('a',$a);
         return $this->fetch();
@@ -85,7 +85,7 @@ class Channellevel extends Base{
     public function delete(){
 
         $id = $_GET['rid']+0;
-        $ok = channellevelmodel::destroy($id);
+        $ok = channelsalarymodel::destroy($id);
         if(is_numeric($ok)){
             return ['info'=>'删除成功','code'=>'000'];
         }else{
