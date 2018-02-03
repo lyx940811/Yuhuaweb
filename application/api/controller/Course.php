@@ -908,7 +908,7 @@ class Course extends Home
                 ->where('courseId',$courseid)
                 ->where('chapterid',$c['chapterid'])
                 ->where('status',1)
-                ->field('id as taskid,title,type,paperid')
+                ->field('id as taskid,title,type,paperid,mediaSource')
                 ->order('sort asc')
                 ->select();
             $chapterTaskNum = count($c['task']);
@@ -918,8 +918,41 @@ class Course extends Home
                 $task['plan'] = 0;
                 $task['is_test'] = false;
                 $task['score'] = false;
+                $task['is_lock'] = true;
+                if(!in_array($task['type'],['text','exam'])){
+                    if($task['type']!='url'){
+                        $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
+                    }
+                }
                 //当登陆时取记录
                 if(!empty($this->user)){
+                    $thisTask = CourseTask::get($task['taskid']);
+                    //判断这节课有没有上一节课
+                    $laskTask_sql = 'select id from course_task where chapterid='.$thisTask['chapterid'].' and sort<'.$thisTask['sort'].'  ORDER BY sort desc limit 1';
+                    if($laskTask = Db::query($laskTask_sql)){
+                        //有上一节课
+                        //判断上一节是否100，如果是的话，则解锁
+                        $laskTaskLearn_sql = 'select * from study_result_v13 where taskid=(select id from course_task where chapterid='.$thisTask['chapterid'].' and sort<'.$thisTask['sort'].'  ORDER BY sort desc limit 1) and userid='.$this->user->id.' and ratio=100;';
+                        if($laskTaskLearn = Db::query($laskTaskLearn_sql)){
+                            //找到了上一节并且为100
+                            $task['is_lock'] = false;
+                        }
+                    }else{
+                        //没有上一节课，看看有没有上一章，找最后一节课
+                        $lastChapterCourse_sql = 'select id from course_task where courseid='.$thisTask['courseId'].' and chapterid=(select id from course_chapter where courseid='.$thisTask['courseId'].' and seq<(select seq from course_chapter where id='.$thisTask['chapterid'].' ORDER BY seq desc limit 1) ORDER BY seq desc limit 1) order by sort desc limit 1';
+                        if($lastChapterCourse = Db::query($lastChapterCourse_sql)){
+                            //找到了，看看他的进度是不是100
+                            if(Db::name('study_result_v13')->where(['taskid'=>$lastChapterCourse[0]['id'],'userid'=>$this->user->id,'ratio'=>100])->find()){
+                                //是100，解锁
+                                $task['is_lock'] = false;
+                            }
+                        }
+                        else{
+                            //没找到，说明是第一节课，解锁
+                            $task['is_lock'] = false;
+                        }
+                    }
+
                     //计算课程进度
                     $map = [
                         'userid'    =>  $this->user->id,
@@ -948,7 +981,6 @@ class Course extends Home
                 $c['plan'] = 0;
             }
         }
-
         return json_data(0,$this->codeMessage[0],$chapter);
     }
 
