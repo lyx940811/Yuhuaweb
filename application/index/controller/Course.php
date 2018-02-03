@@ -167,7 +167,7 @@ class Course extends Home
             'categoryId'=>  $course['categoryId'],
             'title'     =>  $course['title'],
             'plan'      =>  $plan,
-            'has_done'  =>  $doneNum,
+            'has_done'  =>  intval($doneNum),
             'task_num'  =>  $taskNum,
             'next_task' =>  $next_task,
             'next_task_id'  =>  $learn_taskid,

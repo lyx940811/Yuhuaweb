@@ -632,8 +632,10 @@ class Course extends Home
 //            64  =>  ["1"],
 //            56  =>  ["0","1"],
 //            57  =>  [1],
-//        ];
-        Cache::set('dopaper',$dopaper,3600);
+//            ];
+
+
+//        Cache::set('dopaper',$dopaper,3600);
 
         $testpaper = Db::name('testpaper')->find($paperid);
         $meta = json_decode($testpaper['metas']);
@@ -891,7 +893,7 @@ class Course extends Home
 
     //1.3版本的得到课程详情目录
     public function getcourselesson_v13(){
-        $courseid = 5;//$this->data['courseid'];
+        $courseid = $this->data['courseid'];
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $chapter = Db::name('course_chapter')
             ->where('courseid',$courseid)
@@ -906,7 +908,7 @@ class Course extends Home
                 ->where('courseId',$courseid)
                 ->where('chapterid',$c['chapterid'])
                 ->where('status',1)
-                ->field('id as taskid,title,type')
+                ->field('id as taskid,title,type,paperid')
                 ->order('sort asc')
                 ->select();
             $chapterTaskNum = count($c['task']);
@@ -914,8 +916,11 @@ class Course extends Home
             foreach ( $c['task'] as &$task ){
                 //赋值基底，没有登陆的时候进度为0
                 $task['plan'] = 0;
+                $task['is_test'] = false;
+                $task['score'] = false;
                 //当登陆时取记录
                 if(!empty($this->user)){
+                    //计算课程进度
                     $map = [
                         'userid'    =>  $this->user->id,
                         'taskid'    =>  $task['taskid'],
@@ -926,6 +931,14 @@ class Course extends Home
                         $doneChapterNum = $doneChapterNum+$ratio/100;
                     }else{
                         $task['plan'] = 0;
+                    }
+                    //如果是试卷的话，判断是否是做试卷了，如果做试卷了赋值分数
+                    if(in_array($task['type'],['test','exam'])){
+                        //如果是测试
+                        if($test_result = Db::name('testpaper_result')->where(['paperID'=>$task['paperid'],'userid'=>$this->user->id])->find()){
+                            $task['is_test'] = true;
+                            $task['score'] = $test_result['score'];
+                        }
                     }
                 }
             }
@@ -939,6 +952,7 @@ class Course extends Home
         return json_data(0,$this->codeMessage[0],$chapter);
     }
 
+
     //stupid structure always changing ，mf ceo assistant
     public function getcoursetop_v13()
     {
@@ -951,7 +965,7 @@ class Course extends Home
         $next_task_paper = 0;
 
 
-        $courseid = 5;//$this->data['courseid'];
+        $courseid = $this->data['courseid'];
         $course = CourseModel::get($courseid);
 //        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
 
@@ -1046,13 +1060,13 @@ class Course extends Home
             'categoryId'=>  $course['categoryId'],
             'title'     =>  $course['title'],
             'plan'      =>  $plan,
-            'has_done'  =>  $doneNum."/".$taskNum,
+            'has_done'  =>  intval($doneNum),
+            'taskNum'   =>  $taskNum,
             'next_task' =>  $next_task,
             'next_task_id'  =>  $learn_taskid,
             'next_task_type'=>  $next_task_type,
             'paperID'   =>  $next_task_paper
         ];
-
         return json_data(0,$this->codeMessage[0],$data);
 //        var_dump($taskNum,$data,$task);die;
 

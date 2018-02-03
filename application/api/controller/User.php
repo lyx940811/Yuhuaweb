@@ -849,12 +849,14 @@ class User extends Controller
 
     public function mystudy_v13()
     {
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $finalCourse = [];
         $study_course = Db::name('study_result_v13')
             ->alias('sr')
             ->join('course_task ct','sr.taskid=ct.id')
             ->where('sr.userid',$this->user->id)
             ->group('ct.courseId')
+            ->page($page,10)
             ->column('ct.courseId');
         if($study_course){
             foreach ($study_course as $s){
@@ -868,9 +870,9 @@ class User extends Controller
                     ->join('course_task ct','sr.taskid=ct.id')
                     ->where('sr.userid',$this->user->id)
                     ->where('ct.courseId',$s)
-                    ->where('ratio',100)
-                    ->count();
-                $plan = $doneNum/$courseNum*100;
+//                    ->where('ratio',100)
+                    ->sum('ratio');
+                $plan = round($doneNum/100/$courseNum,2)*100;
                 if($plan!=100){
                     $course['plan'] = $plan;
                     $learnNum = Db::name('study_result_v13')
@@ -886,18 +888,20 @@ class User extends Controller
         }
 
         return json_data(0,$this->codeMessage[0],$finalCourse);
-        var_dump($finalCourse);die;
+
     }
 
 
     public function donestudy_v13()
     {
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $finalCourse = [];
         $study_course = Db::name('study_result_v13')
             ->alias('sr')
             ->join('course_task ct','sr.taskid=ct.id')
             ->where('sr.userid',$this->user->id)
             ->group('ct.courseId')
+            ->page($page,10)
             ->column('ct.courseId');
         if($study_course){
             foreach ($study_course as $s){
@@ -911,9 +915,9 @@ class User extends Controller
                     ->join('course_task ct','sr.taskid=ct.id')
                     ->where('sr.userid',$this->user->id)
                     ->where('ct.courseId',$s)
-                    ->where('ratio',100)
-                    ->count();
-                $plan = $doneNum/$courseNum*100;
+//                    ->where('ratio',100)
+                    ->sum('ratio');
+                $plan = round($doneNum/100/$courseNum,2)*100;
                 if($plan==100){
                     $course['plan'] = $plan;
                     $learnNum = Db::name('study_result_v13')
@@ -930,6 +934,48 @@ class User extends Controller
 
         return json_data(0,$this->codeMessage[0],$finalCourse);
 //        var_dump($finalCourse);die;
+    }
+
+
+    public function getcollect_v13(){
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $field = 'cf.id,cf.courseid,cf.userid,c.title,c.smallPicture';
+        $study_course = Db::name('course_favorite')
+            ->alias('cf')
+            ->join('course c','cf.courseid=c.id')
+            ->field($field)
+            ->where('cf.userid',$this->user->id)
+            ->page($page,10)
+            ->select();
+        if($study_course){
+            foreach ($study_course as $s){
+                $course = Db::name('course')->where('id',$s['courseid'])->field('id,title,smallPicture')->find();
+                $course['smallPicture'] = $this->request->domain()."/".$course['smallPicture'];
+                //总课程数
+                $courseNum = Db::name('course_task')->where('courseId',$s['courseid'])->where('status',1)->count();
+                //完成数
+                $doneNum = Db::name('study_result_v13')
+                    ->alias('sr')
+                    ->join('course_task ct','sr.taskid=ct.id')
+                    ->where('sr.userid',$this->user->id)
+                    ->where('ct.courseId',$s['courseid'])
+//                    ->where('ratio',100)
+                    ->sum('ratio');
+                $plan = round($doneNum/100/$courseNum,2)*100;
+                $course['plan'] = $plan;
+                $learnNum = Db::name('study_result_v13')
+                    ->alias('sr')
+                    ->join('course_task ct','sr.taskid=ct.id')
+                    ->where('ct.courseId',$s['courseid'])
+                    ->group('sr.userid')
+                    ->count();
+                $course['learnNum'] = $learnNum;
+                $finalCourse[] = $course;
+            }
+        }
+
+        return json_data(0,$this->codeMessage[0],$finalCourse);
+
     }
 
     public function endwatch_v13()
