@@ -329,6 +329,7 @@
              if(userid!='undefined'){
                  console.log(userid);
                  var taskid = {$coursedata.next_task_id};
+                 $('#taskid').val(taskid);
                  $.post(
                      "{:url('index/user/ischeckin')}",
                      {'taskid':taskid},
@@ -347,7 +348,8 @@
         });
 
         $(".modal-title").bind("click",function(){
-            var taskid = {$coursedata.next_task_id};
+            var taskid = $('#taskid').val();
+            var html1 = "{:url('index/course/taskdetail')}?course={$course['id']}&taskid="+taskid;
             $.post(
                 "{:url('index/user/checkin')}",
                 {'taskid':taskid},
@@ -357,7 +359,7 @@
                         alert("签到发生错误！");
                     }else if(data['code']==0){
                         $('.modal').hide();
-                        window.location.href = html;
+                        window.location.href = html1;
                     }
                 },
                 "json"

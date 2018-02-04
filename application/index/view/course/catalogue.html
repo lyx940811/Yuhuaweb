@@ -17,21 +17,34 @@
             <ul class="joint-content">
                 <li class="task-item task-content mouse-control">
                     <i class="es-icon es-icon-doing color-primary"></i>
-                    <a style="color: #616161;" {if condition="$section['see'] eq 1"}href="#"{/if}>&nbsp;&nbsp;{$section['title']}</a>
+                    {if condition="!empty($section['see'])"}
+                    <a style="color: #616161;" {if condition="$section['see'] eq 1"} onclick="mystudy({$section['id']});" {/if}>&nbsp;&nbsp;{$section['title']}</a>
+                    {else}
+                    <a style="color: #616161;">&nbsp;&nbsp;{$section['title']}</a>
+                    {/if}
+
                 </li>
             </ul>
             {elseif condition="$section['type'] eq 'test' or $section['type'] eq 'exam'"}
             <ul class="joint-content">
                 <li class="task-item task-content mouse-control">
                     <i class="es-icon es-icon-doing color-primary"></i>
-                    <a style="color: #616161;" {if condition="$section['see'] eq 1"}href="#"{/if}>&nbsp;&nbsp;{$section['title']}</a>
+                    {if condition="!empty($section['see'])"}
+                    <a style="color: #616161;" {if condition="$section['see'] eq 1"} {if condition="$section['papertype'] eq 1"}href="{:url('examination/examresults',array('course'=>$courseid,'taskid'=>$section['id']))}"{else}href="{:url('examination/alert',array('course'=>$courseid,'taskid'=>$section['id']))}"{/if}{/if}>&nbsp;&nbsp;{$section['title']}</a>
+                    {else}
+                    <a style="color: #616161;">&nbsp;&nbsp;{$section['title']}</a>
+                    {/if}
                 </li>
             </ul>
             {else}
             <ul class="joint-content">
                 <li class="task-item task-content mouse-control">
                     <i class="es-icon es-icon-doing color-primary"></i>
-                    <a style="color: #616161;" {if condition="$section['see'] eq 1"}href="#"{/if}>&nbsp;&nbsp;{$section['title']}</a>
+                    {if condition="!empty($section['see'])"}
+                    <a style="color: #616161;" {if condition="$section['see'] eq 1"} onclick="mystudy({$section['id']});" {/if}>&nbsp;&nbsp;{$section['title']}</a>
+                    {else}
+                    <a style="color: #616161;">&nbsp;&nbsp;{$section['title']}</a>
+                    {/if}
                 </li>
             </ul>
             {/if}
@@ -41,13 +54,58 @@
         {/volist}
     </ul>
 </div>
-
+<input type="hidden" value="" id="taskid">
 
 {/block}
 {block name="javascript"}
 <script>
     $(function(){
         $('.nav-tabs').children().eq(0).addClass('active');
-    })
+        $('#study').click(function(){
+            if(userid!='undefined'){
+                console.log(userid);
+                var taskid = {$coursedata.next_task_id};
+                $.post(
+                    "{:url('index/user/ischeckin')}",
+                    {'taskid':taskid},
+                    function(data){
+                        console.log(data);
+                        if(data['code']==185){
+                            window.location.href = html;
+                        }else if(data['code']==186){
+                            $('.modal').show();
+                            $('.modal-backdrop').show();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+    });
+    {present name="user"}
+    userid = {$user.id};
+    {/present}
+    function mystudy(taskid){
+        var html1 = "{:url('index/course/taskdetail')}?course={$course['id']}&taskid="+taskid;
+        $('#taskid').val(taskid);
+        console.log(html1);
+        if(userid!='undefined'){
+            console.log(userid);
+            $.post(
+                "{:url('index/user/ischeckin')}",
+                {'taskid':taskid},
+                function(data){
+                    console.log(data);
+                    if(data['code']==185){
+                        window.location.href = html1;
+                    }else if(data['code']==186){
+                        $('.modal').show();
+                        $('.modal-backdrop').show();
+                    }
+                },
+                "json"
+            );
+        }
+    }
 </script>
 {/block}

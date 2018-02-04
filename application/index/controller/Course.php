@@ -248,25 +248,40 @@ class Course extends Home
                 ->order('sort')
                 ->select();
             $data[$key]['chaptername']=$value['title'];
-
-            foreach($info as $k=>$v){
-                $data[$key]['section'][$k]=$v;
-                $progress=DB::name('study_result_v13')->where('userid',$this->user->id)
-                    ->where('taskid',$v['id'])->find();
-                $data[$key]['section'][$k]['see']=0;
-                if(!empty($progress) || $a==1){
-                    if($progress['ratio']==100){
-                        $data[$key]['section'][$k]['see']=1;
-                    }else{
-                        $data[$key]['section'][$k]['see']=1;
-                        $type=$v['type'];
-                        $a=2;
+            if(!empty($this->user)) {
+                foreach ($info as $k => $v) {
+                    $data[$key]['section'][$k] = $v;
+                    if ($v['type'] == 'test' || $v['type'] == 'exam') {
+                        $papercount = DB::name('testpaper_result')
+                            ->where('paperid', $v['paperid'])
+                            ->where('userid', $this->user->id)
+                            ->count();
+                        if ($papercount > 0) {
+                            $data[$key]['section'][$k]['papertype'] = 1;
+                        } else {
+                            $data[$key]['section'][$k]['papertype'] = 2;
+                        }
                     }
-                }
+                    $progress = DB::name('study_result_v13')->where('userid', $this->user->id)
+                        ->where('taskid', $v['id'])->find();
+                    $data[$key]['section'][$k]['see'] = 0;
+                    if (!empty($progress) || $a == 1) {
+                        if ($progress['ratio'] == 100) {
+                            $data[$key]['section'][$k]['see'] = 1;
+                        } else {
+                            $data[$key]['section'][$k]['see'] = 1;
+                            $type = $v['type'];
+                            $a = 2;
+                        }
+                    }
 
+                }
+            }else{
+                $data[$key]['section']=$info;
             }
 
         }
+        $this->assign('courseid',$courseid);
         $this->assign('type',$type);
         $this->assign('data',$data);
 
@@ -410,27 +425,26 @@ class Course extends Home
                     $l['mediaSource'] = $this->request->domain()."/".$l['mediaSource'];
                 }
                 if($watch_log = Db::name('study_result_v13')->where(['userid'=>$this->user->id,'taskid'=>$l['taskid']])->find()){
-                    if($watch_log['ratio']==100){
-                        $l['plan'] = '100';
-                    }else{
-                        //这个是还没学完的课程
-                        if(!in_array($l['type'],$video_type)){
-                            $l['plan'] = '100';
-                        }else{
-                            $length = explode(':',$l['length']);
-                            $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
-
-                            $watch_time = strtotime($watch_log['endtime'])-strtotime($watch_log['starttime']);
-                            $l['plan'] = (round($watch_time/$couse_time,2)*100);
-                        }
-                    }
+//                    if($watch_log['ratio']==100){
+                        $l['plan'] = $watch_log['ratio'];
+//                    }else{
+//                        //这个是还没学完的课程
+//                        if(!in_array($l['type'],$video_type)){
+//                            $l['plan'] = '100';
+//                        }else{
+//                            $length = explode(':',$l['length']);
+//                            $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
+//
+//                            $watch_time = strtotime($watch_log['endtime'])-strtotime($watch_log['starttime']);
+//                            $l['plan'] = (round($watch_time/$couse_time,2)*100);
+//                        }
+//                    }
                 }else{
                     $l['plan'] = '0';
                 }
                 unset($l['seq']);
             }
         }
-        dump($lesson);
         $this->assign('tasklist',$lesson);
 //        var_dump($lesson);die;
         $this->assign('domain',$this->request->domain());

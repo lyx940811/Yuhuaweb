@@ -50,6 +50,7 @@
                       </div>
                       <form id="teacherCheckForm" autocomplete="off" action="{:url('examend')}" method="post">
                         <input type="hidden" name="courseid" value="{$courseid}">
+                          <input type="hidden" name="taskid" value="{$taskid}">
                         <input type="hidden" name="starttime" value="{$time}"/>
                         {if condition="!empty($num['0'])"}
                           <div class="panel panel-default js-testpaper-question-block" id="testpaper-questions-single_choice">
@@ -314,7 +315,7 @@
       </div>
       
     <input type="hidden" name="testSuspend" data-url="/testpaper/result/14/suspend">
-    <input type="hidden"  value="{$num.0.num+$num.1.num+$num.2.num}" id="examinationLength">
+    <input type="hidden"  value="{$nums}" id="examinationLength">
     <div id="login-modal" class="modal" data-url="/login/ajax"></div>
     <div id="modal" class="modal"></div>
     <div id="attachment-modal" class="modal"></div>
