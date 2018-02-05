@@ -6749,3 +6749,13 @@ body.rtls.top-navigation .footer.fixed
         width: 12.5%;
     }
 }
+body{ background: url('../img/login_bg.png') no-repeat; }
+.loginscreen{ width:690px;  height:658px;margin: 0 auto;margin-top: 3%; }
+.loginscreen h2{ color:#fff;  font-size: 40px;  width: 100%; text-align: center}
+.loginscreen .login_main{ width:690px;height:658px; padding-top: 20%; background: url("../img/login_midbg.png") no-repeat center center;  margin-top: 4%}
+.loginscreen .login_main input{ width: 511px; margin-left: 80px;margin-bottom: 24px; background: none; color: #fff;font-size:16px;padding-left: 8%; height: 62px}
+.loginscreen .login_main button{ margin-top: 54px; background: #fff; color: #1E2C64; font-size: 20px;width: 511px; margin-left: 80px;  font-size:26px; height: 62px;border-color: none}
+.loginscreen .login_main input.user{background: url("../img/login_user.png") no-repeat 16px center}
+.loginscreen .login_main input.pwd{background: url("../img/login_pwd.png") no-repeat 16px center}
+.loginscreen .login_main input.captcha{ width: 256px; margin-top: 20px; margin-right: 70px; padding-left: 5% }
+.loginscreen .login_main .alert{ width: 511px; margin-left: 80px; }
