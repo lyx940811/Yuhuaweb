@@ -18,7 +18,7 @@
                 <li class="task-item task-content mouse-control">
                     <i class="es-icon es-icon-doing color-primary"></i>
                     {if condition="!empty($section['see'])"}
-                    <a style="color: #616161;" {if condition="$section['see'] eq 1"} onclick="mystudy({$section['id']});" {/if}>&nbsp;&nbsp;{$section['title']}</a>
+                    <a style="color: #616161;" {if condition="$section['see'] eq 1"} href="javascript:volid(0);" onclick="mystudy({$section['id']});" {/if}>&nbsp;&nbsp;{$section['title']}</a>
                     {else}
                     <a style="color: #616161;">&nbsp;&nbsp;{$section['title']}</a>
                     {/if}
@@ -41,7 +41,7 @@
                 <li class="task-item task-content mouse-control">
                     <i class="es-icon es-icon-doing color-primary"></i>
                     {if condition="!empty($section['see'])"}
-                    <a style="color: #616161;" {if condition="$section['see'] eq 1"} onclick="mystudy({$section['id']});" {/if}>&nbsp;&nbsp;{$section['title']}</a>
+                    <a style="color: #616161;" {if condition="$section['see'] eq 1"} href="javascript:volid(0);" onclick="mystudy({$section['id']});" {/if}>&nbsp;&nbsp;{$section['title']}</a>
                     {else}
                     <a style="color: #616161;">&nbsp;&nbsp;{$section['title']}</a>
                     {/if}

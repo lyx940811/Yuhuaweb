@@ -119,9 +119,9 @@ class Examination extends Home{
             $this->assign('title',$test);
             $this->assign('list',$list);
         }else{
-            $examination=$this->selectExamination($test['myscore'],$courseid,$list['createTime']);//查询题目;
+            $examination=$this->selectExamination($test['myscore'],$courseid,$list['id']);//查询题目;
             $array=['0'=>'A','1'=>'B','2'=>'C','3'=>'D','4'=>'E'];
-            $num=$this->getExamination($courseid);//查询每种题型有几个积分
+            $num=$this->getExamination($courseid,$list['id']);//查询每种题型有几个积分
             $this->assign('num',$num);
             $this->assign('status',$array);
             $this->assign('type',2);
