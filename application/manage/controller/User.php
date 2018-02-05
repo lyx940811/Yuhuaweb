@@ -117,6 +117,7 @@ class User extends Base{
                 $sdata['realname'] = $info['nickname'];
                 $sdata['mobile'] = $info['mobile'];
                 $sdata['idcard']=$info['card'];
+                $sdata['cardpic']=serialize(['front_pic'=>'','behind_pic'=>'']);
                 $sdata['createdTime'] = date('Y-m-d H:i:s' ,time());
                 Db::table('user_profile')->insert($sdata);
 
@@ -126,6 +127,7 @@ class User extends Base{
                 $sdata['realname'] = $info['nickname'];
                 $sdata['mobile'] = $info['mobile'];
                 $sdata['idcard']=$info['card'];
+                $sdata['cardpic']=serialize(['front_pic'=>'','behind_pic'=>'']);
                 $sdata['createdTime'] = date('Y-m-d H:i:s' ,time());
                 Db::table('teacher_info')->insert($sdata);
             }
@@ -141,6 +143,7 @@ class User extends Base{
 
 
     }
+
 
     public function edit(){
 
@@ -180,7 +183,7 @@ class User extends Base{
             return ['error'=>'用户名已存在','code'=>'300'];
         }
 
-        $have = $user_table->field('id')->where("id='$id'")->find();
+        $have = $user_table->field('id')->where("id",$id)->find();
 
         if(!$have){//如果没这个code
             return ['error'=>'没有此用户','code'=>'300'];
@@ -211,14 +214,14 @@ class User extends Base{
                     'mobile'=>$info['mobile'],
                     'realname'=>$info['nickname']
                 ];
-                Db::table('user_profile')->where('userid='.$id)->update($sdata);
+                Db::table('user_profile')->where('userid',$id)->update($sdata);
             }elseif($info['type']==2){
                 //2为教师
                 $sdata = [
                     'mobile'=>$info['mobile'],
                     'realname'=>$info['nickname']
                 ];
-                Db::table('teacher_info')->where('userid='.$id)->update($sdata);
+                Db::table('teacher_info')->where('userid',$id)->update($sdata);
 
             }
 
@@ -236,7 +239,7 @@ class User extends Base{
 
         $id = $_GET['rid']+0;
 
-        $ok = Db::name('user')->where("id='$id'")->delete();
+        $ok = Db::name('user')->where("id",$id)->delete();
 
         if($ok){
             return ['info'=>'删除成功','code'=>'000'];

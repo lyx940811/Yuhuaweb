@@ -121,6 +121,8 @@
                                         </div>
                                     </div>
                                     {php}
+                                    $front_pic = '';
+                                    $behind_pic = '';
                                     if($vo['cardpic']){
                                     $ser = unserialize($vo['cardpic']);
                                     $front_pic = isset($ser['front_pic'])?$ser['front_pic']:'';
