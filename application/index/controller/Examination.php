@@ -13,11 +13,13 @@ class Examination extends Home{
     //跳转考试弹框
     public function alert(){
         $courseid=$this->request->param('course');
-        $where['courseid']=$courseid;
-        $list=Db::name('testpaper')->where($where)->order('createTime desc')->find();
+        $taskid=$this->request->param('taskid');
+        $paperid=DB::name('course_task')->where('id',$taskid)->find();
+        $list=Db::name('testpaper')->where('id',$paperid['paperid'])->find();
         $this->isnotexit($list['id']);//如果已考过试，就不能再显示考试页面
         $list['count']=Db::name('testpaper_item')->where('paperId',$list['id'])->count();
         $this->assign('list',$list);
+        $this->assign('taskid',$taskid);
         $this->assign('courseid',$courseid);
         return $this->fetch();
     }
@@ -26,11 +28,14 @@ class Examination extends Home{
     public function examination(){
         $date=date('Y-m-d H:i:s');
         $courseid=$this->request->param('course');
+        $taskid=$this->request->param('taskid');
+        $paperid=DB::name('course_task')->where('id',$taskid)->find();
         $where['t.courseid']=$courseid;
-        $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->field('createTime,id')->find();
+        $list=Db::name('testpaper')->where('id',$paperid['paperid'])->find();
+//        $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->field('createTime,id')->find();
         $this->isnotexit($list['id']);//如果已考过试，就不能再显示考试页面
         if(!empty($list)){
-            $where['t.createTime']=$list['createTime'];
+            $where['t.id']=$list['id'];
         }
 
         $info=Db::name('testpaper_item as ti')
@@ -41,7 +46,7 @@ class Examination extends Home{
             ->order('ti.id')
             ->select();
         $array=['0'=>'A','1'=>'B','2'=>'C','3'=>'D','4'=>'E'];
-        $num=$this->getExamination($courseid);//查询每种题型有几个积分
+        $num=$this->getExamination($courseid,$list['id']);//查询每种题型有几个积分
         foreach($info as $k=>$v){
             $data[$k]=$v;
             if(!empty($v['metas'])){
@@ -53,8 +58,16 @@ class Examination extends Home{
             }
 
         }
+        $nums=0;
+        foreach($num as $v){
+            if($v['questiontype'] != 'essay'){
+                $nums+=$v['num'];
+            }
+        }
+        $this->assign('nums',$nums);
         $this->assign('time',$date);
         $this->assign('courseid',$courseid);
+        $this->assign('taskid',$taskid);
         $this->assign('num',$num);
         $this->assign('info',$data);
         $this->assign('status',$array);
@@ -63,7 +76,7 @@ class Examination extends Home{
 
     //判断是否已经考试，如果已经考试显示返回课程列表，主要是在浏览器后退时还是可以继续考试的问题
     public function isnotexit($paperid){
-        $info=Db::name('testpapter_result')->where('userid',$this->user->id)->where('paperID',$paperid)->count();
+        $info=Db::name('testpaper_result')->where('userid',$this->user->id)->where('paperID',$paperid)->count();
         if(!empty($info)){
             $html="<!DOCTYPE html><html lang=\"zh_CN\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body><div>考试已完成点击 <a href='/index'>返回课程</a></div></body></html>";
             echo $html;
@@ -72,12 +85,10 @@ class Examination extends Home{
         return 0;
     }
 //    //考试页面数据处理
-    public function getExamination($courseid){
+    public function getExamination($courseid,$listid){
         $where['t.courseid']=$courseid;
-        $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->field('createTime')->find();
-        if(!empty($list)){
-            $where['t.createTime']=$list['createTime'];
-        }
+//        $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->field('createTime')->find();
+        $where['t.id']=$listid;
         $info=Db::name('testpaper_item as ti')
             ->join('testpaper t','ti.paperID=t.id')
             ->field('count(ti.id) as num,sum(ti.score) as score,questiontype')
@@ -92,7 +103,12 @@ class Examination extends Home{
     public function examresults(){
 
         $courseid=$this->request->param('course');
-        $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->find();
+        $taskid=$this->request->param('taskid');
+        $paperid=DB::name('course_task')->where('id',$taskid)->find();
+        $where['t.courseid']=$courseid;
+        $list=Db::name('testpaper')->where('id',$paperid['paperid'])->find();
+
+//        $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->find();
         //查询是否完成阅卷
         $marking=$this->isNotMarking($list['id']);
         $test=$this->getExamresults($list['id']);
@@ -115,6 +131,7 @@ class Examination extends Home{
             $this->assign('list',$list);
             $this->assign('info',$examination);
         }
+        $this->assign($taskid);
         return $this->fetch();
     }
     //查看是否完成阅卷
@@ -122,7 +139,7 @@ class Examination extends Home{
 
         $where['userid']=$this->user->id;
         $where['paperID']=$testpaperid;
-        $count=Db::name('testpapter_result')->where($where)->find();
+        $count=Db::name('testpaper_result')->where($where)->find();
 
         return $count['Flag'];
     }
@@ -168,20 +185,17 @@ class Examination extends Home{
             echo $html;
             exit;
         }
-        $list=Db::name('testpaper')->where('courseid',$info['courseid'])->order('createTime desc')->field('createTime')->find();
-        if(!empty($list)){
-            $where['createTime']=$list['createTime'];
-        }
-        $where['id']=$info['paperid'];
-        $list=Db::name('testpaper')
-                ->where($where)
-                ->find();
+        $paperid=DB::name('course_task')->where('id',$info['taskid'])->find();
+
+        $list=Db::name('testpaper')->where('id',$paperid['paperid'])->find();
+
+//        $list=Db::name('testpaper')->where('courseid',$info['courseid'])->order('createTime desc')->field('createTime')->find();
         $data=json_decode($list['metas'],true);
         $test=$this->getExamend($info,$data);
-        $examination=$this->selectExamination($test['myscore'],$info['courseid'],$list['createTime']);//查询题目;
+        $examination=$this->selectExamination($test['myscore'],$info['courseid'],$list['id']);//查询题目;
 //        dump($examination);
         $array=['0'=>'A','1'=>'B','2'=>'C','3'=>'D','4'=>'E'];
-        $num=$this->getExamination($info['courseid']);//查询每种题型有几个积分
+        $num=$this->getExamination($info['courseid'],$list['id']);//查询每种题型有几个积分
         $this->assign('num',$num);
         $this->assign('status',$array);
 
@@ -194,9 +208,9 @@ class Examination extends Home{
     }
 
     //查询题目一级
-    public function selectExamination($myscore,$courseid,$createtime){
+    public function selectExamination($myscore,$courseid,$paperid){
         $where['t.courseid']=$courseid;
-        $where['t.createTime']=$createtime;
+        $where['t.id']=$paperid;
         $info=Db::name('testpaper_item as ti')
             ->join('testpaper t','ti.paperID=t.id')
             ->join('question q','ti.questionId=q.id')
@@ -343,7 +357,7 @@ class Examination extends Home{
         $examination['choice']=['choicetrue'=>$choicetrue,'choiceflase'=>$choiceflase,'choicenone'=>$choicenone,'choicescore'=>$choicescore];
         $examination['determine']=['determinetrue'=>$determinetrue,'determineflase'=>$determineflase,'determinenone'=>$determinenone,'determinescore'=>$determinescore];
         $list=[];
-        $querytest=DB::name('testpapter_result')->where('userid',$this->user->id)->where('paperID',$data['paperid'])->count();
+        $querytest=DB::name('testpaper_result')->where('userid',$this->user->id)->where('paperID',$data['paperid'])->count();
         $list['paperID']=$data['paperid'];
         $list['userid']=$this->user->id;
         $list['score']=$examination['myscore'];
@@ -356,11 +370,17 @@ class Examination extends Home{
         $list['beginTime']=$data['starttime'];
         $list['endTime']=date('Y-m-d H:i:s');
         if($querytest>0){
-            $savatr=DB::name('testpapter_result')->where('userid',$this->user->id)->where('paperID',$paperid)->update($list);
+            $savatr=DB::name('testpaper_result')->where('userid',$this->user->id)->where('paperID',$data['paperid'])->update($list);
         }else{
-            $savatr=DB::name('testpapter_result')->insert($list);
+            $savatr=DB::name('testpaper_result')->insert($list);
         }
-
+        $data1=[];
+        $data1['userid']=$this->user->id;
+        $data1['taskid']=$data['taskid'];
+        $data1['createTime']=time();
+        $data1['ratio']=100;
+        DB::name('study_result_v13')->insert($data1);
+        DB::name('study_result_v13_log')->insert($data1);
         if($savatr){
             return $examination;
         }else{

@@ -147,33 +147,36 @@ class User extends Home
     public function startwatch(){
         $courseid  = $this->request->param('courseid');
         $chapterid = $this->request->param('chapterid');
-        $time = date('Y-m-d H:i:s',time());
+        $taskid  = $this->request->param('taskid');dump($chapterid);
+        $time = date('Y-m-d H:i:s');
+        $data = [
+            'userid'    =>  $this->user->id,
+            'starttime' => $time,
+            'endtime'   => $time,
+            'courseid'=>$courseid,
+            'chapterid'=>$chapterid
+        ];
         if($watch = StudyResult::get(['userid'=>$this->user->id,'courseid'=>$courseid,'chapterid'=>$chapterid])){
             if($watch['status']!=1){
-                $data = [
+                $data1 = [
                     'starttime' => $time,
                     'endtime'   => $time
                 ];
-                StudyResult::update($data,['id'=>$watch['id']]);
+                StudyResult::update($data1,['id'=>$watch['id']]);
             }
-            return json_data(0,$this->codeMessage[0],'');
+
         }
         else{
             $task = Db::name('course_task')->where(['courseId'=>$courseid,'chapterid'=>$chapterid])->find();
             $video_type = ['mp4','url'];
-            $data = [
-                'userid'    =>  $this->user->id,
-                'starttime' => $time,
-                'endtime'   => $time,
-                'courseid'=>$courseid,
-                'chapterid'=>$chapterid
-            ];
+
             if(!in_array($task['type'],$video_type)){
                 $data['status'] = 1;
             }
             StudyResult::create($data);
-            return json_data(0,$this->codeMessage[0],'');
         }
+        $this->studyresultv13($taskid,0);//存入study-result-v13
+        return json_data(0,$this->codeMessage[0],'');
     }
 
     /**
@@ -182,9 +185,9 @@ class User extends Home
     public function endwatch(){
         $courseid  = $this->request->param('courseid');
         $chapterid = $this->request->param('chapterid');
-        if(!$res = Db::name('course_task')->where(['courseId'=>$courseid,'chapterid'=>$chapterid])->find()){
-            return json_data(200,$this->codeMessage[200],'');
-        }
+        $taskid  = $this->request->param('taskid');
+        $res=Db::name('course_task')->where('id',$taskid)->find();
+        $this->getendwatch($taskid);
         if($watch = StudyResult::get(['userid'=>$this->user->id,'courseid'=>$courseid,'chapterid'=>$chapterid])){
             $time = time();
             $course = Db::name('course_task')
@@ -288,33 +291,94 @@ class User extends Home
             }
             StudyResult::create($data);
         }
-        $this->studyresultv13($taskid);
+        $this->studyresultv13($taskid,100);
         return json_data(0,$this->codeMessage[0],'');
 
     }
 
-    public function studyresultv13($taskid){
+    public function studyresultv13($taskid,$ratio){
         $info=Db::name('study_result_v13')
                 ->where('taskid',$taskid)
                 ->where('userid',$this->user->id)
                 ->find();
-        $time = date('Y-m-d H:i:s',time());
+        $time = time();
         $data = [
             'userid'    =>  $this->user->id,
-            'ratio' => 100,
+            'ratio' => $ratio,
             'createTime'=>$time,
             'taskid' => $taskid,
         ];
-        $save=DB::name('study_result_v13_log')->insert($data);
+
         if(!empty($info)){
-            $data['createTime']=$info['createTime'];
-            $save1=DB::name('study_result_v13')
-                ->where('taskid',$taskid)
-                ->where('userid',$this->user->id)
-                ->update($data);
+            if($info['ratio']<100){
+                $save1=DB::name('study_result_v13')
+                    ->where('taskid',$taskid)
+                    ->where('userid',$this->user->id)
+                    ->update($data);
+                if($ratio==100){
+                    $save=DB::name('study_result_v13_log')->insert($data);
+                }
+            }
+
         }else{
+            if($ratio==100){
+                $save=DB::name('study_result_v13_log')->insert($data);
+            }
+
             $save1=DB::name('study_result_v13')->insert($data);
         }
         return $save1;
+    }
+
+    //结束观看
+    public function getendwatch($taskid){
+        $list=Db::name('course_task')
+            ->where('id',$taskid)
+            ->find();
+        if(!empty($list)){
+            $info=Db::name('study_result_v13')
+                ->where('taskid',$taskid)
+                ->where('userid',$this->user->id)
+                ->find();
+            if(!empty($info)) {
+                if($info['radio']<100){
+                    $time = time();
+                    $length = explode(':', $list['length']);
+                    $couse_time = $length[2] + $length[1] * 60 + $length[0] * 3600;
+
+                    $watch_time = $time - $info['createTime'];
+                    if ($watch_time >= $couse_time) {
+                        $ratio = 100;
+                    } else {
+                        $ratio = round($watch_time / $couse_time * 100);
+                    }
+                    $data = [
+                        'ratio' => $ratio,
+                    ];
+                    $save = DB::name('study_result_v13')
+                        ->where('taskid', $taskid)
+                        ->where('userid', $this->user->id)
+                        ->update($data);
+                    if (is_numeric($save)) {
+                        $data= [
+                            'userid' => $this->user->id,
+                            'ratio' => $ratio,
+                            'createTime' => $time,
+                            'taskid' => $taskid,
+                        ];
+                        $save1 = DB::name('study_result_v13_log')->insert($data);
+                    } else {
+                        return json_data(0, $this->codeMessage[0], '');
+                    }
+                }
+
+            }else{
+                return json_data(0,$this->codeMessage[0],'');
+            }
+
+        }else{
+            return json_data(0,$this->codeMessage[0],'');
+        }
+        return $save;
     }
 }

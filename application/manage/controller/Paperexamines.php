@@ -37,7 +37,7 @@ class Paperexamines extends Base{
             $where['tr.Flag']=$list['status']-1;
             $info['status']=$list['status'];
         }
-        $data=Db::name('testpapter_result tr')
+        $data=Db::name('testpaper_result tr')
             ->join('user_profile up','tr.userid=up.userid','LEFT')
             ->join('student_school ss','up.userid=ss.userid','LEFT')
             ->join('testpaper t','tr.paperid=t.id')
@@ -67,7 +67,7 @@ class Paperexamines extends Base{
         if(!empty($list['name'])){
             $where['t.name']=['like',"%{$list['name']}%"];
         }
-        $info=Db::name('testpapter_result tr')
+        $info=Db::name('testpaper_result tr')
             ->join('user_profile up','tr.userid=up.userid','LEFT')
             ->join('student_school ss','up.userid=ss.userid','LEFT')
             ->join('testpaper t','tr.paperid=t.id','LEFT')
@@ -146,7 +146,7 @@ class Paperexamines extends Base{
         $data['objectiveScore']=$objectivescore;
         $data['checkedTime']=date('Y-m-d H:i:s');
         $data['checkTeacherId']=session('admin_uid');
-        $test=DB::table('testpapter_result')
+        $test=DB::table('testpaper_result')
             ->where('paperID',$paperid)
             ->where('userid',$userid)
             ->update($data);

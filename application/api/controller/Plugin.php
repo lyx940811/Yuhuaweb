@@ -15,7 +15,6 @@ class Plugin extends Home
 {
     public function sendtext($phone)
     {
-
         // 配置信息
         $config = Config::get('alidayu');
 

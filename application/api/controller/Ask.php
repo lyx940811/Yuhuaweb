@@ -47,6 +47,7 @@ class Ask extends Home
         }
 
         return json_data(0,$this->codeMessage[0],$category);
+
     }
 
     /**
@@ -121,6 +122,62 @@ class Ask extends Home
         }
         return json_data(0,$this->codeMessage[0],$answer);
 
+    }
+
+
+    public function getlistByUserCate()
+    {
+        if(!empty($this->user->stuclass->majors)){
+            $categoryId = $this->user->stuclass->majors;
+        }else{
+            return json_data(189,$this->codeMessage[189],'');
+        }
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $course = Db::name('course')
+            ->where('categoryId',$categoryId)
+            ->field('title as name,id as courseid')
+            ->page($page,10)
+            ->select();
+        if($course){
+            foreach ( $course as &$c ){
+                $c['newask'] = Db::name('asklist')->where('courseid',$c['courseid'])->field('id as askID,userID,title,addtime')->order('addtime desc')->find();
+                if($c['newask']){
+                    $user = User::get($c['newask']['userID']);
+                    $c['newask']['username'] = $user->username;
+                    $c['newask']['avatar']   = $this->request->domain()."/".$user->title;
+                    $answer = Db::name('ask_answer')->where('askID',$c['newask']['askID'])->field('addtime as answerTime')->order('addtime desc')->find();
+                    if($answer){
+                        $c['newask']['answerTime'] =$answer['answerTime'];
+                    }
+                }
+            }
+        }
+        return json_data(0,$this->codeMessage[0],$course);
+    }
+
+    public function asklistbycourse()
+    {
+        $courseid = $this->data['courseid'];
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $askList = Db::name('asklist')
+            ->where('courseid',$courseid)
+            ->order('addtime desc')
+            ->page($page,10)
+            ->select();
+        if($askList){
+            foreach ( $askList as &$a ){
+                $user = User::get($a['userID']);
+                $a['username']  = $user->username;
+                $a['avatar']    = $this->request->domain()."/".$user->title;
+                $a['commentsNum'] = Db::name('ask_answer')->where('askID',$a['id'])->count();
+            }
+        }
+        $title = Db::name('course')->where('id',$courseid)->value('title');
+        $data = [
+            'title' =>  $title,
+            'asklist'   =>$askList,
+        ];
+        return json_data(0,$this->codeMessage[0],$data);
     }
 
 
