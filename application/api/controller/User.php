@@ -933,7 +933,6 @@ class User extends Controller
         }
 
         return json_data(0,$this->codeMessage[0],$finalCourse);
-//        var_dump($finalCourse);die;
     }
 
 
@@ -994,9 +993,14 @@ class User extends Controller
         //study_result_v13只存最高进度
         if($study_result = Db::name('study_result_v13')->where(['userid'=>$this->user->id,'taskid'=>$this->data['taskid'],'is_del'=>0])->find()){
             if($this->data['ratio']>$study_result['ratio']){
+                $log_result['createTime'] = time();
                 Db::name('study_result_v13')->where(['userid'=>$this->user->id,'taskid'=>$this->data['taskid'],'is_del'=>0])->update($log_result);
             }
         }
+        else{
+            Db::name('study_result_v13')->insert(['userid'=>$this->user->id,'taskid'=>$this->data['taskid'],'is_del'=>0,'ratio'=>$this->data['ratio'],'createTime'=>time()]);
+        }
+
         //study_result_v13_log存所有的观看记录
         $log_result['userid'] = $this->user->id;
         $log_result['taskid'] = $this->data['taskid'];
