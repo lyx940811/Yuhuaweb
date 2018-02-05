@@ -324,6 +324,15 @@ class Teacherinfo extends Base{
         return ['data'=>$list];
     }
 
+    public function setusername(){
+        $data = [
+          'type'=>2,
+            'username'=>''
+        ];
+        $list = Db::table('user')->where($data)->select();
+        print_r($list);
+    }
+
 
 
 
