@@ -752,7 +752,7 @@ class Course extends Home
             }else{
                 Db::name('testpaper_result')->insert($paper_result_data);
             }
-            return json_data(410,$this->codeMessage[410],[]);
+            return json_data(410,$this->codeMessage[410],410);
         }else{
             $paper_result_data['Flag'] = 1;
             if(Db::name('testpaper_result')->where(['paperID'=>$paperid,'userid'=>$this->user->id])->find()){
@@ -914,11 +914,15 @@ class Course extends Home
             $chapterTaskNum = count($c['task']);
             $doneChapterNum = 0;
             foreach ( $c['task'] as &$task ){
+                $thisTask = CourseTask::get($task['taskid']);
                 //赋值基底，没有登陆的时候进度为0
                 $task['plan'] = 0;
                 $task['is_test'] = false;
-                $task['score'] = false;
+                $task['score'] = 0;
                 $task['is_lock'] = true;
+                $task['is_incheck'] = false;
+                $task['plan_time'] = 0;
+//                $task['is_lastUnit'] = false;
                 //如果不是考试或者测验的话进行拼域名
                 if(!in_array($task['type'],['text','exam'])){
                     if($task['type']!='url'){
@@ -926,9 +930,18 @@ class Course extends Home
                         $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
                     }
                 }
+                //判断是否为最后一小节
+//                $lastUnit_condition = [
+//                    'courseId'  =>  $thisTask['courseId'],
+//                    'chapterid' =>  $thisTask['chapterid'],
+//                    'sort'      =>  ['>',$thisTask['sort']],
+//                    'status'    =>  1
+//                ];
+//                if(!Db::name('course_task')->where($lastUnit_condition)->find()){
+//                    $task['is_lastUnit'] = true;
+//                }
                 //当登陆时取记录
                 if(!empty($this->user)){
-                    $thisTask = CourseTask::get($task['taskid']);
                     //判断这节课有没有上一节课
                     $laskTask_sql = 'select id from course_task where chapterid='.$thisTask['chapterid'].' and sort<'.$thisTask['sort'].'  ORDER BY sort desc limit 1';
                     if($laskTask = Db::query($laskTask_sql)){
@@ -961,7 +974,9 @@ class Course extends Home
                         'taskid'    =>  $task['taskid'],
                         'is_del'    =>  0,
                     ];
-                    if($ratio = Db::name('study_result_v13')->where($map)->order('ratio desc')->limit(1)->value('ratio')){
+                    if($user_studyResult = Db::name('study_result_v13')->where($map)->find()){
+                        $task['plan_time'] = Db::name('study_result_v13_log')->where($map)->order('createTime desc')->value('watchTime');
+                        $ratio = $user_studyResult['ratio'];
                         $task['plan'] = $ratio;
                         $doneChapterNum = $doneChapterNum+$ratio/100;
                     }else{
@@ -973,6 +988,9 @@ class Course extends Home
                         if($test_result = Db::name('testpaper_result')->where(['paperID'=>$task['paperid'],'userid'=>$this->user->id])->find()){
                             $task['is_test'] = true;
                             $task['score'] = $test_result['score'];
+                            if($test_result['Flag']==0){
+                                $task['is_incheck'] = true;
+                            }
                         }
                     }
                 }
@@ -1102,7 +1120,6 @@ class Course extends Home
             'paperID'   =>  $next_task_paper
         ];
         return json_data(0,$this->codeMessage[0],$data);
-//        var_dump($taskNum,$data,$task);die;
 
     }
 
@@ -1120,6 +1137,65 @@ class Course extends Home
             return json_data(420,$this->codeMessage[420],[]);
         }
     }
+
+
+
+    /**
+     * 通过试卷id获得试卷内容
+     */
+    public function getpaper_v13()
+    {
+        $paperid = $this->data['paperid'];
+
+        $testpaper = Db::name('testpaper')->find($paperid);
+        $meta = json_decode($testpaper['metas']);
+
+
+        $topicType = [];
+        foreach ( (array)$meta->counts as $key=>$value){
+            $question['type'] = $key;
+            $question['num'] = $value;
+            $topicType[] = $question;
+        }
+
+        $paper_question = array();
+
+        foreach ( $topicType as &$t ){
+            foreach ( (array)$meta->scores as $key=>$value ){
+                if( $t['type']==$key ){
+                    $t['score'] = $value;
+                }
+            }
+            foreach ( (array)$meta->missScores as $key=>$value ){
+                if( $t['type']==$key ){
+                    $t['missScore'] = $value;
+                }
+            }
+            $paper_question[$t['type']] = Db::name('testpaper_item')
+                ->alias('ti')
+                ->join('question q','q.id=ti.questionId')
+                ->where('ti.questiontype',$t['type'])
+                ->where('paperID',$testpaper['id'])
+                ->field('q.id,q.type,q.stem,q.metas')
+                ->select();
+        }
+
+        foreach ( $paper_question as &$pq ){
+            foreach ( $pq as &$q ){
+                $q['metas'] = (array)json_decode($q['metas']);
+            }
+        }
+        $data = [
+            'paperID'   =>  $testpaper['id'],
+            'name'      =>  $testpaper['name'],
+            'score'     =>  $testpaper['score'],
+            'topType'   =>  $topicType
+        ];
+        $data = array_merge($data,$paper_question);
+
+        return json_data(0,$this->codeMessage[0],$data);
+    }
+
 
 
 
