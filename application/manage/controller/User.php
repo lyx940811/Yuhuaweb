@@ -60,41 +60,42 @@ class User extends Base{
 
         //错误信息提示
         $msg  =   [
-            'user_name.require' => '用户名不能为空',
+            'username.require' => '用户名不能为空',
+            'username.length' => '用户名的长度不符合',
+            'nickname.require' => '用户昵称不能为空',
+            'nickname.length' => '用户昵称的长度不符合',
             'card.require' => '身份证不能为空',
-            'user_name.length' => '用户名长度太短',
+            'type.require' => '用户类型不能为空',
         ];
 
         $validate = new Validate([
-            'user_name'  => 'require|length:2,20', //我这里的token是令牌验证
+            'username'  => 'require|length:2,20',
+            'nickname'  => 'require|length:2,20',
             'card'=>'require',
+            'type'=>'require',
         ],$msg);
 
         $validate->check($info);
 
-        $error = $validate->getError();//打印错误规则
+        $error = $validate->getError();
 
         if(is_string($error)){
             return ['error'=>$error,'code'=>'200'];
         }
 
         $user_table = Db::name('user');
-        $is_user= $user_table->field('username')->where("username",$info['user_name'])->find();
+        $is_user= $user_table->field('username')->where("username",$info['username'])->find();
         if($is_user){
             return ['error'=>'用户名已存在','code'=>'300'];
         }
-//
-//        if(!$have){//如果没这个code
-//            return ['error'=>'没有此班级','code'=>'300'];
-//        }
 
-        $data['username'] = $info['user_name'];
-        $data['nickname'] = $info['user_name'];
+        $data['username'] = $info['username'];
+        $data['nickname'] = $info['nickname'];
         $data['password'] = password_hash('123456',PASSWORD_DEFAULT);
-        $data['email'] = $info['user_email'];
+        $data['email'] = $info['email'];
         $data['mobile'] = $info['mobile'];
         $data['type'] = $info['type'];
-        $data['roles'] = isset($info['user_roles'])?$info['user_roles']:0;
+        $data['roles'] = isset($info['roles'])?$info['roles']:0;
         $data['locked'] = isset($info['user_locked'])?$info['user_locked']:0;
         $data['status'] = isset($info['status'])?$info['status']:0;
         if(!empty($info['userpic'])){
@@ -107,11 +108,13 @@ class User extends Base{
         $data['createdTime'] = date('Y-m-d H:i:s' ,time());
         $data['createUserID'] = session('admin_uid');
         Db::startTrans();
-        $ok = $user_table->field('nickname,username,password,email,mobile,roles,type,locked,status,title,createdIp,createdTime,createUserID')->insert($data);
+        $ok = $user_table->insert($data);
 
         if($ok){
+            $userid = $user_table->getLastInsID();
             if($info['type']==3){//3为学生
-                $sdata['userid'] = $user_table->getLastInsID();
+                $sdata['userid'] = $userid;
+                $sdata['realname'] = $info['nickname'];
                 $sdata['mobile'] = $info['mobile'];
                 $sdata['idcard']=$info['card'];
                 $sdata['createdTime'] = date('Y-m-d H:i:s' ,time());
@@ -119,14 +122,13 @@ class User extends Base{
 
             }elseif($info['type']==2){//2为教师
 
-                $sdata['userid'] = $user_table->getLastInsID();
-                $sdata['realname'] = $info['user_name'];
+                $sdata['userid'] = $userid;
+                $sdata['realname'] = $info['nickname'];
                 $sdata['mobile'] = $info['mobile'];
-                $sdata['card']=$info['card'];
+                $sdata['idcard']=$info['card'];
                 $sdata['createdTime'] = date('Y-m-d H:i:s' ,time());
                 Db::table('teacher_info')->insert($sdata);
             }
-
 
 
             manage_log('101','003','添加用户',serialize($info),0);
@@ -145,12 +147,17 @@ class User extends Base{
         $info = input('post.');
 
         $msg  =   [
-            'user_name.require' => '用户名称不能为空',
-            'user_name.length' => '角色名称太短',
+            'username.require' => '用户名不能为空',
+            'username.length' => '用户名的长度不符合',
+            'nickname.require' => '用户昵称不能为空',
+            'nickname.length' => '用户昵称的长度不符合',
+            'type.require' => '用户类型不能为空',
         ];
 
         $validate = new Validate([
-            'user_name'  => 'require|length:1,20',
+            'username'  => 'require|length:2,20',
+            'nickname'  => 'require|length:2,20',
+            'type'=>'require',
         ],$msg);
 
         $validate->check($info);
@@ -161,15 +168,17 @@ class User extends Base{
             return ['error'=>$error,'code'=>'200'];
         }
 
+        $id = $info['rid']+0;
 
         $user_table = Db::name('user');
-        $where['username']=$info['user_name'];
-        $where['id']=array('neq',$info['rid']);
+
+        $where['username']=$info['username'];
+        $where['id']=array('neq',$id);
         $is_user= $user_table->field('id,username')->where($where)->find();
+
         if($is_user){
             return ['error'=>'用户名已存在','code'=>'300'];
         }
-        $id = $info['rid']+0;
 
         $have = $user_table->field('id')->where("id='$id'")->find();
 
@@ -177,7 +186,8 @@ class User extends Base{
             return ['error'=>'没有此用户','code'=>'300'];
         }
 
-        $data['nickname'] = $info['user_name'];
+        $data['username'] = $info['username'];
+        $data['nickname'] = $info['nickname'];
         $data['type'] = $info['type'];
         if(!empty($info['userpic'])){
             $data['title'] = $info['userpic'];
@@ -185,22 +195,30 @@ class User extends Base{
             $data['title'] ="static/index/images/avatar.png";
         }
 
-        $data['email'] = $info['user_email'];
+        $data['email'] = $info['email'];
         $data['mobile'] = $info['mobile'];
-        $data['roles'] = isset($info['user_roles'])?$info['user_roles']:0;
+        $data['roles'] = isset($info['roles'])?$info['roles']:0;
         $data['status'] = isset($info['status'])?$info['status']:0;
         $data['locked'] = isset($info['user_locked'])?$info['user_locked']:0;
         Db::startTrans();
-        $ok = $user_table->field('nickname,title,email,mobile,roles,type,locked,status')->where('id',$id)->update($data);
+        $ok = $user_table->where('id',$id)->update($data);
 
         if($ok){
 
             if($info['type']==3){
                 //3为学员
-                Db::table('user_profile')->where('userid='.$id)->update(['mobile'=>$info['mobile']]);
+                $sdata = [
+                    'mobile'=>$info['mobile'],
+                    'realname'=>$info['nickname']
+                ];
+                Db::table('user_profile')->where('userid='.$id)->update($sdata);
             }elseif($info['type']==2){
                 //2为教师
-                Db::table('teacher_info')->where('userid='.$id)->update(['mobile'=>$info['mobile']]);
+                $sdata = [
+                    'mobile'=>$info['mobile'],
+                    'realname'=>$info['nickname']
+                ];
+                Db::table('teacher_info')->where('userid='.$id)->update($sdata);
 
             }
 

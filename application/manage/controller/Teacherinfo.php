@@ -324,13 +324,22 @@ class Teacherinfo extends Base{
         return ['data'=>$list];
     }
 
+    /*
+     * 批量改user表里的Username和教师里的工号，暂时批量用的方法，后期会去掉
+     */
     public function setusername(){
-        $data = [
-          'type'=>2,
-            'username'=>''
-        ];
-        $list = Db::table('user')->where($data)->select();
-        print_r($list);
+
+        $list = Db::table('teacher_info')->field('realname,id,userid,sn')->select();
+
+        foreach ($list as $k=>$v){
+            $data = [
+                'username'=>$v['sn'],
+            ];
+//            Db::table('user')->where('id',$v['userid'])->update($data);//此更新暂时关闭，用时再开
+        }
+
+//        print_r($list);
+//        echo 'ok';
     }
 
 
