@@ -281,7 +281,7 @@ class Course extends Home
                 $data[$key]['section']=$info;
             }
 
-        }
+        }dump($cou);
         $this->assign('courseid',$courseid);
         $this->assign('type',$type);
         $this->assign('data',$data);

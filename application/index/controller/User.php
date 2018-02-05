@@ -308,7 +308,6 @@ class User extends Home
             'createTime'=>$time,
             'taskid' => $taskid,
         ];
-
         if(!empty($info)){
             if($info['ratio']<100){
                 $save1=DB::name('study_result_v13')
@@ -318,16 +317,16 @@ class User extends Home
                 if($ratio==100){
                     $save=DB::name('study_result_v13_log')->insert($data);
                 }
+
             }
 
         }else{
-            if($ratio==100){
-                $save=DB::name('study_result_v13_log')->insert($data);
+            if($ratio==100) {
+                $save = DB::name('study_result_v13_log')->insert($data);
             }
-
             $save1=DB::name('study_result_v13')->insert($data);
         }
-        return $save1;
+        return 1;
     }
 
     //结束观看
@@ -341,7 +340,7 @@ class User extends Home
                 ->where('userid',$this->user->id)
                 ->find();
             if(!empty($info)) {
-                if($info['radio']<100){
+                if($info['ratio']<100){
                     $time = time();
                     $length = explode(':', $list['length']);
                     $couse_time = $length[2] + $length[1] * 60 + $length[0] * 3600;
@@ -379,6 +378,6 @@ class User extends Home
         }else{
             return json_data(0,$this->codeMessage[0],'');
         }
-        return $save;
+        return 1;
     }
 }
