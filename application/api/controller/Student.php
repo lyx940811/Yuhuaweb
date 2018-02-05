@@ -50,18 +50,20 @@ class Student extends User
         $askList = Db::name('asklist')
             ->where('userID',$userid)
             ->order('addtime desc')
+            ->field('id as askID,userID,addtime,title,content,category_id')
             ->page($page,10)
             ->select();
         if($askList){
             foreach ($askList as &$a){
                 $user = UserModel::get($a['userID']);
                 $a['username'] = $user->username;
-                $a['avatar']   = $this->request->domain().DS.$user->title;
+                $a['avatar']   = $this->request->domain()."/".$user->title;
                 $a['category'] = Db::name('category')->where('code',$a['category_id'])->value('name');
                 $a['addtime'] = date('Y-m-d',strtotime($a['addtime']));
                 unset($a['category_id'],$a['courseid']);
             }
         }
+
         return json_data(0,$this->codeMessage[0],$askList);
     }
 

@@ -2,6 +2,7 @@
 namespace app\api\controller;
 
 use think\Controller;
+use think\Loader;
 
 // 指定允许其他域名访问
 header('Access-Control-Allow-Origin:*');
@@ -218,6 +219,12 @@ class File extends Controller
 
 
         return json_data(0,'success',$save_path);
+    }
+
+
+    public function checkVersion(){
+        $LogicLog  = Loader::controller('Upload','logic');
+        $LogicLog->checkVersion();
     }
 
 
