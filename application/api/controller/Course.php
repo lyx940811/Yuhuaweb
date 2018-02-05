@@ -752,7 +752,7 @@ class Course extends Home
             }else{
                 Db::name('testpaper_result')->insert($paper_result_data);
             }
-            return json_data(410,$this->codeMessage[410],410);
+            return json_data(0,$this->codeMessage[410],410);
         }else{
             $paper_result_data['Flag'] = 1;
             if(Db::name('testpaper_result')->where(['paperID'=>$paperid,'userid'=>$this->user->id])->find()){
