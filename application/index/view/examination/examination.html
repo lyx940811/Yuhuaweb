@@ -22,13 +22,13 @@
       </style>
   </head>
   <body class="es-main-default es-nav-default task-testpaper-body-iframe js-task-testpaper-body js-task-testpaper-body-iframe"> 
-      <div class="task-dashboard-page js-task-dashboard-page" style="position:absolute;background:white;">
+      <div class="task-dashboard-page js-task-dashboard-page" style="position:absolute;background:#f5f8fa;">
           <div class="dashboard-content" id="dashboard-content" style="right: 35px;">
             <div class="dashboard-header">
-              <a class="back-link" href="javascript:history.back();">
+              <a class="back-link" href="{:url('index/course/catalogue',array('course'=>$courseid))}">
                 <i class="es-icon es-icon-chevronleft"></i>返回课程
               </a>
-              任务1：入学考试
+                {$titletask}
             </div>
           </div>
           <div class="container" style="margin-top:54px;">

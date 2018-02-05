@@ -11,13 +11,13 @@
     <link href="__CSS__main.css" rel="stylesheet">
   </head>  
   <body class="es-main-default es-nav-default ">
-      <div class="task-dashboard-page js-task-dashboard-page">
+      <div class="task-dashboard-page js-task-dashboard-page" style="position:absolute;">
           <div class="dashboard-content" id="dashboard-content" style="right: 35px;">
             <div class="dashboard-header">
               <a class="back-link" href="javascript:history.back();">
                 <i class="es-icon es-icon-chevronleft"></i>返回课程
               </a>
-              任务1：入学考试
+              {$titletask}
             </div>
           </div>
           <div class="dashboard-body" style="margin-top: 54px;height: 100%;background: #fff;">
@@ -30,9 +30,7 @@
                                 <div class="testpaper-titlebar clearfix">
                                   <h1 class="testpaper-title">入学考试 <br>
                                     <small class="text-sm">
-                                        答题人：admin 
-                                        交卷时间：2018-1-23 10:02 
-                                        用时：33秒
+                                        答题人：{$username}
                                     </small>
                                   </h1>
                                   <div class="testpaper-status"><div class="label label-info">批阅中</div></div>

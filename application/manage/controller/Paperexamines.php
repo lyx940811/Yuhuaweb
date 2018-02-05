@@ -164,10 +164,10 @@ class Paperexamines extends Base{
         $courseid=$this->request->param('courseid');
         $name=$this->request->param('name');
         $title=$this->request->param('title');
-        $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->find();
-        $examination=$this->selectExamination($courseid,$list['createTime'],$userid);//查询题目;
+        $list=Db::name('testpaper')->where('id',$paperid)->find();
+        $examination=$this->selectExamination($courseid,$list['id'],$userid);//查询题目;
         $array=['0'=>'A','1'=>'B','2'=>'C','3'=>'D','4'=>'E'];
-        $num=$this->getExamination($courseid);//查询每种题型有几个积分
+        $num=$this->getExamination($courseid,$list['id']);//查询每种题型有几个积分
 
         $this->assign('userid',$userid);
         $this->assign('paperid',$paperid);
@@ -182,9 +182,9 @@ class Paperexamines extends Base{
         return $this->fetch();
     }
     //查询题目一级
-    public function selectExamination($courseid,$createtime,$userid){
+    public function selectExamination($courseid,$listid,$userid){
         $where['t.courseid']=$courseid;
-        $where['t.createTime']=$createtime;
+        $where['t.id']=$listid;
         $info=Db::name('testpaper_item as ti')
             ->join('testpaper t','ti.paperID=t.id')
             ->join('question q','ti.questionId=q.id')
@@ -242,12 +242,11 @@ class Paperexamines extends Base{
         return $data;
     }
   //考试页面数据处理
-    public function getExamination($courseid){
+    public function getExamination($courseid,$listid){
         $where['t.courseid']=$courseid;
-        $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->field('createTime')->find();
-        if(!empty($list)){
-            $where['t.createTime']=$list['createTime'];
-        }
+//        $list=Db::name('testpaper')->where('id',$courseid)->order('createTime desc')->field('createTime')->find();
+        $where['t.id']=$listid;
+
         $info=Db::name('testpaper_item as ti')
             ->join('testpaper t','ti.paperID=t.id')
             ->field('count(ti.id) as num,sum(ti.score) as score,questiontype')

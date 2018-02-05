@@ -125,9 +125,18 @@
                         </a>
                         {/case}
                         {default /}
-                        <a class="btn btn-primary btn-lg mt10" id="study">
-                            继续学习
-                        </a>
+                            {switch name="coursedata.next_task_type"}
+                                {case value="test"}
+                                    <a class="btn btn-primary btn-lg mt10"  href="{:url('examination/alert',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">开始测验</a>
+                                {/case}
+                                {case value="exam"}
+                                    <a class="btn btn-primary btn-lg mt10"  href="{:url('examination/alert',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">开始考试</a>
+                                {/case}
+                                {default /}
+                                    <a class="btn btn-primary btn-lg mt10" id="study">
+                                        继续学习
+                                    </a>
+                            {/switch}
                         {/switch}
 
 
