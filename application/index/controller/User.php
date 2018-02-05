@@ -147,7 +147,7 @@ class User extends Home
     public function startwatch(){
         $courseid  = $this->request->param('courseid');
         $chapterid = $this->request->param('chapterid');
-        $taskid  = $this->request->param('taskid');dump($chapterid);
+        $taskid  = $this->request->param('taskid');
         $time = date('Y-m-d H:i:s');
         $data = [
             'userid'    =>  $this->user->id,
@@ -213,6 +213,12 @@ class User extends Home
                     Db::name('get_point_log')->insert($pointData);
                 }
             }
+            $data1['userid']=$watch['userid'];
+            $data1['courseid']=$watch['courseid'];
+            $data1['starttime']=$watch['starttime'];
+            $data1['endtime']=$data['endtime'];
+            $data1['status']=$data['status'];
+            StudyResultLog::insert($data1);
             StudyResult::update($data,['id'=>$watch['id']]);
             return json_data(0,$this->codeMessage[0],'');
         }
