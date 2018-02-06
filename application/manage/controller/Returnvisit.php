@@ -150,6 +150,19 @@ class Returnvisit extends Base{
         }
     }
 
+    public function delete(){
+
+        $id = $_GET['rid']+0;
+
+        $ok = Db::name('return_visit')->where("id='$id'")->delete();
+
+        if($ok){
+            return ['info'=>'删除成功','code'=>'000'];
+        }else{
+            return ['error'=>'删除失败','code'=>'200'];
+        }
+    }
+
 
 
 }
