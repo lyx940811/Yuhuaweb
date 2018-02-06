@@ -45,12 +45,13 @@
         <thead>
         <tr>
             <th>专业代码</th>
-            <th>名称</th>
+            <th width="45%">名称</th>
             <th>学制</th>
             <th>学分</th>
             <th>状态</th>
             <th>更新日期</th>
-            <th>操作</th>
+            <th>级别grade</th>
+            <th width="15%">操作</th>
         </tr>
         </thead>
         <tbody>
@@ -63,17 +64,17 @@
             <td>{$vo.point}</td>
             <td>{$vo.Flag?'启用':'禁用'}</td>
             <td>{$vo.createtime}</td>
+            <td>{$vo.grade}</td>
             <td>
-                {php}
-                    if(check($uid,'/manage/category/edit')){
-                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
-                        echo '<strong>/</strong>';
-                    }
-                    if(check($uid,'/manage/category/addson')){
-                        echo '<a href="#" onclick="addSon(\''.$vo['code'].'\','.$vo['id'].')" data-toggle="modal" data-target="#myModal">添加子专业</a>';
-                    }
-                {/php}
-
+                {if condition="check($uid,'/manage/category/edit')"}
+                    <a href="#" data-toggle="modal" data-target="#myModal_edit{$vo.id}">编辑</a>
+                {/if}
+                {if condition="check($uid,'/manage/category/addson')"}
+                    <a href="#" onclick="addSon('{$vo.code}',{$vo.id})" data-toggle="modal" data-target="#myModal">添加子专业</a>
+                {/if}
+                {if condition="check($uid,'/manage/category/delete')"}
+                <a href="#" onclick="deleteR({$vo.id})" >删除</a>
+                {/if}
                 <!--修改开始-->
                 <!-- 模态框 -->
                 <div class="modal fade" id="myModal_edit{$vo.id}">
@@ -157,7 +158,7 @@
         {$page}
     </ul>
 
-    <!--新增专业-->
+    <!--新增开始-->
     <!-- 模态框 -->
     <div class="modal fade" id="myModal">
         <div class="modal-dialog">
@@ -230,30 +231,8 @@
             </div>
         </div>
     </div>
-    <!--添加专业结束-->
+    <!--添加结束-->
 
-    <!--删除专业提示-->
-    <div class="modal fade" id="myModal2">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <!-- 模态框头部 -->
-                <div class="modal-header">
-                    <h4 class="modal-title">更改专业状态成功</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-
-                <!-- 模态框主体 -->
-                <div class="modal-body">
-
-                    更改专业状态成功！
-
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!--删除专业提示结束-->
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
@@ -280,9 +259,7 @@
 
                 if(data.code=='000'){
                     alert(data.info)
-                    // $('#selfcode').val('')//必须清空
-                    //
-                    // $('#myModal').modal('hide')
+
                     window.location.reload();
 
                 }else{
@@ -301,7 +278,7 @@
             $.get("{:url('enable')}?rid="+id,function (data) {
                 if(data.code=='000'){
                     alert(data.info)
-                    // $('#myModal2').modal('hide')
+
                     window.location.reload()
                 }else{
 
@@ -311,7 +288,19 @@
 
     }
 
+    function deleteR(id) {
+        if(confirm('确定要删除吗')){
+            $.get("{:url('delete')}?rid="+id,function (data) {
+                if(data.code=='000'){
+                    alert(data.info)
+                    window.location.reload();
+                }else{
 
+                }
+            });
+        }
+
+    }
 </script>
 </body>
 </html>
