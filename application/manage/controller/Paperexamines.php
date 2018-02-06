@@ -141,9 +141,14 @@ class Paperexamines extends Base{
                 unset($info[$k]);
             }
         }
+        $test=DB::table('testpaper_result')
+            ->where('paperID',$paperid)
+            ->where('userid',$userid)
+            ->value('subjectiveScore');
         $data=[];
         $data['Flag']=1;
         $data['objectiveScore']=$objectivescore;
+        $data['score']=$objectivescore+$test;
         $data['checkedTime']=date('Y-m-d H:i:s');
         $data['checkTeacherId']=session('admin_uid');
         $test=DB::table('testpaper_result')

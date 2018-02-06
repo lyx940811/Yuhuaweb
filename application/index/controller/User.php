@@ -147,7 +147,7 @@ class User extends Home
     public function startwatch(){
         $courseid  = $this->request->param('courseid');
         $chapterid = $this->request->param('chapterid');
-        $taskid  = $this->request->param('taskid');dump($chapterid);
+        $taskid  = $this->request->param('taskid');
         $time = date('Y-m-d H:i:s');
         $data = [
             'userid'    =>  $this->user->id,
@@ -213,8 +213,14 @@ class User extends Home
                     Db::name('get_point_log')->insert($pointData);
                 }
             }
+            $data1['userid']=$watch['userid'];
+            $data1['courseid']=$watch['courseid'];
+            $data1['starttime']=$watch['starttime'];
+            $data1['endtime']=$data['endtime'];
+            $data1['status']=$data['status'];
+            StudyResultLog::insert($data1);
             StudyResult::update($data,['id'=>$watch['id']]);
-            return json_data(0,$this->codeMessage[0],'');
+            return json_data( 0,$this->codeMessage[0],'');
         }
         else{
             return json_data(184,$this->codeMessage[184],'');
@@ -308,7 +314,6 @@ class User extends Home
             'createTime'=>$time,
             'taskid' => $taskid,
         ];
-
         if(!empty($info)){
             if($info['ratio']<100){
                 $save1=DB::name('study_result_v13')
@@ -318,16 +323,16 @@ class User extends Home
                 if($ratio==100){
                     $save=DB::name('study_result_v13_log')->insert($data);
                 }
+
             }
 
         }else{
-            if($ratio==100){
-                $save=DB::name('study_result_v13_log')->insert($data);
+            if($ratio==100) {
+                $save = DB::name('study_result_v13_log')->insert($data);
             }
-
             $save1=DB::name('study_result_v13')->insert($data);
         }
-        return $save1;
+        return 1;
     }
 
     //结束观看
@@ -341,7 +346,7 @@ class User extends Home
                 ->where('userid',$this->user->id)
                 ->find();
             if(!empty($info)) {
-                if($info['radio']<100){
+                if($info['ratio']<100){
                     $time = time();
                     $length = explode(':', $list['length']);
                     $couse_time = $length[2] + $length[1] * 60 + $length[0] * 3600;
@@ -379,6 +384,6 @@ class User extends Home
         }else{
             return json_data(0,$this->codeMessage[0],'');
         }
-        return $save;
+        return 1;
     }
 }

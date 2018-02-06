@@ -32,13 +32,18 @@ class Coursetask extends Base{
             ->join('course_chapter cc','a.chapterid=cc.id','LEFT')
             ->where($where)
             ->order('a.id desc')
-            ->paginate(20,['query'=>$info]);
+            ->paginate(20,false,['query'=>request()->get()]);
+//            ->paginate(20,['query'=>$info]);
 
         $course = Db::table('course')->field('id,title')->where('id',$id)->find();
 
         $chapter = Db::table('course_chapter')->field('id,title')->where('courseid',$id)->select();
         $taskmode = Db::table('task_mode')->field('id,name')->select();
-        $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$id)->select();
+        $coursetask=Db::table('course_task')
+            ->where(function ($query) {
+                $query->where('type','test')->whereor('type','exam');
+            })->where('paperid','<>','')->column('paperid');//查询已经用过的试卷的id
+        $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$id)->where('id','not in',$coursetask)->select();
 
         $this->assign('testpaper',$testpaper);
 
@@ -179,7 +184,12 @@ class Coursetask extends Base{
 
         $taskmode = Db::table('task_mode')->field('id,name')->select();
         $chapter = Db::table('course_chapter')->field('id,title')->where('courseid',$cid)->select();
-        $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$cid)->select();
+//        $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$cid)->select();
+        $coursetask=Db::table('course_task')
+            ->where(function ($query) {
+                $query->where('type','test')->whereor('type','exam');
+            })->where('paperid','<>','')->column('paperid');//查询已经用过的试卷的id
+        $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$cid)->where('id','not in',$coursetask)->select();
 
         $this->assign('chapter',$chapter);
         $this->assign('a',$info);

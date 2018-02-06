@@ -20,10 +20,10 @@
       <div class="task-dashboard-page js-task-dashboard-page" style="position:absolute;">
           <div class="dashboard-content" id="dashboard-content" style="right: 35px;">
             <div class="dashboard-header">
-              <a class="back-link" href="javascript:history.back();">
+              <a class="back-link" href="{:url('index/course/catalogue',array('course'=>$courseid))}">
                 <i class="es-icon es-icon-chevronleft"></i>返回课程
               </a>
-              任务1：入学考试
+              {$titletask}
             </div>
           </div>
           <div class="dashboard-body" style="margin-top: 54px;height: 100%;background: #fff;">
@@ -35,7 +35,7 @@
                               <div class="es-section testpaper-heading js-testpaper-heading">
                                 <div class="testpaper-titlebar clearfix">
                                   <h1 class="testpaper-title">入学考试 <br>
-                                    <small class="text-sm"> 答题人：admin</small>
+                                    <small class="text-sm"> 答题人：{$username}</small>
                                   </h1>
                                   <div class="testpaper-status">
                                       <div class="label label-success">批阅完成</div>

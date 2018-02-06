@@ -265,14 +265,15 @@ class Course extends Home
                     $progress = DB::name('study_result_v13')->where('userid', $this->user->id)
                         ->where('taskid', $v['id'])->find();
                     $data[$key]['section'][$k]['see'] = 0;
-                    if (!empty($progress) || $a == 1) {
-                        if ($progress['ratio'] == 100) {
+                    if ($a == 1) {
+                        if(!empty($progress)){
                             $data[$key]['section'][$k]['see'] = 1;
-                        } else {
+                        }else {
                             $data[$key]['section'][$k]['see'] = 1;
                             $type = $v['type'];
                             $a = 2;
                         }
+
                     }
 
                 }

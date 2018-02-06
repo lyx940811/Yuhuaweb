@@ -16,7 +16,7 @@ class Examination extends Home{
         $taskid=$this->request->param('taskid');
         $paperid=DB::name('course_task')->where('id',$taskid)->find();
         $list=Db::name('testpaper')->where('id',$paperid['paperid'])->find();
-        $this->isnotexit($list['id']);//如果已考过试，就不能再显示考试页面
+        $this->isnotexit($list['id'],$courseid);//如果已考过试，就不能再显示考试页面
         $list['count']=Db::name('testpaper_item')->where('paperId',$list['id'])->count();
         $this->assign('list',$list);
         $this->assign('taskid',$taskid);
@@ -33,7 +33,7 @@ class Examination extends Home{
         $where['t.courseid']=$courseid;
         $list=Db::name('testpaper')->where('id',$paperid['paperid'])->find();
 //        $list=Db::name('testpaper')->where('courseid',$courseid)->order('createTime desc')->field('createTime,id')->find();
-        $this->isnotexit($list['id']);//如果已考过试，就不能再显示考试页面
+        $this->isnotexit($list['id'],$courseid);//如果已考过试，就不能再显示考试页面
         if(!empty($list)){
             $where['t.id']=$list['id'];
         }
@@ -64,6 +64,7 @@ class Examination extends Home{
                 $nums+=$v['num'];
             }
         }
+        $this->assign('titletask',$paperid['title']);
         $this->assign('nums',$nums);
         $this->assign('time',$date);
         $this->assign('courseid',$courseid);
@@ -75,14 +76,12 @@ class Examination extends Home{
     }
 
     //判断是否已经考试，如果已经考试显示返回课程列表，主要是在浏览器后退时还是可以继续考试的问题
-    public function isnotexit($paperid){
+    public function isnotexit($paperid,$courseid){
         $info=Db::name('testpaper_result')->where('userid',$this->user->id)->where('paperID',$paperid)->count();
         if(!empty($info)){
-            $html="<!DOCTYPE html><html lang=\"zh_CN\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body><div>考试已完成点击 <a href='/index'>返回课程</a></div></body></html>";
-            echo $html;
-            exit;
+            $this->error('您已完成考试，正在返回课程',url('Index/course/catalogue',array('course'=>$courseid)));
+
         }
-        return 0;
     }
 //    //考试页面数据处理
     public function getExamination($courseid,$listid){
@@ -101,7 +100,6 @@ class Examination extends Home{
     }
     //考试成绩
     public function examresults(){
-
         $courseid=$this->request->param('course');
         $taskid=$this->request->param('taskid');
         $paperid=DB::name('course_task')->where('id',$taskid)->find();
@@ -131,6 +129,8 @@ class Examination extends Home{
             $this->assign('list',$list);
             $this->assign('info',$examination);
         }
+        $this->assign('titletask',$paperid['title']);
+        $this->assign('username',$this->user->username);
         $this->assign($taskid);
         return $this->fetch();
     }
@@ -181,9 +181,7 @@ class Examination extends Home{
     public function examend(){
         $info=input('post.');
         if(empty($info)){
-            $html="<!DOCTYPE html><html lang=\"zh_CN\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body><div>考试已完成点击 <a href='/index'>返回课程</a></div></body></html>";
-            echo $html;
-            exit;
+            $this->error('您已完成考试，正在返回课程',url('Index/course/catalogue',array('course'=>$info['courseid'])));
         }
         $paperid=DB::name('course_task')->where('id',$info['taskid'])->find();
 
@@ -202,8 +200,11 @@ class Examination extends Home{
         $this->assign('myscore',$test['myscore']);
         unset($test['myscore']);
         $this->assign('title',$test);
+        $this->assign('titletask',$paperid['title']);
+        $this->assign('courseid',$info['courseid']);
         $this->assign('list',$list);
         $this->assign('info',$examination);
+        $this->assign('username',$this->user->username);
         return $this->fetch();
     }
 

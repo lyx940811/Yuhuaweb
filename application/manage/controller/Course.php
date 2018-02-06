@@ -34,13 +34,14 @@ class Course extends Base{
             ->field('c.*,tf.realname')
             ->join('teacher_info tf','c.teacherIds=tf.id','LEFT')
             ->where($where)
+            ->order('c.id desc')
             ->paginate(20,false,['query'=>request()->get()]);
 
 
         $category=$this->subtree(0);
 
         $tags = Db::table('tag')->select();
-        $teacher = Db::table('teacher_info')->field('id,realname')->select();
+        $teacher = Db::table('teacher_info')->field('userid,realname')->select();
 
         $newlist = [];
         foreach ($list as $k=>$v){
@@ -115,7 +116,7 @@ class Course extends Base{
             'createdTime'   =>date('Y-m-d H:i:s',time()),
         ];
 
-        $ok = $role_table->field('title,subtitle,tags,categoryId,serializeMode,status,smallPicture,userid,about,createdTime')->insert($data);
+        $ok = $role_table->insert($data);
 
         if($ok){
             manage_log('108','003','添加课程',serialize($data),0);
