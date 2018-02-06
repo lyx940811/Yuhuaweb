@@ -306,7 +306,7 @@ class Teacherinfo extends Base{
             $tid = $_GET['tid']+0;
 
             $list = Db::table('teacher_work a')
-                ->join('teacher_info b','a.teacherid=b.id','LEFT')
+                ->join('teacher_info b','a.teacherid=b.userid','LEFT')
                 ->field('a.id,a.teacherid,a.unit,a.depart,b.realname,a.createTime,a.starttime,a.endtime,a.title,a.position')
                 ->where('teacherid='.$tid)->order('createTime desc')->paginate(20);
 

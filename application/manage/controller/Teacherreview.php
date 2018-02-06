@@ -27,7 +27,7 @@ class Teacherreview extends Base{
 
         $list = Db::name('teacher_review a')
             ->join('teacher_info b','a.teacherid=b.id','LEFT')
-            ->join('user c','a.userid=b.id','LEFT')
+            ->join('user c','a.userid=c.id','LEFT')
             ->where($where)
             ->field('a.*,b.realname,c.nickname')
             ->paginate(20,false,['query'=>request()->get()]);

@@ -35,12 +35,12 @@ class Classteacher extends Base{
         $list = Db::name('classroom a')
             ->join('category b','a.categoryId=b.code','LEFT')
             ->join('classteacher ct','a.id=ct.classid','LEFT')
-            ->join('teacher_info c','ct.teacherid=c.id','LEFT')
+            ->join('teacher_info c','ct.teacherid=c.userid','LEFT')
             ->field('ct.id,a.about,a.title,a.status,a.categoryId,a.teacherIds,a.hitNum,a.studentNum,a.createdTime,c.id as cid,c.realname,b.name,b.code,ct.type')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
 
-        $teacher = Db::table('teacher_info')->field('id,realname')->select();
+        $teacher = Db::table('teacher_info')->field('userid,realname')->select();
         $this->assign('list',$list);
         $this->assign('page',$list->render());
         $this->assign('id',$id);

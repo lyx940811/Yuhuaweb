@@ -397,7 +397,7 @@
             data:$('#form_select'+id).serialize(),
             success:function(data){
 
-                if(typeof(data.data.code) != "undefined"){
+                if(typeof(data.data) != "undefined"){
                     alert(data.msg)
                 }else{
                     if(data.code=='000'){

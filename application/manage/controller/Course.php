@@ -32,7 +32,7 @@ class Course extends Base{
         }
         $list = Db::table('course c')
             ->field('c.*,tf.realname')
-            ->join('teacher_info tf','c.teacherIds=tf.id','LEFT')
+            ->join('teacher_info tf','c.teacherIds=tf.userid','LEFT')
             ->where($where)
             ->order('c.id desc')
             ->paginate(20,false,['query'=>request()->get()]);
