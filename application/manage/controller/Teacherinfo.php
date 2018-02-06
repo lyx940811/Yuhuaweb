@@ -342,6 +342,16 @@ class Teacherinfo extends Base{
 //        echo 'ok';
     }
 
+    public function delete(){
+
+        $id = $_GET['rid']+0;
+        $ok = Db::name('teacher_info')->where("id='$id'")->delete();
+        if(is_numeric($ok)){
+            return ['info'=>'删除成功','code'=>'000'];
+        }else{
+            return ['error'=>'删除失败','code'=>'200'];
+        }
+    }
 
 
 
