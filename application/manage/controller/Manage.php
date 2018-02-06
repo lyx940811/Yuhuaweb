@@ -100,6 +100,7 @@ class Manage extends Base{
             ['typename'=>'数据统计','url'=>'/manage/statistics/index','children'=>[
                 ['url'=>'/manage/statistics/index','name'=>'数据统计'],
                 ['url'=>'/manage/studentstatistics/index','name'=>'学生统计'],
+                ['url'=>'/manage/teacherstatistics/index','name'=>'教师统计'],
             ]
             ],
             ['typename'=>'招生管理','url'=>'/manage/admission/index','children'=>[
