@@ -12,14 +12,25 @@ use think\Db;
 class Teacherstatistics extends  Base{
     public function index(){
 
+
+        $title = input('get.title');
+
+        $where = [];
+        if(!empty($title)){
+            $where['realname'] = ['like',"%$title%"];
+            $where['sn'] = ['like',"%$title%"];
+        }
+
         $list = Db::table('teacher_info')
+            ->whereOr($where)
             ->paginate(20);
 
-        $newarr = [];
         $totalmedia = 0;
         $totalcheck = 0;
         $totalanswer = 0;
         $totalask = 0;
+
+        $newarr = [];
         foreach ($list->items() as $k=>$v){
             $newarr[$k] = $v;
             $newarr[$k]['teachnum'] = Db::table('course')->where('teacherIds',$v['id'])->value('count(id) as num');
