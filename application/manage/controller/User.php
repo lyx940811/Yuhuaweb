@@ -84,11 +84,13 @@ class User extends Base{
         }
 
         $user_table = Db::name('user');
-        $is_user= $user_table->field('username')->where("username",$info['username'])->find();
+
+        $is_user= $user_table->field('username')->where('username',$info['username'])
+            ->whereOr('mobile',$info['mobile'])->find();
+
         if($is_user){
             return ['error'=>'用户名已存在','code'=>'300'];
         }
-
         $data['username'] = $info['username'];
         $data['nickname'] = $info['nickname'];
         $data['password'] = password_hash('123456',PASSWORD_DEFAULT);
