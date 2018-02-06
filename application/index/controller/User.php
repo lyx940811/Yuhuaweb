@@ -218,7 +218,11 @@ class User extends Home
             $data1['courseid']=$watch['courseid'];
             $data1['starttime']=$watch['starttime'];
             $data1['endtime']=$data['endtime'];
-            $data1['status']=$data['status'];
+            if(!empty($data['status'])){
+                $data1['status']=$data['status'];
+            }else{
+                $data1['status']=$watch['status'];
+            }
             StudyResultLog::insert($data1);
             StudyResult::update($data,['id'=>$watch['id']]);
             return json_data( 0,$this->codeMessage[0],'');
@@ -347,7 +351,6 @@ class User extends Home
                 ->where('userid',$this->user->id)
                 ->find();
             if(!empty($info)) {
-                if($info['ratio']<100){
                     $time = time();
                     $length = explode(':', $list['length']);
                     $couse_time = $length[2] + $length[1] * 60 + $length[0] * 3600;
@@ -358,25 +361,29 @@ class User extends Home
                     } else {
                         $ratio = round($watch_time / $couse_time * 100);
                     }
+                    $watchtime=$time-$info['createTime'];
                     $data = [
+                        'watchTime'=>$watchtime,
                         'ratio' => $ratio,
                     ];
-                    $save = DB::name('study_result_v13')
-                        ->where('taskid', $taskid)
-                        ->where('userid', $this->user->id)
-                        ->update($data);
-                    if (is_numeric($save)) {
+                    if($info['ratio']<100) {
+                        $save = DB::name('study_result_v13')
+                            ->where('taskid', $taskid)
+                            ->where('userid', $this->user->id)
+                            ->update($data);
+                    }
+//                    if (is_numeric($save)) {
                         $data= [
+                            'watchTime'=>$watchtime,
                             'userid' => $this->user->id,
                             'ratio' => $ratio,
                             'createTime' => $time,
                             'taskid' => $taskid,
                         ];
                         $save1 = DB::name('study_result_v13_log')->insert($data);
-                    } else {
-                        return json_data(0, $this->codeMessage[0], '');
-                    }
-                }
+//                    } else {
+//                        return json_data(0, $this->codeMessage[0], '');
+//                    }
 
             }else{
                 return json_data(0,$this->codeMessage[0],'');
