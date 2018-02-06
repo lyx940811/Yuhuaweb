@@ -565,7 +565,7 @@
         });
     }
 
-    function deleteR(id) {
+function deleteR(id) {
         if(confirm('确定要删除吗')){
             $.get("{:url('delete')}?rid="+id,function (data) {
                 if(data.code=='000'){

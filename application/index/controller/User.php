@@ -220,7 +220,7 @@ class User extends Home
             $data1['status']=$data['status'];
             StudyResultLog::insert($data1);
             StudyResult::update($data,['id'=>$watch['id']]);
-            return json_data(0,$this->codeMessage[0],'');
+            return json_data( 0,$this->codeMessage[0],'');
         }
         else{
             return json_data(184,$this->codeMessage[184],'');
