@@ -1018,12 +1018,21 @@ class User extends Controller
     }
 
 
-    public function logout()
+
+    public function recordtime()
     {
-        if($login_log = Db::name('user_login_log')->where('userid',$this->user->id)->where('LogoutTime',null)->order('LoginTime desc')->find()){
-            $now_time  = time();
-            Db::name('user_login_log')->where('id',$login_log['id'])->update(['LogoutTime'=>$now_time,'LoginAllTime'=>$now_time-$login_log['LoginTime']]);
+        switch ($this->data['type']){
+            case 1:
+                Db::name('user_login_log')->insert(['userid'=>$this->user->id,'LoginTime'=>time()]);
+                break;
+            case 0:
+                if($login_log = Db::name('user_login_log')->where('userid',$this->user->id)->where('LogoutTime',null)->order('LoginTime desc')->find()){
+                    $now_time  = time();
+                    Db::name('user_login_log')->where('id',$login_log['id'])->update(['LogoutTime'=>$now_time,'LoginAllTime'=>$now_time-$login_log['LoginTime']]);
+                }
+                break;
         }
+
         return json_data(0,$this->codeMessage[0],'');
     }
 
