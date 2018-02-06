@@ -33,6 +33,7 @@ class Certificate extends Base{
             ->join('category d','c.categoryID=d.code','LEFT')
             ->field('a.id,a.pic,b.realname,b.idcard,b.id as bid,d.name,c.sn,c.name as cname,c.level,c.unit,a.createtime,a.pic,d.id as did')
             ->where($where)
+            ->order('a.id desc')
             ->paginate(20,false,['query'=>request()->get()]);
 
         $userprofile = Db::table('user_profile')->field("id,realname")->select();
