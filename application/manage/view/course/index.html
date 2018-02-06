@@ -105,7 +105,7 @@
                                             <select name="teacherIds" id="teacherIds" class="form-control">
                                                 <option value="">--请选择--</option>
                                                 {volist name="teacher" id="t"}
-                                                <option value="{$t.id}" {if condition="$vo['teacherIds'] eq $t['id']"}selected="selected"{/if}>{$t.realname}</option>
+                                                <option value="{$t.userid}" {if condition="$vo['teacherIds'] eq $t['userid']"}selected="selected"{/if}>{$t.realname}</option>
                                                 {/volist}
                                             </select>
                                         </div>
