@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 
+use think\Cache;
 use think\Controller;
 use think\Config;
 use think\Loader;
@@ -14,6 +15,10 @@ class Index extends Home
     public function __construct()
     {
         parent::__construct();
+    }
+    public function cache()
+    {
+        var_dump(Cache::get('data'));
     }
     /**
      * 首页

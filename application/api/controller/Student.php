@@ -102,7 +102,9 @@ class Student extends User
      * 发起一个问答
      */
     public function editask(){
-        $id = $this->data['id'];
+        if(!empty($this->data['id'])){
+            $id = $this->data['id'];
+        }
         $data = [
             'title'         =>  $this->data['title'],
             'content'       =>  $this->data['content'],
@@ -116,7 +118,7 @@ class Student extends User
         if(!$validate->check($data)){
             return json_data(130,$validate->getError(),'');
         }
-        if(!empty($id)){
+        if(isset($id)){
             if(!Asklist::get($id)){
                 return json_data(500,$this->codeMessage[500],'');
             }

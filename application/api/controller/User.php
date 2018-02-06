@@ -989,6 +989,17 @@ class User extends Controller
         ];
         if($this->data['ratio']==100){
             $log_result['is_done'] = 1;
+            //添加获得学分
+            $point = Db::name('course_task')->where('id',$this->data['taskid'])->value('point');
+            $pointData = [
+                'userid'        =>  $this->user->id,
+                'taskid'        =>  $this->data['taskid'],
+                'point'         =>  $point,
+            ];
+            if(!Db::name('get_point_log')->where($pointData)->find()){
+                $pointData['createTime']    =  time();
+                Db::name('get_point_log')->insert($pointData);
+            }
         }
         //study_result_v13只存最高进度
         if($study_result = Db::name('study_result_v13')->where(['userid'=>$this->user->id,'taskid'=>$this->data['taskid'],'is_del'=>0])->find()){
@@ -998,13 +1009,25 @@ class User extends Controller
             }
         }
         else{
-            Db::name('study_result_v13')->insert(['userid'=>$this->user->id,'taskid'=>$this->data['taskid'],'is_del'=>0,'ratio'=>$this->data['ratio'],'createTime'=>time()]);
+            $log_result['userid'] = $this->user->id;
+            $log_result['taskid'] = $this->data['taskid'];
+            Db::name('study_result_v13')->insert($log_result);
         }
 
         //study_result_v13_log存所有的观看记录
         $log_result['userid'] = $this->user->id;
         $log_result['taskid'] = $this->data['taskid'];
         Db::name('study_result_v13_log')->insert($log_result);
+        return json_data(0,$this->codeMessage[0],'');
+    }
+
+
+    public function logout()
+    {
+        if($login_log = Db::name('user_login_log')->where('userid',$this->user->id)->where('LogoutTime',null)->order('LoginTime desc')->find()){
+            $now_time  = time();
+            Db::name('user_login_log')->where('id',$login_log['id'])->update(['LogoutTime'=>$now_time,'LoginAllTime'=>$now_time-$login_log['LoginTime']]);
+        }
         return json_data(0,$this->codeMessage[0],'');
     }
 

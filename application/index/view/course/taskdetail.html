@@ -49,8 +49,8 @@
             </script>
             <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="100%" height="100%" poster=""  data-setup="{}">
                 {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
-                <source src="{$task->mediaSource}" type='video/mp4' />
-                <!-- <source src="https://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' /> -->
+                <!--<source src="{$task->mediaSource}" type='video/mp4' />-->
+                 <source src="https://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' />
                 {else /}
                 <source src="{$task->mediaSource}" type='video/flv' />
                 {/if}
@@ -62,18 +62,37 @@
             
             <script>
                     //关闭浏览器执行函数
-                    $(window).unload(function() {
-                        console.log(111)
-                    });
+//                    $(window).unload(function() {
+//                        console.log(111)
+//                    });
                     var myPlayer = videojs('example_video_1',{});
                     videojs("example_video_1").ready(function(){
                         var myPlayer = this;
                         myPlayer.on('timeupdate', function () { 
                             //当前播放时间点
-                            myPlayer.currentTime(); //获取当前播放时间点
-                            myPlayer.duration(); //获取视频总时长
+                            var watchTime = myPlayer.currentTime(); //获取当前播放时间点
+                            var videoTime = myPlayer.duration(); //获取视频总时长
+                            var thistaskid = {$task->id};
+                            var ratio = watchTime/videoTime;
+                            watchTime = Number(watchTime);
+                            ratio = ratio.toFixed(2)*100;
+
+                            window.onbeforeunload = function(e){
+                            $.post(
+                                "{:url('index/user/endwatch_v13')}",
+                                {'watchTime':watchTime,'taskid':thistaskid,'ratio':ratio},
+                                function(data){
+                                    console.log(data);
+                                    if(data['code']!=0){
+                //                        alert('记录学习时间出错，请重新进入');
+                                    }
+                                },
+                                "json"
+                            );
+                            };
+
                         });
-                        myPlayer.currentTime(10); // 设置播放时间点
+//                        myPlayer.currentTime(10); // 设置播放时间点
                     });
                 </script>
           <!--视频-->
@@ -476,44 +495,44 @@
                 {/present}
                 });
 
-        $('.dashboard-body').click(function(){
-            {present name="user"}
-                var courseid = {$task.courseId};
-                var chapterid = {$task.chapterid};
-                var taskid = {$task.id};
-                $.post(
-                    "{:url('index/user/startwatch')}",
-                    {'courseid':courseid,'chapterid':chapterid,'taskid':taskid},
-                    function(data){
-                        console.log(data);
-                        if(data['code']!=0){
-                            alert('记录学习时间出错，请重新进入');
-                        }
-                    },
-                    "json"
-                );
-            {/present}
+//        $('.dashboard-body').click(function(){
+//            {present name="user"}
+//                var courseid = {$task.courseId};
+//                var chapterid = {$task.chapterid};
+//                var taskid = {$task.id};
+//                $.post(
+//                    "{:url('index/user/startwatch')}",
+//                    {'courseid':courseid,'chapterid':chapterid,'taskid':taskid},
+//                    function(data){
+//                        console.log(data);
+//                        if(data['code']!=0){
+//                            alert('记录学习时间出错，请重新进入');
+//                        }
+//                    },
+//                    "json"
+//                );
+//            {/present}
+//
+//        });
 
-        });
-
-        window.onbeforeunload = function(e){
-            {present name="user"}
-            var courseid = {$task.courseId};
-            var chapterid = {$task.chapterid};
-            var taskid = {$task.id};
-            $.post(
-                "{:url('index/user/endwatch')}",
-                {'courseid':courseid,'chapterid':chapterid,'taskid':taskid},
-                function(data){
-                    console.log(data);
-                    if(data['code']!=0){
-//                        alert('记录学习时间出错，请重新进入');
-                    }
-                },
-                "json"
-            );
-            {/present}
-        };
+//        window.onbeforeunload = function(e){
+//            {present name="user"}
+//            var courseid = {$task.courseId};
+//            var chapterid = {$task.chapterid};
+//            var taskid = {$task.id};
+//            $.post(
+//                "{:url('index/user/endwatch')}",
+//                {'courseid':courseid,'chapterid':chapterid,'taskid':taskid},
+//                function(data){
+//                    console.log(data);
+//                    if(data['code']!=0){
+////                        alert('记录学习时间出错，请重新进入');
+//                    }
+//                },
+//                "json"
+//            );
+//            {/present}
+//        };
 
         //文件下载前保存数据
         $('.link-darker').click(function(){

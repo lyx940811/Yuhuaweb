@@ -10,6 +10,7 @@ use app\index\model\StudyResult;
 use app\index\model\StudyResultLog;
 use app\index\model\UserProfile;
 use app\index\model\TeacherInfo;
+use app\index\model\CourseTask;
 class User extends Home
 {
     public $LogicUser;
@@ -386,4 +387,41 @@ class User extends Home
         }
         return 1;
     }
+
+
+    public function endwatch_v13()
+    {
+        $data = $this->request->param();
+        cache('data',$data);
+        if(!CourseTask::get($data['taskid'])){
+            return json_data(200,$this->codeMessage[200],'');
+        }
+        $log_result = [
+            'ratio'         =>  $data['ratio'],
+            'watchTime'     =>  $data['watchTime'],
+            'createTime'    =>  time(),
+        ];
+        if($data['ratio']==100){
+            $log_result['is_done'] = 1;
+        }
+        //study_result_v13只存最高进度
+        if($study_result = Db::name('study_result_v13')->where(['userid'=>$this->user->id,'taskid'=>$data['taskid'],'is_del'=>0])->find()){
+            if($data['ratio']>$study_result['ratio']){
+                $log_result['createTime'] = time();
+                Db::name('study_result_v13')->where(['userid'=>$this->user->id,'taskid'=>$data['taskid'],'is_del'=>0])->update($log_result);
+            }
+        }
+        else{
+            $log_result['userid'] = $this->user->id;
+            $log_result['taskid'] = $data['taskid'];
+            Db::name('study_result_v13')->insert($log_result);
+        }
+
+        //study_result_v13_log存所有的观看记录
+        $log_result['userid'] = $this->user->id;
+        $log_result['taskid'] = $data['taskid'];
+        Db::name('study_result_v13_log')->insert($log_result);
+        return json_data(0,$this->codeMessage[0],'');
+    }
+
 }

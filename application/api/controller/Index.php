@@ -83,8 +83,13 @@ class Index extends Home
             ->select();
         //需要对在学人数和评论进行计数
         foreach ( $course as &$c ){
-            $people = Db::name('study_result')->where('courseid',$c['id'])->group('userid')->select();
-            $c['learnNum']      = count($people);
+            $learnNum = Db::name('study_result_v13')
+                ->alias('sr')
+                ->join('course_task ct','sr.taskid=ct.id')
+                ->where('ct.courseId',$c['id'])
+                ->group('sr.userid')
+                ->count();
+            $c['learnNum'] = $learnNum;
             $c['commentsNum']   = Db::name('course_review')->where('courseid',$c['id'])->count();
 
             $c['price']==0.00?$c['is_free'] = 1:$c['is_free'] = 0;
@@ -146,8 +151,13 @@ class Index extends Home
 
         //需要对在学人数和评论进行计数
         foreach ( $course as &$c ){
-            $people = Db::name('study_result')->where('courseid',$c['id'])->group('userid')->select();
-            $c['learnNum']      = count($people);
+            $learnNum = Db::name('study_result_v13')
+                ->alias('sr')
+                ->join('course_task ct','sr.taskid=ct.id')
+                ->where('ct.courseId',$c['id'])
+                ->group('sr.userid')
+                ->count();
+            $c['learnNum'] = $learnNum;
             $c['commentsNum']   = Db::name('course_review')->where('courseid',$c['id'])->count();
 
             $c['price']==0.00?$c['is_free'] = 1:$c['is_free'] = 0;

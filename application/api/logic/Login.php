@@ -4,6 +4,7 @@ namespace app\api\logic;
 
 use app\index\model\User as UserModel;
 use app\index\model\UserProfile;
+use think\Db;
 use think\Request;
 use think\Loader;
 use think\Validate;
@@ -104,6 +105,8 @@ class Login extends Base
                 $user->save($user_token);
                 unset($user_token['expiretime']);
                 $user_token['expire'] = 7*86400;
+                Db::name('user_login_log')->insert(['userid'=>$user->id,'LoginTime'=>time()]);
+
                 return json_data(0,$this->codeMessage[0],$user_token);
             }
             else{
