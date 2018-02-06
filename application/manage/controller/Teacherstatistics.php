@@ -25,11 +25,6 @@ class Teacherstatistics extends  Base{
             ->whereOr($where)
             ->paginate(20);
 
-        $totalmedia = 0;
-        $totalcheck = 0;
-        $totalanswer = 0;
-        $totalask = 0;
-
         $newarr = [];
         foreach ($list->items() as $k=>$v){
             $newarr[$k] = $v;
@@ -37,17 +32,30 @@ class Teacherstatistics extends  Base{
             $newarr[$k]['medianum'] = Db::table('course_task a')
                 ->join('course b','a.courseId=b.id','LEFT')->where('b.teacherIds',$v['id'])
                 ->value('count(a.id) as num');
-            $totalmedia +=$newarr[$k]['medianum'];
             $newarr[$k]['checknum'] = Db::table('testpaper_result')->where('checkTeacherId',$v['id'])->value('count(id) as num');
-            $totalcheck +=$newarr[$k]['checknum'];
             $newarr[$k]['answernum'] = Db::table('ask_answer')->where('answerUserId',$v['id'])->value('count(id) as num');
-            $totalanswer += $newarr[$k]['answernum'];
             $newarr[$k]['asknum'] = Db::table('asklist')->where('userID',$v['id'])->value('count(id) as num');
-            $totalask +=$newarr[$k]['asknum'];
         }
 
 
-        $totalteacher = $list->total();
+        $totalteacher = 0;
+        $totalmedia = 0;
+        $totalcheck = 0;
+        $totalanswer = 0;
+        $totalask = 0;
+        $totalLoginNum = 0;
+
+//        $newarr2 = [];
+        $alllist = Db::table('teacher_info')->select();
+        foreach ($alllist as $k=>$v){
+            $totalteacher ++;
+            $totalmedia += Db::table('course_task a')
+                ->join('course b','a.courseId=b.id','LEFT')->where('b.teacherIds',$v['id'])
+                ->value('count(a.id) as num');
+            $totalcheck += Db::table('testpaper_result')->where('checkTeacherId',$v['id'])->value('count(id) as num');
+            $totalanswer += Db::table('ask_answer')->where('answerUserId',$v['id'])->value('count(id) as num');
+            $totalask += Db::table('asklist')->where('userID',$v['id'])->value('count(id) as num');
+        }
 
 
         $this->assign('list',$newarr);
