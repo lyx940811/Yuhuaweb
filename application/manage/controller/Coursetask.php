@@ -33,7 +33,6 @@ class Coursetask extends Base{
             ->where($where)
             ->order('a.id desc')
             ->paginate(20,false,['query'=>request()->get()]);
-//            ->paginate(20,['query'=>$info]);
 
         $course = Db::table('course')->field('id,title')->where('id',$id)->find();
 
@@ -86,6 +85,13 @@ class Coursetask extends Base{
             return ['error'=>$error,'code'=>'200'];
         }
 
+        $type = isset($info['type'])?$info['type']:'url';
+        $paperid = isset($info['paperid'])?$info['paperid']:0;
+        if($type=='test' && !$paperid || $type=='exam' && !$paperid ){
+
+            return ['error'=>'类型为测验或考试时，必须选择试卷','code'=>'200'];
+        }
+
         $role_table = Db::name('course_task');
 
         $data = [
@@ -94,9 +100,9 @@ class Coursetask extends Base{
             'isFree'=>isset($info['isFree'])?$info['isFree']:0,
             'point'=>$info['point'],
             'sort'=>$info['sort'],
-            'paperid'=>isset($info['paperid'])?$info['paperid']:0,
+            'paperid'=>$paperid,
             'mode'=>$info['mode'],
-            'type'=>isset($info['type'])?$info['type']:'url',
+            'type'=>$type,
             'length'=>isset($info['length'])?$info['length']:0,
             'mediaSource'=>isset($info['mediaSource'])?$info['mediaSource']:'',
             'courseId'=>$info['courseId']+0,
@@ -143,6 +149,13 @@ class Coursetask extends Base{
             return ['error'=>$error,'code'=>'200'];
         }
 
+        $type = isset($info['type'])?$info['type']:'url';
+        $paperid = isset($info['paperid'])?$info['paperid']:0;
+        if($type=='test' && !$paperid || $type=='exam' && !$paperid ){
+
+            return ['error'=>'类型为测验或考试时，必须选择试卷','code'=>'200'];
+        }
+
         $role_table = Db::name('course_task');
 
         $id = $info['rid']+0;
@@ -159,8 +172,8 @@ class Coursetask extends Base{
             'mode'=>$info['mode'],
             'point'=>$info['point'],
             'sort'=>$info['sort'],
-            'paperid'=>isset($info['paperid'])?$info['paperid']:0,
-            'type'=>isset($info['type'])?$info['type']:'url',
+            'paperid'=>$paperid,
+            'type'=>$type,
             'length'=>isset($info['length'])?$info['length']:0,
             'mediaSource'=>isset($info['mediaSource'])?$info['mediaSource']:'',
             'courseId'=>$info['courseId']+0,
