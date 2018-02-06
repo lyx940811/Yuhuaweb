@@ -240,6 +240,7 @@ class User extends Controller
         return $res;
     }
 
+
     /**
      * 【部分APP功能】
      */
@@ -256,12 +257,7 @@ class User extends Controller
         //专业名
         !empty($this->user->stuclass->major->name)?$major=$this->user->stuclass->major->name:$major='还未分配专业';
         //学分
-        if($credit = $this->user->point()->field('point')->select()){
-            $credit = array_column($credit,'point');
-            $credit = array_sum($credit);
-        }else{
-            $credit = 0;
-        }
+        $credit = $this->user->point()->sum('point');
 
         $data = [
             'username'  =>  $this->user->username,
