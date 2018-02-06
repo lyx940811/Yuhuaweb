@@ -17,6 +17,12 @@
     <link rel="stylesheet" href="__CSS__student/student-index.css">
     <link rel="stylesheet" href="__CSS__student/quill.snow.css">
     <link rel="stylesheet" href="__CSS__video-js.css">
+    <script src="__JS__jquery-1.11.3.min.js"></script>
+    <style>
+            .vjs-progress-control.vjs-control{
+                display: none;
+            }
+    </style>
 </head>
 <body class="es-main-default es-nav-default ">
   <div id="js-hidden-data">
@@ -44,6 +50,7 @@
             <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="100%" height="100%" poster=""  data-setup="{}">
                 {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
                 <source src="{$task->mediaSource}" type='video/mp4' />
+                <!-- <source src="https://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' /> -->
                 {else /}
                 <source src="{$task->mediaSource}" type='video/flv' />
                 {/if}
@@ -52,6 +59,23 @@
                 <track kind="subtitles" src="demo.captions.vtt" srclang="en" label="English"> -->
                 <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
             </video>
+            
+            <script>
+                    //关闭浏览器执行函数
+                    $(window).unload(function() {
+                        console.log(111)
+                    });
+                    var myPlayer = videojs('example_video_1',{});
+                    videojs("example_video_1").ready(function(){
+                        var myPlayer = this;
+                        myPlayer.on('timeupdate', function () { 
+                            //当前播放时间点
+                            myPlayer.currentTime(); //获取当前播放时间点
+                            myPlayer.duration(); //获取视频总时长
+                        });
+                        myPlayer.currentTime(10); // 设置播放时间点
+                    });
+                </script>
           <!--视频-->
           <!-- <div style="width: 100%; height: 100%; ">
             <script src="__JS__sewise.player.min.js"></script>
@@ -373,7 +397,6 @@
             </div>
         </div>
     </div>
-  <script src="__JS__jquery-1.11.3.min.js"></script>
   <script src="__JS__bootstrap.js"></script>
   <script src="__JS__student/quill.js"></script>
   <script src="__JS__course.js"></script>
