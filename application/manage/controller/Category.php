@@ -34,7 +34,7 @@ class Category extends Base{
         }
 
         $list = Db::name('category')
-            ->field('id,name,code,parentcode,studyTimes,point,createtime,Flag,description')
+            ->field('id,name,code,parentcode,studyTimes,point,createtime,Flag,description,grade')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
         $this->assign('list',$list);
@@ -184,6 +184,17 @@ class Category extends Base{
             return ['info'=>'禁用成功','code'=>'000'];
         }else{
             return ['error'=>'禁用失败','code'=>'200'];
+        }
+    }
+
+    public function delete(){
+
+        $id = $_GET['rid']+0;
+        $ok = Db::name('category')->where("id='$id'")->delete();
+        if(is_numeric($ok)){
+            return ['info'=>'删除成功','code'=>'000'];
+        }else{
+            return ['error'=>'删除失败','code'=>'200'];
         }
     }
 

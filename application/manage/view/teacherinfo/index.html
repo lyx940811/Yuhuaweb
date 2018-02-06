@@ -33,11 +33,9 @@
         <li class="active"><a href="{:url('')}" style="cursor: pointer">刷新列表</a></li>
     </ul>
     <div class="pull-right">
-        {php}
-        if(check($uid,'/manage/teacherinfo/add')){
-            echo '<a class="btn btn-primary" onclick="clearInput()" data-toggle="modal" data-target="#myModal">新增教师</a>';
-        }
-        {/php}
+        {if condition="check($uid,'/manage/teacherinfo/add')"}
+           <a class="btn btn-primary" onclick="clearInput()" data-toggle="modal" data-target="#myModal">新增教师</a>
+        {/if}
 
     </div>
 
@@ -64,20 +62,15 @@
             <td>{$vo.mobile}</td>
             <td>{php}echo isset($vo['work'][0])?$vo['work'][0]['title']:'';{/php}</td>
             <td>
-                {php}
-                    if(check($uid,'/manage/teacherinfo/edit')){
-                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
-                        echo '<strong>/</strong>';
-                    }
-                    if(check($uid,'/manage/teacherinfo/addunit')){
-                        echo '<a href="'.url('addunit').'?tid='.$vo['id'].'">添加工作信息</a>';
-                        echo '<strong>/</strong>';
-                    }
-
-                    if(check($uid,'/manage/teacherinfo/delete')){
-                        echo '<a href="#" onclick="enable('.$vo['id'].');">删除</a>';
-                    }
-                {/php}
+                {if condition="check($uid,'/manage/teacherinfo/edit')"}
+                    <a href="#" data-toggle="modal" data-target="#myModal_edit{$vo.id}">编辑</a>
+                {/if}
+                {if condition="check($uid,'/manage/teacherinfo/addunit')"}
+                    <a href="'.url('addunit').'?tid={$vo.id}">添加工作信息</a>
+                {/if}
+                {if condition="check($uid,'/manage/teacherinfo/delete')"}
+                    <a href="#" onclick="deleteR({$vo.id});">删除</a>
+                {/if}
                 <!--修改开始-->
                 <!-- 模态框 -->
                 <div class="modal fade" id="myModal_edit{$vo.id}" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
@@ -572,12 +565,12 @@
         });
     }
 
-    function enable(id) {
+function deleteR(id) {
         if(confirm('确定要删除吗')){
-            $.get("{:url('enable')}?rid="+id,function (data) {
+            $.get("{:url('delete')}?rid="+id,function (data) {
                 if(data.code=='000'){
                     alert(data.info)
-                    $('#myModal2').modal('hide')
+                    window.location.reload();
                 }else{
 
                 }
