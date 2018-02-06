@@ -27,9 +27,9 @@ class Returnvisit extends Base{
         }
 
         $list = Db::name('return_visit a')
-            ->join('user b','a.userid=b.id','LEFT')
+            ->join('user b','a.fromUserID=b.id','LEFT')
             ->where($where)
-            ->field('a.*,b.nickname')
+            ->field('a.*,b.username uname')
             ->order('a.id desc')
             ->paginate(20,false,['query'=>request()->get()]);
 
@@ -147,6 +147,19 @@ class Returnvisit extends Base{
             return ['info'=>'禁用成功','code'=>'000'];
         }else{
             return ['error'=>'禁用失败','code'=>'200'];
+        }
+    }
+
+    public function delete(){
+
+        $id = $_GET['rid']+0;
+
+        $ok = Db::name('return_visit')->where("id='$id'")->delete();
+
+        if($ok){
+            return ['info'=>'删除成功','code'=>'000'];
+        }else{
+            return ['error'=>'删除失败','code'=>'200'];
         }
     }
 
