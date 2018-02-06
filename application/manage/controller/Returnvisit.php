@@ -27,9 +27,9 @@ class Returnvisit extends Base{
         }
 
         $list = Db::name('return_visit a')
-            ->join('user b','a.userid=b.id','LEFT')
+            ->join('user b','a.fromUserID=b.id','LEFT')
             ->where($where)
-            ->field('a.*,b.nickname')
+            ->field('a.*,b.username uname')
             ->order('a.id desc')
             ->paginate(20,false,['query'=>request()->get()]);
 

@@ -20,11 +20,9 @@
         <li class="active"><a href="{:url('')}" style="cursor: pointer">回首页</a></li>
     </ul>
     <div class="pull-right">
-        {php}
-        if(check($uid,'/manage/returnvisit/add')){
-            echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModal">创建回访</a>';
-        }
-        {/php}
+        {if condition="check($uid,'/manage/returnvisit/add')"}
+           <a class="btn btn-primary" data-toggle="modal" data-target="#myModal">创建回访</a>
+        {/if}
 
     </div>
 
@@ -42,20 +40,17 @@
 
         {volist name="list" id="vo"}
         <tr>
-            <td>{$vo.nickname}</td>
+            <td>{$vo.uname}</td>
             <td>{$vo.username}</td>
             <td>{$vo.visitTime}</td>
             <td>{$vo.content}</td>
             <td>
-                {php}
-                    if(check($uid,'/manage/returnvisit/edit')){
-                        echo '<a href="#" data-toggle="modal" data-target="#myModal_edit'.$vo['id'].'">编辑</a>';
-                        echo '<strong>/</strong>';
-                    }
-                    if(check($uid,'/manage/returnvisit/delete')){
-                        echo '<a href="#" onclick="enable('.$vo['id'].');">删除</a>';
-                    }
-                {/php}
+                {if condition="check($uid,'/manage/returnvisit/edit')"}
+                    <a href="#" data-toggle="modal" data-target="#myModal_edit{$vo.id}">编辑</a>
+                {/if}
+                {if condition="check($uid,'/manage/returnvisit/delete')"}
+                    <a href="#" onclick="enable({$vo.id});">删除</a>
+                {/if}
                 <!--新增-->
                 <!-- 模态框 -->
                 <div class="modal fade" id="myModal_edit{$vo.id}">
