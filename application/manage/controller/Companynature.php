@@ -122,9 +122,9 @@ class Companynature extends Base{
         if(is_numeric($ok)){
 
             manage_log('104','003','添加广告',serialize($data),0);
-            return ['info'=>'添加成功','code'=>'000'];
+            return ['info'=>'修改成功','code'=>'000'];
         }else{
-            return ['error'=>'添加失败','code'=>'400'];
+            return ['error'=>'修改失败','code'=>'400'];
         }
     }
 
