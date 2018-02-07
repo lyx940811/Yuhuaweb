@@ -3,7 +3,31 @@
 {include file="manage/header" /}
 <body>
 <div class="container-fluid">
-
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading"><h2>学生统计</h2></div>
+        <div class="panel-body">
+        <div class="row">
+            <div class="col-md-1">
+                <div>学生总数 {$title.alluser}人</div>
+            </div>
+            <div class="col-md-1">
+                <div>登录总时长 {$title.loginalltime}时</div>
+            </div>
+            <div class="col-md-1">
+                <div>学习总时长 {$title.studyalltime}时</div>
+            </div>
+            <div class="col-md-1">
+                <div>作业完成数量 {$title.testpaper}次</div>
+            </div>
+            <div class="col-md-1">
+                <div>回帖总数 {$title.replies}次</div>
+            </div>
+            <div class="col-md-1">
+                <div>发帖总数 {$title.postall}次</div>
+            </div>
+        </div>
+    </div>
     <div class="well clearfix">
         <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
             <div class="form-group">
@@ -26,7 +50,7 @@
             </div>
             <div class="form-group">
 
-                <input type="text" name="name" class="form-control" value="" placeholder="请输入关键字"/>
+                <input type="text" name="name" class="form-control" value="{$search.name}" placeholder="请输入关键字"/>
             </div>
             <button type="submit" class="btn btn-primary">搜索</button>
         </form>
@@ -62,8 +86,8 @@
             <td>{$vo.idcard}</td>
             <td>{$vo.name}</td>
             <td>{$vo.title}</td>
-            <td>--</td>
-            <td>--</td>
+            <td>{$vo.loginnum}</td>
+            <td>{$vo.logintime}</td>
             <td>{$vo.studytime}</td>
             <td>{$vo.courseporgress}</td>
             <td>{$vo.score}</td>
