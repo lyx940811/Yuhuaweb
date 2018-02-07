@@ -66,9 +66,15 @@
         <tr>
             <td>{$vo.sn}</td>
             <td>{$vo.realname}</td>
-            <td>--</td>
-            <td>--</td>
-            <td>--</td>
+            <td>{$vo.totalLoginNum.num}</td>
+            <td>{$vo.totalLoginNum.alltime?$vo.totalLoginNum.alltime:'0'}分</td>
+            <td>
+                {if condition="$vo['totalLoginNum']['num'] eq 0 || $vo['totalLoginDay']['num'] eq 0"}
+                0
+                {else/}
+                {$vo.totalLoginNum.num/$vo.totalLoginDay.num|ceil}
+                {/if}
+            </td>
             <td>{$vo.teachnum}</td>
             <td>{$vo.medianum}</td>
             <td>--</td>

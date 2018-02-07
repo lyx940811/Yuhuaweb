@@ -26,6 +26,7 @@ class Teacherstatistics extends  Base{
             ->paginate(20);
 
         $newarr = [];
+        $totaltime = 0;
         foreach ($list->items() as $k=>$v){
             $newarr[$k] = $v;
             $newarr[$k]['teachnum'] = Db::table('course')->where('teacherIds',$v['id'])->value('count(id) as num');
@@ -35,6 +36,8 @@ class Teacherstatistics extends  Base{
             $newarr[$k]['checknum'] = Db::table('testpaper_result')->where('checkTeacherId',$v['id'])->value('count(id) as num');
             $newarr[$k]['answernum'] = Db::table('ask_answer')->where('answerUserId',$v['id'])->value('count(id) as num');
             $newarr[$k]['asknum'] = Db::table('asklist')->where('userID',$v['id'])->value('count(id) as num');
+            $newarr[$k]['totalLoginNum'] = Db::table('user_login_log')->where('userid',$v['id'])->field('count(id) as num,sum(loginAllTime) as alltime')->find();
+            $newarr[$k]['totalLoginDay'] = Db::table('user_login_log')->where('userid',$v['id'])->field("DATE_FORMAT(FROM_UNIXTIME(LoginTime),'%Y%m%d') days,COUNT(id) as num")->group('days')->find();
         }
 
 
@@ -43,7 +46,6 @@ class Teacherstatistics extends  Base{
         $totalcheck = 0;
         $totalanswer = 0;
         $totalask = 0;
-        $totalLoginNum = 0;
 
 //        $newarr2 = [];
         $alllist = Db::table('teacher_info')->select();
@@ -55,6 +57,7 @@ class Teacherstatistics extends  Base{
             $totalcheck += Db::table('testpaper_result')->where('checkTeacherId',$v['id'])->value('count(id) as num');
             $totalanswer += Db::table('ask_answer')->where('answerUserId',$v['id'])->value('count(id) as num');
             $totalask += Db::table('asklist')->where('userID',$v['id'])->value('count(id) as num');
+
         }
 
 
