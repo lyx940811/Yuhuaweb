@@ -15,14 +15,22 @@ class Studentstatistics extends Base{
     public function index(){
         $search=input('get.');
         $where=[];
+        $search1=[
+            'class'=>'',
+            'majors'=>'',
+            'name'=>'',
+        ];
         if(!empty($search['class'])){
+            $search1['class']=$search['class'];
             $where['cr.id']=$search['class'];
         }
         if(!empty($search['majors'])){
+            $search1['majors']=$search['majors'];
             $where['c.id']=$search['majors'];
         }
         if(!empty($search['name'])){
-            $where['cr.realname']=['like|idcard',"%{$search['name']}%"];
+            $search1['name']=$search['name'];
+            $where['up.realname']=['like',"%{$search['name']}%"];
         }
         $data=DB::table('user_profile up')
             ->join('student_school ss','up.userid=ss.userid')
@@ -36,9 +44,11 @@ class Studentstatistics extends Base{
         $info=$this->studentstatistics($data);
         $major=DB::table('category')->field('id,name')->select();
         $class=Db::table('classroom')->field('id,title')->select();
+        $this->assign('title',$title);
         $this->assign('major',$major);
         $this->assign('class',$class);
         $this->assign('info',$info);
+        $this->assign('search',$search1);
         $this->assign('page',$data->render());
         return $this->fetch();
     }
@@ -66,7 +76,7 @@ class Studentstatistics extends Base{
             $mystudy=Db::table('study_result_v13')->where('userid',$value['userid'])->where('ratio',100)->column('taskid');
             $courseporgress='0%';
             $countcourse=count($mystudy);
-            if($countcourse>0){
+            if($countcourse>0 && $mycourse>0){
                 $courseporgress=round($countcourse/$mycourse*100,2).'%';
             }
             $info[$key]['courseporgress']=$courseporgress;
@@ -82,6 +92,11 @@ class Studentstatistics extends Base{
             $info[$key]['post']=Db::table('asklist')->where('userid',$value['userid'])->count();
             //回帖数量
             $info[$key]['replies']=Db::table('ask_answer')->where('answerUserID',$value['userid'])->count();
+            //登录总时长
+            $logintime=Db::table('user_login_log')->where('userid',$value['userid'])->sum('loginAllTime');
+            $info[$key]['logintime']=round($logintime/60/60,2);
+            //登录次数
+            $info[$key]['loginnum']=Db::table('user_login_log')->where('userid',$value['userid'])->count();
         }
         return $info;
     }
@@ -90,9 +105,15 @@ class Studentstatistics extends Base{
     public function getTitle(){
         $all=Db::table('user_profile')->column('userid');//所有学生的userid
         $data['alluser']=count($all);//学生总数
+        $studyalltime=DB::table('study_result_v13_log srl')
+                ->sum('watchTime');
+        $data['studyalltime']=round($studyalltime/60/60,2);
         $data['postall']=Db::table('asklist')->where('userid','in',$all)->count();//发帖总数
         $data['replies']=Db::table('ask_answer')->where('answerUserID','in',$all)->count();//回帖总数
         $data['testpaper']=Db::table('testpaper_result')->count();//作业完成数量
+        //登录总时长
+        $logintime=Db::table('user_login_log')->sum('loginAllTime');
+        $data['loginalltime']=round($logintime/60/60,2);
         return $data;
     }
 }

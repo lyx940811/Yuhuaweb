@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+{include file="manage/header" /}
+<body>
+<div class="container-fluid">
+    <div class="well">
+        <ol class="breadcrumb">
+            <li><a href="{:url('index')}">课程统计</a></li>
+            <li><a href="{:url('coursedetail',array('courseid'=>$courseid))}">课程详情</a></li>
+            <li class="active">学习记录详情</li>
+        </ol>
+    </div>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading"><h2>{$title.username}</h2></div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-1">
+                    <div>{$title.course} </div>
+                </div>
+                <div class="col-md-1">
+                    <div>章节学习时长 {$title.studytime}时</div>
+                </div>
+                <div class="col-md-1">
+                    <div>章节平均学习时长 {$title.avgtime}时</div>
+                </div>
+                <div class="col-md-1">
+                    <div>课程学习进度 {$title.courseporgress}</div>
+                </div>
+                <div class="col-md-1">
+                    <div>发帖总数 {$title.postnum}次</div>
+                </div>
+                <div class="col-md-1">
+                    <div>回帖总数  {$title.replies}次</div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{:url('')}" style="cursor: pointer">刷新列表</a></li>
+    </ul>
+
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>章名称</th>
+            <th>节名称</th>
+            <th>节类型</th>
+            <th>章节学习进度</th>
+            <th>章节学习时长</th>
+            <th>章节平均学习时长</th>
+            <th>笔记数量</th>
+            <th>考试成绩</th>
+            <th>发帖数量</th>
+            <th>回帖数量</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {volist name="info" id="vo"}
+        <tr>
+            <td>{$vo.cpttitle}</td>
+            <td>{$vo.title}</td>
+            <td>{$vo.ctype}</td>
+            <td>{$vo.taskporgress}</td>
+            <td>{$vo.sumtime}</td>
+            <td>{$vo.avgtime}</td>
+            <td>--</td>
+            <td>{$vo.paperscore}</td>
+            <td>--</td>
+            <td>--</td>
+         </tr>
+        {/volist}
+        </tbody>
+
+    </table>
+    <ul class="pagination">
+        {$page}
+    </ul>
+
+</div>
+{include file='manage/bottom'}
+<script type="text/javascript">
+
+
+</script>
+</body>
+</html>
