@@ -10,6 +10,7 @@ use app\index\model\UserProfile as UserProfileModel;
 use app\index\model\User as UserModel;
 use app\index\model\StudyResult;
 use app\index\model\StudyResultLog;
+use app\index\model\CourseEvaluate;
 use think\Db;
 use think\Exception;
 use think\Validate;
@@ -868,7 +869,11 @@ class User extends Controller
                     ->where('ct.courseId',$s)
 //                    ->where('ratio',100)
                     ->sum('ratio');
-                $plan = round($doneNum/100/$courseNum,2)*100;
+                if($doneNum!=0){
+                    $plan = round($doneNum/100/$courseNum,2)*100;
+                }else{
+                    $plan = 0;
+                }
                 if($plan!=100){
                     $course['plan'] = $plan;
                     $learnNum = Db::name('study_result_v13')
@@ -913,7 +918,11 @@ class User extends Controller
                     ->where('ct.courseId',$s)
 //                    ->where('ratio',100)
                     ->sum('ratio');
-                $plan = round($doneNum/100/$courseNum,2)*100;
+                if($doneNum!=0){
+                    $plan = round($doneNum/100/$courseNum,2)*100;
+                }else{
+                    $plan = 0;
+                }
                 if($plan==100){
                     $course['plan'] = $plan;
                     $learnNum = Db::name('study_result_v13')
@@ -934,6 +943,7 @@ class User extends Controller
 
     public function getcollect_v13(){
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $finalCourse = [];
         $field = 'cf.id,cf.courseid,cf.userid,c.title,c.smallPicture';
         $study_course = Db::name('course_favorite')
             ->alias('cf')
@@ -956,7 +966,11 @@ class User extends Controller
                     ->where('ct.courseId',$s['courseid'])
 //                    ->where('ratio',100)
                     ->sum('ratio');
-                $plan = round($doneNum/100/$courseNum,2)*100;
+                if($doneNum!=0){
+                    $plan = round($doneNum/100/$courseNum,2)*100;
+                }else{
+                    $plan = 0;
+                }
                 $course['plan'] = $plan;
                 $learnNum = Db::name('study_result_v13')
                     ->alias('sr')
@@ -1023,7 +1037,7 @@ class User extends Controller
     {
         switch ($this->data['type']){
             case 1:
-                Db::name('user_login_log')->insert(['userid'=>$this->user->id,'LoginTime'=>time()]);
+                Db::name('user_login_log')->insert(['userid'=>$this->user->id,'LoginTime'=>time(),'ip'=>$this->request->ip(),'province'=>$this->getAddressByIp($this->request->ip())]);
                 break;
             case 0:
                 if($login_log = Db::name('user_login_log')->where('userid',$this->user->id)->where('LogoutTime',null)->order('LoginTime desc')->find()){
@@ -1035,6 +1049,175 @@ class User extends Controller
 
         return json_data(0,$this->codeMessage[0],'');
     }
+
+
+    private function getAddressByIp($ip)
+    {
+        //新浪根据IP获取地理位置API
+
+        $url = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip='.$ip;
+        $ch = curl_init($url);
+        curl_setopt($ch,CURLOPT_ENCODING ,'utf8');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true) ; // 获取数据返回
+        $location = curl_exec($ch);
+        $location = json_decode($location);
+//        print_r($location);
+        curl_close($ch);
+
+        $loc = "";
+        if($location===FALSE) return "";
+        if (empty($location->desc)) {
+            $loc = $location->province.$location->city.$location->district.$location->isp;
+        }else{
+            $loc = $location->desc;
+        }
+        return $loc;
+
+    }
+
+
+    /**
+     * 评价
+     * @return array
+     */
+    public function evaluate()
+    {
+        $data = $this->data;
+        if(!\app\index\model\Course::get($data['courseId'])){
+            return json_data(200,$this->codeMessage[200],'');
+        }
+        unset($data['user_token']);
+        $data['createTime'] = time();
+        $data['userid']     = $this->user->id;
+        if(CourseEvaluate::create($data)){
+            return json_data(0,$this->codeMessage[0],'');
+        }else{
+            return json_data(610,$this->codeMessage[610],'');
+        }
+    }
+
+
+    /**
+     * 我的-获得学分详细列表
+     */
+    public function pointdetail()
+    {
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        //学分
+        $credit = $this->user->point()->sum('point');
+        //明细
+        $detail = Db::name('get_point_log')
+                    ->alias('g')
+                    ->join('course_task ct','g.taskid=ct.id')
+                    ->where('g.userid',$this->user->id)
+                    ->field('g.id,g.point,g.createTime,ct.courseId')
+                    ->order('g.createTime desc')
+                    ->page($page,10)
+                    ->select();
+        if($detail){
+            foreach ( $detail as &$d ){
+                $d['createTime'] = date('Y-m-d',$d['createTime']);
+                $d['courseName'] = Db::name('course')->where('id',$d['courseId'])->value('title');
+                unset($d['courseId']);
+            }
+        }
+        $data = [
+            'credit'    =>  $credit,
+            'detail'    =>  $detail
+        ];
+
+        return json_data(0,$this->codeMessage[0],$data);
+
+    }
+
+    /**
+     * 我的-评价列表
+     */
+    public function myevaluate()
+    {
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $evaluate = Db::name('course_evaluate')
+            ->alias('ce')
+            ->join('course c','ce.courseId=c.id')
+            ->where('ce.userid',$this->user->id)
+            ->field('ce.id as evaluateId,ce.point,ce.selfPoint,ce.createTime,c.title,c.teacherIds')
+            ->order('ce.createTime desc')
+            ->page($page,10)
+            ->select();
+        if($evaluate){
+            foreach ( $evaluate as &$e ){
+                $e['createTime'] = date('Y-m-d',$e['createTime']);
+                $e['teacherName'] = Db::name('teacher_info')->where('userid',$e['teacherIds'])->value('realname');
+                $e['teacherAvator'] = $this->request->domain()."/".Db::name('user')->where('id',$e['teacherIds'])->value('title');
+                unset($e['teacherIds']);
+            }
+        }
+        return json_data(0,$this->codeMessage[0],$evaluate);
+    }
+
+    /**
+     * 通过evaluateId来获取某个评价的详细信息
+     */
+    public function evaluatedetail()
+    {
+        $evaluateId = $this->data['evaluateId'];
+        $evaluateDetail = Db::name('course_evaluate')
+            ->alias('ce')
+            ->join('course c','ce.courseId=c.id')
+            ->where(['ce.userid'=>$this->user->id,'ce.id'=>$evaluateId])
+            ->field('ce.*,c.title,c.teacherIds')
+            ->find();
+        if($evaluateDetail){
+            $evaluateDetail['tag'] = json_decode($evaluateDetail['tag']);
+            $evaluateDetail['selfTag'] = json_decode($evaluateDetail['selfTag']);
+            $evaluateDetail['createTime'] = date('Y-m-d',$evaluateDetail['createTime']);
+            $evaluateDetail['teacherName'] = Db::name('teacher_info')->where('userid',$evaluateDetail['teacherIds'])->value('realname');
+//            $evaluateDetail['teacherAvator'] = $this->request->domain()."/".Db::name('user')->where('id',$evaluateDetail['teacherIds'])->value('title');
+            unset($evaluateDetail['teacherIds'],$evaluateDetail['userid'],$evaluateDetail['id'],$evaluateDetail['courseId']);
+            return json_data(0,$this->codeMessage[0],$evaluateDetail);
+        }else{
+            return json_data(620,$this->codeMessage[620],'');
+        }
+
+    }
+
+    /**
+     * 1.4版本的
+     * @return array
+     */
+    public function getmyinfo_v14(){
+        //班级名
+        if(!empty($this->user->stuclass->classname->title)){
+            $class = $this->user->stuclass->classname->title;
+        }else{
+            $class = '还未分配班级';
+        }
+        //专业名
+        !empty($this->user->stuclass->major->name)?$major=$this->user->stuclass->major->name:$major='还未分配专业';
+        //学分
+        $credit = $this->user->point()->sum('point');
+        //学习时间
+        $learnTime = Db::name('study_result_v13_log')->where('userid',$this->user->id)->sum('watchTime');
+        if($learnTime>0){
+            $learnTime = round($learnTime/60,1);
+        }else{
+            $learnTime = 0;
+        }
+        $data = [
+            'username'  =>  $this->user->username,
+            'avatar'    =>  $this->request->domain()."/".$this->user->title,
+            'mobile'    =>  $this->user->mobile,
+            'classname' =>  $class,
+            'major'  =>  $major,
+            'credit'    =>  $credit,
+            'learnTime' =>  $learnTime,
+        ];
+        return json_data(0,$this->codeMessage[0],$data);
+    }
+
+
+
 
 
 

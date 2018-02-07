@@ -18,7 +18,8 @@ class Index extends Home
     }
     public function cache()
     {
-        var_dump(Cache::get('data'));
+        $data = ["基本都听懂了"];
+        var_dump(json_encode($data));
     }
     /**
      * 首页

@@ -1015,7 +1015,7 @@ class Course extends Home
         $next_task = '还未有新课程';
         $next_task_type = 'none';
         $next_task_paper = 0;
-
+        $is_evaluate = false;
 
         $courseid = $this->data['courseid'];
         $course = CourseModel::get($courseid);
@@ -1033,6 +1033,10 @@ class Course extends Home
         $taskNum = count($task);
 
         if(!empty($this->user)){
+            //对是否评价过进行定义
+            if(Db::name('course_evaluate')->where(['courseId'=>$courseid,'userid'=>$this->user->id])->find()){
+                $is_evaluate = true;
+            }
             //拿完成的比例
             foreach ( $task as $t ){
                 if($study_result = Db::name('study_result_v13')->where('userid',$this->user->id)->where('taskid',$t)->find()){
@@ -1043,7 +1047,11 @@ class Course extends Home
                     }
                 }
             }
-            $plan = round($doneNum/$taskNum,2)*100;
+            if($doneNum!=0){
+                $plan = round($doneNum/$taskNum,2)*100;
+            }else{
+                $plan = 0;
+            }
             //拿下一任务名、任务id
             //拿看过的最高章节，最高小节的任务
             $sql = 'select id,title,courseId,type,chapterid,sort from course_task where courseId='.$courseid.' and chapterid=(select chapterid from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId='.$courseid.' and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid='.$this->user->id.' ORDER BY chapterseq desc limit 1) and sort=(select sort from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId='.$courseid.' and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid='.$this->user->id.' and chapterid=(select chapterid from study_result_v13 as sr left join ( select ct.*,cc.seq as chapterseq from course_task as ct LEFT JOIN course_chapter as cc on cc.id=ct.chapterid where ct.courseId='.$courseid.' and ct.status=1 ORDER BY cc.seq desc ) as ct on sr.taskid=ct.id where sr.userid='.$this->user->id.' ORDER BY chapterseq desc limit 1) ORDER BY sort desc limit 1) limit 1';
@@ -1117,7 +1125,8 @@ class Course extends Home
             'next_task' =>  $next_task,
             'next_task_id'  =>  $learn_taskid,
             'next_task_type'=>  $next_task_type,
-            'paperID'   =>  $next_task_paper
+            'paperID'   =>  $next_task_paper,
+            'is_evaluate'   =>  $is_evaluate
         ];
         return json_data(0,$this->codeMessage[0],$data);
 
