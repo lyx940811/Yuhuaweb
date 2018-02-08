@@ -49,8 +49,8 @@
             </script>
             <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="100%" height="100%" poster=""  data-setup="{}">
                 {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url'"}
-                <!--<source src="{$task->mediaSource}" type='video/mp4' />-->
-                 <source src="https://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' />
+                <source src="{$task->mediaSource}" type='video/mp4' />
+                 <!--<source src="https://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' />-->
                 {else /}
                 <source src="{$task->mediaSource}" type='video/flv' />
                 {/if}
