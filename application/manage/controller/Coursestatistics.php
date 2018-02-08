@@ -69,7 +69,8 @@ class Coursestatistics extends Base{
             $info[$key]['replies']=Db::table('ask_answer')->where('askid','in',$postnum)->count();
 
             //学习进度
-            $majorsid=DB::table('categorycourse')->where('courseid',$value['id'])->value('categoryID');
+//            $majorsid=DB::table('categorycourse')->where('courseid',$value['id'])->value('categoryID');  这一句在正式上没有对应到数据，表没有新数据添入
+            $majorsid = Db::name('course')->where('id',$value['id'])->value('categoryId');
             $allstudent=0;
             $courseporgress ='0%';
             if($majorsid) {
@@ -122,9 +123,8 @@ class Coursestatistics extends Base{
         $search=input('get.');
         $coursename=Db::table('course')->where('id',$courseid)->value('title');
         //查询所有学习这门课程的学生的userid，根据专业查询
-        $alluserid=DB::table('student_school')->where('majors','in',function($query)use($courseid){
-            $query->table('categorycourse')->where('courseid',$courseid)->field('categoryID');
-        })->column('userid');
+        $categoryId = Db::name('course')->where('id',$courseid)->value('categoryId');//在正式环境上categorycourse没有数据，换了一种方式拿categoryid
+        $alluserid=DB::table('student_school')->where('majors','in',$categoryId)->column('userid');
         $search1=[
             'class'=>'',
             'name'=>'',
