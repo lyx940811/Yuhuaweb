@@ -66,6 +66,8 @@ class Login extends Controller{
                 session('admin_role',!empty($role['name'])?$role['name']:'其他');
 
                 manage_log('100','008','用户登陆',serialize($info),0);
+                //增加登陆日志
+                Db::name('user_login_log')->insert(['userid'=>$user['id'],'LoginTime'=>time(),'ip'=>$this->request->ip(),'province'=>getAddressByIp($this->request->ip())]);
 
                 return ['info'=>'登陆成功','code'=>'000','url'=>url('Manage/manage/index')];
 

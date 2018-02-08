@@ -204,6 +204,8 @@ class Index extends Home
             if(password_verify($data['password'],$user['password'])){
                 //需要对返回数据进行整理，这里需要改成只返回access_token
                 session('userid',$user['id']);
+                //增加登陆日志
+                Db::name('user_login_log')->insert(['userid'=>$user['id'],'LoginTime'=>time(),'ip'=>$this->request->ip(),'province'=>getAddressByIp($this->request->ip())]);
                 return json_data(0,$this->codeMessage[0],'');
 
             }
@@ -235,6 +237,11 @@ class Index extends Home
         else{
             return json_data(110,$this->codeMessage[110],'');
         }
+    }
+
+    public function gee(){
+        echo $this->request->ip();
+        echo getAddressByIp($this->request->ip());
     }
 
     public function logout()
