@@ -32,17 +32,10 @@ class Studentstatistics extends Base{
             $search1['name']=$search['name'];
             $where['up.realname']=['like',"%{$search['name']}%"];
         }
-        $data=DB::table('user_profile up')
-            ->join('student_school ss','up.userid=ss.userid')
-            ->join('classroom cr','ss.class=cr.id','LEFT')
-            ->join('category c','ss.majors=c.code','LEFT')
-            ->field('up.sn,up.userid,up.realname,up.idcard,cr.title,c.name,ss.majors')
-            ->where($where)
-            ->order('up.sn')
-            ->paginate(20,false,['query'=>request()->get()]);
+        $data=$this->allStudentUser($where,1);
         $title=$this->getTitle();//列表头部总和统计
         $info=$this->studentstatistics($data);
-        $major=DB::table('category')->field('id,name')->select();
+        $major=Db::table('category')->field('id,name')->select();
         $class=Db::table('classroom')->field('id,title')->select();
         $this->assign('title',$title);
         $this->assign('major',$major);
@@ -51,6 +44,28 @@ class Studentstatistics extends Base{
         $this->assign('search',$search1);
         $this->assign('page',$data->render());
         return $this->fetch();
+    }
+
+    //查询所有学生
+    public function allStudentUser($where=[],$type=2){
+        $data=[];
+        $info=[];
+        $info=[];
+        $info=[];
+        $data=DB::table('user_profile up')
+            ->join('student_school ss','up.userid=ss.userid')
+            ->join('classroom cr','ss.class=cr.id','LEFT')
+            ->join('category c','ss.majors=c.code','LEFT')
+            ->field('up.sn,up.userid,up.realname,up.idcard,cr.title,c.name,ss.majors')
+            ->where($where)
+            ->order('up.sn');
+        if($type==1){
+            $info=$data->paginate(20,false,['query'=>request()->get()]);
+        }else{
+            $info=$data->select();
+        }
+
+        return $info;
     }
 
     //计算所有的是统计数据
@@ -97,6 +112,7 @@ class Studentstatistics extends Base{
             $info[$key]['logintime']=round($logintime/60/60,2);
             //登录次数
             $info[$key]['loginnum']=Db::table('user_login_log')->where('userid',$value['userid'])->count();
+
         }
         return $info;
     }
@@ -115,5 +131,11 @@ class Studentstatistics extends Base{
         $logintime=Db::table('user_login_log')->sum('loginAllTime');
         $data['loginalltime']=round($logintime/60/60,2);
         return $data;
+    }
+
+    //导出excel
+    public function dataexport(){
+        $data=$this->allStudentUser();
+        dump($data);die;
     }
 }

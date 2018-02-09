@@ -89,15 +89,44 @@ class Coursestatistics extends Base{
             $info[$key]['courseporgress']=$courseporgress;
             //作业数量
             $info[$key]['testpaper']=$info[$key]['coursechapter']-$info[$key]['filenum']-$info[$key]['videonum'];//所有任务减去文档和视频的就是作业（考试）
-            //学员数量
-            $info[$key]['studentnum']=$allstudent;
+
             //签到次数
             $info[$key]['checkin']=DB::table('checkin')->where('taskid','in',$alltask)->count();
+            //学员数量
+            $info[$key]['studentnum']=$allstudent;
 
         }
         return $info;
     }
+    //课程表导出
+    public function excel(){
+        $where['status']=1;
+        $data=DB::table('course c')
+            ->join('teacher_info tf','c.teacherIds=tf.id')
+            ->field('c.id,c.title,tf.realname,tf.sn')
+            ->where($where)
+            ->select();
+        $name='课程统计';
+        $excelname="数据统计-课程统计";
+        $info=$this->studentstatistics($data);
+        $title=[
+            'coursenmae'=>'课程名称',
+            'teacher'=>'任课教师',
+            'coursechapter'=>'课程章节数量',
+            'video'=>'视频资源数量',
+            'file'=>'文档资源数量',
+            'studytime'=>'课程学习时长',
+            'postnum'=>'发帖数量',
+            'replies'=>'回帖数量',
+            'study'=>'学习进度',
+            'papernum'=>'作业数量',
+            'coursechike'=>'课程签到次数',
+            'studentnum'=>'学员数量',
+        ];
 
+        $excel = new Excel();
+        $info = $excel->excelExport($name,$title,$info,$excelname);
+    }
     //列表头部总和统计
     public function getTitle(){
         $all=Db::table('course')->column('id');//所有课程的userid

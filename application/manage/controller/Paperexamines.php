@@ -42,7 +42,7 @@ class Paperexamines extends Base{
             ->join('student_school ss','up.userid=ss.userid','LEFT')
             ->join('testpaper t','tr.paperid=t.id')
             ->join('classroom c','ss.class=c.id','LEFT')
-            ->field('tr.*,t.courseid,t.name,t.score,t.type as ttype,up.realname,c.title')
+            ->field('tr.*,t.courseid,t.name,tr.score,t.type as ttype,up.realname,c.title')
             ->order('tr.endTime')
             ->where($where)
             ->paginate(20);
