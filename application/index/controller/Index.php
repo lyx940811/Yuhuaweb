@@ -205,7 +205,7 @@ class Index extends Home
                 //需要对返回数据进行整理，这里需要改成只返回access_token
                 session('userid',$user['id']);
                 //增加登陆日志
-                Db::name('user_login_log')->insert(['userid'=>$user['id'],'LoginTime'=>time(),'ip'=>$this->request->ip(),'province'=>getAddressByIp($this->request->ip())]);
+                @Db::name('user_login_log')->insert(['userid'=>$user['id'],'LoginTime'=>time(),'ip'=>$this->request->ip(),'province'=>getAddressByIp($this->request->ip())]);
                 return json_data(0,$this->codeMessage[0],'');
 
             }

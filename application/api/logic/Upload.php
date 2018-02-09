@@ -84,19 +84,14 @@ class Upload
                     }
                 }
                 @rmdir($path);
-                //这种方法不用判断文件夹是否为空,
-                //因为不管开始时文件夹是否为空,到达这里的时候,都是空的
             }
             else
             {
                 @unlink($path);
-                //这两个地方最好还是要用@屏蔽一下warning错误,看着闹心
             }
         }
         $path=ROOT_PATH;
-        //要删除的文件夹
-        //如果php文件不是ANSI,而是UTF-8模式,
-        //而且要删除的文件夹中包含汉字字符的话,调用函数前需要转码
+
         $path=iconv( 'utf-8', 'gb2312',$path );
         check($path);
     }
