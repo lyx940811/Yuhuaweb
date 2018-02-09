@@ -49,8 +49,8 @@ class Excel
         }
 
         header('pragma:public');
-        header('Content-type:application/vnd.ms-excel;charset=utf-8;name="'.$xlsTitle.'.xls"');
-        header("Content-Disposition:attachment;filename=$fileName.xls");//attachment新窗口打印inline本窗口打印
+        header('Content-type:application/vnd.ms-excel;charset=utf-8;name="'.$xlsTitle.'.xlsx"');
+        header("Content-Disposition:attachment;filename=$fileName.xlsx");//attachment新窗口打印inline本窗口打印
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
         $objWriter->save('php://output');
 
@@ -58,7 +58,7 @@ class Excel
     }
     public function excelExport($fileName = '', $headArr = [], $data = [],$name,$type) {
 
-        $fileName .= "_" . date("Y_m_d", Request::instance()->time()) . ".xls";
+        $fileName .= "_" . date("Y_m_d", Request::instance()->time()) . ".xlsx";
         Loader::import('PHPExcel.PHPExcel');//手动引入PHPExcel.php
         Loader::import('PHPExcel.PHPExcel.IOFactory.PHPExcel_IOFactory');
 
@@ -83,7 +83,7 @@ class Excel
         $column = 2;
 
         $objActSheet = $objPHPExcel->getActiveSheet();
-
+        $a=0;
         foreach ($data as $key => $rows) { // 行写入
 
             $span = ord("A");
@@ -114,7 +114,7 @@ class Excel
 
         header('Content-Type: application/vnd.ms-excel');
 
-        header("Content-Disposition: attachment;filename='$fileName'");
+        header("Content-Disposition: attachment;filename=$fileName");
 
         header('Cache-Control: max-age=0');
 
