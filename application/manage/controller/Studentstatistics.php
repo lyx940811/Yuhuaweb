@@ -56,7 +56,7 @@ class Studentstatistics extends Base{
             ->join('student_school ss','up.userid=ss.userid')
             ->join('classroom cr','ss.class=cr.id','LEFT')
             ->join('category c','ss.majors=c.code','LEFT')
-            ->field('up.sn,up.userid,up.realname,up.idcard,cr.title,c.name,ss.majors')
+            ->field('up.sn,up.userid,up.realname,up.idcard,c.name,cr.title,ss.majors')
             ->where($where)
             ->order('up.sn');
         if($type==1){
@@ -73,7 +73,13 @@ class Studentstatistics extends Base{
         $info=[];
         foreach($data as $key=>$value){
             $info[$key]=$value;
-            $studytime=DB::table('study_result_log srl')//学习时长
+            //登录次数
+            $info[$key]['loginnum']=Db::table('user_login_log')->where('userid',$value['userid'])->count();
+            //登录总时长
+            $logintime=Db::table('user_login_log')->where('userid',$value['userid'])->sum('loginAllTime');
+            $info[$key]['logintime']=round($logintime/60/60,2);
+            //学习时长
+            $studytime=DB::table('study_result_log srl')
                 ->where('userid',$value['userid'])
                 ->sum('TIMESTAMPDIFF(SECOND,starttime,endtime)');
 //            $studytime=DB::table('study_result_v13_log srl')
@@ -107,11 +113,6 @@ class Studentstatistics extends Base{
             $info[$key]['post']=Db::table('asklist')->where('userid',$value['userid'])->count();
             //回帖数量
             $info[$key]['replies']=Db::table('ask_answer')->where('answerUserID',$value['userid'])->count();
-            //登录总时长
-            $logintime=Db::table('user_login_log')->where('userid',$value['userid'])->sum('loginAllTime');
-            $info[$key]['logintime']=round($logintime/60/60,2);
-            //登录次数
-            $info[$key]['loginnum']=Db::table('user_login_log')->where('userid',$value['userid'])->count();
 
         }
         return $info;
@@ -134,8 +135,28 @@ class Studentstatistics extends Base{
     }
 
     //导出excel
-    public function dataexport(){
+    public function excel(){
         $data=$this->allStudentUser();
-        dump($data);die;
+        $info=$this->studentstatistics($data);
+        $name='学生统计';
+        $excelname="数据统计-学生统计";
+        $title=[
+            'sn'=>'学号',
+            'realname'=>'学生姓名',
+            'idcard'=>'身份证号',
+            'category'=>'专业',
+            'class'=>'班级',
+            'loginnum'=>'登录次数',
+            'logintime'=>'登录时长',
+            'studytime'=>'学习时长',
+            'study'=>'学习进度',
+            'score'=>'学分',
+            'papernum'=>'考试数量',
+            'replies'=>'回帖数量',
+            'postnum'=>'发帖数量',
+        ];
+
+        $excel = new Excel();
+        $excel->excelExport($name,$title,$info,$excelname,2);
     }
 }

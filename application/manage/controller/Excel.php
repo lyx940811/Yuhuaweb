@@ -56,7 +56,7 @@ class Excel
 
         exit;
     }
-    public function excelExport($fileName = '', $headArr = [], $data = []) {
+    public function excelExport($fileName = '', $headArr = [], $data = [],$name,$type) {
 
         $fileName .= "_" . date("Y_m_d", Request::instance()->time()) . ".xls";
         Loader::import('PHPExcel.PHPExcel');//手动引入PHPExcel.php
@@ -87,8 +87,16 @@ class Excel
         foreach ($data as $key => $rows) { // 行写入
 
             $span = ord("A");
-            unset($rows['id']);
-            unset($rows['sn']);
+            if($type==1){
+                unset($rows['id']);
+                unset($rows['sn']);
+            }elseif($type==2){
+                unset($rows['userid']);
+                unset($rows['majors']);
+                unset($rows['id']);
+                unset($rows['type']);
+                unset($rows['paperid']);
+            }
             foreach ($rows as $keyName => $value) { // 列写入
                 $objActSheet->setCellValue(chr($span) . $column, $value);
 

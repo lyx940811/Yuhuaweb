@@ -10,6 +10,7 @@
             <li class="active">学习记录详情</li>
         </ol>
     </div>
+
     <div class="panel panel-default">
         <!-- Default panel contents -->
         <div class="panel-heading"><h2>{$title.username}</h2></div>
@@ -36,6 +37,10 @@
             </div>
         </div>
 
+
+    </div>
+    <div class="pull-right">
+        <a class="btn btn-primary" href="{:url('studentexcel',array('courseid'=>$courseid,'userid'=>$userid))}">导出</a>
 
     </div>
 
