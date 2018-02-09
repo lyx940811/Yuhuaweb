@@ -191,6 +191,7 @@ class Coursestatistics extends Base{
     //课程详情导出
     public function courseexcel(){
         $courseid=$this->request->param('courseid');
+        $coursename=Db::table('course')->where('id',$courseid)->value('title');
         $categoryId = Db::name('course')->where('id',$courseid)->value('categoryId');//在正式环境上categorycourse没有数据，换了一种方式拿categoryid
         $alluserid=DB::table('student_school')->where('majors','in',$categoryId)->column('userid');
 
@@ -203,7 +204,7 @@ class Coursestatistics extends Base{
             ->order('up.sn')
             ->select();
         $info=$this->getCourseDetail($data,$courseid);
-        $name='课程详情';
+        $name=$coursename;
         $excelname="数据统计-课程统计-课程详情";
         $title=[
             'sn'=>'学员',
@@ -326,6 +327,7 @@ class Coursestatistics extends Base{
     public function studentexcel(){
         $courseid=$this->request->param('courseid');
         $userid=$this->request->param('userid');
+        $username=DB::table('user_profile')->where('userid',$userid)->value('realname');
         $data=DB::table('course_task ct')
             ->join('course_chapter cc','ct.chapterid=cc.id')
             ->field('ct.id,ct.type,cc.title as cpttitle,ct.title,ct.paperid')
@@ -333,7 +335,7 @@ class Coursestatistics extends Base{
             ->order('seq,sort')
             ->select();
         $info=$this->getStudyDetail($data,$userid);
-        $name='学生记录详情';
+        $name=$username;
         $excelname="数据统计-课程统计-课程详情";
         $title=[
             'cpttitle'=>'章名称',
