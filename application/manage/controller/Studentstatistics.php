@@ -35,7 +35,7 @@ class Studentstatistics extends Base{
         $data=$this->allStudentUser($where,1);
         $title=$this->getTitle();//列表头部总和统计
         $info=$this->studentstatistics($data);
-        $major=DB::table('category')->field('id,name')->select();
+        $major=Db::table('category')->field('id,name')->select();
         $class=Db::table('classroom')->field('id,title')->select();
         $this->assign('title',$title);
         $this->assign('major',$major);
@@ -49,6 +49,8 @@ class Studentstatistics extends Base{
     //查询所有学生
     public function allStudentUser($where=[],$type=2){
         $data=[];
+        $info=[];
+        $info=[];
         $info=[];
         $data=DB::table('user_profile up')
             ->join('student_school ss','up.userid=ss.userid')
@@ -110,6 +112,7 @@ class Studentstatistics extends Base{
             $info[$key]['logintime']=round($logintime/60/60,2);
             //登录次数
             $info[$key]['loginnum']=Db::table('user_login_log')->where('userid',$value['userid'])->count();
+
         }
         return $info;
     }
