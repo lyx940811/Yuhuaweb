@@ -97,6 +97,9 @@ class Excel
                 unset($rows['type']);
                 unset($rows['paperid']);
             }
+            if(!empty($rows['idcard'])){
+                $rows['idcard'] .=  ' ';
+            }
             foreach ($rows as $keyName => $value) { // 列写入
                 $objActSheet->setCellValue(chr($span) . $column, $value);
 
