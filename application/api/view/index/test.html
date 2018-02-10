@@ -25,6 +25,12 @@
 {block name="javascript"}
 <script>
     $(function(){
+        $.get(
+            'http://api-test.51ygs.com/api/Website/GetArticle?CategoryId=101',
+        function (r) {
+            console.log(r);
+        });
+
         $('#capbutton').click(function(){
             console.log($('#captcha').val());
 

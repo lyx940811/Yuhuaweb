@@ -1000,15 +1000,18 @@ class User extends Controller
         if($this->data['ratio']==100){
             $log_result['is_done'] = 1;
             //添加获得学分
-            $point = Db::name('course_task')->where('id',$this->data['taskid'])->value('point');
-            $pointData = [
-                'userid'        =>  $this->user->id,
-                'taskid'        =>  $this->data['taskid'],
-                'point'         =>  $point,
-            ];
-            if(!Db::name('get_point_log')->where($pointData)->find()){
-                $pointData['createTime']    =  time();
-                Db::name('get_point_log')->insert($pointData);
+            $course = Db::name('course_task')->find($this->data['taskid']);
+            if(!in_array($course['type'],['test','exam'])){
+                $point = $course['point'];
+                $pointData = [
+                    'userid'        =>  $this->user->id,
+                    'taskid'        =>  $this->data['taskid'],
+                    'point'         =>  $point,
+                ];
+                if(!Db::name('get_point_log')->where($pointData)->find()){
+                    $pointData['createTime']    =  time();
+                    Db::name('get_point_log')->insert($pointData);
+                }
             }
         }
         //study_result_v13只存最高进度

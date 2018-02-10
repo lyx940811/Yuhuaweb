@@ -37,7 +37,6 @@ class Course extends Home
         //头部信息
         $courseinfo = $this->getcourseinfo($courseid);
         $this->assign('coursedata',$courseinfo);
-
         //右侧学生信息
         $student = $this->newstudent($courseid);
         $this->assign('student',$student);
@@ -72,6 +71,7 @@ class Course extends Home
         $next_task = '还未有新课程';
         $next_task_type = 'none';
         $next_task_paper = 0;
+        $is_evaluate = false;
 
         $course = CourseModel::get($courseid);
 //        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
@@ -88,6 +88,10 @@ class Course extends Home
         $taskNum = count($task);
 
         if(!empty($this->user)){
+            //对是否评价过进行定义
+            if(Db::name('course_evaluate')->where(['courseId'=>$courseid,'userid'=>$this->user->id])->find()){
+                $is_evaluate = true;
+            }
             //拿完成的比例
             foreach ( $task as $t ){
                 if($study_result = Db::name('study_result_v13')->where('userid',$this->user->id)->where('taskid',$t)->find()){
@@ -172,7 +176,8 @@ class Course extends Home
             'next_task' =>  $next_task,
             'next_task_id'  =>  $learn_taskid,
             'next_task_type'=>  $next_task_type,
-            'paperID'   =>  $next_task_paper
+            'paperID'   =>  $next_task_paper,
+            'is_evaluate'   =>  $is_evaluate,
         ];
 
     }
@@ -306,9 +311,23 @@ class Course extends Home
     }
     public function evaluate()
     {
-        $review = $this->course->review()->where('parentid',0)->order('createdTime desc')->paginate(10);
-        $this->assign('review',$review);
-        $this->assign('page',$review->render());
+        if($this->user){
+            $evaluateDetail = Db::name('course_evaluate')
+                ->alias('ce')
+                ->join('course c','ce.courseId=c.id')
+                ->where(['ce.userid'=>$this->user->id,'ce.courseid'=>$this->course['id']])
+                ->field('ce.*,c.title,c.teacherIds')
+                ->find();
+            if($evaluateDetail){
+                $evaluateDetail['tag'] = json_decode($evaluateDetail['tag']);
+                $evaluateDetail['selfTag'] = json_decode($evaluateDetail['selfTag']);
+                $evaluateDetail['createTime'] = date('Y-m-d',$evaluateDetail['createTime']);
+                $evaluateDetail['teacherName'] = Db::name('teacher_info')->where('userid',$evaluateDetail['teacherIds'])->value('realname');
+//            $evaluateDetail['teacherAvator'] = $this->request->domain()."/".Db::name('user')->where('id',$evaluateDetail['teacherIds'])->value('title');
+                unset($evaluateDetail['teacherIds'],$evaluateDetail['userid'],$evaluateDetail['id'],$evaluateDetail['courseId']);
+                $this->assign('evaluate',$evaluateDetail);
+            }
+        }
         return $this->fetch();
     }
     public function note()
