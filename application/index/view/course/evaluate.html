@@ -177,14 +177,23 @@
     .teacher-show-grade{
         border-bottom: 1px solid #ccc;
     }
-
+    #comment_succ >.alert-study-model{
+        margin-left: 30px;
+        margin-top: -400px;
+    }
 </style>
 {/block}
 {block name="navdetail"}
-<div class="alert-study" style="display: none">
+<div class="alert-study" style="display: none" id="study_first">
     <div class="modal-content alert-study-model">
         <p style="margin-bottom:44px;">请先完成本课程所有学习！</p>
         <button class="btn btn-primary" type="submit">知道了</button>
+    </div>
+</div>
+<div class="alert-study" id="comment_succ" style="display: none">
+    <div class="modal-content alert-study-model">
+        <img src="__IMG__alert-succeed.png" alt="">
+        <p>恭喜你,评价成功!</p>
     </div>
 </div>
 <div class="modal-backdrop fade in dier" style="display: none"></div>
@@ -401,8 +410,8 @@
                 function(data){
                     console.log(data);
                     if(data['code']==0){
-                    alert("评价成功！");
-                    window.location.href = window.location.href;
+                     $('#comment_succ').show();
+                     setTimeout("window.location.href = window.location.href",2000);
                     }
                 },
                 "json"
@@ -411,14 +420,14 @@
         })
 
         $('.btn-primary').click(function(){
-            $('.alert-study').hide();
+            $('#study_first').hide();
             $('.dier').hide();
         });
 
         $('.go-evaluate').click(function(){
             var plan = {$coursedata.plan};
             if(plan!=100){
-                $('.alert-study').show();
+                $('#study_first').show();
                 $('.dier').show();
                 return false;
             }
