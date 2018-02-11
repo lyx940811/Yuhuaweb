@@ -139,20 +139,30 @@ class Usercenter extends Home
      * @return mixed
      */
     public function onstudy(){
-        $course = Db::name('study_result')->alias('sr')
-            ->join('course c','sr.courseid=c.id')
-            ->field('sr.courseid as id,c.title,c.smallPicture')
-            ->group('sr.courseid')
+//        $course = StudyResult::where('userid',$this->user->id)->where('courseid!=0')->group('courseid')->paginate(8);
+        $course = Db::name('study_result_v13')
+            ->alias('sr')
+            ->join('course_task ct','sr.taskid=ct.id')
+            ->where('sr.is_del',0)
             ->where('sr.userid',$this->user->id)
-            ->paginate(8);
+            ->group('ct.courseId')
+            ->field('ct.courseId')
+            ->paginate(8)
+            ->each(function($item, $key){
+                $thisCourse = Db::name('course')->find($item['courseId']);
+                $item['smallPicture'] = $thisCourse['smallPicture'];
+                $item['title'] = $thisCourse['title'];
+                $learnNum = Db::name('study_result_v13')
+                    ->alias('sr')
+                    ->join('course_task ct','sr.taskid=ct.id')
+                    ->where('ct.courseId',$item['courseId'])
+                    ->group('sr.userid')
+                    ->count();
+                $item['learnNum'] = $learnNum;
+                $item['commentsNum']   = Db::name('course_review')->where('courseid',$item['courseId'])->count();
+                return $item;
+            });
 
-//        foreach ( $course as &$c ){
-//            $people = Db::name('study_result')->where('courseid',$c['id'])->group('userid')->select();
-//            $c['learnNum']      = count($people);
-//            $c['commentsNum']   = Db::name('course_review')->where('courseid',$c['id'])->count();
-//        }
-
-        $course = StudyResult::where('userid',$this->user->id)->where('courseid!=0')->group('courseid')->paginate(8);
         $this->assign('course',$course);
 
         $page = $course->render();

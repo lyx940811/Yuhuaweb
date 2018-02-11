@@ -11,26 +11,25 @@
       <div class="col-lg-3 col-md-4 col-xs-6">
         <div class="course-item">
           <div class="course-img">
-            <a href="{:url('index/course/catalogue',array('course'=>$course['courseid']))}" target="_blank">
-              {present name="course.course.smallPicture"}
-              {notempty name="course.course.smallPicture"}
-              <img src="/{$course->course->smallPicture}" alt="" class="img-responsive"> <!-- courseSet.largePicture -->
+            <a href="{:url('index/course/catalogue',array('course'=>$course['courseId']))}" target="_blank">
+              {present name="course.smallPicture"}
+              {notempty name="course.smallPicture"}
+              <img src="/{$course.smallPicture}" alt="" class="img-responsive"> <!-- courseSet.largePicture -->
               {else /}
               <img src="/static/index/img/courseSet.png" class="img-responsive">
               {/notempty}
               {/present}
-              <!--<img src="/{$course->course->smallPicture}" alt="" class="img-responsive">-->
             </a>
           </div>
           <div class="course-info">
             <div class="title">
-              <a class="link-dark" href="{:url('index/course/catalogue',array('course'=>$course['courseid']))}" target="_blank">
-                {$course->course->title}
+              <a class="link-dark" href="{:url('index/course/catalogue',array('course'=>$course['courseId']))}" target="_blank">
+                {$course.title}
               </a>
             </div>
             <div class="metas clearfix">
-              <span class="num"><i class="es-icon es-icon-people"></i>{$course->course->studyresult()->group('userid')->count()}</span>
-              <span class="comment"><i class="es-icon es-icon-textsms"></i>{$course->course->review()->count()}</span>
+              <span class="num"><i class="es-icon es-icon-people"></i>{$course.learnNum}</span>
+              <span class="comment"><i class="es-icon es-icon-textsms"></i>{$course.commentsNum}</span>
               <span class="course-price-widget">
                     <span class="price">
                       <span class="color-success">免费</span>
