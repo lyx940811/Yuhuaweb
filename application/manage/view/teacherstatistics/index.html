@@ -3,7 +3,9 @@
 {include file="manage/header" /}
 <body>
 <div class="container-fluid">
-
+    {php}
+    $uid = session('admin_uid');
+    {/php}
     <div class="panel panel-default">
         <!-- Default panel contents -->
         <div class="panel-heading"><h2>教师统计</h2></div>
@@ -37,6 +39,9 @@
             <input type="text" class="form-control" placeholder="请输入搜索关键字" name="title">
         </div>
         <button type="submit" class="btn btn-primary">搜索</button>
+        {if condition="check($uid,'/manage/teacherstatistics/excel')"}
+            <a class="btn btn-primary" href="{:url('excel')}">全部导出</a>
+        {/if}
     </form>
     <ul class="nav nav-tabs">
         <li class="active"><a href="{:url('')}" style="cursor: pointer">刷新列表</a></li>
@@ -66,22 +71,18 @@
         <tr>
             <td>{$vo.sn}</td>
             <td>{$vo.realname}</td>
-            <td>{$vo.totalLoginNum.num}</td>
-            <td>{$vo.totalLoginNum.alltime?$vo.totalLoginNum.alltime:'0'}分</td>
+            <td>{$vo.loginnum}</td>
+            <td>{$vo.logintime}时</td>
             <td>
-                {if condition="$vo['totalLoginNum']['num'] eq 0 || $vo['totalLoginDay']['num'] eq 0"}
-                0
-                {else/}
-                {$vo.totalLoginNum.num/$vo.totalLoginDay.num|ceil}
-                {/if}
+                {$vo.totalLoginDay}
             </td>
             <td>{$vo.teachnum}</td>
             <td>{$vo.medianum}</td>
-            <td>--</td>
+            <td>{$vo.resource}</td>
             <td>{$vo.checknum}</td>
             <td>{$vo.answernum}</td>
             <td>{$vo.asknum}</td>
-            <td>{$vo.medianum}</td>
+            <td>{$vo.student}</td>
             <td>--</td>
         </tr>
         {/volist}
