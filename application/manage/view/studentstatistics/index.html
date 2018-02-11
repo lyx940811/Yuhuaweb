@@ -3,6 +3,9 @@
 {include file="manage/header" /}
 <body>
 <div class="container-fluid">
+    {php}
+    $uid = session('admin_uid');
+    {/php}
     <div class="panel panel-default">
         <!-- Default panel contents -->
         <div class="panel-heading"><h2>学生统计</h2></div>
@@ -53,7 +56,9 @@
                 <input type="text" name="name" class="form-control" value="{$search.name}" placeholder="请输入关键字"/>
             </div>
             <button type="submit" class="btn btn-primary">搜索</button>
-            <a class="btn btn-primary" href="{:url('excel')}">全部导出</a>
+            {if condition="check($uid,'/manage/studentstatistics/excel')"}
+                <a class="btn btn-primary" href="{:url('excel')}">全部导出</a>
+            {/if}
         </form>
     </div>
     <ul class="nav nav-tabs">
