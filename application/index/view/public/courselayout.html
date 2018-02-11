@@ -13,6 +13,24 @@
     <link href="__CSS__app-bootstrap.css" rel="stylesheet">
     <link href="__CSS__main.css" rel="stylesheet">
     <link rel="stylesheet" href="__CSS__student/student-index.css">
+    <style>
+        .alert-study .alert-study-model{
+            width: 304px;
+            height: 202px;
+            text-align: center;
+            padding-top: 48px;
+            z-index: 9999;
+            position:absolute;
+            top: 50%;
+            left: 50%;
+            margin-left: -152px;
+            margin-top: -101px;
+        }
+        .alert-study .alert-study-model p{
+            margin-top: 28px;
+            font-size: 16px;
+        }
+    </style>
     {block name="link"}
 
     {/block}
@@ -190,7 +208,7 @@
                             <li role="presentation" id="threads" class=""><a href="{:url('index/course/discussion',array('course'=>$course['id']))}">讨论区<small>({$course->ask()->count()})</small></a></li>
                             <li role="presentation" id="notes" class=""><a href="{:url('index/course/note',array('course'=>$course['id']))}">笔记<small>{present name="user"}({$course->note()->where('userid',$user['id'])->count()}){/present}</small></a></li>
                             <li role="presentation" id="material" class=""><a href="{:url('index/course/material',array('course'=>$course['id']))}">资料区<small>({$course->file()->count()})</small></a></li>
-                            <li role="presentation" id="reviews" class=""><a href="{:url('index/course/evaluate',array('course'=>$course['id']))}">评价<small>({$course->review()->count()})</small></a></li>
+                            <li role="presentation" id="reviews" class=""><a href="{:url('index/course/evaluate',array('course'=>$course['id']))}">评价<small></small></a></li>
                             <li role="presentation" id="summary" class=""><a href="{:url('index/course/summary',array('course'=>$course['id']))}">介绍</a></li>
                             <!--<li class="highlight" style="left: 0px; width: 92px;"></li>-->
                         </ul>
@@ -327,6 +345,7 @@
 </div>
 <div class="modal-backdrop in" style="display: none;"></div>
 <script src="__JS__jquery-1.11.3.min.js"></script>
+<script src="__JS__bootstrap.js"></script>
 <script>
     $(function(){
         var userid;

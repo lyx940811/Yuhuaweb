@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 
+use app\index\model\CourseEvaluate;
 use think\Controller;
 use think\Config;
 use think\Loader;
@@ -429,6 +430,26 @@ class User extends Home
         $log_result['taskid'] = $data['taskid'];
         Db::name('study_result_v13_log')->insert($log_result);
         return json_data(0,$this->codeMessage[0],'');
+    }
+
+
+    /**
+     * 评价
+     * @return array
+     */
+    public function evaluate()
+    {
+        $data = $this->request->param();
+        if(!\app\index\model\Course::get($data['courseId'])){
+            return json_data(200,$this->codeMessage[200],'');
+        }
+        $data['createTime'] = time();
+        $data['userid']     = $this->user->id;
+        if(CourseEvaluate::create($data)){
+            return json_data(0,$this->codeMessage[0],'');
+        }else{
+            return json_data(610,$this->codeMessage[610],'');
+        }
     }
 
 }

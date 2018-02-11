@@ -1,86 +1,430 @@
 {extend name="public/courselayout"}
 {block name="title"}{$course.title}-评价区{/block}
+{block name="style"}
+<style>
+    .metas .teacher-icon{
+        height: 17px;
+        width: 19px;
+        display: inline-block;
+        background-image: url(__IMG__teacher.png);
+        margin-top: 4px;
+    }
+    .metas .teacher-name{
+        font-size: 18px;
+        color:#2b333b;
+    }
+    .modal-body .rating-btn{
+        cursor: pointer;
+        margin: 20px 0;
+    }
+    .modal-body .rating-btn .teacher-score{
+        font-size: 20px;
+        color:#ff9900;
+        margin-left: 30px;
+    }
+    .modal-body .rating-btn .teacher-score i{
+        font-size: 14px;
+        color:#ff9900;
+    }
+    .modal-body .teacher-evaluate li{
+        color: #71777d;
+        border:1px solid #f3f6f8;
+        border-radius: 8px;
+        padding: 8px;
+        cursor: pointer;
+        margin-right: 20px;
+    }
+    .modal-body .teacher-evaluate .teacher-active{
+        color:#fff;
+        border: 1px solid #f3f6f8;
+        background-color: #48bc64;
+    }
+    .modal-body .teacher-txt{
+        margin-top: 20px;
+        margin-bottom: 22px;
+    }
+    .modal-body .teacher-txt .teacher-estimate-txt{
+        width: 648px;
+        height: 100px;
+        padding: 10px;
+    }
+    .modal-body .teacher-txt p{
+        color:#b7bbbf;
+        font-size: 14px;
+        margin-top: 8px;
+    }
+    .modal-body .teacher-self-evaluation{
+        cursor: pointer;
+        margin: 20px 0;
+    }
+    .modal-body .teacher-self-evaluation .teacher-score{
+        font-size: 14px;
+        color:#ff9900;
+        margin-left: 30px;
+    }
+    .modal-body .teacher-self-evaluation .teacher-self-evaluation{
+        font-size: 18px;
+    }
+    .modal-body .teacher-self-evaluation .teacher-self-evaluation span{
+        font-size: 14px;
+        color:#b7bbbf;
+        margin-left: 10px;
+    }
+    .modal-body .teacher-self-evaluation .teacher-score i{
+        font-size:20px;
+        color:#ff9900;
+    }
+    .rating-self-evaluation{
+        margin-bottom: 20px;
+    }
+    .modal-body .teacher-self-evaluate li{
+        color: #71777d;
+        border:1px solid #f3f6f8;
+        border-radius: 8px;
+        padding: 8px;
+        cursor: pointer;
+        margin-right: 20px;
+    }
+    .modal-body .teacher-self-evaluate .teacher-active{
+        color:#fff;
+        border: 1px solid #f3f6f8;
+        background-color: #48bc64;
+    }
+    .teacher-active{
+        color:#fff;
+        border: 1px solid #f3f6f8;
+        background-color: #48bc64;
+    }
+    .teacher-self-btn{
+        width: 104px;
+        height: 40px;
+        font-size: 14px;
+        margin: 50px auto 0;
+        display: block;
+    }
+    .xzw_starBox{position:relative;}
+    /*极速秒评*/
+    .xzw_starSys .description{clear:both;padding:10px 0px}
+    .xzw_starSys .star{height:25px;width:150px;position:relative;background:url(__IMG__lanrentuku.png) repeat-x;cursor:pointer}
+    .xzw_starSys .star li{float:left;padding:0px;margin:0px}
+    .xzw_starSys .star li a{display:block;width:30px;height:25px;overflow:hidden;text-indent:-9999px;position:absolute;z-index:5}
+    .xzw_starSys .star li a:hover{background:url(__IMG__lanrentuku.png) 0 -30px repeat-x;z-index:3;left:0}
+    .xzw_starSys .star a.one-star{left:0}
+    .xzw_starSys .star a.one-star:hover{width:30px}
+    .xzw_starSys .star a.two-stars{left:30px}
+    .xzw_starSys .star a.two-stars:hover{width:60px}
+    .xzw_starSys .star a.three-stars{left:60px}
+    .xzw_starSys .star a.three-stars:hover{width:90px}
+    .xzw_starSys .star a.four-stars{left:90px}
+    .xzw_starSys .star a.four-stars:hover{width:120px}
+    .xzw_starSys .star a.five-stars{left:120px}
+    .xzw_starSys .star a.five-stars:hover{width:150px}
+    .xzw_starSys .current-rating{background:url(__IMG__lanrentuku.png) 0 -30px repeat-x;position:absolute;height:25px;z-index:1;top:0;left:0}
+    .option-con li{float: left;margin-right: 10px;}
+    .option-con{display: none;}
+    .piece-body{
+        height: 300px;
+        position: relative;
+    }
+    .piece-body .student-appraise {
+        color: #ccc;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 68px;
+        height: 64px;
+        margin-left: -34px;
+        margin-top: -32px;
+        text-align: center;
+    }
+    .teacher-show-grade .teacher-star-img{
+        position: relative;
+        height: 20px;
+        margin: 18px 0 14px;
+    }
+    .teacher-show-grade .teacher-star-img .teacher-star-con{
+        background:url(__IMG__lanrentuku.png) 0 -30px repeat-x;
+        height:25px;
+        z-index:1;
+        top:0;
+        left:0
+    }
+    .teacher-show-grade .teacher-star-img .teacher-star-grade{
+        margin-left: 26px;
+        font-size:12px;
+        color:#ff9900;
+    }
+    .teacher-show-grade .teacher-star-img .teacher-star-grade i{
+        font-size:18px;
+    }
+    .teacher-show-grade .teacher-time{
+        color: #ccc;
+        margin-left: 60px;
+    }
+    .teacher-show-grade .teacher-show-evaluate li{
+        color: #fff;
+        border:1px solid #f3f6f8;
+        border-radius: 8px;
+        padding: 8px;
+        cursor: pointer;
+        margin-right: 20px;
+    }
+    .teacher-show-grade .teacher-show-txt{
+        margin-top: 14px;
+        font-size: 14px;
+        margin-bottom: 18px;
+    }
+    .teacher-show-grade{
+        border-bottom: 1px solid #ccc;
+    }
+
+</style>
+{/block}
 {block name="navdetail"}
-<div class="clearfix">
-    <button class="btn btn-primary btn-sm pull-right js-show-review-form" style="display: none;">重新评价</button>
+<div class="alert-study" style="display: none">
+    <div class="modal-content alert-study-model">
+        <p style="margin-bottom:44px;">请先完成本课程所有学习！</p>
+        <button class="btn btn-primary" type="submit">知道了</button>
+    </div>
 </div>
-<form id="review-form" method="post" action="/course/127/review/create" style="display: block;" novalidate="novalidate">
-    <!--<div class="form-group controls">-->
-        <!--请打分： <span data-rating="5" data-img-path="/assets/img/raty" class="rating-btn" style="cursor: pointer; width: 100px;"><img src="/assets/img/raty/star-on.png" alt="1" title="很差">&nbsp;<img src="/assets/img/raty/star-on.png" alt="2" title="较差">&nbsp;<img src="/assets/img/raty/star-on.png" alt="3" title="还行">&nbsp;<img src="/assets/img/raty/star-on.png" alt="4" title="推荐">&nbsp;<img src="/assets/img/raty/star-on.png" alt="5" title="力荐"><input type="hidden" name="score" value="5"></span>-->
-        <!--<input type="hidden" name="rating" value="5">-->
-    <!--</div>-->
-    <div>输入评价</div>
-    <div class="form-group controls">
-        <textarea class="form-control" id="reviewcontent"></textarea>
-    </div>
-    <div class="form-group clearfix">
-        <span class="color-success pull-left js-review-remind" style="display: none;">评价已保存！</span>
-        <a href="javascript:;" class="btn btn-primary pull-right js-btn-save" data-loading-text="正在保存..." autocomplete="off">保存</a>
-        <a href="javascript:;" class="btn btn-link pull-right js-hide-review-form" style="display: block;">取消</a>
-    </div>
-    <input type="hidden" name="_csrf_token" value="2-9BoPnxh4qGNK3R-Ywz9ji6iM6jse8NvLDIWHOVEtw">
-</form>
-{notempty name="review"}
-{volist name="review" id="review"}
-<div class="js-reviews">
-    <div class="media media-evaluate">
-        <div class="media-left">
-            <a class="avatar-link-small js-user-card" href="/user/1" data-card-url="/user/1/card/show" data-user-id="1">
-                <img class="avatar-small" src="/{$review->user->title}">
-            </a>
+<div class="modal-backdrop fade in dier" style="display: none"></div>
+<div class="es-piece">
+    <div class="piece-body p-lg clearfix">
+
+        {if condition="$coursedata.is_evaluate neq 1"}
+        <!-- 暂无评价 -->
+        <div class="student-appraise">
+            <p style="margin:0;">暂无评价</p>
+            <button type="button" class="btn btn-primary go-evaluate" data-toggle="modal" data-target=".bs-example-modal-lg">去评价</button>
         </div>
-        <div class="media-body thread-post">
-            <div class="title">
-                <a class="link-dark ">{$review->user->username}</a>
-                <!--<span>默认教学计划 完成进度:0/74</span>&nbsp;&nbsp;-->
-                {$review.createdTime|time_tran}
-            </div>
-            <!--<div class="score">-->
-                <!--<i class="es-icon es-icon-star color-warning"></i>-->
-                <!--<i class="es-icon es-icon-star color-warning"></i>-->
-                <!--<i class="es-icon es-icon-star color-warning"></i>-->
-                <!--<i class="es-icon es-icon-star color-warning"></i>-->
-                <!--<i class="es-icon es-icon-star color-warning"></i>-->
-            <!--</div>-->
-            <div class="content">
-                <div class="short-content">{$review.content}</div>
-                <div class="full-content" style="display:none;">撒啊飒飒飒飒</div>
-            </div>
-            <div class="actions clearfix">
-                <a href="javascript:;" class="show-full-btn" style="display:none;">[展开全文]</a>
-                <a href="javascript:;" class="show-short-btn" style="display:none;">[收起全文]</a>
-                <!--<a href="javascript:;" class="js-reply pull-right">回复</a>-->
-            </div>
-            <div class="thread-subpost-container subcomments clearfix hide">
-                <div class="thread-subpost-content">\
-                    <ul class="media-list thread-post-list thread-subpost-list">
-                    </ul>
+        {else /}
+        <!-- 有评价 -->
+        {present name="evaluate"}
+        <div class=" fractional-number">
+            <div class="teacher-show-grade">
+                <div class="metas clearfix">
+                    <i class="teacher-icon left" style="font-size:24px;"></i>
+                    <span class="num left teacher-name" style="font-size:14px;">&nbsp;&nbsp;{$evaluate.teacherName}&nbsp;授课评价</span>
+                    <span class="teacher-time">{$evaluate.createTime}</span>
                 </div>
-                <div class="thread-subpost-morebar clearfix hide">
-                    <button class="btn btn-default btn-xs pull-right js-toggle-subpost-form">回复</button>
+                <div class="teacher-star-img clearfix">
+                    <div class="teacher-star-con left" style="width: {php}echo $evaluate['point']*30;{/php}px;"></div>
+                    <span class="teacher-star-grade"><i>{$evaluate.point}</i>分</span>
                 </div>
-                <form method="post" action="/course/127/review/47/post" class="thread-subpost-form ">
-                    <div class="form-group">
-                        <div class="controls">
-                            <textarea class="form-control" name="content" data-display="内容"></textarea>
+                <ul class="teacher-show-evaluate clearfix">
+                    {volist name="evaluate.tag" id="tag"}
+                    <li class="left teacher-active">{$tag}</li>
+                    {/volist}
+                    <!--<li class="left teacher-active">讲解精彩</li>-->
+                </ul>
+                <div class="teacher-show-txt">
+                    <p style="margin:0;">{$evaluate.comment}</p>
+                </div>
+            </div>
+            <div class="teacher-show-grade" style="margin-top:18px;border:0;">
+                <div class="metas clearfix">
+                    <span class="num left teacher-name" style="font-size:14px;">听课效果自评</span>
+                    <span class="teacher-time">{$evaluate.createTime}</span>
+                </div>
+                <div class="teacher-star-img clearfix">
+                    <div class="teacher-star-con left" style="width: {php}echo $evaluate['selfPoint']*30;{/php}px;"></div>
+                    <span class="teacher-star-grade"><i>{$evaluate.selfPoint}</i>分</span>
+                </div>
+                <ul class="teacher-show-evaluate clearfix">
+                    {volist name="evaluate.selfTag" id="stag"}
+                    <li class="left teacher-active">{$stag}</li>
+                    {/volist}
+                </ul>
+            </div>
+        </div>
+        {/present}
+        {/if}
+    </div>
+</div>
+
+
+
+<div class="modal fade bs-example-modal-lg in" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content"  style="width:1030px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+            </div>
+            <div class="modal-body">
+                <div class="metas clearfix">
+                    <i class="teacher-icon left" style="font-size:24px;"></i>
+                    <span class="num left teacher-name">&nbsp;&nbsp;刘星星&nbsp;授课评价</span>
+                </div>
+                <div class="xzw_starSys" id="star_teacher">
+                    <div class="xzw_starBox rating-btn clearfix">
+                        <ul class="star stars left">
+                            <li><a href="javascript:void(0)" title="1" class="one-star">1</a></li>
+                            <li><a href="javascript:void(0)" title="2" class="two-stars">2</a></li>
+                            <li><a href="javascript:void(0)" title="3" class="three-stars">3</a></li>
+                            <li><a href="javascript:void(0)" title="4" class="four-stars">4</a></li>
+                            <li><a href="javascript:void(0)" title="5" class="five-stars">5</a></li>
+                        </ul>
+                        <span class="teacher-score"><i>0</i>分</span>
+                        <div class="current-rating showb" style="width: 120px;"></div>
+                    </div>
+                </div>
+                <ul class="teacher-evaluate clearfix">
+                    <li class="left">知识点讲解清晰</li>
+                    <li class="left">讲解精彩</li>
+                    <li class="left">亲切</li>
+                    <li class="left">通熟易懂</li>
+                    <li class="left">有吸引力</li>
+                    <li class="left">生动</li>
+                </ul>
+                <div class="teacher-txt">
+                    <textarea id="grade_txt"  required="required" class="teacher-estimate-txt" rows="5" placeholder="对老师的建议和意见，50字以内"></textarea>
+                    <p>*所有评价都是匿名的，请表达对老师最真实的想法。</p>
+                </div>
+                <div class="teacher-self-evaluation">
+                    <h2 class="teacher-self-evaluation">听课效果自评<span>(为自己打个分吧！)</span></h2>
+                    <div class="xzw_starSys" id="star_student">
+                        <div class="xzw_starBox rating-btn clearfix">
+                            <ul class="star stars left">
+                                <li><a href="javascript:void(0)" title="1" class="one-star">1</a></li>
+                                <li><a href="javascript:void(0)" title="2" class="two-stars">2</a></li>
+                                <li><a href="javascript:void(0)" title="3" class="three-stars">3</a></li>
+                                <li><a href="javascript:void(0)" title="4" class="four-stars">4</a></li>
+                                <li><a href="javascript:void(0)" title="5" class="five-stars">5</a></li>
+                            </ul>
+                            <span class="teacher-score"><i>0</i>分</span>
+                            <div class="current-rating showb" style="width: 120px;"></div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <input type="hidden" name="_csrf_token" value="2-9BoPnxh4qGNK3R-Ywz9ji6iM6jse8NvLDIWHOVEtw">
-                        <button type="submit" data-loading-text="正在发表" class="btn btn-primary btn-sm pull-right">发表</button>
-                    </div>
-                </form>
+                    <ul class="teacher-self-evaluate clearfix">
+                        <li class="left">基本都听懂了</li>
+                        <li class="left">有难度，听不懂</li>
+                        <li class="left">参加互动积极</li>
+                        <li class="left">太容易了</li>
+                        <li class="left">注意力集中</li>
+                    </ul>
+                </div>
+                <button class="btn btn-primary teacher-self-btn subevaluate" type="submit">提交</button>
             </div>
         </div>
     </div>
 </div>
-{/volist}
-{$page}
-{else /}
-<div class="empty">暂无评价</div>
-{/notempty}
 {/block}
 {block name="javascript"}
+<script>
+    // 评分函数
+    function onClick(name,str,obj){
+        var stepW = 30;
+        var stars = $(name);
+        $(str).css("width",0);
+        stars.each(function(i){
+            $(stars[i]).click(function(e){
+                var n = i+1;
+                $(str).css({"width":stepW*n});
+                $(this).find('a').blur();
+                $(obj).html($(this).children().html())
+            });
+        });
+        stars.each(function(i){
+            $(stars[i]).hover(
+                function(){
+                    $(".prompt").hide();
+                },
+                function(){
+                    $(".prompt").show();
+                }
+            );
+        });
+    }
+    $(function(){
+
+        // 评分
+        onClick("#star_teacher .stars > li","#star_teacher .showb","#star_teacher .teacher-score > i");
+        onClick("#star_student .stars > li","#star_student .showb","#star_student .teacher-score > i");
+
+        var teacherArr = [],
+            studentArr=[];
+        $(".teacher-evaluate li").on("click",function(){
+            if(!$(this).hasClass("teacher-active")){
+                $(this).addClass("teacher-active")
+            }else{
+                $(this).removeClass("teacher-active");
+            }
+        })
+        $(".teacher-self-evaluate li").on("click",function(){
+            if(!$(this).hasClass("teacher-active")){
+                $(this).addClass("teacher-active")
+            }else{
+                $(this).removeClass("teacher-active");
+            }
+        })
+        $(".teacher-self-btn").on("click",function(){
+
+            if(parseInt($("#star_teacher .teacher-score i").html()) == 0 || parseInt($("#star_student .teacher-score i").html()) == 0 ){
+                alert("请完成评分");
+                return false;
+            }
+            if($.trim($("#grade_txt").val()) == '' || $.trim($("#grade_txt").val() )== null){
+                alert("请您输入您对老师的意见跟建议");
+                return false;
+            }
+            // if(parseInt(teacherArr.length) == 0 || parseInt(studentArr.length) == 0 ){
+            //     alert("请对授课内容进行评价");
+            //     return false;
+            // }
+            $(".teacher-evaluate li").each(function(){
+                if($(this).hasClass("teacher-active")){
+                    teacherArr.push($(this).html())
+                }
+            });
+            $(".teacher-self-evaluate li").each(function(){
+                if($(this).hasClass("teacher-active")){
+                    studentArr.push($(this).html())
+                }
+            });
+
+            var courseid = {$course.id};
+            var point = $('#star_teacher').find('i').text();
+            var selfPoint = $('#star_student').find('i').text();
+            var comment = $('#grade_txt').val();
+            console.log(comment);
+            $.post(
+                "{:url('index/user/evaluate')}",
+                {
+                    'courseId':courseid,
+                    'point':point,
+                    'tag':JSON.stringify(teacherArr),
+                    'comment':comment,
+                    'selfPoint':selfPoint,
+                    'selfTag':JSON.stringify(studentArr)
+                },
+                function(data){
+                    console.log(data);
+                    if(data['code']==0){
+                    alert("评价成功！");
+                    window.location.href = window.location.href;
+                    }
+                },
+                "json"
+
+            );
+        })
+
+        $('.btn-primary').click(function(){
+            $('.alert-study').hide();
+            $('.dier').hide();
+        });
+
+        $('.go-evaluate').click(function(){
+            var plan = {$coursedata.plan};
+            if(plan!=100){
+                $('.alert-study').show();
+                $('.dier').show();
+                return false;
+            }
+        });
+    })
+</script>
 <script>
     $(function(){
         $('.nav-tabs').children().eq(4).addClass('active');
