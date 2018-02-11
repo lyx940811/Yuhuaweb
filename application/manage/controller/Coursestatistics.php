@@ -125,7 +125,7 @@ class Coursestatistics extends Base{
         ];
 
         $excel = new Excel();
-        $info = $excel->excelExport($name,$title,$info,$excelname);
+        $info = $excel->excelExport($name,$title,$info,$excelname,1);
     }
     //列表头部总和统计
     public function getTitle(){
@@ -172,7 +172,7 @@ class Coursestatistics extends Base{
         $data=DB::table('user_profile up')
             ->join('student_school ss','up.userid=ss.userid')
             ->join('classroom cr','ss.class=cr.id','LEFT')
-            ->field('up.userid,up.sn,up.userid,up.realname,up.idcard,cr.title')
+            ->field('up.userid,up.sn,up.realname,cr.title')
             ->where($where)
             ->order('up.sn')
             ->paginate(20,false,['query'=>request()->get()]);
@@ -187,6 +187,44 @@ class Coursestatistics extends Base{
         $this->assign('search',$search1);
         $this->assign('page',$data->render());
         return $this->fetch();
+    }
+    //课程详情导出
+    public function courseexcel(){
+        $courseid=$this->request->param('courseid');
+        $coursename=Db::table('course')->where('id',$courseid)->value('title');
+        $categoryId = Db::name('course')->where('id',$courseid)->value('categoryId');//在正式环境上categorycourse没有数据，换了一种方式拿categoryid
+        $alluserid=DB::table('student_school')->where('majors','in',$categoryId)->column('userid');
+
+        $where['up.userid']=array('in',$alluserid);
+        $data=DB::table('user_profile up')
+            ->join('student_school ss','up.userid=ss.userid')
+            ->join('classroom cr','ss.class=cr.id','LEFT')
+            ->field('up.userid,up.sn,up.userid,up.realname,cr.title')
+            ->where($where)
+            ->order('up.sn')
+            ->select();
+        $info=$this->getCourseDetail($data,$courseid);
+        $name=$coursename;
+        $excelname="数据统计-课程统计-课程详情";
+        $title=[
+            'sn'=>'学员',
+            'realname'=>'学员姓名',
+            'class'=>'班级',
+            'coursenum'=>'课程登录次数',
+            'studytime'=>'课程学习时长',
+            'courseporgress'=>'课程学习进度',
+            'coursestatus'=>'课程完成状态',
+            'papernum'=>'完成考试次数',
+            'paperavg'=>'考试平均分',
+            'postnum'=>'发帖数量',
+            'replies'=>'回帖数量',
+            'checkin'=>'课程签到次数',
+        ];
+
+        $excel = new Excel();
+        $info = $excel->excelExport($name,$title,$info,$excelname,2);
+
+
     }
 
     //课程详情详细数据查询
@@ -280,9 +318,40 @@ class Coursestatistics extends Base{
         $info=$this->getStudyDetail($data,$userid);
         $this->assign('page',$data->render());
         $this->assign('courseid',$courseid);
+        $this->assign('userid',$userid);
         $this->assign('info',$info);
         $this->assign('title',$title);
         return $this->fetch();
+    }
+
+    public function studentexcel(){
+        $courseid=$this->request->param('courseid');
+        $userid=$this->request->param('userid');
+        $username=DB::table('user_profile')->where('userid',$userid)->value('realname');
+        $data=DB::table('course_task ct')
+            ->join('course_chapter cc','ct.chapterid=cc.id')
+            ->field('ct.id,ct.type,cc.title as cpttitle,ct.title,ct.paperid')
+            ->where('ct.courseid',$courseid)
+            ->order('seq,sort')
+            ->select();
+        $info=$this->getStudyDetail($data,$userid);
+        $name=$username;
+        $excelname="数据统计-课程统计-课程详情";
+        $title=[
+            'cpttitle'=>'章名称',
+            'title'=>'节名称',
+            'ctype'=>'节类型',
+            'taskporgress'=>'章节学习进度',
+            'sumtime'=>'章节学习时长',
+            'avgtime'=>'章节平均学习时长',
+            'notenum'=>'笔记数量',
+            'papernum'=>'考试成绩',
+            'postnum'=>'发帖数量',
+            'replies'=>'回帖数量',
+        ];
+
+        $excel = new Excel();
+        $info = $excel->excelExport($name,$title,$info,$excelname,2);
     }
 
     public function getStudyDetail($data,$userid){
@@ -303,8 +372,9 @@ class Coursestatistics extends Base{
             }
             //章节学习时长与平均时长
             $tasksumavg=DB::table('study_result_v13_log')->field('avg(watchTime) as avgtime,sum(watchTime) as sumtime')->where('taskid',$value['id'])->where('userid',$userid)->find();
-            $info[$key]['avgtime']=round($tasksumavg['avgtime']/60/60,2);
             $info[$key]['sumtime']=round($tasksumavg['sumtime']/60/60,2);
+            $info[$key]['avgtime']=round($tasksumavg['avgtime']/60/60,2);
+            $info[$key]['notenums']='--';
             //考试成绩
             if($value['type']=='test' || $value['type']=='exam'){
                 $info[$key]['paperscore']='--';
@@ -315,10 +385,12 @@ class Coursestatistics extends Base{
                         $info[$key]['paperscore']=$testpaper['score'];
                     }
                 }
-
             }else{
                 $info[$key]['paperscore']='--';
             }
+            //发帖
+            $info[$key]['postnum']='--';
+            $info[$key]['replies']='--';
         }
         return $info;
     }
