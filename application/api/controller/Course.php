@@ -188,12 +188,20 @@ class Course extends Home
             $teacher_realname = '还未分配老师';
             $teacher_avatar = 'static/index/images/avatar.png';
         }
+        $learnNum = Db::name('study_result_v13')
+            ->alias('sr')
+            ->join('course_task ct','sr.taskid=ct.id')
+            ->where('ct.courseId',$courseid)
+            ->group('sr.userid')
+            ->count();
 
         $data = [
             'about'         =>  $course->about,
             'teacher_name'  =>  $teacher_realname,
             'avatar'        =>  $this->request->domain()."/".$teacher_avatar,
-            'achivement'    =>  '教师成就'
+            'achivement'    =>  '教师成就',
+            'learnNum'      =>  $learnNum,
+            'plan'          =>  '教学计划'
         ];
         return json_data(0,$this->codeMessage[0],$data);
     }
@@ -893,44 +901,56 @@ class Course extends Home
 
     //1.3版本的得到课程详情目录
     public function getcourselesson_v13(){
+        $redis = new \Redis();
+        $redis->connect('127.0.0.1', 6379);
+
         $courseid = $this->data['courseid'];
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
-        $chapter = Db::name('course_chapter')
-            ->where('courseid',$courseid)
-            ->where('flag',1)
-            ->field('id as chapterid,title')
-            ->order('seq asc')
-            ->page($page,10)
-            ->select();
 
-        foreach ( $chapter as &$c ){
-            $c['task'] = Db::name('course_task')
-                ->where('courseId',$courseid)
-                ->where('chapterid',$c['chapterid'])
-                ->where('status',1)
-                ->field('id as taskid,title,type,paperid,mediaSource')
-                ->order('sort asc')
-                ->select();
-            $chapterTaskNum = count($c['task']);
-            $doneChapterNum = 0;
-            foreach ( $c['task'] as &$task ){
-                $thisTask = CourseTask::get($task['taskid']);
-                //赋值基底，没有登陆的时候进度为0
-                $task['plan'] = 0;
-                $task['is_test'] = false;
-                $task['score'] = 0;
-                $task['is_lock'] = true;
-                $task['is_incheck'] = false;
-                $task['plan_time'] = 0;
+        if($this->user){
+            //登陆了
+            if($redis->exists('CourseLesson'.$courseid.'Page'.$page.'User'.$this->user->id)){
+                //有redis
+                $chapter = $redis->get('CourseLesson'.$courseid.'Page'.$page.'User'.$this->user->id);
+                $chapter = json_decode($chapter,true);
+            }else{
+                //redis没存
+                $chapter = Db::name('course_chapter')
+                    ->where('courseid',$courseid)
+                    ->where('flag',1)
+                    ->field('id as chapterid,title')
+                    ->order('seq asc')
+                    ->page($page,10)
+                    ->select();
+
+                foreach ( $chapter as &$c ){
+                    $c['task'] = Db::name('course_task')
+                        ->where('courseId',$courseid)
+                        ->where('chapterid',$c['chapterid'])
+                        ->where('status',1)
+                        ->field('id as taskid,title,type,paperid,mediaSource')
+                        ->order('sort asc')
+                        ->select();
+                    $chapterTaskNum = count($c['task']);
+                    $doneChapterNum = 0;
+                    foreach ( $c['task'] as &$task ){
+                        $thisTask = CourseTask::get($task['taskid']);
+                        //赋值基底，没有登陆的时候进度为0
+                        $task['plan'] = 0;
+                        $task['is_test'] = false;
+                        $task['score'] = 0;
+                        $task['is_lock'] = true;
+                        $task['is_incheck'] = false;
+                        $task['plan_time'] = 0;
 //                $task['is_lastUnit'] = false;
-                //如果不是考试或者测验的话进行拼域名
-                if(!in_array($task['type'],['text','exam'])){
-                    if($task['type']!='url'){
-                        //如果不是外链的话，拼域名
-                        $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
-                    }
-                }
-                //判断是否为最后一小节
+                        //如果不是考试或者测验的话进行拼域名
+                        if(!in_array($task['type'],['text','exam'])){
+                            if($task['type']!='url'){
+                                //如果不是外链的话，拼域名
+                                $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
+                            }
+                        }
+                        //判断是否为最后一小节
 //                $lastUnit_condition = [
 //                    'courseId'  =>  $thisTask['courseId'],
 //                    'chapterid' =>  $thisTask['chapterid'],
@@ -940,65 +960,118 @@ class Course extends Home
 //                if(!Db::name('course_task')->where($lastUnit_condition)->find()){
 //                    $task['is_lastUnit'] = true;
 //                }
-                //当登陆时取记录
-                if(!empty($this->user)){
-                    //判断这节课有没有上一节课
-                    $laskTask_sql = 'select id from course_task where chapterid='.$thisTask['chapterid'].' and sort<'.$thisTask['sort'].'  ORDER BY sort desc limit 1';
-                    if($laskTask = Db::query($laskTask_sql)){
-                        //有上一节课
-                        //判断上一节是否100，如果是的话，则解锁
-                        $laskTaskLearn_sql = 'select * from study_result_v13 where taskid=(select id from course_task where chapterid='.$thisTask['chapterid'].' and sort<'.$thisTask['sort'].'  ORDER BY sort desc limit 1) and userid='.$this->user->id.' and ratio=100;';
-                        if($laskTaskLearn = Db::query($laskTaskLearn_sql)){
-                            //找到了上一节并且为100
-                            $task['is_lock'] = false;
-                        }
-                    }else{
-                        //没有上一节课，看看有没有上一章，找最后一节课
-                        $lastChapterCourse_sql = 'select id from course_task where courseid='.$thisTask['courseId'].' and chapterid=(select id from course_chapter where courseid='.$thisTask['courseId'].' and seq<(select seq from course_chapter where id='.$thisTask['chapterid'].' ORDER BY seq desc limit 1) ORDER BY seq desc limit 1) order by sort desc limit 1';
-                        if($lastChapterCourse = Db::query($lastChapterCourse_sql)){
-                            //找到了，看看他的进度是不是100
-                            if(Db::name('study_result_v13')->where(['taskid'=>$lastChapterCourse[0]['id'],'userid'=>$this->user->id,'ratio'=>100])->find()){
-                                //是100，解锁
-                                $task['is_lock'] = false;
+                        //当登陆时取记录
+                        if(!empty($this->user)){
+                            //判断这节课有没有上一节课
+                            $laskTask_sql = 'select id from course_task where chapterid='.$thisTask['chapterid'].' and sort<'.$thisTask['sort'].'  ORDER BY sort desc limit 1';
+                            if($laskTask = Db::query($laskTask_sql)){
+                                //有上一节课
+                                //判断上一节是否100，如果是的话，则解锁
+                                $laskTaskLearn_sql = 'select * from study_result_v13 where taskid=(select id from course_task where chapterid='.$thisTask['chapterid'].' and sort<'.$thisTask['sort'].'  ORDER BY sort desc limit 1) and userid='.$this->user->id.' and ratio=100;';
+                                if($laskTaskLearn = Db::query($laskTaskLearn_sql)){
+                                    //找到了上一节并且为100
+                                    $task['is_lock'] = false;
+                                }
+                            }else{
+                                //没有上一节课，看看有没有上一章，找最后一节课
+                                $lastChapterCourse_sql = 'select id from course_task where courseid='.$thisTask['courseId'].' and chapterid=(select id from course_chapter where courseid='.$thisTask['courseId'].' and seq<(select seq from course_chapter where id='.$thisTask['chapterid'].' ORDER BY seq desc limit 1) ORDER BY seq desc limit 1) order by sort desc limit 1';
+                                if($lastChapterCourse = Db::query($lastChapterCourse_sql)){
+                                    //找到了，看看他的进度是不是100
+                                    if(Db::name('study_result_v13')->where(['taskid'=>$lastChapterCourse[0]['id'],'userid'=>$this->user->id,'ratio'=>100])->find()){
+                                        //是100，解锁
+                                        $task['is_lock'] = false;
+                                    }
+                                }
+                                else{
+                                    //没找到，说明是第一节课，解锁
+                                    $task['is_lock'] = false;
+                                }
                             }
-                        }
-                        else{
-                            //没找到，说明是第一节课，解锁
-                            $task['is_lock'] = false;
-                        }
-                    }
 
-                    //计算课程进度
-                    $map = [
-                        'userid'    =>  $this->user->id,
-                        'taskid'    =>  $task['taskid'],
-                        'is_del'    =>  0,
-                    ];
-                    if($user_studyResult = Db::name('study_result_v13')->where($map)->find()){
-                        $task['plan_time'] = Db::name('study_result_v13_log')->where($map)->order('createTime desc')->value('watchTime');
-                        $ratio = $user_studyResult['ratio'];
-                        $task['plan'] = $ratio;
-                        $doneChapterNum = $doneChapterNum+$ratio/100;
-                    }else{
-                        $task['plan'] = 0;
-                    }
-                    //如果是试卷的话，判断是否是做试卷了，如果做试卷了赋值分数
-                    if(in_array($task['type'],['test','exam'])){
-                        //如果是测试
-                        if($test_result = Db::name('testpaper_result')->where(['paperID'=>$task['paperid'],'userid'=>$this->user->id])->find()){
-                            $task['is_test'] = true;
-                            $task['score'] = $test_result['score'];
-                            if($test_result['Flag']==0){
-                                $task['is_incheck'] = true;
+                            //计算课程进度
+                            $map = [
+                                'userid'    =>  $this->user->id,
+                                'taskid'    =>  $task['taskid'],
+                                'is_del'    =>  0,
+                            ];
+                            if($user_studyResult = Db::name('study_result_v13')->where($map)->find()){
+                                $task['plan_time'] = Db::name('study_result_v13_log')->where($map)->order('createTime desc')->value('watchTime');
+                                $ratio = $user_studyResult['ratio'];
+                                $task['plan'] = $ratio;
+                                $doneChapterNum = $doneChapterNum+$ratio/100;
+                            }else{
+                                $task['plan'] = 0;
+                            }
+                            //如果是试卷的话，判断是否是做试卷了，如果做试卷了赋值分数
+                            if(in_array($task['type'],['test','exam'])){
+                                //如果是测试
+                                if($test_result = Db::name('testpaper_result')->where(['paperID'=>$task['paperid'],'userid'=>$this->user->id])->find()){
+                                    $task['is_test'] = true;
+                                    $task['score'] = $test_result['score'];
+                                    if($test_result['Flag']==0){
+                                        $task['is_incheck'] = true;
+                                    }
+                                }
                             }
                         }
+                    }
+                    if($doneChapterNum!=0){
+                        $c['plan'] = round($doneChapterNum/$chapterTaskNum,2)*100;
+                    }else{
+                        $c['plan'] = 0;
                     }
                 }
+                $redis->setex('CourseLesson'.$courseid.'Page'.$page.'User'.$this->user->id, 120, $chapter);
             }
-            if($doneChapterNum!=0){
-                $c['plan'] = round($doneChapterNum/$chapterTaskNum,2)*100;
+        }else{
+            //没登陆
+            if($redis->exists('CourseLesson'.$courseid.'Page'.$page)){
+                //有redis
+                $chapter = $redis->get('CourseLesson'.$courseid.'Page'.$page);
+                $chapter = json_decode($chapter,true);
             }else{
-                $c['plan'] = 0;
+                //redis没存
+                $chapter = Db::name('course_chapter')
+                    ->where('courseid',$courseid)
+                    ->where('flag',1)
+                    ->field('id as chapterid,title')
+                    ->order('seq asc')
+                    ->page($page,10)
+                    ->select();
+
+                foreach ( $chapter as &$c ){
+                    $c['task'] = Db::name('course_task')
+                        ->where('courseId',$courseid)
+                        ->where('chapterid',$c['chapterid'])
+                        ->where('status',1)
+                        ->field('id as taskid,title,type,paperid,mediaSource')
+                        ->order('sort asc')
+                        ->select();
+                    $chapterTaskNum = count($c['task']);
+                    $doneChapterNum = 0;
+                    foreach ( $c['task'] as &$task ){
+                        //赋值基底，没有登陆的时候进度为0
+                        $task['plan'] = 0;
+                        $task['is_test'] = false;
+                        $task['score'] = 0;
+                        $task['is_lock'] = true;
+                        $task['is_incheck'] = false;
+                        $task['plan_time'] = 0;
+                        //如果不是考试或者测验的话进行拼域名
+                        if(!in_array($task['type'],['text','exam'])){
+                            if($task['type']!='url'){
+                                //如果不是外链的话，拼域名
+                                $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
+                            }
+                        }
+                    }
+                    if($doneChapterNum!=0){
+                        $c['plan'] = round($doneChapterNum/$chapterTaskNum,2)*100;
+                    }else{
+                        $c['plan'] = 0;
+                    }
+                }
+                $redis->setex('CourseLesson'.$courseid.'Page'.$page, 120,json_encode($chapter));
             }
         }
         return json_data(0,$this->codeMessage[0],$chapter);
@@ -1192,6 +1265,89 @@ class Course extends Home
         foreach ( $paper_question as &$pq ){
             foreach ( $pq as &$q ){
                 $q['metas'] = (array)json_decode($q['metas']);
+            }
+        }
+        $data = [
+            'paperID'   =>  $testpaper['id'],
+            'name'      =>  $testpaper['name'],
+            'score'     =>  $testpaper['score'],
+            'topType'   =>  $topicType
+        ];
+        $data = array_merge($data,$paper_question);
+
+        return json_data(0,$this->codeMessage[0],$data);
+    }
+
+    public function checkpaper()
+    {
+        $paperid = $this->data['paperid'];
+        $testpaper = Db::name('testpaper')->find($paperid);
+        $meta = json_decode($testpaper['metas']);
+
+        $topicType = [];
+        foreach ( (array)$meta->counts as $key=>$value){
+            $question['type'] = $key;
+            $question['num'] = $value;
+            $topicType[] = $question;
+        }
+
+        $paper_question = array();
+
+        foreach ( $topicType as &$t ){
+            foreach ( (array)$meta->scores as $key=>$value ){
+                if( $t['type']==$key ){
+                    $t['score'] = $value;
+                }
+            }
+            foreach ( (array)$meta->missScores as $key=>$value ){
+                if( $t['type']==$key ){
+                    $t['missScore'] = $value;
+                }
+            }
+            $paper_question[$t['type']] = Db::name('testpaper_item')
+                ->alias('ti')
+                ->join('question q','q.id=ti.questionId')
+                ->where('ti.questiontype',$t['type'])
+                ->where('paperID',$testpaper['id'])
+                ->field('q.id,q.type,q.stem,q.metas,q.answer,q.analysis')
+                ->select();
+        }
+
+        foreach ( $paper_question as &$pq ){
+            foreach ( $pq as &$q ){
+
+                $userAnswerInfo = Db::name('testpaper_item_result')->where(['paperID'=>$paperid,'userid'=>$this->user->id,'questionId'=>$q['id']])->order('resultId desc')->find();
+                $q['userAnswer'] = $userAnswerInfo['answer'];
+                $q['teacherSay'] = $userAnswerInfo['teacherSay'];
+
+                if(in_array($q['type'],['single_choice','choice','determine'])){
+                    if($q['type']=='determine'){
+                        $metas['choices'] = ["正确","错误"];
+                    }else{
+                        $metas = (array)json_decode($q['metas']);
+                    }
+                    $new_meta = array();
+                    foreach ($metas['choices'] as $key=>$value){
+                        $is_user_answer = false;
+                        if(in_array($key,json_decode($q['userAnswer'],true))){
+                            $is_user_answer = true;
+                        }
+                        if(in_array($key,json_decode($q['answer'],true))){
+                            $is_right = true;
+                        }else{
+                            $is_right = false;
+                        }
+                        $new_meta['choices'][] = [
+                            'stem'              =>  $value,
+                            'is_right'          =>  $is_right,
+                            'is_user_answer'    =>  $is_user_answer
+                        ];
+                    }
+                    $q['metas'] = $new_meta;
+                }else{
+                    $q['metas'] = (array)json_decode($q['metas']);
+                }
+
             }
         }
         $data = [
