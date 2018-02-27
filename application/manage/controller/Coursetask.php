@@ -182,7 +182,7 @@ class Coursetask extends Base{
 
         $ok = $role_table->where('id',$id)->update($data);
 
-        if($ok){
+        if(is_numeric($ok)){
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'200'];
@@ -200,8 +200,8 @@ class Coursetask extends Base{
 //        $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$cid)->select();
         $coursetask=Db::table('course_task')
             ->where(function ($query) {
-                $query->where('type','test')->whereor('type','exam');
-            })->where('paperid','<>','')->column('paperid');//查询已经用过的试卷的id
+                $query->where('type','test')->whereor('type','exam')->whereor('type','plan');
+            })->where('paperid','<>','')->where('paperid','<>',$info['paperid'])->column('paperid');//查询已经用过的试卷的id
         $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$cid)->where('id','not in',$coursetask)->select();
 
         $this->assign('chapter',$chapter);
@@ -209,6 +209,7 @@ class Coursetask extends Base{
         $this->assign('typename','课程任务修改');
         $this->assign('taskmode',$taskmode);
         $this->assign('testpaper',$testpaper);
+        $this->assign('cid',$cid);
         $this->assign('uid',session('admin_uid'));
         return $this->fetch();
     }

@@ -53,14 +53,14 @@
                     <input type="hidden" id="type" name="type" class="form-control" placeholder="类型" value="url"/>
                     </div>
                 </div>
-                {elseif condition="$a['type'] eq 'exam' || $a['type'] eq 'test'"}
+                {elseif condition="$a['type'] eq 'exam' || $a['type'] eq 'test' || $a['type'] eq 'plan'"}
                 <div class="form-group">
                     <label class="col-sm-2 control-label">试卷名称</label>
                     <div class="col-sm-10">
                         <select name="paperid" class="form-control">
                             <option value="">--请选择--</option>
                             {volist name="testpaper" id="t"}
-                            <option value="{$t.id}" {if condition="$t['id'] eq $a['mediaSource']"}selected="selected"{/if}>{$t.name}</option>
+                            <option value="{$t.id}" {if condition="$t['id'] eq $a['paperid']"}selected="selected"{/if}>{$t.name}</option>
                             {/volist}
                         </select>
                     </div>
@@ -266,7 +266,7 @@
                 if(data.code=='000'){
 
                     alert(data.info)
-                    window.location.href = "{:url('index')}"
+                    window.location.href = "{:url('index',array('cid'=>$cid))}"
 
                 }else{
                     alert(data.error)
