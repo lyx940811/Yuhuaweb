@@ -147,9 +147,11 @@ class Examination extends Home{
     public function getExamresults($paperid){
         $where['paperID']=$paperid;
         $where['userid']=$this->user->id;
-        $where1=$where;
-        $where1['status']=1;
-        $myscore=Db::name('testpaper_item_result tir')->where($where1)->sum('score');
+        $myscore=Db::name('testpaper_item_result tir')
+            ->where($where)
+            ->where(function ($query) {
+                $query->where('status',1)->whereOr('status',2);
+            })->sum('score');
         $test=$this->selectQuesNum($where);
         $test['myscore']=$myscore;
         return $test;

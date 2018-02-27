@@ -1,0 +1,44 @@
+{extend name="public/studentlayout"}
+{block name="title"}我的考试{/block}
+
+{block name="container"}
+<div class="col-md-9">
+    <div class="panel panel-default panel-col">
+        <div class="panel-heading">我的考试</div>
+        <div class="panel-body">
+
+            <div class="topic-list tab-content">
+                <ul class="course-grids tab-pane active" role="tabpanel"  id="examination_record">
+                    {volist name="data" id="vo"}
+                        <li class="media">
+                            <div class="media-body">
+                                <div class="mbm">
+                                    <span class="label label-info" title="问答帖">{$vo.coursename}</span>
+                                </div>
+                                <div class="color-gray text-normal">
+                                    <span>来自课程<a href="#" class="link-primary">《{$vo.coursename}》</a><i>任务</i><a href="#" class="link-primary">《{$vo.coursetaskname}》</a></span>
+                                    <span class="bullet testpaper-time">交卷时间</span>
+                                    <span>{$vo.examinationtime}</span>
+                                    {if condition="$vo['flag'] eq 1"}
+                                    <span class="testpaper-paper">答对{$vo.truequestion}题/共{$vo.severalquestions}题</span>
+                                    <a href="{:url('examination/examresults',array('course'=>$vo['courseid'],'taskid'=>$vo['taskid']))}" class="link-primary">查看试卷</a>
+                                    {else}
+                                    <span class="testpaper-paper">正在批阅</span>
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                    {/volist}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="javascript"}
+<script>
+    $(function(){
+        $('.list-group-item').eq(2).addClass("active");
+    })
+</script>
+{/block}
