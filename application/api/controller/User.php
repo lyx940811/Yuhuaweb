@@ -1001,7 +1001,7 @@ class User extends Controller
             $log_result['is_done'] = 1;
             //添加获得学分
             $course = Db::name('course_task')->find($this->data['taskid']);
-            if(!in_array($course['type'],['test','exam'])){
+            if(!in_array($course['type'],['test','exam','plan'])){
                 $point = $course['point'];
                 $pointData = [
                     'userid'        =>  $this->user->id,

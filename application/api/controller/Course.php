@@ -197,11 +197,12 @@ class Course extends Home
 
         $data = [
             'about'         =>  $course->about,
+            'category'         =>  $course->category->name,
             'teacher_name'  =>  $teacher_realname,
             'avatar'        =>  $this->request->domain()."/".$teacher_avatar,
             'achivement'    =>  '教师成就',
             'learnNum'      =>  $learnNum,
-            'plan'          =>  '教学计划'
+            'plan'          =>  $course->teachingplan
         ];
         return json_data(0,$this->codeMessage[0],$data);
     }
@@ -1003,7 +1004,7 @@ class Course extends Home
                                 $task['plan'] = 0;
                             }
                             //如果是试卷的话，判断是否是做试卷了，如果做试卷了赋值分数
-                            if(in_array($task['type'],['test','exam'])){
+                            if(in_array($task['type'],['test','exam','plan'])){
                                 //如果是测试
                                 if($test_result = Db::name('testpaper_result')->where(['paperID'=>$task['paperid'],'userid'=>$this->user->id])->find()){
                                     $task['is_test'] = true;
@@ -1337,7 +1338,7 @@ class Course extends Home
                         }else{
                             $is_right = false;
                         }
-                        $new_meta['choices'][] = [
+                        $new_meta[] = [
                             'stem'              =>  $value,
                             'is_right'          =>  $is_right,
                             'is_user_answer'    =>  $is_user_answer
