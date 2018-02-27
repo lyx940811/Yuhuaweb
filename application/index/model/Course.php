@@ -32,7 +32,7 @@ class Course extends ThinkModel
     }
 
     public function teacherinfo(){
-        return $this->hasOne('TeacherInfo','id','teacherIds');
+        return $this->hasOne('TeacherInfo','userid','teacherIds');
     }
 
     public function ask()
