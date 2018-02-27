@@ -1022,7 +1022,7 @@ class Course extends Home
                         $c['plan'] = 0;
                     }
                 }
-                $redis->setex('CourseLesson'.$courseid.'Page'.$page.'User'.$this->user->id, 120, $chapter);
+                $redis->setex('CourseLesson'.$courseid.'Page'.$page.'User'.$this->user->id, 120, json_encode($chapter));
             }
         }else{
             //没登陆
