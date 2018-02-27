@@ -260,11 +260,11 @@ class Course extends Home
             if(!empty($this->user)) {
                 foreach ($info as $k => $v) {
                     $data[$key]['section'][$k] = $v;
-                    if ($v['type'] == 'test' || $v['type'] == 'exam') {
+                    if ($v['type'] == 'test' || $v['type'] == 'exam' || $v['type'] == 'plan') {
                         $papercount = DB::name('testpaper_result')
                             ->where('paperid', $v['paperid'])
                             ->where('userid', $this->user->id)
-                            ->count();
+                            ->count();//查看用户是否已经考试
                         if ($papercount > 0) {
                             $data[$key]['section'][$k]['papertype'] = 1;
                         } else {

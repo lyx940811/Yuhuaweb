@@ -137,13 +137,16 @@
     var uploader='';
     $('select[name="mode"]').change(function () {
 
-        if($(this).val()=='4'||$(this).val()=='5'){
+        if($(this).val()=='4'||$(this).val()=='5'||$(this).val()=='7'){
             var exam = '';
             if($(this).val()==4){
                 exam = 'test';
             }
             if($(this).val()==5){
                 exam = 'exam';
+            }
+            if($(this).val()==7){
+                exam = 'plan';
             }
             var html_exam = '<div class="form-group">';
             html_exam += '<label class="col-sm-2 control-label">试卷名称</label>';

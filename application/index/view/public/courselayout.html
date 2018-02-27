@@ -150,6 +150,9 @@
                                 {case value="exam"}
                                     <a class="btn btn-primary btn-lg mt10"  href="{:url('examination/alert',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">开始考试</a>
                                 {/case}
+                                {case value="plan"}
+                                    <a class="btn btn-primary btn-lg mt10"  href="{:url('examination/alert',array('course'=>$course['id'],'taskid'=>$coursedata['next_task_id']))}">开始作业</a>
+                                {/case}
                                 {default /}
                                     <a class="btn btn-primary btn-lg mt10" id="study">
                                         继续学习

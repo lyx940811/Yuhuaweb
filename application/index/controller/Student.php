@@ -210,8 +210,33 @@ class Student extends Home
         return $this->fetch();
     }
 
-
-
-
-
+    //我的作业
+    public function mytask(){
+        $info=DB::table('testpaper_result')->where('userid',$this->user->id)->select();
+        $data=[];
+        foreach($info as $key=>$value){
+            if($value['Flag']==1){
+                $data[$key]['severalquestions']=DB::table('testpaper_item_result')->where('userid',$this->user->id)->where('paperid',$value['paperID'])->count();
+                $data[$key]['truequestion']=DB::table('testpaper_item_result')->where('userid',$this->user->id)->where('paperid',$value['paperID'])->where('status',1)->count();
+                $data[$key]['score']=$value['objectiveScore']+$value['subjectiveScore'];
+            }
+            $data[$key]['examinationtime']=$value['endTime'];
+            $coursetask=Db::table('course_task ct')
+                ->join('course c','ct.courseid=c.id','LEFT')
+                ->field('ct.id as taskid,c.id as courseid,ct.title,c.title as ctitle,ct.paperid')
+                ->where('ct.paperid',$value['paperID'])
+                ->find();
+            $data[$key]['flag']=$value['Flag'];
+            $data[$key]['coursename']='';
+            $data[$key]['coursetaskname']='';
+            if(!empty($coursetask)){
+                $data[$key]['coursename']=$coursetask['ctitle'];
+                $data[$key]['coursetaskname']=$coursetask['title'];
+                $data[$key]['taskid']=$coursetask['taskid'];
+                $data[$key]['courseid']=$coursetask['courseid'];
+            }
+        }
+        $this->assign('data',$data);
+        return $this->fetch();
+    }
 }
