@@ -37,6 +37,7 @@ class Course extends Home
         //头部信息
         $courseinfo = $this->getcourseinfo($courseid);
         $this->assign('coursedata',$courseinfo);
+
         //右侧学生信息
         $student = $this->newstudent($courseid);
         $this->assign('student',$student);
@@ -165,6 +166,9 @@ class Course extends Home
                     $next_task_paper = $firse_task['paperid'];
                 }
             }
+        }
+        else{
+            $next_task = '请先登陆';
         }
 
         return $data = [
