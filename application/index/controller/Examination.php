@@ -179,7 +179,7 @@ class Examination extends Home{
         }
         return $info;
     }
-    //结束考试
+    //结束考 试
     public function examend(){
         $info=input('post.');
         if(empty($info)){
