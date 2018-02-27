@@ -99,10 +99,10 @@
                                   </div>
                                 </div>
                 
-                                {if condition="$myscore egt $list['passedScore']"}
-                                <div class="alert alert-success">恭喜您已通过本次考试。</div>
-                                {elseif condition="!empty($num['3'])"}
+                                {if condition="!empty($num['3'])"}
                                 <div class="alert alert-warning">老师正在批阅试卷，批阅完成后会以站内私信通知您批阅结果，请稍等。</div>
+                                {elseif condition="$myscore egt $list['passedScore']"}
+                                <div class="alert alert-success">恭喜您已通过本次考试。</div>
                                 {else}
                                 <div class="alert alert-danger">很遗憾您未通过本次考试！</div>
                                 {/if}
