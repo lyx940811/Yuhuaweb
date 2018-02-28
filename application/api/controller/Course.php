@@ -1345,8 +1345,12 @@ class Course extends Home
                         ];
                     }
                     $q['metas'] = $new_meta;
+                    $q['answer'] = implode(',',json_decode($q['answer'],true));
+                    $q['userAnswer'] = implode(',',json_decode($q['userAnswer'],true));
                 }else{
                     $q['metas'] = (array)json_decode($q['metas']);
+                    $q['answer'] = implode('',json_decode($q['answer'],true));
+                    $q['userAnswer'] = implode('',json_decode($q['userAnswer'],true));
                 }
 
             }
