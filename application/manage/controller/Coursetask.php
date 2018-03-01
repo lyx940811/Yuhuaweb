@@ -40,7 +40,7 @@ class Coursetask extends Base{
         $taskmode = Db::table('task_mode')->field('id,name')->select();
         $coursetask=Db::table('course_task')
             ->where(function ($query) {
-                $query->where('type','test')->whereor('type','exam');
+                $query->where('type','test')->whereor('type','exam')->whereor('type','plan');
             })->where('paperid','<>','')->column('paperid');//查询已经用过的试卷的id
         $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$id)->where('id','not in',$coursetask)->select();
 
@@ -241,6 +241,19 @@ class Coursetask extends Base{
         echo json_encode($all);
         exit;
 
+    }
+
+    public function ajax($id,$type){
+        $coursetask=Db::table('course_task')
+            ->where(function ($query) {
+                $query->where('type','test')->whereor('type','exam')->whereor('type','plan');
+            })->where('paperid','<>','')->column('paperid');//查询已经用过的试卷的id
+        $testpaper = Db::table('testpaper')
+            ->field('id,name')
+            ->where('courseid',$id)
+            ->where('id','not in',$coursetask)
+            ->where('type',$type)->select();
+        return $testpaper;
     }
 
 }
