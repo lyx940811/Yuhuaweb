@@ -24,6 +24,12 @@
                 <input type="text" name="{$key}[passedscores]" class="myscore" {if condition="$vo.status neq 0"}value="{$vo.score}"{else}value=""{/if} data-score-total="0" style="width:40px;"/>/{$vo.scores}
                 <input type="hidden" value="{$vo.scores}"/>
             </p>
+            <p style="font-size:16px;margin-left:70px;margin-top:20px;">
+                <span style="float:left;margin-top:40px;">老师批阅：</span>
+                <div style="margin-left:50px;margin-left:10px;margin-top:10px;font-size:16px;width:500px;float:left;">
+                    <textarea style="height:100px;" cols="20" rows="5" class="form-control" name="{$key}[teachersay]">{$vo.teacherSay}</textarea>
+                </div>
+            </p>
         </div>
         {/volist}
         <!-- 模态框底部 -->
