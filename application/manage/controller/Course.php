@@ -82,7 +82,6 @@ class Course extends Base{
 
     public function add(){
         $info = input('post.');
-        dump($info);die;
         $msg  =   [
             'title.require' => '课程名称不能为空',
             'title.length' => '课程名称长度太短',
