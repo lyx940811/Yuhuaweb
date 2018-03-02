@@ -30,7 +30,8 @@ class Course extends Home
     /**
      * 图片缩放测试
      */
-    public function chpicsize(){
+    public function chpicsize()
+    {
         $path = 'G:\wamp64\www\tp5yuhuaweb\public\uploads\2017\12\12\flowers-background-butterflies-beautiful-87452.jpeg';
         myImageResize(iconv("utf-8","gb2312",$path),400,400);
     }
@@ -38,7 +39,8 @@ class Course extends Home
     /**
      * 压缩测试
      */
-    public function press(){
+    public function press()
+    {
         $path = 'G:\wamp64\www\tp5yuhuaweb\public\uploads\2017\12\12\flowers-background-butterflies-beautiful-87452.jpeg';
         $path = 'G:\wamp64\www\tp5yuhuaweb\public\uploads\2017\12\12\3.jpg';
         compresspic($path);
@@ -47,7 +49,8 @@ class Course extends Home
     /**
      * 获得某课程下的所有课程文件
      */
-    public function getfilelist(){
+    public function getfilelist()
+    {
         $courseid = 3;//$this->data['courseid'];
         $fileList = $this->LogicCourse->getCourseFile($courseid);
         //类型转换为中文?现在是英文
@@ -58,38 +61,49 @@ class Course extends Home
     /**
      * 获得某课程下的所有一级评论
      */
-    public function getcoursecomments(){
+    public function getcoursecomments()
+    {
+        $redis = new \Redis();
+        $redis->connect('127.0.0.1', 6379);
         $courseid = $this->data['courseid'];
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         if(!\app\index\model\Course::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
-        $comment = Db::name('course_review')
-            ->where('courseid',$courseid)
-            ->where('parentid',0)
-            ->field('id,userid,content,createdTime')
-            ->order('createdTime desc')
-            ->page($page,10)
-            ->select();
-        if($comment){
-            foreach ($comment as &$c){
-                $user = User::get($c['userid']);
-                $c['username'] = $user->username;
-                $c['createdTime'] = date('Y.m.d',strtotime($c['createdTime']));
-                $c['avatar']   = $this->request->domain()."/".$user->title;
-                $c['sonreviewNum']   = Db::name('course_review')->where('parentid',$c['id'])->count();
-                $c['likeNum']   = Db::name('like')->where('type','comment')->where('articleid',$c['id'])->count();
-                if(!empty($this->user)){
-                    if(Like::get(['userid'=>$this->user->id,'type'=>'comment','articleid'=>$c['id']])){
-                        $c['is_like'] = 1;
-                    }
-                    else{
-                        $c['is_like'] = 0;
+        if($redis->exists('CourseComments'.$courseid.'Page'.$page)){
+            //有redis
+            $comment = $redis->get('CourseComments'.$courseid.'Page'.$page);
+            $comment = json_decode($comment,true);
+        }else{
+            //redis没存
+            $comment = Db::name('course_review')
+                ->where('courseid',$courseid)
+                ->where('parentid',0)
+                ->field('id,userid,content,createdTime')
+                ->order('createdTime desc')
+                ->page($page,10)
+                ->cache(60)
+                ->select();
+            if($comment){
+                foreach ($comment as &$c){
+                    $user = User::get($c['userid']);
+                    $c['username'] = $user->username;
+                    $c['createdTime'] = date('Y.m.d',strtotime($c['createdTime']));
+                    $c['avatar']   = $this->request->domain()."/".$user->title;
+                    $c['sonreviewNum']   = Db::name('course_review')->where('parentid',$c['id'])->count();
+                    $c['likeNum']   = Db::name('like')->where('type','comment')->where('articleid',$c['id'])->count();
+                    if(!empty($this->user)){
+                        if(Like::get(['userid'=>$this->user->id,'type'=>'comment','articleid'=>$c['id']])){
+                            $c['is_like'] = 1;
+                        }
+                        else{
+                            $c['is_like'] = 0;
+                        }
                     }
                 }
             }
+            $redis->setex('CourseComments'.$courseid.'Page'.$page, 120,json_encode($comment));
         }
-
         return json_data(0,$this->codeMessage[0],$comment);
     }
 
@@ -97,7 +111,8 @@ class Course extends Home
      * 获得某个评论的详细内容及这个评论的一级，二级评论
      * @return array
      */
-    public function getcomdetail(){
+    public function getcomdetail()
+    {
         $commentid = $this->data['commentid'];
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         if(!\app\index\model\CourseReview::get($commentid)){
@@ -172,80 +187,50 @@ class Course extends Home
     }
 
     public function coursedetail(){
+        $redis = new \Redis();
+        $redis->connect('127.0.0.1', 6379);
         $courseid = $this->data['courseid'];
 
         if(!$course = CourseModel::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
 
-        $user = User::get($course['userid']);
+        if($redis->exists('CourseDetail'.$courseid)){
+            //有redis
+            $data = $redis->get('CourseDetail'.$courseid);
+            $data = json_decode($data,true);
+        }else{
+            //redis没存
+            if(!empty($course->teacherinfo->realname)){
+                $teacher_realname = $course->teacherinfo->realname;
+                $teacher_avatar = $course->teacherinfo->user->title;
+            }
+            else{
+                $teacher_realname = '还未分配老师';
+                $teacher_avatar = 'static/index/images/avatar.png';
+            }
+            $learnNum = Db::name('study_result_v13')
+                ->alias('sr')
+                ->join('course_task ct','sr.taskid=ct.id')
+                ->where('ct.courseId',$courseid)
+                ->group('sr.userid')
+                ->count();
 
-        if(!empty($course->teacherinfo->realname)){
-            $teacher_realname = $course->teacherinfo->realname;
-            $teacher_avatar = $course->teacherinfo->user->title;
+            $data = [
+                'title'         =>  $course->title,
+                'about'         =>  $course->about,
+                'category'         =>  $course->category->name,
+                'teacher_name'  =>  $teacher_realname,
+                'avatar'        =>  $this->request->domain()."/".$teacher_avatar,
+                'achivement'    =>  '教师成就',
+                'learnNum'      =>  $learnNum,
+                'plan'          =>  $course->teachingplan
+            ];
+            $redis->setex('CourseDetail'.$courseid, 120,json_encode($data));
         }
-        else{
-            $teacher_realname = '还未分配老师';
-            $teacher_avatar = 'static/index/images/avatar.png';
-        }
-        $learnNum = Db::name('study_result_v13')
-            ->alias('sr')
-            ->join('course_task ct','sr.taskid=ct.id')
-            ->where('ct.courseId',$courseid)
-            ->group('sr.userid')
-            ->count();
-
-        $data = [
-            'about'         =>  $course->about,
-            'category'         =>  $course->category->name,
-            'teacher_name'  =>  $teacher_realname,
-            'avatar'        =>  $this->request->domain()."/".$teacher_avatar,
-            'achivement'    =>  '教师成就',
-            'learnNum'      =>  $learnNum,
-            'plan'          =>  $course->teachingplan
-        ];
         return json_data(0,$this->codeMessage[0],$data);
     }
-    /**
-     * 获得课程目录(加了进度),abandoned use rebuild version
-     */
-/*    public function getcourselesson_abandoned(){
-        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
-        $courseid = $this->data['courseid'];
-        if(!$course = CourseModel::get($courseid)){
-            return json_data(200,$this->codeMessage[200],'');
-        }
-        $fields = 'ct.id as taskid,ct.courseid,ct.length,ct.chapterid,ct.title,cc.title as chapter,cc.seq';
-        $lesson = Db::name('course_task')
-            ->alias('ct')
-            ->join('course_chapter cc','ct.chapterid = cc.id')
-            ->field($fields)
-            ->order('cc.seq')
-            ->where('ct.courseid',$courseid)
-            ->page($page,10)
-            ->select();
 
-        if(!empty($this->user)){
-            foreach ($lesson as &$l){
-                $length = explode(':',$l['length']);
-                $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
-                if($watch_log = Db::name('study_result')->where(['userid'=>$this->user->id,'courseid'=>$l['courseid'],'chapterid'=>$l['chapterid']])->find()){
-                    if($watch_log['status']==1){
-                        $l['plan'] = '100';
-                    }
-                    else{
-                        $watch_time = strtotime($watch_log['endtime'])-strtotime($watch_log['starttime']);
-                        $l['plan'] = (round($watch_time/$couse_time,2)*100);
-                    }
-                }
-                else{
-                    $l['plan'] = '0';
-                }
-                unset($l['length'],$l['seq']);
-            }
-        }
-        return json_data(0,$this->codeMessage[0],$lesson);
-    }*/
     //rebuild version use this
     public function getcourselesson(){
         $video_type = ['mp4','url'];
@@ -300,119 +285,9 @@ class Course extends Home
         return json_data(0,$this->codeMessage[0],$lesson);
     }
 
-    //abandoned , use the rebuild version
-/*    public function getcoursetop_abandoned(){
-        $course_all_time = 0;
-        $courseid = $this->data['courseid'];
-        //为了拿顶部的title
-        $course = Db::name('course')->field('title')->find($courseid);
-        //课程下的所有任务，为了计算时间
-        $task = Db::name('course_task')
-            ->where('courseId',$courseid)
-            ->field('id,courseId,chapterid,length,title')
-            ->select();
-
-        //计算这个课程的所有的task的总时间
-        if($task){
-            foreach ( $task as $t){
-                $length = explode(':',$t['length']);
-                $couse_time  = $length[2]+$length[1]*60+$length[0]*3600;
-                $course_all_time = $course_all_time+$couse_time;
-            }
-        }
-        //为了计算任务比需要的分母
-        $taskNum = count($task);
-
-        empty($task)?$next_task='还未有新课程':$next_task = $task[0]['title'];
-        empty($task)?$learn_taskid='0':$learn_taskid = $task[0]['id'];
-
-        //假如登陆了
-        if(!empty($this->user)){
-            $learn_task = Db::name('study_result')
-                ->where('courseid',$courseid)
-                ->where('userid',$this->user->id)
-                ->order('chapterid desc')
-                ->find();
-            //找到最后一条学习记录
-            if($learn_task){
-                if($learn_task['status']==0){
-                    //还没学完,需要拿这一节课得名字
-                    $next_task = Db::name('course_task')
-                        ->where('courseid',$courseid)
-                        ->where('chapterid',$learn_task['chapterid'])
-                        ->find();
-                    $learn_taskid = $next_task['id'];
-                    $next_task    = $next_task['title'];
-                }
-                else{
-                    //学完了，需要拿下一节课得名字
-                    $next_task = Db::name('course_task')
-                        ->where('courseid',$courseid)
-                        ->where('chapterid','>',$learn_task['chapterid'])
-                        ->find();
-
-                    if(!empty($next_task)){
-                        $learn_taskid = $next_task['id'];
-                        $next_task = $next_task['title'];
-                    }
-                    else{
-                        $next_task = '已学完';
-                        $learn_taskid = 0;
-                    }
-                }
-                //还需要算进度
-                $learn_task = Db::name('study_result')
-                    ->where('courseid',$courseid)
-                    ->where('userid',$this->user->id)
-                    ->order('chapterid desc')
-                    ->select();
-                $has_learn_time = 0;
-                foreach ( $learn_task as $t){
-                    if($t['status']==0){
-                        $watch_time = strtotime($t['endtime'])-strtotime($t['starttime']);
-                    }
-                    else{
-                        $length = Db::name('course_task')->where(['courseId'=>$t['courseid'],'chapterid'=>$t['chapterid']])->value('length');
-                        $length = explode(':',$length);
-                        $watch_time = $length[2]+$length[1]*60+$length[0]*3600;
-                    }
-                    $has_learn_time = $has_learn_time+$watch_time;
-                }
-                if($course_all_time!=0){
-                    $plan = (round($has_learn_time/$course_all_time,2)*100);
-                }
-
-                //拿到完成的任务比（1/30）
-                $has_done_task = Db::name('study_result')
-                    ->where('courseid',$courseid)
-                    ->where('userid',$this->user->id)
-                    ->where('status',1)
-                    ->select();
-                $has_done = count($has_done_task).'/'.$taskNum;
-            }
-            else{
-                //没找到学习记录
-                $plan = '0';
-                $has_done = '0/'.$taskNum;
-            }
-        }
-        else{
-            //没登陆
-            $plan = '0';
-            $has_done = '0/'.$taskNum;
-        }
-        $data = [
-            'title'     =>  $course['title'],
-            'plan'      =>  $plan,
-            'has_done'  =>  $has_done,
-            'next_task' =>  $next_task,
-            'next_task_id'  =>  $learn_taskid,
-        ];
-        return json_data(0,$this->codeMessage[0],$data);
-    }*/
-
     //rebuild version,use this
-    public function getcoursetop(){
+    public function getcoursetop()
+    {
         $video_type = ['mp4','url'];
         $courseid = $this->data['courseid'];
         //为了拿顶部的title
@@ -761,7 +636,7 @@ class Course extends Home
             }else{
                 Db::name('testpaper_result')->insert($paper_result_data);
             }
-            return json_data(0,$this->codeMessage[410],410);
+            return json_data(0,$this->codeMessage[410],["score"=>410]);
         }else{
             $paper_result_data['Flag'] = 1;
             if(Db::name('testpaper_result')->where(['paperID'=>$paperid,'userid'=>$this->user->id])->find()){
@@ -773,127 +648,6 @@ class Course extends Home
         }
 
     }
-
-/*    public function handpaper_abandoned()
-    {
-        $paperid = 78;
-//        $paperid = $this->data['paperID'];
-        $score = 0;
-        if(!Testpaper::get($paperid)){
-            return json_data(400,$this->codeMessage[400],'');
-        }
-//        $dopaper = $this->data['dopaper'];
-
-        $dopaper = [
-            64  =>  [1],
-            56  =>  [0,1],
-//            57  =>  [1],
-        ];
-
-        $testpaper = Db::name('testpaper')->find($paperid);
-        $meta = json_decode($testpaper['metas']);
-        //$topicType是为了拿每种题型的分值及可能存在的漏选分值
-        $topicType = [];
-        foreach ( (array)$meta->counts as $key=>$value){
-            $question['type'] = $key;
-            $topicType[$key] = '';
-        }
-
-        foreach ( $topicType as $tkey=>$tvalue ){
-            foreach ( (array)$meta->scores as $key=>$value ){
-                if( $tkey==$key ){
-                    $topicType[$tkey]['score'] = $value;
-                }
-            }
-            foreach ( (array)$meta->missScores as $key=>$value ){
-                if( $tkey==$key ){
-                    $topicType[$tkey]['missScore'] = $value;
-                }
-            }
-        }
-
-        //拿到resultid
-        $lastresultId = Db::name('testpaper_item_result')->order('resultId desc')->limit(1)->value('resultId');
-        empty($lastresultId)?$lastresultId=1:$lastresultId = $lastresultId+1;
-
-        Db::startTrans();
-        try{
-            foreach ( $dopaper as $key=>$value ){
-                $question = Db::name('question')->find($key);
-                $answer = json_decode($question['answer']);
-
-                $resultData = [
-                    'paperID'       =>    $paperid,
-                    'userid'        =>    $this->user->id,
-                    'answer'        =>    json_encode($value),
-                    'questionId'    =>    $question['id'],
-                    'resultId'      =>    $lastresultId
-                ];
-
-                switch ( $question['type'] ){
-                    case 'single_choice':
-                        if(empty(array_intersect($answer,$value))){
-                            $resultData['score'] = 0;
-                            $resultData['status'] = 3;
-                            break;
-                        }
-                        $resultData['status'] = 1;
-                        $resultData['score'] = $topicType['single_choice']['score'];
-                        $score = $score+$topicType['single_choice']['score'];
-                        break;
-                    case 'choice':
-                        //没答题，直接break
-                        if(empty($value)){
-                            $resultData['status'] = 4;
-                            $resultData['score'] = 0;
-                            break;
-                        }
-                        //如果填写的答案有在标准答案外的答案的话算错，break
-                        if(!empty(array_diff($value,$answer))){
-                            $resultData['score'] = 0;
-                            $resultData['status'] = 3;
-                            break;
-                        }
-                        //剩下来的就是在答案内的了，取差集，拿个数
-                        $diffNum = count(array_diff($answer,$value));
-                        if($diffNum==0){
-                            //没有差集，全部答对，得满分
-                            $resultData['status'] = 1;
-                            $resultData['score'] = $topicType['choice']['score'];
-                            $score = $score+$topicType['choice']['score'];
-                        } else{
-                            //有差集，根据个数来减掉漏选分
-                            $resultData['status'] = 2;
-                            $resultData['score'] =$topicType['choice']['score']-$diffNum*$topicType['choice']['missScore'];
-                            $score = ($score+$topicType['choice']['score'])-$diffNum*$topicType['choice']['missScore'];
-                        }
-                        break;
-                    case 'determine':
-                        if(empty(array_intersect($answer,$value))){
-                            $resultData['score'] = 0;
-                            $resultData['status'] = 3;
-                            break;
-                        }
-                        $resultData['status'] = 1;
-                        $resultData['score'] = $topicType['determine']['score'];
-                        $score = $score+$topicType['determine']['score'];
-                        break;
-                }
-                Db::name('testpaper_item_result')->insert($resultData);
-            }
-            // 提交事务
-            Db::commit();
-            $data = [
-                'score' =>  $score
-            ];
-            return json_data(0,$this->codeMessage[0],$data);
-        } catch (\Exception $e) {
-            // 回滚事务
-            Db::rollback();
-            return json_data(2000,'error','');
-        }
-
-    }*/
 
 
     /**
@@ -945,7 +699,7 @@ class Course extends Home
                         $task['plan_time'] = 0;
 //                $task['is_lastUnit'] = false;
                         //如果不是考试或者测验的话进行拼域名
-                        if(!in_array($task['type'],['text','exam'])){
+                        if(!in_array($task['type'],['text','exam','plan'])){
                             if($task['type']!='url'){
                                 //如果不是外链的话，拼域名
                                 $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
@@ -1010,6 +764,7 @@ class Course extends Home
                                     $task['is_test'] = true;
                                     $task['score'] = $test_result['score'];
                                     if($test_result['Flag']==0){
+                                        //==0时代表正在审核
                                         $task['is_incheck'] = true;
                                     }
                                 }
@@ -1059,7 +814,7 @@ class Course extends Home
                         $task['is_incheck'] = false;
                         $task['plan_time'] = 0;
                         //如果不是考试或者测验的话进行拼域名
-                        if(!in_array($task['type'],['text','exam'])){
+                        if(!in_array($task['type'],['text','exam','plan'])){
                             if($task['type']!='url'){
                                 //如果不是外链的话，拼域名
                                 $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
