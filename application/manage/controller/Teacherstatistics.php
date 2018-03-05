@@ -22,7 +22,7 @@ class Teacherstatistics extends  Base{
         }
 
         $list = Db::table('teacher_info')
-            ->field('id,sn,realname')
+            ->field('id,sn,realname,userid')
             ->whereOr($where)
             ->paginate(20);
         $newarr=$this->getTeacherInfo($list);
@@ -38,11 +38,11 @@ class Teacherstatistics extends  Base{
         foreach ($alllist as $k=>$v){
             $totalteacher ++;
             $totalmedia += Db::table('course_task a')
-                ->join('course b','a.courseId=b.id','LEFT')->where('b.teacherIds',$v['id'])
+                ->join('course b','a.courseId=b.id','LEFT')->where('b.teacherIds',$v['userid'])
                 ->value('count(a.id) as num');
-            $totalcheck += Db::table('testpaper_result')->where('checkTeacherId',$v['id'])->value('count(id) as num');
-            $totalanswer += Db::table('ask_answer')->where('answerUserId',$v['id'])->value('count(id) as num');
-            $totalask += Db::table('asklist')->where('userID',$v['id'])->value('count(id) as num');
+            $totalcheck += Db::table('testpaper_result')->where('checkTeacherId',$v['userid'])->value('count(id) as num');
+            $totalanswer += Db::table('ask_answer')->where('answerUserId',$v['userid'])->value('count(id) as num');
+            $totalask += Db::table('asklist')->where('userID',$v['userid'])->value('count(id) as num');
 
         }
 
@@ -65,27 +65,27 @@ class Teacherstatistics extends  Base{
         foreach ($list as $k => $v) {
             $newarr[$k] = $v;
             //登录次数
-            $newarr[$k]['loginnum'] = Db::table('user_login_log')->where('userid', $v['id'])->count();
+            $newarr[$k]['loginnum'] = Db::table('user_login_log')->where('userid', $v['userid'])->count();
             //登录总时长
-            $logintime = Db::table('user_login_log')->where('userid', $v['id'])->sum('loginAllTime');
+            $logintime = Db::table('user_login_log')->where('userid', $v['userid'])->sum('loginAllTime');
             $newarr[$k]['logintime'] = round($logintime / 60 / 60, 2);
             //登录频率
-            $totalLoginDay = Db::table('user_login_log')->where('userid', $v['id'])->field("DATE_FORMAT(FROM_UNIXTIME(LoginTime),'%Y%m%d') days,COUNT(id) as num")->group('days')->find();
+            $totalLoginDay = Db::table('user_login_log')->where('userid', $v['userid'])->field("DATE_FORMAT(FROM_UNIXTIME(LoginTime),'%Y%m%d') days,COUNT(id) as num")->group('days')->find();
             $newarr[$k]['totalLoginDay'] = 0;
             if ($totalLoginDay['num'] > 0 && $newarr[$k]['loginnum'] > 0) {
                 $newarr[$k]['totalLoginDay'] = round($newarr[$k]['loginnum'] / $totalLoginDay['num'], 1);
             }
-            $newarr[$k]['teachnum'] = Db::table('course')->where('teacherIds', $v['id'])->value('count(id) as num');
+            $newarr[$k]['teachnum'] = Db::table('course')->where('teacherIds', $v['userid'])->value('count(id) as num');
 //            $newarr[$k]['medianum'] = Db::table('course_task a')
 //                ->join('course b','a.courseId=b.id','LEFT')->where('b.teacherIds',$v['id'])
 //                ->value('count(a.id) as num');
             //在教课程数量
-            $medianum = Db::table('course')->where('teacherIds', $v['id'])->column('id');
+            $medianum = Db::table('course')->where('teacherIds', $v['userid'])->column('id');
             $newarr[$k]['medianum'] = count($medianum);
             $newarr[$k]['resource']='--';
-            $newarr[$k]['checknum'] = Db::table('testpaper_result')->where('checkTeacherId', $v['id'])->value('count(id) as num');
-            $newarr[$k]['answernum'] = Db::table('ask_answer')->where('answerUserId', $v['id'])->value('count(id) as num');
-            $newarr[$k]['asknum'] = Db::table('asklist')->where('userID', $v['id'])->value('count(id) as num');
+            $newarr[$k]['checknum'] = Db::table('testpaper_result')->where('checkTeacherId', $v['userid'])->value('count(id) as num');
+            $newarr[$k]['answernum'] = Db::table('ask_answer')->where('answerUserId', $v['userid'])->value('count(id) as num');
+            $newarr[$k]['asknum'] = Db::table('asklist')->where('userID', $v['userid'])->value('count(id) as num');
             //在教学生数量
             $majorsid = Db::name('course')->where('id', 'in', $medianum)->value('categoryId');
             $newarr[$k]['student'] = DB::name('student_school')->where('majors', 'in', $majorsid)->count();
