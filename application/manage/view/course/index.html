@@ -191,7 +191,7 @@
                                     <div class="form-group">
                                         <label for="about" class="col-sm-2 control-label">授课计划</label>
                                         <div class="col-sm-10">
-                                            <textarea name="teachingplan" cols="30" rows="10" class="form-control">{$vo.teachingplan}</textarea>
+                                            <textarea id="container" name="teachingplan">{$vo.teachingplan}</textarea>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -302,7 +302,7 @@
                         <div class="form-group">
                             <label for="about" class="col-sm-2 control-label">授课计划</label>
                             <div class="col-sm-10">
-                                <textarea name="teachingplan" cols="30" rows="10" class="form-control"></textarea>
+                                <textarea id="container1" name="teachingplan">这里写你的初始化内容</textarea>
                             </div>
                         </div>
                         <div class="form-group">
@@ -338,7 +338,13 @@
     <!--添加结束-->
 
 </div>
+<script src="__MANAGE_UEDITOR__/ueditor.config.js"></script>
+<script src="__MANAGE_UEDITOR__/ueditor.all.js"></script>
 {include file='manage/bottom'}
+<script type="text/javascript">
+    var ue = UE.getEditor('container');
+    var ue = UE.getEditor('container1');
+</script>
 <script type="text/javascript">
     function uploadImage(id) {
         // FormData对象，来发送二进制文件。

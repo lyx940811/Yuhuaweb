@@ -10,6 +10,7 @@ return[// 视图输出字符串内容替换
         '__MANAGE_CSS__' => '/static/manage/css/',
         '__MANAGE_IMG__' => '/static/manage/img/',
         '__MANAGE_JS__' => '/static/manage/js/',
+        '__MANAGE_UEDITOR__' => '/static/manage/ueditor/',
        // '__JSS__' => '/static/index/jss/',
     ],
     'app_trace'              => true,

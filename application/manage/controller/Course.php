@@ -112,7 +112,7 @@ class Course extends Base{
             'smallPicture'  => $info['pic'],
             'userid'        => session('admin_uid'),
             'about'        => $info['about'],
-            'teachingplan' => $info['teachingplan'],
+            'teachingplan' => htmlspecialchars_decode($info['teachingplan']),
             'createdTime'   =>date('Y-m-d H:i:s',time()),
         ];
 
@@ -171,7 +171,7 @@ class Course extends Base{
             'serializeMode' => $info['serializeMode'],
             'userid'        => session('admin_uid'),
             'about'        => $info['about'],
-            'teachingplan' => $info['teachingplan'],
+            'teachingplan' => htmlspecialchars_decode($info['teachingplan']),
             'status'       =>$info['status'],
             'smallPicture'=>$pic,
 //            'createdTime'   =>date('Y-m-d H:i:s',time()),
