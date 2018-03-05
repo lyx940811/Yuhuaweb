@@ -135,7 +135,7 @@ class Coursestatistics extends Base{
         //视频资源总数
         $data['allvedio']=Db::table('course_task')->where('type',['=','mp4'],['=','flv'],'or')->count();
         //文档资源总数
-        $array=['mp4','flv','test','exam'];
+        $array=['mp4','flv','test','exam','plan'];
         $data['allfile']=Db::table('course_task') ->where('type','not in',$array)->count();
         //任课教师总数
         $data['teacherall']=Db::table('teacher_info')->count();
