@@ -174,7 +174,7 @@
 
     var uploader='';
     $('select[name="mode"]').change(function () {
-
+        var id=$('#courseId').val();
         if($(this).val()=='4'||$(this).val()=='5' || $(this).val()=='7'){
             var exam = '';
             if($(this).val()==4){
@@ -186,18 +186,29 @@
             if($(this).val()==7){
                 exam = 'plan';
             }
-            var html_exam = '<div class="form-group">';
-            html_exam += '<label class="col-sm-2 control-label">试卷名称</label>';
-            html_exam += '<div class="col-sm-10">';
-            html_exam += '<select name="paperid" class="form-control">';
-            html_exam += '<option value="">--请选择--</option>';
-            html_exam += '{volist name="testpaper" id="t"}';
-            html_exam += '<option value="{$t.id}">{$t.name}</option>';
-            html_exam += '{/volist}';
-            html_exam += '</select>';
-            html_exam += '</div>';
-            html_exam += '<input type="hidden" id="type" name="type" class="form-control" placeholder="类型" value="'+exam+'"/></div>';
-            $('#html_exam_media').html(html_exam)
+
+            $.ajax({
+                url:'{:url("ajax")}',
+                type:"get",
+                data:'id='+id+'&type='+exam,
+                success:function(data){
+                    var html_exam = '<div class="form-group">';
+                    html_exam += '<label class="col-sm-2 control-label">试卷名称</label>';
+                    html_exam += '<div class="col-sm-10">';
+                    html_exam += '<select name="paperid" class="form-control">';
+                    html_exam += '<option value="">--请选择--</option>';
+                    $.each(data,function(i,v){
+                        html_exam += '<option value="'+v.id+'">'+v.name+'</option>';
+                    });
+                    html_exam += '</select>';
+                    html_exam += '</div>';
+                    html_exam += '<input type="hidden" id="type" name="type" class="form-control" placeholder="类型" value="'+exam+'"/></div>';
+                    $('#html_exam_media').html(html_exam);
+                },
+                error:function(e){
+                    alert("添加信息错误");
+                }
+            });
         }else if($(this).val()=='6'){
             var html_url = ' <div class="form-group">\n' +
                 '                <label class="col-sm-2 control-label">媒体链接</label>\n' +

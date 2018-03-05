@@ -58,7 +58,7 @@ class Excel
     }
     public function excelExport($fileName = '', $headArr = [], $data = [],$name,$type) {
 
-        $fileName .= "_" . date("Y_m_d", Request::instance()->time()) . ".xlsx";
+        $fileName .= "_" . date("Y_m_d", Request::instance()->time()) . ".xls";
         Loader::import('PHPExcel.PHPExcel');//手动引入PHPExcel.php
         Loader::import('PHPExcel.PHPExcel.IOFactory.PHPExcel_IOFactory');
 

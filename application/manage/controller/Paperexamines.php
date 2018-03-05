@@ -133,6 +133,7 @@ class Paperexamines extends Base{
                 }
                 $objectivescore+=$v['passedscores'];
                 $data['score'] = $v['passedscores'];
+                $data['teacherSay'] = $v['teachersay'];
                 $save = DB::table('testpaper_item_result')->where('id', $v['id'])->update($data);
                 if (!is_numeric($save)) {
                     return ['error' => '保存失败', 'code' => '200'];
