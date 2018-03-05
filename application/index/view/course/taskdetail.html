@@ -59,7 +59,6 @@
                 <track kind="subtitles" src="demo.captions.vtt" srclang="en" label="English"> -->
                 <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
             </video>
-            
             <script>
                     //关闭浏览器执行函数
 //                    $(window).unload(function() {
@@ -187,14 +186,16 @@
             <div  id="task-list" role="tabpanel" class="innerbox task-list-pane tab-pane active media topic-item" style="height:100%;overflow-y:scroll">
                 <div class="task-list-pane-body js-sidebar-pane-body" >
                     <ul class="task-list task-show" >
-                        {volist name="tasklist" id="tl"}
+                        {volist name="tasklist" id="thetask"}
+
+                        {volist name="thetask.task" id="tl"}
                         {if condition="$tl['type'] eq 'mp4' or $tl['type'] eq 'url'"}
                         {present name="tl.plan"}
                         {switch name="tl.plan" }
                         {case value="100"}
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
-                            <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">{$tl.chapter}: {$tl.title}</a>
+                            <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">{$thetask.title}: {$tl.title}</a>
 
                             <span class="right-menu">
                                 {notempty name="tl.length"}
@@ -208,7 +209,7 @@
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
                             <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
-                                {$tl.chapter}: {$tl.title}
+                                {$thetask.title}: {$tl.title}
                             </a>
                             <span class="right-menu">
                                 {notempty name="tl.length"}
@@ -222,20 +223,49 @@
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
                             <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
-                                {$tl.chapter}: {$tl.title}
+                                {$thetask.title}: {$tl.title}
                             </a>
                             <span class="right-menu">23:10
                                     <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
                             </span>
                         </li>
                         {/present}
+                        {elseif condition="$tl['type'] eq 'test' or $tl['type'] eq 'exam' or $tl['type'] eq 'plan'"}
+                        {present name="user"}
+                        {switch name="tl.plan" }
+                        {case value="100"}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
+                            <a class="title" href="{:url('index/examination/examresults',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">{$thetask.title}: {$tl.title}</a>
+                            <span class="right-menu"></span>
+                        </li>
+                        {/case}
+                        {default /}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                            <a class="title" href="{:url('index/examination/alert',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
+                                {$thetask.title}: {$tl.title}
+                            </a>
+                            <span class="right-menu"></span>
+                        </li>
+                        {/switch}
+                        {else /}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                            <a class="title" href="{:url('index/index/regist'">
+                                {$thetask.title}: {$tl.title}
+                            </a>
+                            <span class="right-menu"></span>
+                        </li>
+                        {/present}
+
                         {else /}
                         {present name="tl.plan"}
                         {switch name="tl.plan" }
                         {case value="100"}
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
-                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">{$tl.chapter}: {$tl.title}</a>
+                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">{$thetask.title}: {$tl.title}</a>
                             <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
                         </li>
                         {/case}
@@ -243,7 +273,7 @@
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
                             <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
-                                {$tl.chapter}: {$tl.title}
+                                {$thetask.title}: {$tl.title}
                             </a>
                             <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
                         </li>
@@ -252,7 +282,7 @@
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
                             <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
-                                {$tl.chapter}: {$tl.title}
+                                {$thetask.title}: {$tl.title}
                             </a>
                             <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
                         </li>
@@ -260,6 +290,7 @@
                         {/if}
                         {/volist}
 
+                        {/volist}
 
 
                     </ul>
@@ -535,24 +566,7 @@
 //        };
 
         //文件下载前保存数据
-        $('.link-darker').click(function(){
-            {present name="user"}
-                var courseid = {$task.courseId};
-                var chapterid = {$task.chapterid};
-                var taskid = {$task.id};
-                $.get(
-                    "{:url('index/user/filedown')}",
-                    {'courseid':courseid,'chapterid':chapterid,'taskid':taskid},
-                    function(data){
-                        console.log(data);
-                        if(data['code']!=0){
-                            alert('记录学习时间出错，请重新进入');
-                        }
-                    },
-                    "json"
-                );
-            {/present}
-        });
+
     });
 </script>
 </body>

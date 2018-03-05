@@ -1,5 +1,20 @@
 {extend name="public/courselayout"}
 {block name="title"}{$course.title}-介绍{/block}
+{block name="link"}
+<style>
+    #test2>ol{
+        margin-left: 30px;
+    }
+    #test2>ol li{
+        list-style: decimal;
+        /*padding-left: 10px;*/
+    }
+    #test2>ol li p{
+        margin-left: 5px;
+    }
+
+</style>
+{/block}
 {block name="navdetail"}
 <div class="es-piece">
     <div class="piece-header">课程介绍</div>
@@ -8,6 +23,15 @@
         {$course.about}
         {else /}
         还没有课程评价
+        {/notempty}
+    </div>
+    <br><br><br>
+    <div class="piece-header">授课计划</div>
+    <div id="test2" class="piece-body p-lg clearfix">
+        {notempty name="course.teachingplan"}
+        {$course.teachingplan}
+        {else /}
+        还没有授课计划
         {/notempty}
     </div>
 </div>
