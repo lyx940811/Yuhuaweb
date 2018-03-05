@@ -373,4 +373,45 @@ class Index extends Home
         }
     }
 
+    public function ppttest()
+    {
+        $powerpnt = new \COM("powerpoint.application") or die("Unable to instantiate Powerpoint");
+        $file='1.ppt';
+        echo realpath($file);
+
+        $addr = 'F:/test.ppt';
+        echo $addr;
+//        $presentation = $powerpnt->Presentations->Open($addr, false, false, false) or die("Unable to open presentation");
+//
+//
+//        $presentation->Fonts->Replace('黑体','幼圆');
+//        $presentation->Fonts->Replace('MS Gothic','幼圆');
+//        $presentation->Fonts->Replace('方正粗倩简体','幼圆');
+//        $presentation->Fonts->Replace('方正小标宋简体','幼圆');
+//        $presentation->Fonts->Replace('Arial Black','幼圆');
+//        $presentation->Fonts->Replace('华文中宋','幼圆');
+//        $presentation->Fonts->Replace('Arial Unicode MS','幼圆');
+//        $presentation->Fonts->Replace('方正细圆简体','幼圆');
+//        $presentation->Fonts->Replace('Times New Roman','幼圆');
+//
+//
+//        foreach($presentation->Fonts as $c)
+//        {
+//            echo $c->name."<br />";
+//            //echo $c->Replace('','');
+//        }
+//
+//
+//        foreach($presentation->Slides as $slide)
+//        {
+//            $slideName = "Slide_" . $slide->SlideNumber;
+//            $uploadsFolder = 'iii';
+//            $exportFolder = realpath($uploadsFolder);
+//            $slide->Export($exportFolder."//".$slideName.".jpg", "jpg", "1920", "1080");
+//        }
+//        $presentation->Close();
+//        $powerpnt->Quit();
+//        $powerpnt = null;
+    }
+
 }
