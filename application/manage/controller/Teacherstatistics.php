@@ -37,16 +37,14 @@ class Teacherstatistics extends  Base{
         $alllist = Db::table('teacher_info')->select();
         foreach ($alllist as $k=>$v){
             $totalteacher ++;
-            $totalmedia += Db::table('course_task a')
-                ->join('course b','a.courseId=b.id','LEFT')->where('b.teacherIds',$v['userid'])
-                ->value('count(a.id) as num');
             $totalcheck += Db::table('testpaper_result')->where('checkTeacherId',$v['userid'])->value('count(id) as num');
             $totalanswer += Db::table('ask_answer')->where('answerUserId',$v['userid'])->value('count(id) as num');
             $totalask += Db::table('asklist')->where('userID',$v['userid'])->value('count(id) as num');
 
         }
-
-
+        $array=['test','exam','plan'];
+        $totalmedia += Db::table('course_task')
+            ->where('type','not in',$array)->count();
         $this->assign('list',$newarr);
         $this->assign('page',$list->render());
         $this->assign('typename','教师统计');
@@ -75,18 +73,20 @@ class Teacherstatistics extends  Base{
             if ($totalLoginDay['num'] > 0 && $newarr[$k]['loginnum'] > 0) {
                 $newarr[$k]['totalLoginDay'] = round($newarr[$k]['loginnum'] / $totalLoginDay['num'], 1);
             }
+            //在教课程数量
             $newarr[$k]['teachnum'] = Db::table('course')->where('teacherIds', $v['userid'])->value('count(id) as num');
 //            $newarr[$k]['medianum'] = Db::table('course_task a')
 //                ->join('course b','a.courseId=b.id','LEFT')->where('b.teacherIds',$v['id'])
 //                ->value('count(a.id) as num');
-            //在教课程数量
-            $medianum = Db::table('course')->where('teacherIds', $v['userid'])->column('id');
-            $newarr[$k]['medianum'] = count($medianum);
+            //资源上传数量
+            $array=['test','exam','plan'];
+            $newarr[$k]['medianum'] = Db::table('course_task')->where('createdUserId', $v['userid'])->where('type','not in',$array)->count();
             $newarr[$k]['resource']='--';
             $newarr[$k]['checknum'] = Db::table('testpaper_result')->where('checkTeacherId', $v['userid'])->value('count(id) as num');
             $newarr[$k]['answernum'] = Db::table('ask_answer')->where('answerUserId', $v['userid'])->value('count(id) as num');
             $newarr[$k]['asknum'] = Db::table('asklist')->where('userID', $v['userid'])->value('count(id) as num');
             //在教学生数量
+            $medianum = Db::table('course')->where('teacherIds', $v['userid'])->column('id');
             $majorsid = Db::name('course')->where('id', 'in', $medianum)->value('categoryId');
             $newarr[$k]['student'] = DB::name('student_school')->where('majors', 'in', $majorsid)->count();
         }

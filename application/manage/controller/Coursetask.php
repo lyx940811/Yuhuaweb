@@ -59,6 +59,7 @@ class Coursetask extends Base{
 
     public function add(){
         $info = input('post.');
+
         $msg  =   [
             'title.require'     => '任务名称不能为空',
             'title.length'      => '任务名称长度太短',
@@ -88,7 +89,7 @@ class Coursetask extends Base{
 
         $type = isset($info['type'])?$info['type']:'url';
         $paperid = isset($info['paperid'])?$info['paperid']:0;
-        if($type=='test' && !$paperid || $type=='exam' && !$paperid ){
+        if($type=='test' && !$paperid || $type=='exam' && !$paperid || $type=='plan' && !$paperid){
 
             return ['error'=>'类型为测验或考试时，必须选择试卷','code'=>'200'];
         }
@@ -138,7 +139,7 @@ class Coursetask extends Base{
         $validate = new Validate([
             'rid'       => 'require',
             'title'     => 'require|length:2,20',
-            'paperid'   =>'require',
+
             'courseId'  => 'require',
             'chapterid'  => 'require',
 //            'mediaSource'  => 'require'
@@ -154,7 +155,7 @@ class Coursetask extends Base{
 
         $type = isset($info['type'])?$info['type']:'url';
         $paperid = isset($info['paperid'])?$info['paperid']:0;
-        if($type=='test' && !$paperid || $type=='exam' && !$paperid ){
+        if($type=='test' && !$paperid || $type=='exam' && !$paperid || $type=='plan' && !$paperid){
 
             return ['error'=>'类型为测验或考试时，必须选择试卷','code'=>'200'];
         }
