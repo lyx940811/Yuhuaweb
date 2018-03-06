@@ -269,10 +269,10 @@
         }
     })
     function dopost($url,formid) {
-        $url=='add'?"{:url('add')}":"{:url('edit')}";
+        // $url=='add'?"{:url('add')}":"{:url('edit')}";
 
         $.ajax({
-            url: $url+"?"+Math.random(),
+            url: "{:url('add')}?"+Math.random(),
             type:"post",
             data:$('#form'+formid).serialize(),
             success:function(data){

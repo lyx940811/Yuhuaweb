@@ -13,14 +13,19 @@ class Examination extends Home{
     //跳转考试弹框
     public function alert(){
         $courseid=$this->request->param('course');
+        $this->assign('courseid',$courseid);
         $taskid=$this->request->param('taskid');
         $paperid=DB::name('course_task')->where('id',$taskid)->find();
+        if(empty($paperid['paperid'])){
+            $this->assign('list',[]);
+            return $this->fetch();
+        }
         $list=Db::name('testpaper')->where('id',$paperid['paperid'])->find();
         $this->isnotexit($list['id'],$courseid);//如果已考过试，就不能再显示考试页面
         $list['count']=Db::name('testpaper_item')->where('paperId',$list['id'])->count();
         $this->assign('list',$list);
         $this->assign('taskid',$taskid);
-        $this->assign('courseid',$courseid);
+
         return $this->fetch();
     }
 
