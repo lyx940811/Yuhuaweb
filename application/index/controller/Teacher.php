@@ -100,6 +100,7 @@ class Teacher extends User
         $file = Db::name('course_file')
 //            ->where($map)
             ->order('createTime desc')
+            ->where('userid',$this->user->id)
             ->paginate(8);
         $this->assign('file',$file);
 
@@ -139,6 +140,7 @@ class Teacher extends User
         $data['type']     = explode('.',$data['filename']);
         $data['type']     = $data['type'][1];
         $data['createTime']     = date('Y-m-d H:i:s',time());
+        $data['userid'] = $this->user->id;
         if(CourseFile::create($data)){
             return 1;
         }
@@ -164,9 +166,9 @@ class Teacher extends User
     public function down(){
         $fileid = $this->request->param('fileid');
         $file = CourseFile::get($fileid);
-        if(file_exists($file['filepath'])){
-            $fp=fopen($file['filepath'],"r");
-            $file_size=filesize($file['filepath']);
+        if(file_exists(iconv("utf-8","gb2312",$file['filepath']))){
+            $fp=fopen(iconv("utf-8","gb2312",$file['filepath']),"r");
+            $file_size=filesize(iconv("utf-8","gb2312",$file['filepath']));
             //下载文件需要用到的头
             Header("Content-type: application/octet-stream");
             Header("Accept-Ranges: bytes");

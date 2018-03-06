@@ -359,6 +359,7 @@ class Course extends Home
         $file = CourseFile::get($fileid);
         $file_path = ".\\".str_replace("/","\\",$file['filepath']);;
         $file_path = iconv("utf-8","gb2312",$file_path);
+
         if(file_exists($file_path)){
             $fp=fopen($file_path,"r");
             $file_size=filesize($file_path);
@@ -380,8 +381,6 @@ class Course extends Home
         else{
             $this->error('文件不存在');
         }
-
-
     }
     public function summary()
     {
