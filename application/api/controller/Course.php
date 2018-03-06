@@ -102,7 +102,7 @@ class Course extends Home
                     }
                 }
             }
-            $redis->setex('CourseComments'.$courseid.'Page'.$page, 120,json_encode($comment));
+            $redis->setex('CourseComments'.$courseid.'Page'.$page, 30,json_encode($comment));
         }
         return json_data(0,$this->codeMessage[0],$comment);
     }
@@ -226,7 +226,7 @@ class Course extends Home
                 'learnNum'      =>  $learnNum,
                 'plan'          =>  $course->teachingplan
             ];
-            $redis->setex('CourseDetail'.$courseid, 120,json_encode($data));
+            $redis->setex('CourseDetail'.$courseid, 30,json_encode($data));
         }
         return json_data(0,$this->codeMessage[0],$data);
     }
@@ -777,7 +777,7 @@ class Course extends Home
                         $c['plan'] = 0;
                     }
                 }
-                $redis->setex('CourseLesson'.$courseid.'Page'.$page.'User'.$this->user->id, 120, json_encode($chapter));
+                $redis->setex('CourseLesson'.$courseid.'Page'.$page.'User'.$this->user->id, 30, json_encode($chapter));
             }
         }else{
             //没登陆
@@ -827,7 +827,7 @@ class Course extends Home
                         $c['plan'] = 0;
                     }
                 }
-                $redis->setex('CourseLesson'.$courseid.'Page'.$page, 120,json_encode($chapter));
+                $redis->setex('CourseLesson'.$courseid.'Page'.$page, 30,json_encode($chapter));
             }
         }
         return json_data(0,$this->codeMessage[0],$chapter);
