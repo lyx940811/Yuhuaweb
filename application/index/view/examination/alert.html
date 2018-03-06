@@ -15,6 +15,7 @@
         <div class="modal show iframe-modal">
           <div class="modal-dialog ">
             <div class="modal-content">
+              {if condition="!empty($list)"}
               <div class="modal-body task-state-modal">
                 <div class="title font-blod">
                   <i class="es-icon es-icon-xinxi color-info"></i>考试说明
@@ -32,6 +33,22 @@
                   <a class="btn btn-primary" href="{:url('index/course/catalogue',array('course'=>$courseid))}">返回课程</a>
                 </div>
               </div>
+              {else}
+              <div class="modal-body task-state-modal">
+                <div class="title font-blod">
+                  <i class="es-icon es-icon-xinxi color-info"></i>考试说明
+                </div>
+                <div class="content">
+                  <div class="text-16 ">
+                    该任务还未导入试卷，请返回课程
+                    <!--<div class="mt5">请在<span class="color-primary">2分钟</span>内作答。</div>-->
+                  </div>
+                </div>
+                <div class="text-right mtl">
+                  <a class="btn btn-primary" href="{:url('index/course/catalogue',array('course'=>$courseid))}">返回课程</a>
+                </div>
+              </div>
+              {/if}
             </div>
           </div>
         </div>
