@@ -63,7 +63,6 @@ class Coursetask extends Base{
         $msg  =   [
             'title.require'     => '任务名称不能为空',
             'title.length'      => '任务名称长度太短',
-            'paperid.require'   =>'试卷不能为空',
             'courseId.require'  => '课程不能为空',
             'mode.require'  => '任务模式不能为空',
             'chapterid.require'  => '课程章必须选择',
@@ -71,7 +70,6 @@ class Coursetask extends Base{
         ];
         $validate = new Validate([
             'title'     => 'require|length:2,20',
-            'paperid'   =>'require',
             'courseId'  => 'require',
             'mode'  => 'require',
             'chapterid'  => 'require',
@@ -131,7 +129,6 @@ class Coursetask extends Base{
             'rid'               =>'任务id不能为空',
             'title.require'     => '任务名称不能为空',
             'title.length'      => '任务名称长度太短',
-            'paperid.require'   =>'试卷不能为空',
             'courseId.require'  => '课程不能为空',
             'chapterid.require'  => '课程章必须选择',
 //            'mediaSource.require'  => '媒体资源必须填写',
@@ -139,7 +136,6 @@ class Coursetask extends Base{
         $validate = new Validate([
             'rid'       => 'require',
             'title'     => 'require|length:2,20',
-
             'courseId'  => 'require',
             'chapterid'  => 'require',
 //            'mediaSource'  => 'require'
