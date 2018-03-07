@@ -51,7 +51,7 @@ class Course extends Home
             ->alias('sr')
             ->join('user u','u.id=sr.userid')
             ->where('sr.courseid',$courseid)
-            ->field('u.title,u.id,sr.courseid,sr.chapterid,u.username')
+            ->field('u.title,u.id,sr.courseid,sr.chapterid,u.username,u.nickname')
             ->group('sr.userid')
             ->limit(10)
             ->select();
