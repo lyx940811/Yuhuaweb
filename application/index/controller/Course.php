@@ -247,6 +247,7 @@ class Course extends Home
         $courseid = $this->course['id'];
         $list=Db::name('course_chapter')
             ->where('courseid',$courseid)
+            ->where('flag',1)
             ->order('seq')
             ->select();
         $a=1;
