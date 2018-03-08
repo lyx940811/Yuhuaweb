@@ -18,11 +18,13 @@
     <link rel="stylesheet" href="__CSS__student/quill.snow.css">
     <link rel="stylesheet" href="__CSS__video-js.css">
     <script src="__JS__jquery-1.11.3.min.js"></script>
+    {notpresent name="is_done"}
     <style>
-            .vjs-progress-control.vjs-control{
-                display: none;
-            }
+        .vjs-progress-control.vjs-control{
+            display: none;
+        }
     </style>
+    {/notpresent}
 </head>
 <body class="es-main-default es-nav-default ">
   <div id="js-hidden-data">
@@ -208,7 +210,7 @@
                         {default /}
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
+                            <a class="title">
                                 {$thetask.title}: {$tl.title}
                             </a>
                             <span class="right-menu">
@@ -222,7 +224,7 @@
                         {else /}
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
+                            <a class="title">
                                 {$thetask.title}: {$tl.title}
                             </a>
                             <span class="right-menu">23:10
@@ -243,7 +245,7 @@
                         {default /}
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title" href="{:url('index/examination/alert',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
+                            <a class="title">
                                 {$thetask.title}: {$tl.title}
                             </a>
                             <span class="right-menu"></span>
@@ -252,7 +254,7 @@
                         {else /}
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title" href="{:url('index/index/regist'">
+                            <a class="title">
                                 {$thetask.title}: {$tl.title}
                             </a>
                             <span class="right-menu"></span>
@@ -272,7 +274,7 @@
                         {default /}
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
+                            <a class="title">
                                 {$thetask.title}: {$tl.title}
                             </a>
                             <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
@@ -281,7 +283,7 @@
                         {else /}
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">
+                            <a class="title">
                                 {$thetask.title}: {$tl.title}
                             </a>
                             <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
