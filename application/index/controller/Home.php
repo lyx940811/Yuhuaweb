@@ -5,6 +5,7 @@ use think\Controller;
 use think\Config;
 use think\Db;
 use app\index\model\User;
+use PDFConverter\PDFConverter;
 class Home extends Controller
 {
     protected $codeMessage;
@@ -40,6 +41,19 @@ class Home extends Controller
 
         var_dump($array);
     }
+
+    public function ppttest()
+    {
+        $arr = array('doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx');
+
+        $converter = new PDFConverter();
+
+        $source = ROOT_PATH."public\\test/test3.xlsx" ;
+        $export = ROOT_PATH."public\\test/test4.pdf";
+        $converter->execute($source, $export);
+        echo 'Done';
+    }
+
 
 
 
