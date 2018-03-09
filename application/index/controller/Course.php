@@ -542,8 +542,15 @@ class Course extends Home
             }
         }
 
+        if($this->user){
+            //查询是否学完这节课
+            if(Db::name('study_result_v13')->where(['taskid'=>$taskid,'userid'=>$this->user->id,'ratio'=>100])->find()){
+                //是100，赋值
+                $this->assign('is_done',true);
+            }
+        }
+
         $this->assign('tasklist',$lesson);
-//        var_dump($lesson);die;
         $this->assign('domain',$this->request->domain());
         return $this->fetch();
     }

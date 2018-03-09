@@ -5,6 +5,7 @@ use think\Controller;
 use think\Config;
 use think\Db;
 use app\index\model\User;
+use PDFConverter\PDFConverter;
 class Home extends Controller
 {
     protected $codeMessage;
@@ -40,6 +41,8 @@ class Home extends Controller
 
         var_dump($array);
     }
+
+
 
 
 
