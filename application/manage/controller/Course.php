@@ -46,7 +46,12 @@ class Course extends Base{
         $newlist = [];
         foreach ($list as $k=>$v){
             $newlist[$k] = $v;
-            $newlist[$k]['num'] = Db::table('study_result')->where('courseid='.$v['id'])->group('userid')->count();
+            $majorsid = Db::name('course')->where('id',$v['id'])->value('categoryId');
+            $allstudent=0;
+            if($majorsid) {
+                $allstudent = Db::table('student_school')->where('majors', $majorsid)->count();
+            }
+            $newlist[$k]['num'] =$allstudent; //Db::table('study_result')->where('courseid='.$v['id'])->group('userid')->count();
             $total=Db::table('course_task')
                 ->where('courseid',$v['id'])
                 ->field('sum(point) as point')

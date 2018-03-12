@@ -54,7 +54,7 @@
             <!--<td>{$vo.endTime}</td>-->
             <td>{$vo.status?'启用':'禁用'}</td>
             <td>
-                {if condition="check($uid,'/manage/coursetask/edit')"}
+                {if condition="check($uid,'/manage/coursetask/editshow')"}
                     <a href="{:url('editshow')}?id={$vo.id}&cid={$courseId}" >编辑</a>
                 {/if}
                 {if condition="check($uid,'/manage/coursetask/delete')"}

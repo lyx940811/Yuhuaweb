@@ -29,7 +29,7 @@ class Coursestatistics extends Base{
         }
         $where['status']=1;
         $data=DB::table('course c')
-            ->join('teacher_info tf','c.teacherIds=tf.id')
+            ->join('teacher_info tf','c.teacherIds=tf.userid')
             ->field('c.id,c.title,tf.realname,tf.sn')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
@@ -56,7 +56,7 @@ class Coursestatistics extends Base{
                   ->where('courseid',$value['id'])->column('id');//视频资源数量
 
             $info[$key]['videonum']=count($coursetask);
-            $array=['mp4','flv','test','exam'];
+            $array=['mp4','flv','test','exam','plan'];
             $info[$key]['filenum']=Db::table('course_task')
                   ->where('type','not in',$array)
                   ->where('courseid',$value['id'])->count();//文档资源数量
@@ -358,7 +358,7 @@ class Coursestatistics extends Base{
         $info=[];
         foreach($data as $key=>$value){
             $info[$key]=$value;
-            $array=['mp4'=>'视频','flv'=>'视频','test'=>'测验','exam'=>'考试'];
+            $array=['mp4'=>'视频','flv'=>'视频','test'=>'测验','exam'=>'考试','plan'=>'作业'];
             $info[$key]['ctype']='文档';
             if(!empty($array[$value['type']])){
                 $info[$key]['ctype']=$array[$value['type']];
@@ -376,7 +376,7 @@ class Coursestatistics extends Base{
             $info[$key]['avgtime']=round($tasksumavg['avgtime']/60/60,2);
             $info[$key]['notenums']='--';
             //考试成绩
-            if($value['type']=='test' || $value['type']=='exam'){
+            if($value['type']=='test' || $value['type']=='exam' || $value=='plan'){
                 $info[$key]['paperscore']='--';
                 if($value['paperid']){
                     $info[$key]['paperscore']=0;
