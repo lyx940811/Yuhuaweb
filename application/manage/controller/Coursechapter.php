@@ -28,7 +28,7 @@ class Coursechapter extends Base{
 //            ->join('course b','a.courseid=b.id','LEFT')
             ->where($where)
             ->order('createTime desc')
-            ->paginate(20);
+            ->paginate(20,false,['query'=>request()->get()]);
 //echo Db::table('course_chapter a')->getLastSql();exit;
         $course = Db::table('course')->field('id,title')->where('id',$id)->find();
         $this->assign('list',$list);

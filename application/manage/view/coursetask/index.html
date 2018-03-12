@@ -2,6 +2,7 @@
 <html>
 {include file="manage/header" /}
 <link href="__MANAGE_JS__datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+<link href="__MANAGE_CSS__model.min.css" rel="stylesheet">
 <body>
 
 <div class="container-fluid">
@@ -168,10 +169,18 @@
     <!--添加结束-->
 
 </div>
+
+<div class="spinner" id="uploadmodel" style="display:none"><!--style="display:none"-->
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+</div>
+<div class="modal-background" id="uploadmodel1" style="display:none"></div>
 {include file='manage/bottom'}
 <script type="text/javascript" src="__MANAGE_JS__Webuploader/webuploader.js"></script>
 <script type="text/javascript">
-
     var uploader='';
     $('select[name="mode"]').change(function () {
         var id=$('#courseId').val();
@@ -239,6 +248,8 @@
                 chunked: true,
                 swf: '__MANAGE_JS__Webuploader/Uploader.swf',
             }).on('fileQueued', function( file ) {
+                $('#uploadmodel').show();
+                $('#uploadmodel1').show();
                 var start =  +new Date();
                 // console.log(file);
 
@@ -252,7 +263,6 @@
                         // var end = +new Date();
                     });
             }).on('uploadSuccess', function (file, response) {
-
                 console.log(response); //这里可以得到后台返回的数据
 
                 var info = response.fileinfo;
@@ -264,6 +274,8 @@
                 }
                 $('#mediaSource').val(info.name)
                 $('#type').val(info.type)
+                $('#uploadmodel').hide();
+                $('#uploadmodel1').hide();
             });
 
         }
