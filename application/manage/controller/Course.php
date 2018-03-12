@@ -51,6 +51,10 @@ class Course extends Base{
             if($majorsid) {
                 $allstudent = Db::table('student_school')->where('majors', $majorsid)->count();
             }
+            $newlist[$k]['studentsystem']=[];
+            if(!empty($v['school_system'])){
+                $newlist[$k]['studentsystem']=explode(',',$v['school_system']);
+            }
             $newlist[$k]['num'] =$allstudent; //Db::table('study_result')->where('courseid='.$v['id'])->group('userid')->count();
             $total=Db::table('course_task')
                 ->where('courseid',$v['id'])
@@ -59,7 +63,6 @@ class Course extends Base{
             $newlist[$k]['point'] = $total['point'];
         }
 //        print_r($newlist);exit;
-
         $this->assign('info',$data);
         $this->assign('list',$newlist);
         $this->assign('typename','课程列表');
@@ -89,11 +92,13 @@ class Course extends Base{
         $info = input('post.');
         $msg  =   [
             'title.require' => '课程名称不能为空',
+            'schoolsystem'  =>'学制不能为空',
             'title.length' => '课程名称长度太短',
             'categoryId.require' => '专业不能为空',
         ];
         $validate = new Validate([
             'title'  => 'require|length:2,20',
+            'schoolsystem'=>'require',
             'categoryId'   => 'require',
         ],$msg);
 
@@ -106,7 +111,10 @@ class Course extends Base{
         }
 
         $role_table = Db::name('course');
-
+        $schoolsystem='';
+        if(!empty($info['schoolsystem'])){
+            $schoolsystem=implode(',',$info['schoolsystem']);
+        }
         $data = [
             'title'         => $info['title'],
             'subtitle'      => $info['subtitle'],
@@ -116,6 +124,7 @@ class Course extends Base{
             'status'=>$info['status'],
             'smallPicture'  => $info['pic'],
             'userid'        => session('admin_uid'),
+            'school_system' =>$schoolsystem,
             'about'        => $info['about'],
             'teachingplan' => htmlspecialchars_decode($info['teachingplan']),
             'createdTime'   =>date('Y-m-d H:i:s',time()),
@@ -138,10 +147,12 @@ class Course extends Base{
         $msg  =   [
             'title.require' => '课程名称不能为空',
             'title.length' => '课程名称长度太短',
+            'schoolsystem'  =>'学制不能为空',
             'categoryId.require' => '专业不能为空',
         ];
         $validate = new Validate([
             'title'  => 'require|length:2,20',
+            'schoolsystem'=>'require',
             'categoryId'   => 'require',
         ],$msg);
 
@@ -167,7 +178,10 @@ class Course extends Base{
         }else{
             $pic = $have['smallPicture'];
         }
-
+        $schoolsystem='';
+        if(!empty($info['schoolsystem'])){
+            $schoolsystem=implode(',',$info['schoolsystem']);
+        }
         $data = [
             'title'         => $info['title'],
             'subtitle'      => $info['subtitle'],
@@ -175,6 +189,7 @@ class Course extends Base{
             'categoryId'    => $info['categoryId'],
             'serializeMode' => $info['serializeMode'],
             'userid'        => session('admin_uid'),
+            'school_system' =>$schoolsystem,
             'about'        => $info['about'],
             'teachingplan' => htmlspecialchars_decode($info['teachingplan']),
             'status'       =>$info['status'],
