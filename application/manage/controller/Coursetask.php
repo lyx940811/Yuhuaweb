@@ -10,6 +10,7 @@ namespace app\manage\controller;
 use think\Db;
 use request;
 use think\Validate;
+use PDFConverter\PDFConverter;
 
 /*
  * 课程任务管理

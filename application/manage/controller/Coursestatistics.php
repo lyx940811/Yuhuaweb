@@ -29,7 +29,7 @@ class Coursestatistics extends Base{
         }
         $where['status']=1;
         $data=DB::table('course c')
-            ->join('teacher_info tf','c.teacherIds=tf.id')
+            ->join('teacher_info tf','c.teacherIds=tf.userid')
             ->field('c.id,c.title,tf.realname,tf.sn')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);

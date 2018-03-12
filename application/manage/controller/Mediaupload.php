@@ -2,7 +2,7 @@
 namespace app\manage\controller;
 
 use think\Controller;
-
+use PDFConverter\PDFConverter;
 // 指定允许其他域名访问
 header('Access-Control-Allow-Origin:*');
 // 响应类型
@@ -167,6 +167,15 @@ class Mediaupload extends Controller
                 @unlink(iconv("utf-8","gb2312",$p_sFilenamePath));
                 @unlink(iconv("utf-8","gb2312","{$p_sFilePath}_0.part"));
 //                return json_data(0,'success',$sDestFile);
+                $array=['xlsx','xls','doc','docx','ppt'];
+                if(in_array($sExtension,$array)){
+                    $pdf=$path2.$time.'.pdf';
+                    $converter = new PDFConverter();
+                    $source = ROOT_PATH."public\\".$sDestFile;
+                    $export = ROOT_PATH."public\\".$pdf;
+                    $converter->execute($source, $export);
+                    return ['code'=>000,'message'=>'success','fileinfo'=>['name'=>$pdf,'type'=>$sExtension]];
+                }
                 return ['code'=>000,'message'=>'success','fileinfo'=>['name'=>$sDestFile,'type'=>$sExtension]];
             }
 
