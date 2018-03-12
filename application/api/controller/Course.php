@@ -945,6 +945,9 @@ class Course extends Home
             }
         }
 
+        //notice
+        $notice = Db::name('course_notice')->where('courseid',$courseid)->order('endtime desc')->limit(1)->field('content,endtime')->select();
+
         $data = [
             'categoryId'=>  $course['categoryId'],
             'title'     =>  $course['title'],
@@ -955,7 +958,8 @@ class Course extends Home
             'next_task_id'  =>  $learn_taskid,
             'next_task_type'=>  $next_task_type,
             'paperID'   =>  $next_task_paper,
-            'is_evaluate'   =>  $is_evaluate
+            'is_evaluate'   =>  $is_evaluate,
+            'notice'    =>  $notice
         ];
         return json_data(0,$this->codeMessage[0],$data);
 

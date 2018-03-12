@@ -1219,6 +1219,25 @@ class User extends Controller
         return json_data(0,$this->codeMessage[0],$data);
     }
 
+    /**
+     * 1.6
+     */
+    public function mynotice_v16()
+    {
+        !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
+        $notice = Db::name('student_notice')
+            ->alias('sn')
+            ->join('course_notice cn','sn.coursenoticeID=cn.id')
+            ->where('sn.toUserid',$this->user->id)
+            ->where('cn.status',2)
+            ->order('cn.endtime desc')
+            ->field('sn.id,sn.content,cn.title,cn.endtime')
+            ->page($page,10)
+            ->select();
+
+        return json_data(0,$this->codeMessage[0],$notice);
+    }
+
 
 
 

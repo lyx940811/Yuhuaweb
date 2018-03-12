@@ -59,4 +59,10 @@ class Course extends ThinkModel
     {
         return $this->hasMany('CourseNote','courseId','id');
     }
+
+    public function notice()
+    {
+        return $this->hasMany('CourseNotice','courseid','id');
+    }
+
 }

@@ -547,6 +547,15 @@ class Course extends Home
             if(Db::name('study_result_v13')->where(['taskid'=>$taskid,'userid'=>$this->user->id,'ratio'=>100])->find()){
                 //是100，赋值
                 $this->assign('is_done',true);
+            }else{
+                if(in_array($task['type'],['doc','docx','ppt','pptx','xls','xlsx'])){
+                    $data['createTime'] = time();
+                    $data['is_done'] = 1;
+                    $data['ratio']  = 100;
+                    $data['taskid'] = $taskid;
+                    $data['userid'] = $this->user->id;
+                    Db::name('study_result_v13')->insert($data);
+                }
             }
         }
 
@@ -644,6 +653,13 @@ class Course extends Home
         else{
             return 0;
         }
+    }
+
+    public function notice()
+    {
+        $notice = $this->course->notice()->where('status',2)->order('endtime desc')->limit(3)->select();
+        $this->assign('notice',$notice);
+        return $this->fetch();
     }
 
 }

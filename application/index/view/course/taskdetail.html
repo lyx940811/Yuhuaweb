@@ -18,10 +18,18 @@
     <link rel="stylesheet" href="__CSS__student/quill.snow.css">
     <link rel="stylesheet" href="__CSS__video-js.css">
     <script src="__JS__jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src='__JS__PDFObject-master/pdfobject.min.js'></script>
     {notpresent name="is_done"}
     <style>
         .vjs-progress-control.vjs-control{
             display: none;
+        }
+
+        html,body,#pdf_viewer{
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
         }
     </style>
     {/notpresent}
@@ -69,7 +77,7 @@
                     var myPlayer = videojs('example_video_1',{});
                     videojs("example_video_1").ready(function(){
                         var myPlayer = this;
-                        myPlayer.on('timeupdate', function () { 
+                        myPlayer.on('timeupdate', function () {
                             //当前播放时间点
                             var watchTime = myPlayer.currentTime(); //获取当前播放时间点
                             var videoTime = myPlayer.duration(); //获取视频总时长
@@ -97,31 +105,16 @@
                     });
                 </script>
           <!--视频-->
-          <!-- <div style="width: 100%; height: 100%; ">
-            <script src="__JS__sewise.player.min.js"></script>
-            <script type="text/javascript">
-                SewisePlayer.setup({
-                    server: "vod",
-                    type: "flv",
-                    autostart: "false",
-                    videourl: "http://www.hnhgjx.cn:1706/upload/20180117/20171212011618-1ufwj8.flv",
-                    skin: "vodFlowPlayer",
-                    fallbackurls:{
-                        mp4: "http://www.hnhgjx.cn:1700/player/594/file/xjqAawmONQaExIWWunlXDrF0rnFTTInO",
-                        ogg: "http://jackzhang1204.github.io/materials/mov_bbb.ogg",
-                        webm: "http://jackzhang1204.github.io/materials/mov_bbb.webm"
-                    }
-                });
-            </script>
-        </div> -->
-          <!-- <video id="my-video" class="video-js" controls preload="auto" style="width:100%;height:100%"
-                 poster="m.png" data-setup="{}">
-              <source src="{$task->mediaSource}" type="video/mp4">
-              <p class="vjs-no-js">
-                  To view this video please enable JavaScript, and consider upgrading to a web browser that
-                  <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-              </p>
-          </video> -->
+          {elseif condition="$task['type'] eq 'docx' or $task['type'] eq 'pptx' or $task['type'] eq 'xls' or $task['type'] eq 'doc' or $task['type'] eq 'ppt'"}
+          <div id="pdf_viewer"></div>
+          <script type="text/javascript">
+              if(PDFObject.supportsPDFs){
+                  // PDF嵌入到网页
+                  PDFObject.embed("/static/index/pdf/demo.pdf", "#pdf_viewer" );
+              } else {
+                  location.href = "/canvas";
+              }
+          </script>
           {else /}
           <!-- 列表 -->
           <ul class="download-activity-list">
