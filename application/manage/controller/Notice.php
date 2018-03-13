@@ -31,9 +31,12 @@ class Notice extends Base{
         }
         if(!empty($info['title'])){
             $search['title']=$info['title'];
-            $where['title']=['like',"%{$info['title']}%"];
+            $where['c.title']=['like',"%{$info['title']}%"];
         }
-        $list=DB::table('course_notice')->where($where)
+        $list=DB::table('course_notice cn')
+            ->join('course c','cn.courseid=c.id')
+            ->field('cn.*,c.title as ctitle')
+            ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
         $course = Db::table('course')->where('teacherIds',session('admin_uid'))->select();
 
@@ -49,13 +52,13 @@ class Notice extends Base{
 
         $msg  =   [
             'courseid.require' => '请选择发送公告的课程',
-            'title.require' => '请输入公告标题',
+//            'title.require' => '请输入公告标题',
             'content.require' => '请输入公告内容',
             'endtime.require' => '请输入结束时间',
         ];
         $validate = new Validate([
             'courseid'  => 'require',
-            'title'   => 'require',
+//            'title'   => 'require',
             'content'   => 'require',
             'endtime'   => 'require',
         ],$msg);
@@ -65,7 +68,7 @@ class Notice extends Base{
         $error = $validate->getError();//打印错误规则
         $data=[
             'courseid'=>$info['courseid'],
-            'title'=>$info['title'],
+//            'title'=>$info['title'],
             'content'=>$info['content'],
             'endtime'=>$info['endtime'],
             'status'=>$info['status'],
