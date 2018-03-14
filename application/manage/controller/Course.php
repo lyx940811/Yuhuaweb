@@ -52,7 +52,15 @@ class Course extends Base{
                 $allstudent = Db::table('student_school')->where('majors', $majorsid)->count();
             }
             $newlist[$k]['studentsystem']=[];
+            $newlist[$k]['system']='';
             if(!empty($v['school_system'])){
+                $system=explode(',',$v['school_system']);
+                $array='';
+                foreach($system as $key=>$va){
+                    $a=$va-1;
+                    $array.=$a.'学年,';
+                }
+                $newlist[$k]['system']=rtrim($array,',');
                 $newlist[$k]['studentsystem']=explode(',',$v['school_system']);
             }
             $newlist[$k]['num'] =$allstudent; //Db::table('study_result')->where('courseid='.$v['id'])->group('userid')->count();

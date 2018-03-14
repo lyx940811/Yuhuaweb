@@ -118,7 +118,7 @@ class Notice extends Base{
         if($type==1){
             $info=DB::table('course_notice')->where('id',$id)->update(['status' => 1]);
         }else{
-            $list=Db::table('student_notice')->where('id',$id)->find();
+            $list=Db::table('student_notice')->where('coursenoticeID',$id)->find();
             if(empty($list)){
                 $courseid=DB::table('course_notice')->where('id',$id)->find();
                 $majorsid = Db::name('course')->where('id',$courseid['courseid'])->value('categoryId');
