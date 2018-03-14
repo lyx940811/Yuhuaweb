@@ -1,0 +1,21 @@
+.pomid{width: 100%; height: auto;}
+.pomids{width: 1526px; height: auto; overflow: hidden; margin: 35px auto;}
+.pomidLeft{width: 360px; height: auto; float: left; margin-right: 26px;}
+.pomidLeft div{width: 358px; height: 80px; border: 1px solid #e5edf4; border-radius: 5px;}
+.leftSpan1{float: left; width: 2px ; height: 52px;background:#26b247; margin-top: 14px;}
+.leftSpan2{float: left; width: 329px ; height: 80px; padding-left: 27px; line-height: 80px; color: #26b247; font-size: 18px;}
+.pomidRight{width: 1136px; height: auto; float: left; border: 1px solid #e5edf4; border-radius: 5px;}
+.rightDiv{width: 100%; height: 78px; padding-left: 20px; color: #656565; font-size: 22px; line-height: 78px;}
+.pomidRightUl{width: 1096px; height: auto; padding: 0 20px;}
+.rightLi{width: 100%; height: 80px; border-bottom: 1px solid #e1e1e1;}
+.pomidRightUl .rightLi:hover{background: #f9f9f9;}
+.rightLi:nth-child(1){ border-top:1px solid #e1e1e1;}
+.rightLi:nth-child(odd){background: #f9f9f9;}
+.rightLi:nth-child(even){background: #fff;}
+.rightLia{width: 950px; height: 80px; float: left; padding-left: 20px;}
+.rightLib{width: 100px; height: 100%; float: left; line-height: 80px;
+ color: #999999; font-size: 18px; cursor: pointer; text-align: center;}
+.rightLiP1{width: 100%; font-size: 16px; color: #6e6e6e; margin-top: 18px;}
+.rightLiP2{width: 100%;font-size: 14px; color: #26b247; margin-top: 12px;}
+.rightLiSpan1{margin-right: 18px;}
+

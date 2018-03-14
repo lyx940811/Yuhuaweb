@@ -946,7 +946,7 @@ class Course extends Home
         }
 
         //notice
-        $notice = Db::name('course_notice')->where('courseid',$courseid)->order('endtime desc')->limit(1)->field('content,endtime')->select();
+        $notice = Db::name('course_notice')->where('courseid',$courseid)->order('endtime desc')->limit(1)->field('content,endtime,title')->select();
 
         $data = [
             'categoryId'=>  $course['categoryId'],

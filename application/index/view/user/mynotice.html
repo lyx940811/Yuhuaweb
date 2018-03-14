@@ -1,0 +1,78 @@
+{extend name="public/layout"}
+{block name="title"}豫化在线课堂{/block}
+{block name="link"}
+<link rel="stylesheet" type="text/css" href="__CSS__reset.css?v=1.1">
+<link rel="stylesheet" type="text/css" href="__CSS__po.css?v=1.1">
+{/block}
+{block name="container"}
+<div class="pomid">
+    <div class="pomids">
+        <div class="pomidLeft">
+            <div>
+                <span class="leftSpan1"></span>
+                <span class="leftSpan2">我的公告</span>
+            </div>
+        </div>
+        <div class="pomidRight">
+            <div class="rightDiv">
+                公告记录
+            </div>
+            <ul class="pomidRightUl">
+                {volist name="notice" id="no"}
+                <li class="rightLi">
+                    <div class="rightLia">
+                        <p class="rightLiP1">{$no.content}</p>
+                        <p class="rightLiP2">
+                            <span class="rightLiSpan1">{$no.sendTime|date='Y-m-d',###}</span>
+                            <span class="rightLiSpan2">{$no.sendTime|date='H:i:s',###}</span>
+                        </p>
+                    </div>
+                    <div class="rightLib" noticeid="{$no.noticeId}">
+                        删除
+                    </div>
+                </li>
+                {/volist}
+
+                <!--<li class="rightLi">
+                    <div class="rightLia">
+                        <p class="rightLiP1">***课程开课啦</p>
+                        <p class="rightLiP2">
+                            <span class="rightLiSpan1">2018-02-12</span>
+                            <span class="rightLiSpan2">18：00</span>
+                        </p>
+                    </div>
+                    <div class="rightLib">
+                        删除
+                    </div>
+                </li>-->
+            </ul>
+            <div style="width: 100%; height: 100px; text-align: center;">{$page}</div>
+
+        </div>
+    </div>
+</div>
+{/block}
+{block name="javascript"}
+<script type="text/javascript">
+
+    console.log($(window).height())
+    var height_ = $(window).height()-206+'px';
+    $('.pomid').css('min-height',height_);
+
+    $('.rightLib').click(function(){
+        $(this).parent('.rightLi').remove();
+        $.post(
+            "{:url('index/user/delnotice')}",
+            {'noticeid':$(this).attr('noticeid')},
+            function(data){
+                if(data==1){
+
+                }else{
+                    alert('删除失败');
+                }
+            },
+            "json"
+        );
+    })
+</script>
+{/block}

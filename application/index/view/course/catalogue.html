@@ -1,58 +1,82 @@
 {extend name="public/courselayout"}
 {block name="title"}{$course.title}-目录{/block}
 {block name="navdetail"}
+<style>
+    .task-item i{width: 23px;
+        height:27px; float: left; margin: 9px 0 0 10px;}
+    .taskli i{width: 23px;
+        height:27px; float: left; margin: 0px 0 0 10px;}
+    .in_class{background: url(__IMG__in_class.png)}
+    .done_class{background: url(__IMG__done_class.png)}
+    .not_begin{background: url(__IMG__not_begin.png)}
+</style>
 <div class="course-detail-content">
     <ul class="task-list task-list-md task-list-hover">
-        {volist name="data" id="vo"}
+        {volist name="chapter" id="chapter"}
         <li class="task-item task-content mouse-control">
-            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
+            {switch name="chapter.plan"}
+            {case value="100"}    <!--三个图片  __IMG__in_class.png __IMG__done_class.png __IMG__not_begin.png-->
+            <i class="done_class"></i>
+            {/case}
+            {case value="0"}
+            <i class="not_begin"></i>
+            {/case}
+            {default /}
+            <i class="in_class"></i>
+            {/switch}
+
             <a class="title">
-                {$vo.chaptername}
+                {$chapter.title}
             </a>
+
             <!--<span class="right-menu color-gray ">1111<i class="es-icon es-icon es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频任务" data-container="body"></i></span>-->
             <span class="right-menu mouse-enter"></span>
-            {if condition="!empty($vo.section)"}
-            {volist name='$vo.section' id='section'}
-            {if condition="$section['type'] eq 'mp4' or $section['type'] eq 'url'"}
+
             <ul class="joint-content">
-                <li class="task-item task-content mouse-control">
-                    <i class="es-icon es-icon-doing color-primary"></i>
-                    {if condition="!empty($section['see'])"}
-                    <a style="color: #616161;" {if condition="$section['see'] eq 1"} href="javascript:volid(0);" onclick="mystudy({$section['id']});" {/if}>&nbsp;&nbsp;{$section['title']}</a>
-                    {else}
-                    <a style="color: #616161;">&nbsp;&nbsp;{$section['title']}</a>
+                {volist name="chapter.task" id="task"}
+                <li class="task-item task-content mouse-control taskli">
+                    {switch name="task.plan"}
+                    {case value="100"}
+                    <i class="done_class"></i>
+                    {/case}
+                    {case value="0"}
+                    <i class="not_begin"></i>
+                    {/case}
+                    {default /}
+                    <i class="in_class"></i>
+                    {/switch}
+
+                    {if condition="$task['is_lock'] eq 1"}
+                    <a style="color: #616161;">&nbsp;&nbsp;{$task.title}</a>
+                    <a style="color: #616161;">&nbsp;&nbsp;<!--节名？--></a>
+                    {else/}
+
+                    {if condition="$task['type'] eq 'test' or $task['type'] eq 'exam' or $task['type'] eq 'plan'"}
+                    <a style="color: #616161;"  href="{:url('index/examination/examresults',array('course'=>$course['id'],'taskid'=>$task['taskid']))}">&nbsp;&nbsp;{$task.title}</a>
+                    <a style="color: #616161;">&nbsp;&nbsp;<!--节名？--></a>
+                    {else /}
+                    <a style="color: #616161;"  href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$task['taskid']))}">&nbsp;&nbsp;{$task.title}</a>
+                    <a style="color: #616161;">&nbsp;&nbsp;<!--节名？--></a>
                     {/if}
 
-                </li>
-            </ul>
-            {elseif condition="$section['type'] eq 'test' or $section['type'] eq 'exam' or $section['type'] eq 'plan'"}
-            <ul class="joint-content">
-                <li class="task-item task-content mouse-control">
-                    <i class="es-icon es-icon-doing color-primary"></i>
-                    {if condition="!empty($section['see'])"}
-                    <a style="color: #616161;" {if condition="$section['see'] eq 1"} {if condition="$section['papertype'] eq 1"}href="{:url('examination/examresults',array('course'=>$courseid,'taskid'=>$section['id']))}"{else}href="{:url('examination/alert',array('course'=>$courseid,'taskid'=>$section['id']))}"{/if}{/if}>&nbsp;&nbsp;{$section['title']}</a>
-                    {else}
-                    <a style="color: #616161;">&nbsp;&nbsp;{$section['title']}</a>
                     {/if}
                 </li>
+                {/volist}
             </ul>
-            {else}
-            <ul class="joint-content">
-                <li class="task-item task-content mouse-control">
-                    <i class="es-icon es-icon-doing color-primary"></i>
-                    {if condition="!empty($section['see'])"}
-                    <a style="color: #616161;" {if condition="$section['see'] eq 1"} href="javascript:volid(0);" onclick="mystudy({$section['id']});" {/if}>&nbsp;&nbsp;{$section['title']}</a>
-                    {else}
-                    <a style="color: #616161;">&nbsp;&nbsp;{$section['title']}</a>
-                    {/if}
-                </li>
-            </ul>
-            {/if}
-            {/volist}
-            {/if}
+
         </li>
         {/volist}
     </ul>
+    <div class="container" style="text-align: center;width: 83%;">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {if condition="$page gt 1"}
+                <li><a href="{:url('index/course/catalogue',array('course'=>$course['id'],'page'=>$page-1))}">&lt;</a></li>
+                {/if}
+                <li><a href="{:url('index/course/catalogue',array('course'=>$course['id'],'page'=>$page+1))}">&gt;</a></li>
+            </ul>
+        </nav>
+    </div>
 </div>
 <input type="hidden" value="" id="taskid">
 

@@ -452,4 +452,34 @@ class User extends Home
         }
     }
 
+    public function mynotice()
+    {
+        $notice = Db::name('student_notice')
+            ->alias('sn')
+            ->join('course_notice cn','sn.coursenoticeID=cn.id')
+            ->where('sn.toUserid',$this->user->id)
+            ->where('cn.status',2)
+            ->order('cn.endtime desc')
+            ->field('sn.id as noticeId,sn.content,cn.title,cn.endtime as sendTime')
+            ->paginate(10)
+            ->each(function($item, $key){
+                $item['sendTime'] = strtotime($item['sendTime']);
+                return $item;
+            });
+        $this->assign('notice',$notice);
+        $this->assign('page',$notice->render());
+        return $this->fetch();
+    }
+
+    public function delnotice()
+    {
+        $noticeId = $this->request->param('noticeid');
+        $res = Db::name('student_notice')->delete($noticeId);
+        if($res){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
 }

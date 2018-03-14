@@ -73,6 +73,9 @@ class Index extends Home
         $map['status'] = 1;
         if(!empty($this->user)){
             $map['categoryId'] = $this->user->stuclass->majors;
+            if(!empty($this->user->stuclass->academic)&&$this->user->stuclass->academic!=0){
+                $map[]=['exp','FIND_IN_SET('.$this->user->stuclass->academic.',school_system)'];
+            }
         }
 
         $course = Db::name('course')

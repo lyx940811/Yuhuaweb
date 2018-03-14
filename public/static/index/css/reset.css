@@ -1,0 +1,86 @@
+html,body,ul,li,ol,dl,dd,dt,p,h1,h2,h3,h4,h5,h6,form,fieldset,legend,img {
+    margin: 0;
+    padding: 0;
+}
+body{
+    font-family: "Microsoft YaHei","arial","Tahoma","sans-serif";
+}
+a{
+    text-decoration: none;
+}
+fieldset,img {
+    border: 0
+}
+address,caption,cite,code,dfn,th,var {
+    font-style: normal;
+    font-weight: normal
+}
+ul,ol {
+    list-style: none
+}
+input {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0
+}
+select,input {
+    vertical-align: middle
+}
+select,input,textarea {
+    font-size: 12px;
+    margin: 0
+}
+input[type="text"],input[type="password"],textarea {
+    outline-style: none;
+    -webkit-appearance: none
+}
+textarea {
+    resize: none
+}
+table {
+    border-collapse: collapse
+}
+.clear::after{
+    content: "";
+    display: block;
+    height: 0;
+    clear: both;
+}
+
+.dialogBox{
+    width: 4rem;
+    height: 2rem;
+    line-height: 2rem;
+    text-align: center;
+    border-radius: 0.15rem;
+    position: fixed;
+    top: 50%;
+    left:50%;
+    margin-top: -1rem;
+    margin-left: -2rem;
+    display: none;
+}
+.dialog{
+    width: 100%;
+    height: 100%;
+    line-height: 2rem;
+    border-radius: 0.15rem;
+    background-color: #000000;
+    opacity: 0.3;
+    filter: alpha(opacity = 50);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.dialogBox p{
+    position: absolute;
+    width: 100%;
+    line-height: 2rem;
+    text-align: center;
+    font-size: 0.40rem;
+    color: #FFFFFF;
+    font-weight: 300;
+}

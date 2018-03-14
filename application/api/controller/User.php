@@ -1231,7 +1231,7 @@ class User extends Controller
             ->where('sn.toUserid',$this->user->id)
             ->where('cn.status',2)
             ->order('cn.endtime desc')
-            ->field('sn.id,sn.content,cn.title,cn.endtime')
+            ->field('sn.id as noticeId,sn.content,cn.title,cn.endtime as sendTime')
             ->page($page,10)
             ->select();
 

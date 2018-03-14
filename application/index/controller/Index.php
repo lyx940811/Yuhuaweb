@@ -37,10 +37,14 @@ class Index extends Home
             if($this->user->type==3) {
                 if(!empty($this->user->stuclass->majors)){
                     $map['categoryId'] = $this->user->stuclass->majors;
+                    if(!empty($this->user->stuclass->academic)&&$this->user->stuclass->academic!=0){
+                        $map[]=['exp','FIND_IN_SET('.$this->user->stuclass->academic.',school_system)'];
+                    }
                 }
             }
         }
         $course = $courseModel->limit(12)->where($map)->order('createdTime desc')->select();
+
         $this->assign('course',$course);
         //分类
 
@@ -67,6 +71,9 @@ class Index extends Home
         if(!empty($this->user)){
             if(!empty($this->user->stuclass->majors)){
                 $map['categoryId'] = $this->user->stuclass->majors;
+                if(!empty($this->user->stuclass->academic)&&$this->user->stuclass->academic!=0){
+                    $map[]=['exp','FIND_IN_SET('.$this->user->stuclass->academic.',school_system)'];
+                }
             }
         }
         if($this->request->isAjax()){
@@ -102,6 +109,9 @@ class Index extends Home
             if($this->user->type==3) {
                 if(!empty($this->user->stuclass->majors)){
                     $map['categoryId'] = $this->user->stuclass->majors;
+                    if(!empty($this->user->stuclass->academic)&&$this->user->stuclass->academic!=0){
+                        $map[]=['exp','FIND_IN_SET('.$this->user->stuclass->academic.',school_system)'];
+                    }
                 }
             }
         }
@@ -137,12 +147,18 @@ class Index extends Home
         if(empty($category)){
             if(!empty($this->user)){
                 $map['categoryId'] = $this->user->stuclass->majors;
+                if(!empty($this->user->stuclass->academic)&&$this->user->stuclass->academic!=0){
+                    $map[]=['exp','FIND_IN_SET('.$this->user->stuclass->academic.',school_system)'];
+                }
             }
             $course = Db::name('course')->order('createdTime desc')->where($map)->limit(8)->select();
         }
         else{
             if(!empty($this->user)){
                 $map['categoryId'] = $this->user->stuclass->majors;
+                if(!empty($this->user->stuclass->academic)&&$this->user->stuclass->academic!=0){
+                    $map[]=['exp','FIND_IN_SET('.$this->user->stuclass->academic.',school_system)'];
+                }
             }
             $course = Db::name('course')->where('categoryId',$category)->where($map)->order('createdTime desc')->limit(8)->select();
         }

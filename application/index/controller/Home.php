@@ -34,12 +34,7 @@ class Home extends Controller
     // 再数到第m只，在把它踢出去…，如此不停的进行下去， 直到最后只剩下一只猴子为止，那只猴子就叫做大王。要求编程模拟此过程，输入m、n, 输出最后那个大王的编号。
     public function josefcircle()
     {
-        $array = range(1,10);
-        $m = 2;
-
-
-
-        var_dump($array);
+        echo 10*(5600/23)+13*(7000/23);
     }
 
 
