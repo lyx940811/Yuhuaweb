@@ -169,11 +169,12 @@ class Mediaupload extends Controller
 //                return json_data(0,'success',$sDestFile);
                 $array=['xlsx','xls','doc','docx','ppt'];
                 if(in_array($sExtension,$array)){
+                    $pdf=$path2.$time.'.pdf';
                     $converter = new PDFConverter();
                     $source = ROOT_PATH."public\\".$sDestFile;
-                    $export = ROOT_PATH."public\\".$path2.$time.'.pdf';
+                    $export = ROOT_PATH."public\\".$pdf;
                     $converter->execute($source, $export);
-                    return ['code'=>000,'message'=>'success','fileinfo'=>['name'=>$export,'type'=>$sExtension]];
+                    return ['code'=>000,'message'=>'success','fileinfo'=>['name'=>$pdf,'type'=>$sExtension]];
                 }
                 return ['code'=>000,'message'=>'success','fileinfo'=>['name'=>$sDestFile,'type'=>$sExtension]];
             }

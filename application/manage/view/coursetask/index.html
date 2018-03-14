@@ -252,34 +252,34 @@
                 $('#uploadmodel1').show();
                 var start =  +new Date();
                 // console.log(file);
-
                 // 返回的是 promise 对象
                 this.md5File(file, 0, 1 * 1024 * 1024)
 
                 // 处理完成后触发
                     .then(function(ret) {
                         // console.log('md5:', ret);
-
                         // var end = +new Date();
                     });
             }).on('uploadSuccess', function (file, response) {
                 console.log(response); //这里可以得到后台返回的数据
-
                 var info = response.fileinfo;
-
-                if(info.duration){
-                    $('#length').val(info.duration)
+                console.log(response.fileinfo);
+                if(info != undefined) {
+                    if (info.duration) {
+                        $('#length').val(info.duration)
+                    } else {
+                        $('#length').val('')
+                    }
+                    $('#mediaSource').val(info.name)
+                    $('#type').val(info.type)
                 }else{
-                    $('#length').val('')
+                    alert('上传出错');
                 }
-                $('#mediaSource').val(info.name)
-                $('#type').val(info.type)
                 $('#uploadmodel').hide();
                 $('#uploadmodel1').hide();
             });
-
         }
-    })
+    });
     function dopost($url,formid) {
         // $url=='add'?"{:url('add')}":"{:url('edit')}";
 
