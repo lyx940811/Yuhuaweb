@@ -14,20 +14,29 @@ use think\Requst;
 class Notice extends Base{
     public function index(){
         $info = input('get.');
+//        dump($info);die;
         $time=date('Y-m-d H:i:s');
         $where=[];
         $search=[
             'status'=>'',
             'title'=>'',
+            'starttime'=>'',
+            'endtime'=>'',
         ];
         if(!empty($info['status'])){
             $search['status']=$info['status'];
             if($info['status']==3){
-                $where['endtime']=array('lt',$time);
+                $where['cn.endtime']=array('lt',$time);
             }else{
-                $where['status']=$info['status'];
-                $where['endtime']=array('gt',$time);
+                $where['cn.status']=$info['status'];
+                $where['cn.endtime']=array('gt',$time);
             }
+        }
+        if(!empty($info['starttime']) && !empty($info['endtime'])){
+            $search['starttime']=$info['starttime'];
+            $search['endtime']=$info['endtime'];
+            $where['cn.endtime']=array('elt',$info['endtime']);
+            $where['cn.starttime']=array('egt',$info['starttime']);
         }
         if(!empty($info['title'])){
             $search['title']=$info['title'];

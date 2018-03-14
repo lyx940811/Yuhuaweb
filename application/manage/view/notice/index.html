@@ -9,9 +9,13 @@
     {/php}
     <div class="well clearfix">
         <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
-
             <div class="form-group">
-                <label>状态</label>
+                <label>&nbsp;&nbsp;发布时间&nbsp;</label>
+                <input type="text" class="form-control form-time" id="searchstart" name="starttime" value="{$search.starttime}" placeholder="yyyy/mm/dd"> ——
+                <input type="text" class="form-control form-time" id="searchend" name="endtime" value="{$search.endtime}" placeholder="yyyy/mm/dd">
+            </div>
+            <div class="form-group">
+                <label>&nbsp;&nbsp;状态&nbsp;</label>
                 <select name="status" class="form-control">
                     <option value="">--请选择--</option>
                     <option value="1" {if condition="$search['status'] eq 1"}selected{/if}>未发送</option>
@@ -20,10 +24,10 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>课程名称</label>
+                <label>&nbsp;&nbsp;课程名称&nbsp;</label>
                 <input type="text" class="form-control" placeholder="课程名称" value="{$search['title']}" name="title">
             </div>
-            <button type="submit" class="btn btn-primary">搜索</button>
+            <button type="submit" id="search" class="btn btn-primary">搜索</button>
         </form>
     </div>
     <div class="pull-right">
@@ -195,7 +199,21 @@
                     alert("添加信息错误");
                 }
             });
-        })
+        });
+        $('#search').click(function(){
+            var start=$('#searchstart').val();
+            var end=$('#searchend').val();
+            if(start && !end){
+                alert('请选择结束时间');
+                return false;
+            }else if(end && !start){
+                alert('请选择开始时间');
+                return false;
+            }// else{
+            //     submit();
+            // }
+
+        });
     });
     function edit(id){
         $.ajax({
