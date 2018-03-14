@@ -66,7 +66,7 @@
                     <a href="#" data-toggle="modal" data-target="#myModal_edit{$vo.id}">编辑</a>
                 {/if}
                 {if condition="check($uid,'/manage/teacherinfo/addunit')"}
-                    <a href="'.url('addunit').'?tid={$vo.id}">添加工作信息</a>
+                    <a href="{:url('addunit')}?tid={$vo.id}">添加工作信息</a>
                 {/if}
                 {if condition="check($uid,'/manage/teacherinfo/delete')"}
                     <a href="#" onclick="deleteR({$vo.id});">删除</a>

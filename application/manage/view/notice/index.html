@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+{include file="manage/header" /}
+<link href="__MANAGE_JS__datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+<body>
+<div class="container-fluid">
+    {php}
+    $uid = session('admin_uid');
+    {/php}
+    <div class="well clearfix">
+        <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
+            <div class="form-group">
+                <label>&nbsp;&nbsp;发布时间&nbsp;</label>
+                <input type="text" class="form-control form-time" id="searchstart" name="starttime" value="{$search.starttime}" placeholder="yyyy/mm/dd"> ——
+                <input type="text" class="form-control form-time" id="searchend" name="endtime" value="{$search.endtime}" placeholder="yyyy/mm/dd">
+            </div>
+            <div class="form-group">
+                <label>&nbsp;&nbsp;状态&nbsp;</label>
+                <select name="status" class="form-control">
+                    <option value="">--请选择--</option>
+                    <option value="1" {if condition="$search['status'] eq 1"}selected{/if}>未发送</option>
+                    <option value="2" {if condition="$search['status'] eq 2"}selected{/if}>已发送</option>
+                    <option value="3" {if condition="$search['status'] eq 3"}selected{/if}>已结束</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>&nbsp;&nbsp;课程名称&nbsp;</label>
+                <input type="text" class="form-control" placeholder="课程名称" value="{$search['title']}" name="title">
+            </div>
+            <button type="submit" id="search" class="btn btn-primary">搜索</button>
+        </form>
+    </div>
+    <div class="pull-right">
+        {php}
+        $access = check($uid,'/manage/course/add');
+        if($access){
+        echo '<a class="btn btn-primary" data-toggle="modal" id="add" data-target="#myModal">新增公告</a>';
+        }
+        {/php}
+
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{:url('')}" style="cursor: pointer">刷新列表</a></li>
+    </ul>
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>课程名称</th>
+            <th>公告内容</th>
+            <th>发布时间</th>
+            <th>结束时间</th>
+            <th>转台</th>
+            <th>设置</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="list" id="vo"}
+        <tr>
+            <td>{$vo.ctitle}</td>
+            <td>{$vo.content}</td>
+            <td>{$vo.starttime}</td>
+            <td>{$vo.endtime}</td>
+            {if condition="$vo['endtime'] elt $time"}
+            <td>已结束</td>
+            {else}
+                {if condition="$vo['status'] eq 1"}
+                    <td>未发布</td>
+                {else}
+                    <td>已发布</td>
+                {/if}
+            {/if}
+            <td id="release{$vo.id}">
+                {php}
+                if(check($uid,'/manage/notice/release')){
+                    if($vo['status']==1){
+                         echo '<a href="#"  onclick="release('.$vo['id'].',2)">发布</a>';
+                    }else{
+                        echo '<a href="#"  onclick="release('.$vo['id'].',1)">取消发布</a>';
+                    }
+                }
+                {/php}
+            </td>
+           <td>
+                {php}
+                if(check($uid,'/manage/notice/addedit')){
+                echo '<a href="#" data-toggle="modal" data-target="#myModal" onclick="edit('.$vo['id'].')">编辑</a>';
+                echo '<strong>/</strong>';
+                }
+                if(check($uid,'/manage/notice/delete')){
+                echo '<a href="#" onclick="deleteR('.$vo['id'].');">删除</a>';
+                }
+
+                {/php}
+
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+
+    </table>
+    <ul class="pagination">
+        {$page}
+    </ul>
+
+    <!-- 添加开始-->
+    <!-- 模态框 -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">添加公告</h4>
+                </div>
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="form" method="post" action="{:url('add')}">
+                        <div class="form-group">
+                            <label for="courseId" class="col-sm-2 control-label">课程名称</label>
+                            <div class="col-sm-5">
+                                <select name="courseid" id="course" class="form-control">
+                                    <option value="">--请选择--</option>
+                                    {volist name="course" id="c"}
+                                    <option value="{$c.id}">{$c.title}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="about" class="col-sm-2 control-label">公告内容</label>
+                            <div class="col-sm-10">
+                                <textarea name="content" id="content" cols="30" maxlength="60" placeholder="请输入公告内容，限制50字以内"  rows="10" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="title" class="col-sm-2 control-label">结束时间</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control form-time" id="endtime" name="endtime"
+                                       placeholder="yyyy/mm/dd">
+                            </div>
+                        </div>
+                        <input type="hidden" name="rid" value="" id="rid"/>
+                        <input type="hidden" name="status" value="1" id="status"/>
+                        <!-- 模态框底部 -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" id="save">保存</button>
+                        </div>
+                    </form>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!--添加结束-->
+
+</div>
+{include file='manage/bottom'}
+<script type="text/javascript" src="__MANAGE_JS__datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+    $(".form-time").datetimepicker({
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        format: 'yyyy/mm/dd'
+    });
+    $(document).ready(function() {
+        $("#add").click(function () {
+            $('#course').val('');
+            $('#content').val('');
+            $('#endtime').val('');
+            $('#rid').val('');
+            $('#status').val(1);
+        });
+        $("#save").click(function () {
+            $.ajax({
+                url: "{:url('addedit')}?"+Math.random(),
+                type:"get",
+                data:$('#form').serialize(),
+                success:function(data){
+
+                    if(data.code=='000'){
+                        alert(data.info)
+                        window.location.reload();
+
+                    }else{
+                        alert(data.error)
+                    }
+
+                },
+                error:function(e){
+                    alert("添加信息错误");
+                }
+            });
+        });
+        $('#search').click(function(){
+            var start=$('#searchstart').val();
+            var end=$('#searchend').val();
+            if(start && !end){
+                alert('请选择结束时间');
+                return false;
+            }else if(end && !start){
+                alert('请选择开始时间');
+                return false;
+            }// else{
+            //     submit();
+            // }
+
+        });
+    });
+    function edit(id){
+        $.ajax({
+            'url':"{:url('selectedit')}?"+Math.random(),
+            data:"&id="+id,
+            type:'get',
+            success:function(msg){
+                console.log(msg);
+                $('#rid').val(msg.id);
+                $('#course').val(msg.courseid);
+                $('#content').val(msg.content);
+                $('#endtime').val(msg.endtime);
+                $('#status').val(msg.status);
+            },error:function(msg){
+                alert('获取信息失败');
+            }
+        })
+    }
+    function release(id,type){
+        // $('#release'+id)
+        if(type==1){
+            var infom='取消发送';
+        }else{
+            var infom='发送';
+        }
+        if(confirm('确定'+infom+'吗')) {
+            $.ajax({
+                'url': "{:url('release')}?" + Math.random(),
+                data: "&id=" + id + '&type=' + type,
+                type: 'get',
+                success: function (msg) {
+                    if (msg.code == '000') {
+                        var html = '';
+                        // if (type == 1) {
+                        //     // html = '<a href="#"  onclick="release(id,2)">发布</a>';
+                        //
+                        // } else {
+                        //     // html = '<a href="#"  onclick="release(id,2)">未发布</a>'
+                        //
+                        // }
+                        // $('#release' + id).html('');
+                        // $('#release' + id).append(html);
+                        alert(infom+'成功');
+                        window.location.reload();
+                    } else {
+                        alert('设置失败,请重新设置');
+                        window.location.reload();
+                    }
+                }, error: function (msg) {
+                    alert('获取信息失败');
+                }
+            })
+        }
+    }
+    function deleteR(id) {
+        if(confirm('确定删除吗')){
+            $.get("{:url('delete')}?rid="+id,function (data) {
+                if(data.code=='000'){
+                    alert(data.info)
+                    // $('#myModal2').modal('hide')
+                    window.location.reload()
+                }else{
+
+                }
+            });
+        }
+
+    }
+
+
+</script>
+</body>
+</html>

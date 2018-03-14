@@ -2,6 +2,7 @@
 <html>
 {include file="manage/header" /}
 <link href="__MANAGE_JS__datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+<link href="__MANAGE_CSS__model.min.css" rel="stylesheet">
 <body>
 
 <div class="container-fluid">
@@ -123,20 +124,27 @@
             <input type="hidden" name="courseId" value="{$a.courseId}"/>
             <!-- 模态框底部 -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" onclick="dopost('edit',1)">修改</button>
+                <button type="button" onclick="dopost()" class="btn btn-default">修改</button>
             </div>
         </form>
     </div>
 
 
 </div>
+<div class="spinner" id="uploadmodel" style="display:none"><!--style="display:none"-->
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+</div>
+<div class="modal-background" id="uploadmodel1" style="display:none"></div>
 {include file='manage/bottom'}
 <script type="text/javascript" src="__MANAGE_JS__Webuploader/webuploader.js"></script>
 <script type="text/javascript">
-
     var uploader='';
     $('select[name="mode"]').change(function () {
-
+        alert(123);
         if($(this).val()=='4'||$(this).val()=='5'||$(this).val()=='7'){
             var exam = '';
             if($(this).val()==4){
@@ -148,18 +156,40 @@
             if($(this).val()==7){
                 exam = 'plan';
             }
-            var html_exam = '<div class="form-group">';
-            html_exam += '<label class="col-sm-2 control-label">试卷名称</label>';
-            html_exam += '<div class="col-sm-10">';
-            html_exam += '<select name="paperid" class="form-control">';
-            html_exam += '<option value="">--请选择--</option>';
-            html_exam += '{volist name="testpaper" id="t"}';
-            html_exam += '<option value="{$t.id}" {if condition="$t['id'] eq $a['paperid']"}selected="selected"{/if}>{$t.name}</option>';
-            html_exam += '{/volist}';
-            html_exam += '</select>';
-            html_exam += '</div>';
-            html_exam += '<input type="hidden" id="type" name="type" class="form-control" placeholder="类型" value="'+exam+'"/></div>';
-            $('#html_exam_media').html(html_exam)
+            $.ajax({
+                url:'{:url("ajax")}',
+                type:"get",
+                data:'id='+id+'&type='+exam,
+                success:function(data){
+                    var html_exam = '<div class="form-group">';
+                    html_exam += '<label class="col-sm-2 control-label">试卷名称</label>';
+                    html_exam += '<div class="col-sm-10">';
+                    html_exam += '<select name="paperid" class="form-control">';
+                    html_exam += '<option value="">--请选择--</option>';
+                    $.each(data,function(i,v){
+                        html_exam += '<option value="'+v.id+'">'+v.name+'</option>';
+                    });
+                    html_exam += '</select>';
+                    html_exam += '</div>';
+                    html_exam += '<input type="hidden" id="type" name="type" class="form-control" placeholder="类型" value="'+exam+'"/></div>';
+                    $('#html_exam_media').html(html_exam);
+                },
+                error:function(e){
+                    alert("添加信息错误");
+                }
+            });
+            // var html_exam = '<div class="form-group">';
+            // html_exam += '<label class="col-sm-2 control-label">试卷名称</label>';
+            // html_exam += '<div class="col-sm-10">';
+            // html_exam += '<select name="paperid" class="form-control">';
+            // html_exam += '<option value="">--请选择--</option>';
+            // html_exam += '{volist name="testpaper" id="t"}';
+            // html_exam += '<option value="{$t.id}" {if condition="$t['id'] eq $a['paperid']"}selected="selected"{/if}>{$t.name}</option>';
+            // html_exam += '{/volist}';
+            // html_exam += '</select>';
+            // html_exam += '</div>';
+            // html_exam += '<input type="hidden" id="type" name="type" class="form-control" placeholder="类型" value="'+exam+'"/></div>';
+            // $('#html_exam_media').html(html_exam)
         }else if($(this).val()=='6'){
             var html_url = ' <div class="form-group">\n' +
                 '                <label class="col-sm-2 control-label">媒体链接</label>\n' +
@@ -190,38 +220,41 @@
                 chunked: true,
                 swf: '__MANAGE_JS__Webuploader/Uploader.swf',
             }).on('fileQueued', function( file ) {
+                $('#uploadmodel').show();
+                $('#uploadmodel1').show();
                 var start =  +new Date();
                 // console.log(file);
-
                 // 返回的是 promise 对象
                 this.md5File(file, 0, 1 * 1024 * 1024)
 
                 // 处理完成后触发
                     .then(function(ret) {
                         // console.log('md5:', ret);
-
                         // var end = +new Date();
                     });
             }).on('uploadSuccess', function (file, response) {
-
                 console.log(response); //这里可以得到后台返回的数据
-
                 var info = response.fileinfo;
-
-                if(info.duration){
-                    $('#length').val(info.duration)
+                console.log(response.fileinfo);
+                if(info != undefined) {
+                    if (info.duration) {
+                        $('#length').val(info.duration)
+                    } else {
+                        $('#length').val('')
+                    }
+                    $('#mediaSource').val(info.name)
+                    $('#type').val(info.type)
                 }else{
-                    $('#length').val('')
+                    alert('上传出错');
                 }
-                $('#mediaSource').val(info.name)
-                $('#type').val(info.type)
+                $('#uploadmodel').hide();
+                $('#uploadmodel1').hide();
             });
-
         }
-    })
+    });
 
 
-    $(function () {
+    $(function(){
         uploader = WebUploader.create({
             pick: '#picker',
             server: '{:url("upload")}?'+Math.random(),
@@ -229,41 +262,45 @@
             chunked: true,
             swf: '__MANAGE_JS__Webuploader/Uploader.swf',
         }).on('fileQueued', function( file ) {
+            $('#uploadmodel').show();
+            $('#uploadmodel1').show();
             var start =  +new Date();
             // console.log(file);
-
             // 返回的是 promise 对象
             this.md5File(file, 0, 1 * 1024 * 1024)
 
             // 处理完成后触发
                 .then(function(ret) {
                     // console.log('md5:', ret);
-
                     // var end = +new Date();
                 });
         }).on('uploadSuccess', function (file, response) {
-
             console.log(response); //这里可以得到后台返回的数据
-
             var info = response.fileinfo;
-
-            if(info.duration){
-                $('#length').val(info.duration)
+            console.log(response.fileinfo);
+            if(info != undefined) {
+                if (info.duration) {
+                    $('#length').val(info.duration)
+                } else {
+                    $('#length').val('')
+                }
+                $('#mediaSource').val(info.name)
+                $('#type').val(info.type)
             }else{
-                $('#length').val('')
+                alert('上传出错');
             }
-            $('#mediaSource').val(info.name)
-            $('#type').val(info.type)
+            $('#uploadmodel').hide();
+            $('#uploadmodel1').hide();
         });
-    })
-
-    function dopost($url,formid) {
-        $url=='add'?"{:url('add')}":"{:url('edit')}";
-
+    });
+</script>
+<script type="text/javascript">
+    function dopost(id){
+        // $url=='add'?"{:url('add')}":"{:url('edit')}";
         $.ajax({
-            url: $url+"?"+Math.random(),
+            url: "{:url('edit')}?"+Math.random(),
             type:"post",
-            data:$('#form'+formid).serialize(),
+            data:$('#form1').serialize(),
             success:function(data){
 
                 if(data.code=='000'){
@@ -281,8 +318,6 @@
             }
         });
     }
-
-
 </script>
 </body>
 </html>
