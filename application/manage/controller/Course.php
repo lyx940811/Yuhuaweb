@@ -37,7 +37,6 @@ class Course extends Base{
             ->order('c.id desc')
             ->paginate(20,false,['query'=>request()->get()]);
 
-
         $category=$this->subtree(0);
 
         $tags = Db::table('tag')->select();
@@ -46,10 +45,16 @@ class Course extends Base{
         $newlist = [];
         foreach ($list as $k=>$v){
             $newlist[$k] = $v;
-            $majorsid = Db::name('course')->where('id',$v['id'])->value('categoryId');
+            $majorsid = Db::name('course')->where('id',$v['id'])->find();
             $allstudent=0;
+            $where=[];
             if($majorsid) {
-                $allstudent = Db::table('student_school')->where('majors', $majorsid)->count();
+                $where['majors']=$majorsid['categoryId'];
+                if(!empty($majorsid['school_system'])){
+                    $aa=explode(',',$majorsid['school_system']);
+                    $where['academic']=array('in',$majorsid['school_system']);
+                }
+                $allstudent = Db::table('student_school')->where($where)->count();
             }
             $newlist[$k]['studentsystem']=[];
             $newlist[$k]['system']='';

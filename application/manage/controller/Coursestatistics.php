@@ -29,7 +29,7 @@ class Coursestatistics extends Base{
         }
         $where['status']=1;
         $data=DB::table('course c')
-            ->join('teacher_info tf','c.teacherIds=tf.userid')
+            ->join('teacher_info tf','c.teacherIds=tf.userid','LEFT')
             ->field('c.id,c.title,tf.realname,tf.sn')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
@@ -70,11 +70,17 @@ class Coursestatistics extends Base{
 
             //学习进度
 //            $majorsid=DB::table('categorycourse')->where('courseid',$value['id'])->value('categoryID');  这一句在正式上没有对应到数据，表没有新数据添入
-            $majorsid = Db::name('course')->where('id',$value['id'])->value('categoryId');
+            $majorsid = Db::name('course')->where('id',$value['id'])->find();
             $allstudent=0;
             $courseporgress ='0%';
+            $where=[];
             if($majorsid) {
-                $allstudent = Db::table('student_school')->where('majors', $majorsid)->count();
+                $where['majors'] = $majorsid['categoryId'];
+                if (!empty($majorsid['school_system'])) {
+                    $aa = explode(',', $majorsid['school_system']);
+                    $where['academic'] = array('in', $majorsid['school_system']);
+                }
+                $allstudent = Db::table('student_school')->where($where)->count();
                 if ($allstudent) {
                     $lastchapter = DB::table('course_chapter')->where('courseid', $value['id'])->order('seq desc')->value('id');
                     if ($lastchapter) {
