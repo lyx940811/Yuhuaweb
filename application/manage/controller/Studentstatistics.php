@@ -48,10 +48,6 @@ class Studentstatistics extends Base{
 
     //查询所有学生
     public function allStudentUser($where=[],$type=2){
-        $data=[];
-        $info=[];
-        $info=[];
-        $info=[];
         $data=DB::table('user_profile up')
             ->join('student_school ss','up.userid=ss.userid')
             ->join('classroom cr','ss.class=cr.id','LEFT')
