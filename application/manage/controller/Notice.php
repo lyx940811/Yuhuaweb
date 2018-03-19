@@ -75,6 +75,10 @@ class Notice extends Base{
         $validate->check($info);
 
         $error = $validate->getError();//打印错误规则
+
+        if(is_string($error)){
+            return ['error'=>$error,'code'=>'200'];
+        }
         $data=[
             'courseid'=>$info['courseid'],
 //            'title'=>$info['title'],
