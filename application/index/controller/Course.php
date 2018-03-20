@@ -855,7 +855,7 @@ class Course extends Home
 
     public function notice()
     {
-        $notice = $this->course->notice()->where('status',2)->order('endtime desc')->limit(3)->select();
+        $notice = $this->course->notice()->where('status',2)->order('createdtime desc')->limit(3)->select();
         $this->assign('notice',$notice);
         return $this->fetch();
     }

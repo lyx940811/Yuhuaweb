@@ -34,7 +34,22 @@ class Home extends Controller
     // 再数到第m只，在把它踢出去…，如此不停的进行下去， 直到最后只剩下一只猴子为止，那只猴子就叫做大王。要求编程模拟此过程，输入m、n, 输出最后那个大王的编号。
     public function josefcircle()
     {
-        echo 10*(5600/23)+13*(7000/23);
+        $data = [
+            "name"  =>  "TianChen",
+            'age'   =>  24,
+        ];
+        $redis = new \Redis();
+        $redis->connect('127.0.0.1','6379');
+        $redis->mset($data);
+        $redis->hmset('data',$data);
+        $new = ["name"];
+
+//        $redis->hGetAll('data');
+//        $redis -> lPush('pats2','dog');
+//        $redis -> lPush('pats2','cat');
+//        $redis -> lPush('pats2','rabbit');
+
+        var_dump($redis -> lPop('pats2'),$redis -> lLen('pats'));
     }
 
 

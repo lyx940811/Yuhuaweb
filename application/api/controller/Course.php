@@ -63,47 +63,37 @@ class Course extends Home
      */
     public function getcoursecomments()
     {
-        $redis = new \Redis();
-        $redis->connect('127.0.0.1', 6379);
         $courseid = $this->data['courseid'];
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         if(!\app\index\model\Course::get($courseid)){
             return json_data(200,$this->codeMessage[200],'');
         }
-        if($redis->exists('CourseComments'.$courseid.'Page'.$page)){
-            //有redis
-            $comment = $redis->get('CourseComments'.$courseid.'Page'.$page);
-            $comment = json_decode($comment,true);
-        }else{
-            //redis没存
-            $comment = Db::name('course_review')
-                ->where('courseid',$courseid)
-                ->where('parentid',0)
-                ->field('id,userid,content,createdTime')
-                ->order('createdTime desc')
-                ->page($page,10)
-                ->cache(60)
-                ->select();
-            if($comment){
-                foreach ($comment as &$c){
-                    $user = User::get($c['userid']);
-                    $c['username'] = $user->username;
-                    $c['createdTime'] = date('Y.m.d',strtotime($c['createdTime']));
-                    $c['avatar']   = $this->request->domain()."/".$user->title;
-                    $c['sonreviewNum']   = Db::name('course_review')->where('parentid',$c['id'])->count();
-                    $c['likeNum']   = Db::name('like')->where('type','comment')->where('articleid',$c['id'])->count();
-                    if(!empty($this->user)){
-                        if(Like::get(['userid'=>$this->user->id,'type'=>'comment','articleid'=>$c['id']])){
-                            $c['is_like'] = 1;
-                        }
-                        else{
-                            $c['is_like'] = 0;
-                        }
+        $comment = Db::name('course_review')
+            ->where('courseid',$courseid)
+            ->where('parentid',0)
+            ->field('id,userid,content,createdTime')
+            ->order('createdTime desc')
+            ->page($page,10)
+            ->select();
+        if($comment){
+            foreach ($comment as &$c){
+                $user = User::get($c['userid']);
+                $c['username'] = $user->username;
+                $c['createdTime'] = date('Y.m.d',strtotime($c['createdTime']));
+                $c['avatar']   = $this->request->domain()."/".$user->title;
+                $c['sonreviewNum']   = Db::name('course_review')->where('parentid',$c['id'])->count();
+                $c['likeNum']   = Db::name('like')->where('type','comment')->where('articleid',$c['id'])->count();
+                if(!empty($this->user)){
+                    if(Like::get(['userid'=>$this->user->id,'type'=>'comment','articleid'=>$c['id']])){
+                        $c['is_like'] = 1;
+                    }
+                    else{
+                        $c['is_like'] = 0;
                     }
                 }
             }
-            $redis->setex('CourseComments'.$courseid.'Page'.$page, 30,json_encode($comment));
         }
+
         return json_data(0,$this->codeMessage[0],$comment);
     }
 
@@ -946,7 +936,25 @@ class Course extends Home
         }
 
         //notice
-        $notice = Db::name('course_notice')->where('courseid',$courseid)->order('endtime desc')->limit(1)->field('content,endtime,title')->select();
+        if($this->user){
+            $notice = Db::name('course_notice')
+                ->where('courseid',$courseid)
+                ->where('status',2)
+                ->order('createtime desc')
+                ->limit(1)
+                ->field('content,createtime as endtime,title')
+                ->select();
+            if($notice){
+                $notice = $notice[0];
+                $notice['endtime'] = date('Y.m.d',strtotime($notice['endtime']));
+            }else{
+                $notice = null;
+            }
+        }else{
+            $notice = null;
+        }
+
+
 
         $data = [
             'categoryId'=>  $course['categoryId'],

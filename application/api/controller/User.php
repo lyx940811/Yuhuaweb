@@ -998,6 +998,9 @@ class User extends Controller
             'createTime'    =>  time(),
         ];
         if($this->data['ratio']==100){
+            $redis = new \Redis();
+            $redis->connect('127.0.0.1', 6379);
+            $redis->flushAll();
             $log_result['is_done'] = 1;
             //添加获得学分
             $course = Db::name('course_task')->find($this->data['taskid']);
@@ -1230,8 +1233,8 @@ class User extends Controller
             ->join('course_notice cn','sn.coursenoticeID=cn.id')
             ->where('sn.toUserid',$this->user->id)
             ->where('cn.status',2)
-            ->order('cn.endtime desc')
-            ->field('sn.id as noticeId,sn.content,cn.title,cn.endtime as sendTime')
+            ->order('cn.createdtime desc')
+            ->field('sn.id as noticeId,sn.content,cn.title,cn.createdtime as sendTime')
             ->page($page,10)
             ->select();
 

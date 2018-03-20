@@ -35,10 +35,10 @@ class Review extends Base
      * @throws Exception
      */
     public function writeComment($data){
-        $validate = Loader::validate('index/CourseReview');
-        if(!$validate->check($data)){
-            throw new Exception();
-        }
+//        $validate = Loader::validate('index/CourseReview');
+//        if(!$validate->check($data)){
+//            throw new Exception();
+//        }
         CourseReview::create($data);
     }
     /**
