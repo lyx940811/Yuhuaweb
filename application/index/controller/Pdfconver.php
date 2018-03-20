@@ -11,8 +11,8 @@ class Pdfconver extends Controller
     public function ppttest()
     {
         $converter = new PDFConverter();
-        $source = ROOT_PATH."public\\uploads/test3.xlsx" ;
-        $export = ROOT_PATH."public\\uploads/test4.pdf";
+        $source = ROOT_PATH."public\\upload/20180208/1518076432.ppt" ;
+        $export = ROOT_PATH."public\\upload/20180208/1518076432.pdf";
         $converter->execute($source, $export);
         echo 'Done';
     }
@@ -42,6 +42,8 @@ class Pdfconver extends Controller
         $redis->connect('127.0.0.1', 6379);
         var_dump($redis->getOption());
     }
+
+
 
 
 

@@ -179,21 +179,16 @@ class Student extends User
      * 对一个课程/评论  进行评论
      */
     public function commentcourse(){
-        try{
-            $data = [
-                'userid'        =>  $this->user->id,
-                'touserId'      =>  $this->data['touserId'],
-                'courseid'      =>  $this->data['courseid'],
-                'content'       =>  $this->data['content'],
-                'parentid'      =>  $this->data['parentid'],
-                'createdTime'   => date('Y-m-d H:i:s'),
-            ];
-            $this->LogicReview->writeComment($data);
-            return json_data(0,$this->codeMessage[0],'');
-        }
-        catch ( Exception $e){
-            return json_data($e->getCode(),$e->getMessage(),'');
-        }
+        $data = [
+            'userid'        =>  $this->user->id,
+            'touserId'      =>  $this->data['touserId'],
+            'courseid'      =>  $this->data['courseid'],
+            'content'       =>  $this->data['content'],
+            'parentid'      =>  $this->data['parentid'],
+            'createdTime'   => date('Y-m-d H:i:s'),
+        ];
+        $this->LogicReview->writeComment($data);
+        return json_data(0,$this->codeMessage[0],'');
 
     }
     /**
