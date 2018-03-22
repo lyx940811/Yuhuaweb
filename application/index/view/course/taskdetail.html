@@ -174,12 +174,132 @@
     <div class="dashboard-sidebar hidden-xs spread" id="dashboard-sidebar" style="display: block; right: -360px;">
         <div class="dashboard-toolbar">
             <ul class="dashboard-toolbar-nav" id="dashboard-toolbar-nav">
+                <li><a href="#class-list" aria-controls="tab_home" role="tab" data-toggle="tab"><div class="mbs es-icon es-icon-menu"></div>课件</a></li>
                 <li><a href="#task-list" aria-controls="tab_home" role="tab" data-toggle="tab"><div class="mbs es-icon es-icon-menu"></div>目录</a></li>
                 <li><a href="#note" aria-controls="tab_home" role="tab" data-toggle="tab"><div class="mbs es-icon es-icon-edit"></div>笔记</a></li>
                 <li><a href="#question" aria-controls="tab_home" role="tab" data-toggle="tab"><div class="mbs es-icon es-icon-help"></div>问答</a></li>
             </ul>
         </div>
         <div class="topic-list tab-content tab-main-content">
+            <div  id="class-list" role="tabpanel" class="innerbox task-list-pane tab-pane active media topic-item" style="height:100%;overflow-y:scroll">
+                <div class="task-list-pane-body js-sidebar-pane-body" >
+                    <ul class="task-list task-show" >
+                        {volist name="tasklist" id="thetask"}
+
+                        {volist name="thetask.task" id="tl"}
+                        {if condition="$tl['type'] eq 'mp4' or $tl['type'] eq 'url' or $tl['type'] eq 'doc' or $tl['type'] eq 'docx' or $tl['type'] eq 'xls' or $tl['type'] eq 'xlsx' or $tl['type'] eq 'ppt' or $tl['type'] eq 'pptx' or $tl['type'] eq 'pdf'"}
+                        {present name="tl.plan"}
+                        {switch name="tl.plan" }
+                        {case value="100"}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
+                            <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">{$thetask.title}: {$tl.title}</a>
+
+                            <span class="right-menu">
+                                {notempty name="tl.length"}
+                                {$tl.length|video_time_trans}
+                                {/notempty}
+                                <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
+                            </span>
+                        </li>
+                        {/case}
+                        {default /}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                            <a class="title">
+                                {$thetask.title}: {$tl.title}
+                            </a>
+                            <span class="right-menu">
+                                {notempty name="tl.length"}
+                                {$tl.length|video_time_trans}
+                                {/notempty}
+                                    <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
+                            </span>
+                        </li>
+                        {/switch}
+                        {else /}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                            <a class="title">
+                                {$thetask.title}: {$tl.title}
+                            </a>
+                            <span class="right-menu">23:10
+                                    <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
+                            </span>
+                        </li>
+                        {/present}
+                        {elseif condition="$tl['type'] eq 'test' or $tl['type'] eq 'exam' or $tl['type'] eq 'plan'"}
+                        {present name="user"}
+                        {switch name="tl.plan" }
+                        {case value="100"}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
+                            <a class="title" href="{:url('index/examination/examresults',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">{$thetask.title}: {$tl.title}</a>
+                            <span class="right-menu"></span>
+                        </li>
+                        {/case}
+                        {default /}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                            <a class="title">
+                                {$thetask.title}: {$tl.title}
+                            </a>
+                            <span class="right-menu"></span>
+                        </li>
+                        {/switch}
+                        {else /}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                            <a class="title">
+                                {$thetask.title}: {$tl.title}
+                            </a>
+                            <span class="right-menu"></span>
+                        </li>
+                        {/present}
+
+                        {else /}
+                        {present name="tl.plan"}
+                        {switch name="tl.plan" }
+                        {case value="100"}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
+                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">{$thetask.title}: {$tl.title}</a>
+                            <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
+                        </li>
+                        {/case}
+                        {default /}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                            <a class="title">
+                                {$thetask.title}: {$tl.title}
+                            </a>
+                            <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
+                        </li>
+                        {/switch}
+                        {else /}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                            <a class="title">
+                                {$thetask.title}: {$tl.title}
+                            </a>
+                            <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
+                        </li>
+                        {/present}
+                        {/if}
+                        {/volist}
+
+                        {/volist}
+
+
+                    </ul>
+                </div>
+                <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 3px; width: 360px; display: none;">
+                    <div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div>
+                </div>
+                <div class="ps-scrollbar-y-rail" style="top: 0px; right: 3px; height: 925px; display: inherit;">
+                    <div class="ps-scrollbar-y" style="top: 0px; height: 201px;"></div>
+                </div>
+            </div>
             <div  id="task-list" role="tabpanel" class="innerbox task-list-pane tab-pane active media topic-item" style="height:100%;overflow-y:scroll">
                 <div class="task-list-pane-body js-sidebar-pane-body" >
                     <ul class="task-list task-show" >
