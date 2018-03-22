@@ -24,7 +24,7 @@ class Categorycourse extends Base{
         $where = [];
         if(!empty($info['category'])){
             $data['category']=$info['category'];
-            $where['a.categoryID'] = ['eq',$info['category']];
+            $where['c.categoryId'] = ['eq',$info['category']];
         }
         if(!empty($info['type'])){
             $data['type']=$info['type'];
@@ -36,13 +36,19 @@ class Categorycourse extends Base{
         }
 
 
-        $list = Db::table('categorycourse a')
-            ->field('a.id,c.id as cid,c.title,a.courseID,b.name,c.type,b.studyTimes,b.point,b.code,d.realname,a.Flag')
-            ->join('category b','a.categoryID = b.code','LEFT')
-            ->join('course c','a.courseID = c.id','LEFT')
-            ->join('teacher_info d','c.teacherIds = d.id','LEFT')
-            ->where($where)
-            ->paginate(20,false,['query'=>request()->get()]);
+//        $list = Db::table('categorycourse a')
+//            ->field('a.id,c.id as cid,c.title,a.courseID,b.name,c.type,b.studyTimes,b.point,b.code,d.realname,a.Flag')
+//            ->join('category b','a.categoryID = b.code','LEFT')
+//            ->join('course c','a.courseID = c.id','LEFT')
+//            ->join('teacher_info d','c.teacherIds = d.id','LEFT')
+//            ->where($where)
+//            ->paginate(20,false,['query'=>request()->get()]);
+        $list=Db::table('course c')
+                ->join('category cg','c.categoryId=cg.code','LEFT')
+                ->join('teacher_info t','c.teacherIds = t.id','LEFT')
+                ->field('c.id,c.title,cg.name,c.type,cg.studyTimes,cg.point,cg.code,t.realname')
+                ->where($where)
+                ->paginate(20,false,['query'=>request()->get()]);
 
         $category = Db::table('category')->field('code,parentcode,name')->where('Flag','eq',1)->select();
 
@@ -132,20 +138,12 @@ class Categorycourse extends Base{
         if(is_string($error)){
             return ['error'=>$error,'code'=>'200'];
         }
-
-        $role_table = Db::name('categorycourse');
-
         $id = $info['rid']+0;
 
         $data = [
-            'categoryID'=>$info['category'],
-            'courseID'=>$info['code'],
-            'Flag'=>$info['flag'],
+            'categoryId'=>$info['category'],
         ];
-        /*
-         * 这个表就2个关联的字段  categoryID 和课程id  所以只能修改这2个东西！！！！！！！！！！
-         */
-        $ok = $role_table->where('id',$id)->update($data);
+        $ok = Db::name('course')->where('id',$id)->update($data);
 
         if($ok){
             return ['info'=>'修改成功','code'=>'000'];

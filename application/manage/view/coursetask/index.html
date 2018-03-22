@@ -240,6 +240,44 @@
                 '                    </div>\n' +
                 '                </div>\n' +
                 '            </div>';
+            if($(this).val()==2){
+                html_media+='  <div class="form-group">\n' +
+                '                 <label for="mode" class="col-sm-2 control-label">教案</label>\n' +
+                '                 <div class="col-sm-10" id="teachingplan">\n' +
+                '                    <input type="file" value="">\n' +
+                '                    <input type="text" name="teachingplan" class="form-control" placeholder="文件资源" value="">\n' +
+                '                 </div>\n' +
+                '              </div>';
+                html_media+='  <div class="form-group">\n' +
+                    '                 <label for="mode" class="col-sm-2 control-label">课件</label>\n' +
+                    '                 <div class="col-sm-10" id="courseware">\n' +
+                    '                    <input type="file" value="">\n' +
+                    '                    <input type="text" name="courseware" class="form-control" placeholder="文件资源"  value="">\n' +
+                    '                 </div>\n' +
+                    '              </div>';
+                html_media+=' <div class="form-group">\n' +
+                    '                            <label for="status" class="col-sm-2 control-label">是否验证</label>\n' +
+                    '                            <div class="col-sm-10">\n' +
+                    '                                <label class="radio-inline">\n' +
+                    '                                    <input type="radi o" name="verify" value="1"> 是\n' +
+                    '                                </label>\n' +
+                    '                                <label class="radio-inline">\n' +
+                    '                                    <input type="radio" name="verify" value="0"> 否\n' +
+                    '                                </label>\n' +
+                    '                            </div>\n' +
+                    '                        </div>';
+                html_media+='  <div class="form-group">\n' +
+                    '                            <label for="mode" class="col-sm-2 control-label">验证题目</label>\n' +
+                    '                            <div class="col-sm-10">\n' +
+                    '                                <select name="question" id="question" class="form-control">\n' +
+                    '                                    <option value="">--请选择--</option>\n' +
+                    '                                    {volist name="verfiy" id="t"}\n' +
+                    '                                    <option value="{$t.id}">{$t.stem}</option>\n' +
+                    '                                    {/volist}\n' +
+                    '                                </select>\n' +
+                    '                            </div>\n' +
+                    '                        </div>'
+            }
             $('#html_exam_media').html(html_media)
             uploader = WebUploader.create({
                 pick: '#picker',

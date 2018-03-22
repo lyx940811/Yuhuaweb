@@ -45,8 +45,11 @@ class Coursetask extends Base{
             })->where('paperid','<>','')->column('paperid');//查询已经用过的试卷的id
         $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$id)->where('id','not in',$coursetask)->select();
 
+        //查询该课程的验证题目
+        $verfiy=DB::table('question')->where('courseId',$id)->where('verification',1)->select();
         $this->assign('testpaper',$testpaper);
-
+        dump($verfiy);
+        $this->assign('verfiy',$verfiy);
         $this->assign('list',$list);
         $this->assign('chapter',$chapter);
         $this->assign('taskmode',$taskmode);
