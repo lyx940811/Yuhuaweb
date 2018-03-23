@@ -412,15 +412,29 @@ class Course extends Home
     public function getlessondetail()
     {
         $taskid = $this->data['taskid'];
-        $course_key = ['id'=>"",'title'=>"",'courseid'=>"",'chapterid'=>"",'type'=>"",'mediaSource'=>"",'length'=>"",];
-        $course = Db::name('course_task')->find($taskid);
+        $course = Db::name('course_task')
+            ->field('id,title,courseid,chapterid,type,mediaSource,length,paperid,teachingplan as teachingPlan,courseware as courseWare,questionID')
+            ->find($taskid);
+
         if(!$course){
             return json_data(200,$this->codeMessage[200],[]);
         }
-        $course = array_intersect_key($course,$course_key);
+
         if($course['type']!='url'){
             $course['mediaSource'] = $this->request->domain()."/".$course['mediaSource'];
         }
+        $course['teachingPlan'] = $this->request->domain()."/".$course['teachingPlan'];
+        $course['courseWare'] = $this->request->domain()."/".$course['courseWare'];
+        if($course['question'] = Db::name('question')->field('type,stem,analysis,answer,metas')->find($course['questionID'])){
+            $course['question']['metas']  = json_decode($course['question']['metas'],true);
+            $course['question']['metas']  = $course['question']['metas']['choices'];
+            $course['question']['answer'] = json_decode($course['question']['answer'],true);
+            $course['question']['answer'] = $course['question']['answer'][0];
+        }else{
+            $course['question'] = [];
+        }
+        unset($course['questionID']);
+
         return json_data(0,$this->codeMessage[0],$course);
     }
 
