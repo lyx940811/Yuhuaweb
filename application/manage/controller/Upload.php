@@ -65,6 +65,7 @@ class Upload
 
         $file_dir = ROOT_PATH."public/".$uploads_dir.'/'.$name;
         move_uploaded_file($tmp_name, iconv("utf-8","gb2312",$file_dir));
+        myImageResize($file_dir,480,270);
         return ['path'=>$uploads_dir.'/'.$name,'code'=>000];
 //        return $uploads_dir.'/'.$name;
     }
