@@ -124,7 +124,7 @@
         $imgArr = explode('.', $source_path);
         $target_path = $imgArr[0] . '_new.' . $imgArr[1];
 
-        imagejpeg($target_image, $target_path, 80);
+        imagejpeg($target_image, $source_path, 80);
     }
 
 
