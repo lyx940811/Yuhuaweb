@@ -86,6 +86,7 @@
                 <!-- 模态框主体 -->
                 <div class="modal-body">
                     <form class="form-horizontal" role="form" id="form0" method="post" action="{:url('add')}">
+                        <input type="hidden" name="isvideo" value="0" id="isvideo">
                         <div class="form-group">
                             <label for="title" class="col-sm-2 control-label">任务名称</label>
                             <div class="col-sm-10">
@@ -218,6 +219,7 @@
                     alert("添加信息错误");
                 }
             });
+            $('#isvideo').val(0);
         }else if($(this).val()=='6'){
             var html_url = ' <div class="form-group">\n' +
                 '                <label class="col-sm-2 control-label">媒体链接</label>\n' +
@@ -226,6 +228,7 @@
                 '                        <input type="hidden" id="type" name="type" class="form-control" placeholder="类型" value="url"/>\n' +
                 '                </div>\n' +
                 '            </div>';
+            $('#isvideo').val(0);
             $('#html_exam_media').html(html_url)
         }else{
 
@@ -245,24 +248,24 @@
                 '                 <label for="mode" class="col-sm-2 control-label">教案</label>\n' +
                 '                 <div class="col-sm-10" id="teachingplan">\n' +
                 '                    <input type="file" value="">\n' +
-                '                    <input type="text" name="teachingplan" class="form-control" placeholder="文件资源" value="">\n' +
+                '                    <input type="text" name="teachingplan" id="teachmedia" class="form-control" placeholder="文件资源" value="">\n' +
                 '                 </div>\n' +
                 '              </div>';
                 html_media+='  <div class="form-group">\n' +
                     '                 <label for="mode" class="col-sm-2 control-label">课件</label>\n' +
                     '                 <div class="col-sm-10" id="courseware">\n' +
                     '                    <input type="file" value="">\n' +
-                    '                    <input type="text" name="courseware" class="form-control" placeholder="文件资源"  value="">\n' +
+                    '                    <input type="text" name="courseware" id="coursemedia" class="form-control" placeholder="文件资源"  value="">\n' +
                     '                 </div>\n' +
                     '              </div>';
                 html_media+=' <div class="form-group">\n' +
                     '                            <label for="status" class="col-sm-2 control-label">是否验证</label>\n' +
                     '                            <div class="col-sm-10">\n' +
                     '                                <label class="radio-inline">\n' +
-                    '                                    <input type="radi o" name="verify" value="1"> 是\n' +
+                    '                                    <input type="radio" name="verify" value="1"> 是\n' +
                     '                                </label>\n' +
                     '                                <label class="radio-inline">\n' +
-                    '                                    <input type="radio" name="verify" value="0"> 否\n' +
+                    '                                    <input type="radio" name="verify" value="0" checked> 否\n' +
                     '                                </label>\n' +
                     '                            </div>\n' +
                     '                        </div>';
@@ -277,7 +280,8 @@
                     '                                </select>\n' +
                     '                            </div>\n' +
                     '                        </div>'
-            }
+                $('#isvideo').val(1);
+            }else{$('#isvideo').val(0);}
             $('#html_exam_media').html(html_media)
             uploader = WebUploader.create({
                 pick: '#picker',
@@ -316,6 +320,71 @@
                 $('#uploadmodel').hide();
                 $('#uploadmodel1').hide();
             });
+            uploader = WebUploader.create({
+                pick: '#teachingplan',
+                server: '{:url("upload")}?'+Math.random(),
+                auto: true,
+                chunked: true,
+                swf: '__MANAGE_JS__Webuploader/Uploader.swf',
+            }).on('fileQueued', function( file ) {
+                $('#uploadmodel').show();
+                $('#uploadmodel1').show();
+                var start =  +new Date();
+                // console.log(file);
+                // 返回的是 promise 对象
+                this.md5File(file, 0, 1 * 1024 * 1024)
+
+                // 处理完成后触发
+                    .then(function(ret) {
+                        // console.log('md5:', ret);
+                        // var end = +new Date();
+                    });
+            }).on('uploadSuccess', function (file, response) {
+                console.log(response); //这里可以得到后台返回的数据
+                var info = response.fileinfo;
+                console.log(response.fileinfo);
+                if(info != undefined) {
+
+                    $('#teachmedia').val(info.name)
+                }else{
+                    alert('上传出错');
+                }
+                $('#uploadmodel').hide();
+                $('#uploadmodel1').hide();
+            });
+            uploader = WebUploader.create({
+                pick: '#courseware',
+                server: '{:url("upload")}?'+Math.random(),
+                auto: true,
+                chunked: true,
+                swf: '__MANAGE_JS__Webuploader/Uploader.swf',
+            }).on('fileQueued', function( file ) {
+                $('#uploadmodel').show();
+                $('#uploadmodel1').show();
+                var start =  +new Date();
+                // console.log(file);
+                // 返回的是 promise 对象
+                this.md5File(file, 0, 1 * 1024 * 1024)
+
+                // 处理完成后触发
+                    .then(function(ret) {
+                        // console.log('md5:', ret);
+                        // var end = +new Date();
+                    });
+            }).on('uploadSuccess', function (file, response) {
+                console.log(response); //这里可以得到后台返回的数据
+                var info = response.fileinfo;
+                console.log(response.fileinfo);
+                if(info != undefined) {
+
+                    $('#coursemedia').val(info.name)
+                }else{
+                    alert('上传出错');
+                }
+                $('#uploadmodel').hide();
+                $('#uploadmodel1').hide();
+            });
+
         }
     });
     function dopost($url,formid) {

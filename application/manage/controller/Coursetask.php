@@ -48,7 +48,6 @@ class Coursetask extends Base{
         //查询该课程的验证题目
         $verfiy=DB::table('question')->where('courseId',$id)->where('verification',1)->select();
         $this->assign('testpaper',$testpaper);
-        dump($verfiy);
         $this->assign('verfiy',$verfiy);
         $this->assign('list',$list);
         $this->assign('chapter',$chapter);
@@ -95,7 +94,6 @@ class Coursetask extends Base{
 
             return ['error'=>'类型为测验或考试时，必须选择试卷','code'=>'200'];
         }
-
         $role_table = Db::name('course_task');
 
         $data = [
@@ -114,7 +112,15 @@ class Coursetask extends Base{
             'createdTime'=>date('Y-m-d H:i:s',time()),
             'status'=>isset($info['status'])?$info['status']:0,
         ];
-
+        if($info['isvideo']==1){
+            if($info['verify']==1 && empty($info['question'])){
+                return ['error'=>'请选择验证题目','code'=>'200'];
+            }
+            $data['verify'] =$info['verify'];
+            $data['teachingplan'] =$info['teachingplan'];
+            $data['courseware'] =$info['courseware'];
+            $data['questionID'] =$info['question'];
+        }
         $ok = $role_table->insert($data);
 
         if($ok){
@@ -132,7 +138,7 @@ class Coursetask extends Base{
         $msg  =   [
             'rid'               =>'任务id不能为空',
             'title.require'     => '任务名称不能为空',
-            'title.length'      => '任务名称长度太短',
+            'title.length'      => '任务名称长度必须在一到十之间',
             'courseId.require'  => '课程不能为空',
             'chapterid.require'  => '课程章必须选择',
 //            'mediaSource.require'  => '媒体资源必须填写',
@@ -168,7 +174,6 @@ class Coursetask extends Base{
         if(!$have){//如果没这个code
             return ['error'=>'没有此任务','code'=>'300'];
         }
-
         $data = [
             'title' => $info['title'],
             'chapterid'=> $info['chapterid'],
@@ -184,8 +189,16 @@ class Coursetask extends Base{
             'status'=>$info['status']
         ];
 
+        if($info['isvideo']==1){
+            if($info['verify']==1 && empty($info['question'])){
+                return ['error'=>'请选择验证题目','code'=>'200'];
+            }
+            $data['verify'] =$info['verify'];
+            $data['teachingplan'] =$info['teachingplan'];
+            $data['courseware'] =$info['courseware'];
+            $data['questionID'] =$info['question'];
+        }
         $ok = $role_table->where('id',$id)->update($data);
-
         if(is_numeric($ok)){
             return ['info'=>'修改成功','code'=>'000'];
         }else{
@@ -206,8 +219,15 @@ class Coursetask extends Base{
             ->where(function ($query) {
                 $query->where('type','test')->whereor('type','exam')->whereor('type','plan');
             })->where('paperid','<>','')->where('paperid','<>',$info['paperid'])->column('paperid');//查询已经用过的试卷的id
-        $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$cid)->where('id','not in',$coursetask)->select();
+        $where=[];
+        if(!empty($info['paperid'])){
+            $type= Db::table('testpaper')->where('id',$info['paperid'])->value('type');
+            $where['type']=$type;
+        }
+        $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$cid)->where('id','not in',$coursetask)->where('type',$info['type'])->select();
 
+        $verfiy=DB::table('question')->where('courseId',$cid)->where('verification',1)->select();
+        $this->assign('verfiy',$verfiy);
         $this->assign('chapter',$chapter);
         $this->assign('a',$info);
         $this->assign('typename','课程任务修改');
@@ -247,17 +267,26 @@ class Coursetask extends Base{
 
     }
 
-    public function ajax($id,$type){
+    public function ajax(){
+        $id=$this->request->param('id');
+        $type=$this->request->param('type');
+        $paperid=$this->request->param('paperid');
         $coursetask=Db::table('course_task')
             ->where(function ($query) {
                 $query->where('type','test')->whereor('type','exam')->whereor('type','plan');
-            })->where('paperid','<>','')->column('paperid');//查询已经用过的试卷的id
+            })->where('paperid','<>','')->where('paperid','<>',$paperid)->column('paperid');//查询已经用过的试卷的id
         $testpaper = Db::table('testpaper')
             ->field('id,name')
             ->where('courseid',$id)
             ->where('id','not in',$coursetask)
             ->where('type',$type)->select();
         return $testpaper;
+    }
+
+    public function isnotverify(){
+        $id=$this->request->param('id');
+        $info = Db::table('course_task')->where('id',$id)->find();
+        return $info;
     }
 
 }
