@@ -4,6 +4,7 @@ namespace app\index\controller;
 use app\manage\controller\Integral;
 use think\Controller;
 use think\Config;
+use think\Db;
 use think\Loader;
 use app\index\model\User;
 class Mff extends Controller
@@ -108,7 +109,20 @@ class Mff extends Controller
 
     public function sss()
     {
-        echo (5600/17*10)+(7000/17*7);
+//        $pic = Db::name('course')->column('smallPicture');
+//
+//        foreach ($pic as &$p){
+//            if(!empty($p)){
+//                $p = ROOT_PATH.'public\\'.$p;
+//                if(file_exists($p)){
+//                    myImageResize($p,268,160);
+//                }
+//            }
+//
+//        }
+        myImageResize('C:\Users\Mayueli\Desktop\5aa53690b4093.png',480,270);
+        echo 'done';
+
     }
 
 }

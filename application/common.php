@@ -87,20 +87,20 @@
         $source_height = $source_info[1];
         $source_mime = $source_info['mime'];
         $ratio_orig = $source_width / $source_height;
-        if ($fixed_orig == 'width'){
-            //宽度固定
-            $target_height = $target_width / $ratio_orig;
-        }elseif ($fixed_orig == 'height'){
-            //高度固定
-            $target_width = $target_height * $ratio_orig;
-        }else{
-            //最大宽或最大高
-            if ($target_width / $target_height > $ratio_orig){
-                $target_width = $target_height * $ratio_orig;
-            }else{
-                $target_height = $target_width / $ratio_orig;
-            }
-        }
+//        if ($fixed_orig == 'width'){
+//            //宽度固定
+//            $target_height = $target_width / $ratio_orig;
+//        }elseif ($fixed_orig == 'height'){
+//            //高度固定
+//            $target_width = $target_height * $ratio_orig;
+//        }else{
+//            //最大宽或最大高
+//            if ($target_width / $target_height > $ratio_orig){
+//                $target_width = $target_height * $ratio_orig;
+//            }else{
+//                $target_height = $target_width / $ratio_orig;
+//            }
+//        }
         switch ($source_mime){
             case 'image/gif':
                 $source_image = imagecreatefromgif($source_path);
@@ -123,6 +123,7 @@
         //header('Content-type: image/jpeg');
         $imgArr = explode('.', $source_path);
         $target_path = $imgArr[0] . '_new.' . $imgArr[1];
+
         imagejpeg($target_image, $target_path, 80);
     }
 
