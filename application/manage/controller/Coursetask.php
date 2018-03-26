@@ -134,7 +134,6 @@ class Coursetask extends Base{
     public function edit(){
 
         $info = input('post.');
-
         $msg  =   [
             'rid'               =>'任务id不能为空',
             'title.require'     => '任务名称不能为空',
