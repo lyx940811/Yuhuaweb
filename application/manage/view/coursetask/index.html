@@ -168,10 +168,10 @@
         </div>
     </div>
     <!--添加结束-->
-    <div style="display:none; position: relative; width: 100%; height: 800px; z-index: 99999999999;"><!--style="display:none"-->
+    <div id="uploadmodel" style="display:none; position: relative; width: 100%; height: 800px; z-index: 99999999999;"><!--style="display:none"-->
 
         <div style="background: rgba(0,0,0,0.3); width: 500px; height: 300px; position: absolute;
-         z-index: 999;  top:-118px; left: 50%; margin-left: -250px;">
+         z-index: 999;  top:-518px; left: 50%; margin-left: -250px;">
             <div style="width: 400px; height:30px; border: 1px solid #337ab7; border-radius: 100px; margin: 0 auto; margin-top: 120px;text-align: center; line-height: 30px; font-size: 18px; color: #fff;">
                 <div id="prossa" style="width: 0px; height:0px; border-radius: 100px; background: #337ab7; ">
 
@@ -286,8 +286,45 @@
                     '                            </div>\n' +
                     '                        </div>'
                 $('#isvideo').val(1);
-            }else{$('#isvideo').val(0);}
-            $('#html_exam_media').html(html_media)
+                $('#html_exam_media').html(html_media)
+                function cutOption(selectObj , length) {
+
+                    this.selectObj = selectObj;
+
+                    this.length = length;
+
+                }
+
+                cutOption.prototype.init = function() {
+
+                    this.options = this.selectObj.getElementsByTagName('option');
+                    for(i=0 , j=this.options.length ; i<j ; i++ )
+
+                    {
+
+                        text = this.options[i].firstChild.nodeValue;
+
+                        if(text.length>=this.length){
+                            this.options[i].innerHTML = text.substring(0,this.length) + '...';
+                        }
+
+                    }
+
+                }
+
+                obj = document.getElementById('question');
+
+                //想要几个字就改第二个参数;
+
+                var optionClass = new cutOption(obj,10);
+
+                optionClass.init();
+            }else{
+                $('#isvideo').val(0);
+                $('#html_exam_media').html(html_media)
+            }
+
+
             uploader = WebUploader.create({
                 pick: '#picker',
                 server: '{:url("upload")}?'+Math.random(),
@@ -307,10 +344,6 @@
                         // console.log('md5:', ret);
                         // var end = +new Date();
                     });
-            }).on('uploadProgress',function (file,percentage) {
-                console.log(percentage)
-                var nums = parseInt(percentage*100);
-                $('#prossa').css({'width':percentage*400,'height':'30px'}).text(nums+'%');
             }).on('uploadSuccess', function (file, response) {
                 console.log(response); //这里可以得到后台返回的数据
                 var info = response.fileinfo;
@@ -329,6 +362,10 @@
                 $('#uploadmodel').hide();
                 $('#uploadmodel1').hide();
                 $('#prossa').css({'width':0,'height':'0px'}).text(0+'%');
+            }).on('uploadProgress',function (file,percentage) {
+                console.log(percentage)
+                var nums = parseInt(percentage*100);
+                $('#prossa').css({'width':percentage*400,'height':'30px'}).text(nums+'%');
             });
             uploader = WebUploader.create({
                 pick: '#teachingplan',
@@ -361,6 +398,11 @@
                 }
                 $('#uploadmodel').hide();
                 $('#uploadmodel1').hide();
+                $('#prossa').css({'width':0,'height':'0px'}).text(0+'%');
+            }).on('uploadProgress',function (file,percentage) {
+                console.log(percentage)
+                var nums = parseInt(percentage*100);
+                $('#prossa').css({'width':percentage*400,'height':'30px'}).text(nums+'%');
             });
             uploader = WebUploader.create({
                 pick: '#courseware',
@@ -393,6 +435,11 @@
                 }
                 $('#uploadmodel').hide();
                 $('#uploadmodel1').hide();
+                $('#prossa').css({'width':0,'height':'0px'}).text(0+'%');
+            }).on('uploadProgress',function (file,percentage) {
+                console.log(percentage)
+                var nums = parseInt(percentage*100);
+                $('#prossa').css({'width':percentage*400,'height':'30px'}).text(nums+'%');
             });
 
         }

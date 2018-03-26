@@ -134,7 +134,6 @@ class Coursetask extends Base{
     public function edit(){
 
         $info = input('post.');
-
         $msg  =   [
             'rid'               =>'任务id不能为空',
             'title.require'     => '任务名称不能为空',
@@ -254,9 +253,8 @@ class Coursetask extends Base{
         $all = $mediafile->getfile();
 
         if($all['message']=='success'){
-
             //mp4上传
-            $video_info = getVideoInfo($all['fileinfo']['name']);
+            $video_info = getVideoInfo(iconv("utf-8","gb2312",$all['fileinfo']['name']));
             $duration = isset($video_info['duration'])?$video_info['duration']:NULL;
             $all['fileinfo']['duration'] = $duration;
 

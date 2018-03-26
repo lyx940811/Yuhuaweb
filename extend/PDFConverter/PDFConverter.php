@@ -30,8 +30,8 @@ class PDFConverter
      */
     public function execute($source, $export)
     {
-        $source = 'file:///' . str_replace('\\', '/', $source);
-        $export = 'file:///' . str_replace('\\', '/', $export);
+        $source = 'file:///' . str_replace('\\', '/', iconv("utf-8","gb2312",$source));
+        $export = 'file:///' . str_replace('\\', '/', iconv("utf-8","gb2312",$export));
         $this->convertProcess($source, $export);
     }
 
