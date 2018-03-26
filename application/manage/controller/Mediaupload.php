@@ -151,14 +151,14 @@ class Mediaupload extends Controller
         }
 
         if ($done) {
-
+            $filename=explode('.',$aFile['name']);
             $time = time();
             $path = date('Ymd',$time);
             $path2 = 'upload/'.$path.'/';
-            $sDestFile = $path2.$time.'.'.$sExtension;       //合并文件地址
+            $sDestFile = $path2.$filename[0].'.'.$sExtension;       //合并文件地址
 
             if(!file_exists($path2)){
-                mkdir($path2,0777,true);
+                mkdir(iconv("utf-8","gb2312",$path2),0777,true);
             }
 
             //以下if为判断不是分片上传的话直接挪缓存文件，但是没有删除
@@ -169,7 +169,7 @@ class Mediaupload extends Controller
 //                return json_data(0,'success',$sDestFile);
                 $array=['xlsx','xls','doc','docx','ppt'];
                 if(in_array($sExtension,$array)){
-                    $pdf=$path2.$time.'.pdf';
+                    $pdf=$path2.$filename[0].'.pdf';
                     $converter = new PDFConverter();
                     $source = ROOT_PATH."public\\".$sDestFile;
                     $export = ROOT_PATH."public\\".$pdf;

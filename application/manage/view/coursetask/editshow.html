@@ -295,7 +295,7 @@
                 html_media += '  <div class="form-group">\n' +
                     '                            <label for="mode" class="col-sm-2 control-label">验证题目</label>\n' +
                     '                            <div class="col-sm-10">\n' +
-                    '                                <select name="question" id="question" class="form-control">\n' +
+                    '                                <select name="question" id="question" class="form-control" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 20em;color:#6699ff;border:1px #ff8000 dashed;">\n' +
                     '                                    <option value="">--请选择--</option>\n' +
                     '                                    {volist name="verfiy" id="t"}\n' +
                     '                                    <option value="{$t.id}">{$t.stem}</option>\n' +
@@ -305,127 +305,162 @@
                     '                        </div>'
 
                 $('#isvideo').val(1);
+                $('#html_exam_media').html(html_media)
+                function cutOption(selectObj , length) {
+
+                    this.selectObj = selectObj;
+
+                    this.length = length;
+
+                }
+
+                cutOption.prototype.init = function() {
+
+                    this.options = this.selectObj.getElementsByTagName('option');
+                    for(i=0 , j=this.options.length ; i<j ; i++ )
+
+                    {
+
+                        text = this.options[i].firstChild.nodeValue;
+
+                        if(text.length>=this.length){
+                            this.options[i].innerHTML = text.substring(0,this.length) + '...';
+                        }
+
+                    }
+
+                }
+
+                obj = document.getElementById('question');
+
+                //想要几个字就改第二个参数;
+
+                var optionClass = new cutOption(obj,10);
+
+                optionClass.init();
             } else {
                 $('#isvideo').val(0);
                 $('#html_exam_media').html(html_media)
-                uploader = WebUploader.create({
-                    pick: '#picker',
-                    server: '{:url("upload")}?' + Math.random(),
-                    auto: true,
-                    chunked: true,
-                    swf: '__MANAGE_JS__Webuploader/Uploader.swf',
-                }).on('fileQueued', function (file) {
-                    $('#uploadmodel').show();
-                    $('#uploadmodel1').show();
-                    var start = +new Date();
-                    // console.log(file);
-                    // 返回的是 promise 对象
-                    this.md5File(file, 0, 1 * 1024 * 1024)
-
-                    // 处理完成后触发
-                        .then(function (ret) {
-                            // console.log('md5:', ret);
-                            // var end = +new Date();
-                        });
-                }).on('uploadSuccess', function (file, response) {
-                    console.log(response); //这里可以得到后台返回的数据
-                    var info = response.fileinfo;
-                    console.log(response.fileinfo);
-                    if (info != undefined) {
-                        if (info.duration) {
-                            $('#length').val(info.duration)
-                        } else {
-                            $('#length').val('')
-                        }
-                        $('#mediaSource').val(info.name)
-                        $('#type').val(info.type)
-                    } else {
-                        alert('上传出错');
-                    }
-                    $('#uploadmodel').hide();
-                    $('#uploadmodel1').hide();
-                    $('#prossa').css({'width':0,'height':'0px'}).text(0+'%');
-                }).on('uploadProgress', function (file, percentage) {
-                    console.log(percentage)
-                    var nums = parseInt(percentage * 100);
-                    $('#prossa').css({'width': percentage * 400, 'height': '30px'}).text(nums + '%');
-                });
-                uploader = WebUploader.create({
-                    pick: '#teachingplan',
-                    server: '{:url("upload")}?' + Math.random(),
-                    auto: true,
-                    chunked: true,
-                    swf: '__MANAGE_JS__Webuploader/Uploader.swf',
-                }).on('fileQueued', function (file) {
-                    $('#uploadmodel').show();
-                    $('#uploadmodel1').show();
-                    var start = +new Date();
-                    // console.log(file);
-                    // 返回的是 promise 对象
-                    this.md5File(file, 0, 1 * 1024 * 1024)
-
-                    // 处理完成后触发
-                        .then(function (ret) {
-                            // console.log('md5:', ret);
-                            // var end = +new Date();
-                        });
-                }).on('uploadSuccess', function (file, response) {
-                    console.log(response); //这里可以得到后台返回的数据
-                    var info = response.fileinfo;
-                    console.log(response.fileinfo);
-                    if (info != undefined) {
-
-                        $('#teachmedia').val(info.name)
-                    } else {
-                        alert('上传出错');
-                    }
-                    $('#uploadmodel').hide();
-                    $('#uploadmodel1').hide();
-                    $('#prossa').css({'width':0,'height':'0px'}).text(0+'%');
-                }).on('uploadProgress', function (file, percentage) {
-                    console.log(percentage)
-                    var nums = parseInt(percentage * 100);
-                    $('#prossa').css({'width': percentage * 400, 'height': '30px'}).text(nums + '%');
-                });
-                uploader = WebUploader.create({
-                    pick: '#courseware',
-                    server: '{:url("upload")}?' + Math.random(),
-                    auto: true,
-                    chunked: true,
-                    swf: '__MANAGE_JS__Webuploader/Uploader.swf',
-                }).on('fileQueued', function (file) {
-                    $('#uploadmodel').show();
-                    $('#uploadmodel1').show();
-                    var start = +new Date();
-                    // console.log(file);
-                    // 返回的是 promise 对象
-                    this.md5File(file, 0, 1 * 1024 * 1024)
-
-                    // 处理完成后触发
-                        .then(function (ret) {
-                            // console.log('md5:', ret);
-                            // var end = +new Date();
-                        });
-                }).on('uploadSuccess', function (file, response) {
-                    console.log(response); //这里可以得到后台返回的数据
-                    var info = response.fileinfo;
-                    console.log(response.fileinfo);
-                    if (info != undefined) {
-
-                        $('#coursemedia').val(info.name)
-                    } else {
-                        alert('上传出错');
-                    }
-                    $('#uploadmodel').hide();
-                    $('#uploadmodel1').hide();
-                    $('#prossa').css({'width':0,'height':'0px'}).text(0+'%');
-                }).on('uploadProgress', function (file, percentage) {
-                    console.log(percentage)
-                    var nums = parseInt(percentage * 100);
-                    $('#prossa').css({'width': percentage * 400, 'height': '30px'}).text(nums + '%');
-                });
             }
+
+            uploader = WebUploader.create({
+                pick: '#picker',
+                server: '{:url("upload")}?' + Math.random(),
+                auto: true,
+                chunked: true,
+                swf: '__MANAGE_JS__Webuploader/Uploader.swf',
+            }).on('fileQueued', function (file) {
+                $('#uploadmodel').show();
+                $('#uploadmodel1').show();
+                var start = +new Date();
+                // console.log(file);
+                // 返回的是 promise 对象
+                this.md5File(file, 0, 1 * 1024 * 1024)
+
+                // 处理完成后触发
+                    .then(function (ret) {
+                        // console.log('md5:', ret);
+                        // var end = +new Date();
+                    });
+            }).on('uploadSuccess', function (file, response) {
+                console.log(response); //这里可以得到后台返回的数据
+                var info = response.fileinfo;
+                console.log(response.fileinfo);
+                if (info != undefined) {
+                    if (info.duration) {
+                        $('#length').val(info.duration)
+                    } else {
+                        $('#length').val('')
+                    }
+                    $('#mediaSource').val(info.name)
+                    $('#type').val(info.type)
+                } else {
+                    alert('上传出错');
+                }
+                $('#uploadmodel').hide();
+                $('#uploadmodel1').hide();
+                $('#prossa').css({'width':0,'height':'0px'}).text(0+'%');
+            }).on('uploadProgress', function (file, percentage) {
+                console.log(percentage)
+                var nums = parseInt(percentage * 100);
+                $('#prossa').css({'width': percentage * 400, 'height': '30px'}).text(nums + '%');
+            });
+            uploader = WebUploader.create({
+                pick: '#teachingplan',
+                server: '{:url("upload")}?' + Math.random(),
+                auto: true,
+                chunked: true,
+                swf: '__MANAGE_JS__Webuploader/Uploader.swf',
+            }).on('fileQueued', function (file) {
+                $('#uploadmodel').show();
+                $('#uploadmodel1').show();
+                var start = +new Date();
+                // console.log(file);
+                // 返回的是 promise 对象
+                this.md5File(file, 0, 1 * 1024 * 1024)
+
+                // 处理完成后触发
+                    .then(function (ret) {
+                        // console.log('md5:', ret);
+                        // var end = +new Date();
+                    });
+            }).on('uploadSuccess', function (file, response) {
+                console.log(response); //这里可以得到后台返回的数据
+                var info = response.fileinfo;
+                console.log(response.fileinfo);
+                if (info != undefined) {
+
+                    $('#teachmedia').val(info.name)
+                } else {
+                    alert('上传出错');
+                }
+                $('#uploadmodel').hide();
+                $('#uploadmodel1').hide();
+                $('#prossa').css({'width':0,'height':'0px'}).text(0+'%');
+            }).on('uploadProgress', function (file, percentage) {
+                console.log(percentage)
+                var nums = parseInt(percentage * 100);
+                $('#prossa').css({'width': percentage * 400, 'height': '30px'}).text(nums + '%');
+            });
+            uploader = WebUploader.create({
+                pick: '#courseware',
+                server: '{:url("upload")}?' + Math.random(),
+                auto: true,
+                chunked: true,
+                swf: '__MANAGE_JS__Webuploader/Uploader.swf',
+            }).on('fileQueued', function (file) {
+                $('#uploadmodel').show();
+                $('#uploadmodel1').show();
+                var start = +new Date();
+                // console.log(file);
+                // 返回的是 promise 对象
+                this.md5File(file, 0, 1 * 1024 * 1024)
+
+                // 处理完成后触发
+                    .then(function (ret) {
+                        // console.log('md5:', ret);
+                        // var end = +new Date();
+                    });
+            }).on('uploadSuccess', function (file, response) {
+                console.log(response); //这里可以得到后台返回的数据
+                var info = response.fileinfo;
+                console.log(response.fileinfo);
+                if (info != undefined) {
+
+                    $('#coursemedia').val(info.name)
+                } else {
+                    alert('上传出错');
+                }
+                $('#uploadmodel').hide();
+                $('#uploadmodel1').hide();
+                $('#prossa').css({'width':0,'height':'0px'}).text(0+'%');
+            }).on('uploadProgress', function (file, percentage) {
+                console.log(percentage)
+                var nums = parseInt(percentage * 100);
+                $('#prossa').css({'width': percentage * 400, 'height': '30px'}).text(nums + '%');
+            });
         }
+
     });
 
 
@@ -573,5 +608,44 @@
         });
     }
 </script>
+{if condition="$a['mode'] eq 2"}
+<script type="text/javascript">
+
+    function cutOption(selectObj , length) {
+
+        this.selectObj = selectObj;
+
+        this.length = length;
+
+    }
+
+    cutOption.prototype.init = function() {
+
+        this.options = this.selectObj.getElementsByTagName('option');
+
+        for(i=0 , j=this.options.length ; i<j ; i++ )
+
+        {
+
+            text = this.options[i].firstChild.nodeValue;
+
+            if(text.length>=this.length){
+                this.options[i].innerHTML = text.substring(0,this.length) + '...';
+            }
+
+        }
+
+    }
+
+    obj = document.getElementById('question');
+
+    //想要几个字就改第二个参数;
+
+    var optionClass = new cutOption(obj , 10);
+
+    optionClass.init();
+
+</script>
+{/if}
 </body>
 </html>
