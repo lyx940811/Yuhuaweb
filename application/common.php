@@ -319,3 +319,9 @@
 
     }
 
+    function getBindex($index)
+    {
+        $data = ['A','B','C','D','E','F'];
+        return $data[$index];
+    }
+

@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 
+use app\index\logic\Question;
 use app\index\model\AskAnswer;
 use app\index\model\Asklist;
 use app\index\model\CourseNote;
@@ -626,6 +627,15 @@ class Course extends Home
 
         $this->assign('task',$task);
 
+
+        if($question = \app\index\model\Question::get($task['questionID'])){
+            $question['metas'] = json_decode($question['metas'],true);
+            $question['metas'] = $question['metas']['choices'];
+            $question['answer'] = json_decode($question['answer'],true);
+            $question['answer'] = $question['answer'][0];
+            $this->assign('question',$question);
+        }
+
         //课程目录
         $video_type = ['mp4','url'];
         $courseid = $this->course['id'];
@@ -765,15 +775,28 @@ class Course extends Home
     public function downtaskfile()
     {
         $taskid = $this->request->param('taskid');
+        $type = $this->request->param('type');
         $task = CourseTask::get($taskid);
+        switch ($type){
+            case 'teachingPlan':
+                //教案
+                $file_path = ".\\".str_replace("/","\\",$task['teachingplan']);
+                break;
+            case 'courseWare':
+                //课件
+                $file_path = ".\\".str_replace("/","\\",$task['courseware']);
+                break;
+            default:
+                $file_path = ".\\".str_replace("/","\\",$task['mediaSource']);
+        }
 
-        $file_path = ".\\".str_replace("/","\\",$task['mediaSource']);;
+        $file_path_forname = $file_path;
         $file_path = iconv("utf-8","gb2312",$file_path);
 
         if(!file_exists($file_path)){
             $this->error('文件不存在');
         }
-        if($this->user){
+        if($this->user&&$taskid){
             $data = [
                 'userid'    =>  $this->user->id,
                 'taskid'  =>  $taskid,
@@ -791,7 +814,7 @@ class Course extends Home
 
 //        $filelastname = explode('.',$task['mediaSource']);
 //        $filename = time().".".$filelastname[1];
-        $filename = preg_replace('/^.+[\\\\\\/]/', '', $task['mediaSource']);
+        $filename = preg_replace('/^.+[\\\\\\/]/', '', $file_path_forname);
 
         //下载文件需要用到的头
         Header("Content-type: application/octet-stream");
