@@ -25,4 +25,9 @@ class CourseTask extends ThinkModel
     {
         return $this->hasOne('CourseChapter','id','chapterid');
     }
+
+    public function question()
+    {
+        return $this->hasOne('Question','id','questionID');
+    }
 }

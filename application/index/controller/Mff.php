@@ -109,18 +109,18 @@ class Mff extends Controller
 
     public function sss()
     {
-//        $pic = Db::name('course')->column('smallPicture');
-//
-//        foreach ($pic as &$p){
-//            if(!empty($p)){
-//                $p = ROOT_PATH.'public\\'.$p;
-//                if(file_exists($p)){
-//                    myImageResize($p,268,160);
-//                }
-//            }
-//
-//        }
-        myImageResize('C:\Users\Mayueli\Desktop\5aa53690b4093.png',480,270);
+        $pic = Db::name('course')->column('smallPicture');
+
+        foreach ($pic as &$p){
+            if(!empty($p)){
+                $p = ROOT_PATH.'public\\'.$p;
+                if(file_exists($p)){
+                    myImageResize($p,480,270);
+                }
+            }
+
+        }
+//        myImageResize('path \ to \ file ',480,270);
         echo 'done';
 
     }

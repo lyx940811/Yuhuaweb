@@ -27,6 +27,24 @@
 
     </style>
     {/notpresent}
+
+    <style type="text/css">
+        .marks{position: absolute; top:0; left: 0; background: rgba(0,0,0,0.5); width: 100%; height: 100%; z-index: 99;}
+        .tmBox{width: 566px; height: auto; position: absolute; left: 50%; top: 40%; margin-left: -283px; margin-top: -171px; background: #fff; z-index: 999; border-radius: 5px; padding-bottom: 52px;}
+        .tmBox1{width: 512px;height: auto; margin-top: 48px;padding-left:54px; font-size: 16px; color: #333333; padding-bottom: 20px;}
+        .tmBox2{width: 514px; height: auto; padding-left: 56px; padding-bottom: 10px;}
+        .tmBox2 li{width: 100%; height: auto; margin-bottom: 20px;font-size: 16px; color: #333333; overflow: hidden;}
+        .tmBox2 li i{width: 18px;height: 19px; background: url(__IMG__ty1.png);float: left; margin-top: 2px;}
+        .tmBox2 li span{ float: left; width: 430px; height: auto;}
+        .tmBox2 li i.checks{background: url(__IMG__ty2.png);}
+        .tmBox2 li span{margin-left: 5px;}
+        .tmBox3{width: 88px; height: 38px; border: 1px solid #49bb66; font-size: 14px; color: #49bb66; margin: 0 auto; line-height: 38px; text-align: center; border-radius: 5px; cursor: pointer;}
+        .duia{width: 218px;height: 44px; border-radius: 10px; background: #e9ebea; position: absolute; top: 50%; left: 190px; font-size: 16px; color: #49bb66; line-height: 44px;}
+        .duia i{float: left; width:19px; height:19px; background: url(__IMG__rights.png); margin-top: 12px; margin-left: 16px; margin-right: 6px;}
+        .errs{width: 218px;height: 44px; border-radius: 10px; background: #e9ebea; position: absolute; top: 50%; left: 190px; font-size: 16px; color: #e42b39; line-height: 44px;}
+        .errs i{float: left; width:19px; height:19px; background: url(__IMG__errs.png); margin-top: 12px; margin-left: 16px; margin-right: 6px;}
+    </style>
+
 </head>
 <body class="es-main-default es-nav-default ">
   <div id="js-hidden-data">
@@ -38,6 +56,42 @@
   </div>
 
   <div class="task-dashboard-page js-task-dashboard-page">
+    {notpresent name="is_done"}
+    {present name="question"}
+      <div class="marks" style="display: none;">
+          <div class="tmBox">
+
+              <div class="duia" style="display: none;">
+                  <i></i><span>回答正确，继续学习吧</span>
+              </div>
+
+              <div class="errs" style="display: none;">
+                  <i></i><span>回答错误，请继续答题</span>
+              </div>
+
+              <div class="tmBox1">{$question.stem}</div>
+              <ul class="tmBox2">
+                  {volist name="question.metas" id="qm" key="k"}
+                  <li>
+                      <i answer="{$k-1}"></i><span>{$k-1|getBindex}.{$qm}</span>
+                  </li>
+                  {/volist}
+                  <!--<li>-->
+                      <!--<i></i><span>B.空气</span>-->
+                  <!--</li>-->
+                  <!--<li>-->
+                      <!--<i></i><span>C.空气</span>-->
+                  <!--</li>-->
+                  <!--<li>-->
+                      <!--<i></i><span>D.空气</span>-->
+                  <!--</li>-->
+              </ul>
+              <div class="tmBox3">确定</div>
+          </div>
+      </div>
+      {/present}
+      {/notpresent}
+
     <div class="dashboard-content" id="dashboard-content" style="right: 35px;">
       <div class="dashboard-header">
         <a class="back-link" href="javascript:history.back();">
@@ -46,6 +100,7 @@
         {$task->chapter->title}：{$task->title}
       </div>
       <div class="dashboard-body">
+
             {if condition="$task['type'] eq 'mp4' or $task['type'] eq 'url' or $task['type'] eq 'flv'"}
             <script src="__JS__video.js"></script>
             <script>
@@ -69,16 +124,43 @@
 //                        console.log(111)
 //                    });
                     var myPlayer = videojs('example_video_1',{});
+                    var n = 0;
                     videojs("example_video_1").ready(function(){
                         var myPlayer = this;
                         myPlayer.on('timeupdate', function () {
                             //当前播放时间点
                             var watchTime = myPlayer.currentTime(); //获取当前播放时间点
                             var videoTime = myPlayer.duration(); //获取视频总时长
+                            var stopTime = parseInt(videoTime/2);
                             var thistaskid = {$task->id};
                             var ratio = watchTime/videoTime;
                             watchTime = Number(watchTime);
                             ratio = ratio.toFixed(2)*100;
+                            {notpresent name="is_done"}
+                            {present name="question"}
+                            if(parseInt(watchTime/videoTime*100) >= 50){
+                                if(n==0){
+                                    myPlayer.pause();
+                                    $('.marks').show();
+                                    $('.tmBox3').click(function(){
+                                        var userAnswer = $('i.checks').attr('answer');
+                                        var answer = {$question.answer};
+                                        if(userAnswer==answer){
+                                            $('.duia').show();
+                                            $('.duia').fadeOut(2000);
+                                            $('.marks').fadeOut(2000);
+                                            myPlayer.play();
+                                            n = 1;
+                                        }else{
+                                            $('.errs').show();
+                                            $('.errs').fadeOut(2000);
+                                        }
+                                    });
+
+                                }
+                            }
+                            {/present}
+                            {/notpresent}
 
                             window.onbeforeunload = function(e){
                             $.post(
@@ -184,111 +266,41 @@
             <div  id="class-list" role="tabpanel" class="innerbox task-list-pane tab-pane active media topic-item" style="height:100%;overflow-y:scroll">
                 <div class="task-list-pane-body js-sidebar-pane-body" >
                     <ul class="task-list task-show" >
-                        {volist name="tasklist" id="thetask"}
-
-                        {volist name="thetask.task" id="tl"}
-                        {if condition="$tl['type'] eq 'mp4' or $tl['type'] eq 'url' or $tl['type'] eq 'doc' or $tl['type'] eq 'docx' or $tl['type'] eq 'xls' or $tl['type'] eq 'xlsx' or $tl['type'] eq 'ppt' or $tl['type'] eq 'pptx' or $tl['type'] eq 'pdf'"}
-                        {present name="tl.plan"}
-                        {switch name="tl.plan" }
-                        {case value="100"}
-                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
-                            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
-                            <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">{$thetask.title}: {$tl.title}</a>
-
-                            <span class="right-menu">
-                                {notempty name="tl.length"}
-                                {$tl.length|video_time_trans}
-                                {/notempty}
-                                <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
-                            </span>
-                        </li>
-                        {/case}
-                        {default /}
-                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                        {notempty name="task.courseware"}
+                        <li class="task-item task-content  mouse-control" taskid="13">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title">
-                                {$thetask.title}: {$tl.title}
-                            </a>
-                            <span class="right-menu">
-                                {notempty name="tl.length"}
-                                {$tl.length|video_time_trans}
-                                {/notempty}
-                                    <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
-                            </span>
-                        </li>
-                        {/switch}
-                        {else /}
-                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
-                            <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title">
-                                {$thetask.title}: {$tl.title}
-                            </a>
-                            <span class="right-menu">23:10
-                                    <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
-                            </span>
-                        </li>
-                        {/present}
-                        {elseif condition="$tl['type'] eq 'test' or $tl['type'] eq 'exam' or $tl['type'] eq 'plan'"}
-                        {present name="user"}
-                        {switch name="tl.plan" }
-                        {case value="100"}
-                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
-                            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
-                            <a class="title" href="{:url('index/examination/examresults',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">{$thetask.title}: {$tl.title}</a>
-                            <span class="right-menu"></span>
-                        </li>
-                        {/case}
-                        {default /}
-                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
-                            <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title">
-                                {$thetask.title}: {$tl.title}
-                            </a>
-                            <span class="right-menu"></span>
-                        </li>
-                        {/switch}
-                        {else /}
-                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
-                            <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title">
-                                {$thetask.title}: {$tl.title}
-                            </a>
-                            <span class="right-menu"></span>
-                        </li>
-                        {/present}
-
-                        {else /}
-                        {present name="tl.plan"}
-                        {switch name="tl.plan" }
-                        {case value="100"}
-                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
-                            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
-                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$course['id'],'taskid'=>$tl['taskid']))}">{$thetask.title}: {$tl.title}</a>
-                            <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
-                        </li>
-                        {/case}
-                        {default /}
-                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
-                            <i class="es-icon es-icon-undone-check left-menu"></i>
-                            <a class="title">
-                                {$thetask.title}: {$tl.title}
+                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$task['courseId'],'taskid'=>$task['id'],'type'=>'courseWare'))}">
+                                课件下载
                             </a>
                             <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
                         </li>
-                        {/switch}
                         {else /}
-                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
-                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                        <li class="task-item task-content  mouse-control" taskid="13">
+
                             <a class="title">
-                                {$thetask.title}: {$tl.title}
+                                暂无课件下载
+                            </a>
+                            <span class="right-menu"></span>
+                        </li>
+                        {/notempty}
+
+                        {notempty name="task.teachingplan"}
+                        <li class="task-item task-content  mouse-control" taskid="13">
+                            <i class="es-icon es-icon-undone-check left-menu"></i>
+                            <a class="title" href="{:url('index/course/downtaskfile',array('course'=>$task['courseId'],'taskid'=>$task['id'],'type'=>'teachingPlan'))}">
+                                教案下载
                             </a>
                             <span class="right-menu"><i class="es-icon es-icon es-icon-filedownload ml5" data-toggle="tooltip" data-placement="top" title="下载资料任务"></i></span>
                         </li>
-                        {/present}
-                        {/if}
-                        {/volist}
+                        {else /}
+                        <li class="task-item task-content  mouse-control" taskid="13">
 
-                        {/volist}
+                            <a class="title">
+                                暂无教案下载
+                            </a>
+                            <span class="right-menu"></span>
+                        </li>
+                        {/notempty}
 
 
                     </ul>
@@ -685,6 +697,13 @@
         //文件下载前保存数据
 
     });
+
+    $('.tmBox2 li i').click(function () {
+        $(this).addClass('checks').parent('li').siblings('li').find('i').removeClass('checks')
+    })
+
+
+
 </script>
 </body>
 </html>
