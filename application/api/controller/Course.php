@@ -423,16 +423,20 @@ class Course extends Home
         if($course['type']!='url'){
             $course['mediaSource'] = $this->request->domain()."/".$course['mediaSource'];
         }
-        $course['teachingPlan'] = $this->request->domain()."/".$course['teachingPlan'];
-        $course['courseWare'] = $this->request->domain()."/".$course['courseWare'];
-        if($course['question'] = Db::name('question')->field('type,stem,analysis,answer,metas')->find($course['questionID'])){
-            $course['question']['metas']  = json_decode($course['question']['metas'],true);
-            $course['question']['metas']  = $course['question']['metas']['choices'];
-            $course['question']['answer'] = json_decode($course['question']['answer'],true);
-            $course['question']['answer'] = $course['question']['answer'][0];
+        !empty($course['teachingPlan'])?$course['teachingPlan'] = $this->request->domain()."/".$course['teachingPlan']:$course['teachingPlan'];
+        !empty($course['courseWare'])?$course['courseWare'] = $this->request->domain()."/".$course['courseWare']:$course['courseWare'];
+
+        if(!empty($course['questionID'])){
+            if($course['question'] = Db::name('question')->field('type,stem,analysis,answer,metas')->find($course['questionID'])){
+                $course['question']['metas']  = json_decode($course['question']['metas'],true);
+                $course['question']['metas']  = $course['question']['metas']['choices'];
+                $course['question']['answer'] = json_decode($course['question']['answer'],true);
+                $course['question']['answer'] = $course['question']['answer'][0];
+            }
         }else{
-            $course['question'] = [];
+            $course['question'] = (object)[];
         }
+
         unset($course['questionID']);
 
         return json_data(0,$this->codeMessage[0],$course);
@@ -954,9 +958,9 @@ class Course extends Home
             $notice = Db::name('course_notice')
                 ->where('courseid',$courseid)
                 ->where('status',2)
-                ->order('createtime desc')
+                ->order('createdtime desc')
                 ->limit(1)
-                ->field('content,createtime as endtime,title')
+                ->field('content,createdtime as endtime,title')
                 ->select();
             if($notice){
                 $notice = $notice[0];

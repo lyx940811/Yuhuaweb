@@ -844,6 +844,10 @@ class User extends Controller
      * 【v1.3 api】
      */
 
+    /**
+     * 1.3之后的版本【我的学习-学习中】
+     * @return array
+     */
     public function mystudy_v13()
     {
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
@@ -892,7 +896,10 @@ class User extends Controller
 
     }
 
-
+    /**
+     * 1.3之后的版本【我的学习-已学完】
+     * @return array
+     */
     public function donestudy_v13()
     {
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
@@ -940,7 +947,10 @@ class User extends Controller
         return json_data(0,$this->codeMessage[0],$finalCourse);
     }
 
-
+    /**
+     * 1.3之后的版本【我的收藏】
+     * @return array
+     */
     public function getcollect_v13(){
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $finalCourse = [];
@@ -987,6 +997,10 @@ class User extends Controller
 
     }
 
+    /**
+     * app观看完成后调用来记录观看动作
+     * @return array
+     */
     public function endwatch_v13()
     {
         if(!CourseTask::get($this->data['taskid'])){
@@ -1038,7 +1052,10 @@ class User extends Controller
     }
 
 
-
+    /**
+     * 用户登陆记录埋点
+     * @return array
+     */
     public function recordtime()
     {
         switch ($this->data['type']){
@@ -1223,7 +1240,7 @@ class User extends Controller
     }
 
     /**
-     * 1.6
+     * 1.6版本-【我的公告】
      */
     public function mynotice_v16()
     {
