@@ -11,7 +11,7 @@ use app\index\model\TestpaperItem;
 use app\index\model\Course;
 
 /**
- * 迁移至Teacher
+ * -----------------------迁移至Teacher
  * Class Testpaper
  * @package app\index\controller
  */

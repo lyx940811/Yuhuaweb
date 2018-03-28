@@ -92,22 +92,6 @@ class Home extends Controller
         }
     }
 
-    public function createuser(){
-        $data = [
-            'mobile'    =>  $this->data['mobile'],
-            'password'  =>  password_hash($this->data['password'],PASSWORD_DEFAULT),
-            'status'    =>  1,
-            'type'      =>  3,
-        ];
-        $user = UserModel::create($data);
-        if($user){
-            $profile = [
-                'userid'    =>  $user->id,
-            ];
-            UserProfile::create($profile);
-            return json_data(0,$this->codeMessage[0],'');
-        }
-    }
 
 
 

@@ -55,7 +55,7 @@ class Mff extends Controller
 
             }else{
                 //不能播放的MP4，需要转码
-                $newurl = '';
+                $newurl = 'path \ to \ file';
                 $this->transToH264($url,$newurl);
             }
         }

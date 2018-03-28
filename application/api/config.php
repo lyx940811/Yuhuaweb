@@ -16,11 +16,6 @@ return[
         '__JSS__' => '/static/index/jss/',
     ],
 
-    'alidayu'       => [
-        'app_key'    => '23953147',
-        'app_secret' => '3904c9cae716283181c0465bb0df45c4',
-        // 'sandbox'    => true,  // 是否为沙箱环境，默认false
-    ],
 
 
     'apicode_message'          =>[
