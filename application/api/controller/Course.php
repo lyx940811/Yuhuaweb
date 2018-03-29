@@ -425,6 +425,8 @@ class Course extends Home
         }
         !empty($course['teachingPlan'])?$course['teachingPlan'] = $this->request->domain()."/".$course['teachingPlan']:$course['teachingPlan'];
         !empty($course['courseWare'])?$course['courseWare'] = $this->request->domain()."/".$course['courseWare']:$course['courseWare'];
+        $course['teachingPlanName'] = preg_replace('/^.+[\\\\\\/]/', '', $course['teachingPlan']);
+        $course['courseWareName'] = preg_replace('/^.+[\\\\\\/]/', '', $course['courseWare']);
 
         if(!empty($course['questionID'])){
             if($course['question'] = Db::name('question')->field('type,stem,analysis,answer,metas')->find($course['questionID'])){
