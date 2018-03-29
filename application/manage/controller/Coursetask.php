@@ -96,6 +96,11 @@ class Coursetask extends Base{
         }
         $role_table = Db::name('course_task');
 
+        if($type=='pdf'){
+            $mediaSource=explode($info['mediaSource'],'.');
+            $info['mediaSource']=$mediaSource[0].'.pdf';
+            $type=$mediaSource[1];
+        }
         $data = [
             'title' => $info['title'],
             'chapterid'=> $info['chapterid'],
