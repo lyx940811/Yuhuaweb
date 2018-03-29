@@ -214,7 +214,7 @@ class File extends Controller
             @unlink(iconv("utf-8","gb2312",$p_sFilenamePath));
 
         }
-        send_email('312850391@qq.com','success',$sDestFile);
+//        send_email('312850391@qq.com','success',$sDestFile);
 
 
 
