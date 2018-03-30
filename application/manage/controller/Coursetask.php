@@ -34,7 +34,18 @@ class Coursetask extends Base{
             ->where($where)
             ->order('a.id desc')
             ->paginate(20,false,['query'=>request()->get()]);
+        $newlist=[];
+        foreach($list as $key=>$value){
+            $newlist[$key]=$value;
+            $array=['mp4','flv','url','plan','exam','test'];
+            if(!empty($value['mediaSource']) && !in_array($value['type'],$array)){
+                $mediaSource=explode('.',$value['mediaSource']);
+                if($mediaSource[1] == 'pdf'){
+                    $newlist[$key]['mediaSource']=$mediaSource[0].'.'.$value['type'];
+                }
+            }
 
+        }
         $course = Db::table('course')->field('id,title')->where('id',$id)->find();
 
         $chapter = Db::table('course_chapter')->field('id,title')->where('courseid',$id)->select();
@@ -49,7 +60,7 @@ class Coursetask extends Base{
         $verfiy=DB::table('question')->where('courseId',$id)->where('verification',1)->select();
         $this->assign('testpaper',$testpaper);
         $this->assign('verfiy',$verfiy);
-        $this->assign('list',$list);
+        $this->assign('list',$newlist);
         $this->assign('chapter',$chapter);
         $this->assign('taskmode',$taskmode);
         $this->assign('tit',$course['title']);
@@ -97,7 +108,7 @@ class Coursetask extends Base{
         $role_table = Db::name('course_task');
 
         if($type=='pdf'){
-            $mediaSource=explode($info['mediaSource'],'.');
+            $mediaSource=explode('.',$info['mediaSource']);
             $info['mediaSource']=$mediaSource[0].'.pdf';
             $type=$mediaSource[1];
         }
@@ -178,6 +189,11 @@ class Coursetask extends Base{
         if(!$have){//如果没这个code
             return ['error'=>'没有此任务','code'=>'300'];
         }
+        if($type=='pdf'){
+            $mediaSource=explode('.',$info['mediaSource']);
+            $info['mediaSource']=$mediaSource[0].'.pdf';
+            $type=$mediaSource[1];
+        }
         $data = [
             'title' => $info['title'],
             'chapterid'=> $info['chapterid'],
@@ -215,7 +231,13 @@ class Coursetask extends Base{
         $cid = request()->get('cid')+0;
 
         $info = Db::table('course_task')->where('id',$id)->find();
-
+        $array=['mp4','flv','url','plan','exam','test'];
+        if(!empty($info['mediaSource']) && !in_array($info['type'],$array)){
+            $mediaSource=explode('.',$info['mediaSource']);
+            if($mediaSource[1] == 'pdf'){
+                $info['mediaSource']=$mediaSource[0].'.'.$info['type'];
+            }
+        }
         $taskmode = Db::table('task_mode')->field('id,name')->select();
         $chapter = Db::table('course_chapter')->field('id,title')->where('courseid',$cid)->select();
 //        $testpaper = Db::table('testpaper')->field('id,name')->where('courseid',$cid)->select();
