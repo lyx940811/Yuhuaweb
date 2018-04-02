@@ -11,6 +11,7 @@ use app\index\model\StudyResult;
 use think\Exception;
 use think\Loader;
 use think\Config;
+use think\cache\driver\Redis;
 use app\index\model\Course as CourseModel;
 use app\index\model\User as UserModel;
 use app\index\model\CourseFile;

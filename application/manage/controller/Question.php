@@ -171,7 +171,7 @@ class Question extends Base{
 
         $ok = $role_table->where('id',$id)->update($data);
 
-        if($ok){
+        if(is_numeric($ok)){
             return ['info'=>'修改成功','code'=>'000'];
         }else{
             return ['error'=>'修改失败','code'=>'300'];
