@@ -615,7 +615,19 @@ class Course extends Home
     public function taskdetail()
     {
         $taskid = $this->request->param('taskid');
+        $type = $this->request->param('type');
         $task = CourseTask::get($taskid);
+        empty($this->request->param('type'))?$type="course":$type=$this->request->param('type');
+//        $media='';
+        if($type != 'course' && $task['type']=='mp4'){
+            $array=['pdf','doc','docx','ppt','pptx','xls','xlsx'];
+            $courseorteach=explode('.',$task[$type]);
+            if(in_array($courseorteach[1],$array)){
+                $task['mediaSource']=$courseorteach[0].'.pdf';
+            }
+        }
+//        $this->assign('media',$media);
+        $this->assign('type',$type);
         if($task['type']!='url'&&!in_array($task['type'],['pdf','doc','docx','ppt','pptx','xls','xlsx'])){
             $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
         }
