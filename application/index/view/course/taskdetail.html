@@ -323,20 +323,7 @@
                         {if condition="$tl['type'] eq 'mp4' or $tl['type'] eq 'url' or $tl['type'] eq 'doc' or $tl['type'] eq 'docx' or $tl['type'] eq 'xls' or $tl['type'] eq 'xlsx' or $tl['type'] eq 'ppt' or $tl['type'] eq 'pptx' or $tl['type'] eq 'pdf' or $tl['type'] eq 'pptx'"}
                         {present name="tl.plan"}
                         {switch name="tl.plan" }
-                        {case value="100"}
-                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
-                            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
-                            <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid'],'type'=>'course'))}">{$thetask.title}: {$tl.title}</a>
-
-                            <span class="right-menu">
-                                {notempty name="tl.length"}
-                                {$tl.length|video_time_trans}
-                                {/notempty}
-                                <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
-                            </span>
-                        </li>
-                        {/case}
-                        {default /}
+                        {case value="0"}
                         <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
                             <i class="es-icon es-icon-undone-check left-menu"></i>
                             <a class="title">
@@ -347,6 +334,19 @@
                                 {$tl.length|video_time_trans}
                                 {/notempty}
                                     <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
+                            </span>
+                        </li>
+                        {/case}
+                        {default /}
+                        <li class="task-item task-content  mouse-control" taskid="{$tl.taskid}">
+                            <i class="es-icon es-icon-iccheckcircleblack24px color-primary left-menu"></i>
+                            <a class="title" href="{:url('index/course/taskdetail',array('course'=>$course['id'],'taskid'=>$tl['taskid'],'type'=>'course'))}">{$thetask.title}: {$tl.title}</a>
+
+                            <span class="right-menu">
+                                {notempty name="tl.length"}
+                                {$tl.length|video_time_trans}
+                                {/notempty}
+                                <i class="es-icon es-icon es-icon-videoclass ml5" data-toggle="tooltip" data-placement="top" title="视频任务"></i>
                             </span>
                         </li>
                         {/switch}
