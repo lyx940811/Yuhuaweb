@@ -61,7 +61,8 @@
     <div class="pull-right">
         {php}
         if(check($uid,'/manage/userprofile/add')){
-            echo '<a class="btn btn-primary" onclick="clearInput()" data-toggle="modal" data-target="#myModal">添加学生</a>';
+            echo '<a class="btn btn-primary" onclick="clearInput()" data-toggle="modal" data-target="#myModal">添加学生</a>&nbsp;&nbsp;';
+            echo '<a class="btn btn-primary" data-toggle="modal" data-target="#myModaldao">导入</a>';
         }
         {/php}
 
@@ -121,6 +122,38 @@
         {$page}
     </ul>
     {include file="userprofile/add"/}
+    <!--导入-->
+    <div class="modal fade" id="myModaldao" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal-dialog"  style="width:890px">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">添加学生</h4>
+                </div>
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+                    <form class="form-horizontal" id="include">
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-inline">学生基本信息</label>
+                            <div class="col-sm-4" id="import">
+                                <input type="file" id="fileupload" value="" onchange="importchange(0);">
+                                <input type="text" name="courseware" id="coursemedia" class="form-control" placeholder="文件资源">
+                            </div>
+                        </div>
+                        <!-- 模态框底部 -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" onclick="dopost('add',0);">添加</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--导入结束-->
     <!--删除专业提示-->
     <div class="modal fade" id="myModal2">
         <div class="modal-dialog">
@@ -143,11 +176,56 @@
         </div>
     </div>
     <!--删除专业提示结束-->
-
-
 </div>
 {include file='manage/bottom'}
+<script type="text/javascript" src="__MANAGE_JS__Webuploader/webuploader.js"></script>
 <script type="text/javascript" src="__MANAGE_JS__datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+    function importchange(id) {
+        // FormData对象，来发送二进制文件。
+        var formdata = new FormData();
+
+        // 将文件追加到 formdata对象中。
+        formdata.append("fileupload",document.getElementById('fileupload').files[0]);
+        $.ajax({
+            type: "POST",
+            url: "{:url('import')}?id="+id,
+            data:formdata,
+            /**
+             * 必须false才会避开jQuery对 formdata 的默认处理
+             * XMLHttpRequest会对 formdata 进行正确的处理
+             */
+            processData: false,
+            // 告诉jQuery不要去设置Content-Type请求头
+            contentType: false,
+            dataType: "json",
+            beforeSend:function () {
+                alert('正在上传中...')
+            }, //发送请求
+            success: function(data){
+                if(typeof(data.data)!= "undefined"){
+                    //120base里无权限
+                    if(data.data.code==120){
+                        alert(data.msg)
+                        return;
+                    }
+
+                }
+                if(data.code=='000'){
+                    $('#pic'+id).val(data.path)
+                    $('#showinfoPic'+id).html('<img class="img-rounded" src="/'+data.path+'" width="100%"/>');
+                    alert('上传成功');
+                }
+
+            },
+            error: function(jqXHR){
+                alert("发生错误：" + jqXHR.status);
+            },
+        });
+
+    }
+
+</script>
 <script type="text/javascript">
     $(".form-time").datetimepicker({
         weekStart: 1,

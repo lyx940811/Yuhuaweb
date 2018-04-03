@@ -72,12 +72,21 @@
 
               <div class="tmBox1">{$question.stem}</div>
               <ul class="tmBox2">
+                  {if condition="$question['type'] eq 'single_choice'"}
                   {volist name="question.metas" id="qm" key="k"}
                   <li>
                       <i answer="{$k-1}"></i><span>{$k-1|getBindex}.{$qm}</span>
                   </li>
                   {/volist}
-                  <!--<li>-->
+                  {else}
+                    <li>
+                        <i answer="0"></i><span>正确</span>
+                    </li>
+                    <li>
+                        <i answer="1"></i><span>错误</span>
+                    </li>
+                  {/if}
+                      <!--<li>-->
                       <!--<i></i><span>B.空气</span>-->
                   <!--</li>-->
                   <!--<li>-->
