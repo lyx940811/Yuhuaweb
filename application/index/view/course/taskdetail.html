@@ -53,6 +53,7 @@
     <input type="hidden" name="task-result-status" value="start">
     <input type="hidden" name="mode" value="learn">
     <input type="hidden" name="plugins_url" value="/course/127/task/747/show/plugins">
+    <input type="hidden" id="watchtime" value="{$watchtime}">
   </div>
 
   <div class="task-dashboard-page js-task-dashboard-page">
@@ -162,7 +163,7 @@
                             {/notpresent}
 
                             window.onbeforeunload = function(e){
-                            $.post(
+                            $.get(
                                 "{:url('index/user/endwatch_v13')}",
                                 {'watchTime':watchTime,'taskid':thistaskid,'ratio':ratio},
                                 function(data){
@@ -176,7 +177,8 @@
                             };
 
                         });
-//                        myPlayer.currentTime(10); // 设置播放时间点
+                        var time=$('#watchtime').val();
+                       myPlayer.currentTime(time); // 设置播放时间点
                     });
                 </script>
           <!--视频-->

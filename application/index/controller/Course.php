@@ -615,9 +615,9 @@ class Course extends Home
     public function taskdetail()
     {
         $taskid = $this->request->param('taskid');
-        $type = $this->request->param('type');
         $task = CourseTask::get($taskid);
         empty($this->request->param('type'))?$type="course":$type=$this->request->param('type');
+        $this->assign('type',$type);
 //        $media='';
         if($type != 'course' && $task['type']=='mp4'){
             $array=['pdf','doc','docx','ppt','pptx','xls','xlsx'];
@@ -627,7 +627,7 @@ class Course extends Home
             }
         }
 //        $this->assign('media',$media);
-        $this->assign('type',$type);
+
         if($task['type']!='url'&&!in_array($task['type'],['pdf','doc','docx','ppt','pptx','xls','xlsx'])){
             $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
         }
@@ -742,6 +742,7 @@ class Course extends Home
                     }else{
                         $task['plan'] = 0;
                     }
+
                     //如果是试卷的话，判断是否是做试卷了，如果做试卷了赋值分数
                     if(in_array($task['type'],['test','exam','plan'])){
                         //如果是测试
@@ -779,7 +780,14 @@ class Course extends Home
                 }
             }
         }
-
+        $map1['userid']=$this->user->id;
+        $map1['taskid']=$taskid;
+        $map1['is_del']=0;
+        $watchtime=0;
+        if($time = Db::name('study_result_v13_log')->where($map1)->order('createTime desc')->find()){
+            $watchtime=$time['watchTime'];
+        }
+        $this->assign('watchtime',$watchtime);
         $this->assign('tasklist',$lesson);
         $this->assign('domain',$this->request->domain());
         return $this->fetch();
