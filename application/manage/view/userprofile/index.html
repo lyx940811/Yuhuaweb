@@ -2,6 +2,7 @@
 <html>
 {include file="manage/header" /}
 <link href="__MANAGE_JS__datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+<link href="__MANAGE_CSS__model.min.css" rel="stylesheet">
 <body>
 <div class="container-fluid">
     {php}
@@ -135,18 +136,17 @@
 
                 <!-- 模态框主体 -->
                 <div class="modal-body">
-                    <form class="form-horizontal" id="include">
+                    <form class="form-horizontal" id="uploadForm" method="post" action="{:url('import')}" enctype="multipart/form-data">
 
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-inline">学生基本信息</label>
                             <div class="col-sm-4" id="import">
-                                <input type="file" id="fileupload" value="" onchange="importchange(0);">
-                                <input type="text" name="courseware" id="coursemedia" class="form-control" placeholder="文件资源">
+                                <input type="file" id="fileupload" value="" name="excel">
                             </div>
                         </div>
                         <!-- 模态框底部 -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" onclick="dopost('add',0);">添加</button>
+                            <button type="button" class="btn btn-default" onclick="select_file_excel();">导入</button>
                         </div>
                     </form>
                 </div>
@@ -177,52 +177,47 @@
     </div>
     <!--删除专业提示结束-->
 </div>
+<div class="spinner" id="uploadmodel" style="display:none"><!--style="display:none"-->
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+</div>
+<div class="modal-background" id="uploadmodel1" style="display:none"></div>
 {include file='manage/bottom'}
 <script type="text/javascript" src="__MANAGE_JS__Webuploader/webuploader.js"></script>
 <script type="text/javascript" src="__MANAGE_JS__datetimepicker/bootstrap-datetimepicker.min.js"></script>
 <script type="text/javascript">
-    function importchange(id) {
-        // FormData对象，来发送二进制文件。
-        var formdata = new FormData();
-
-        // 将文件追加到 formdata对象中。
-        formdata.append("fileupload",document.getElementById('fileupload').files[0]);
+    function select_file_excel() {
+        $('#uploadmodel').show();
+        $('#uploadmodel1').show();
         $.ajax({
-            type: "POST",
-            url: "{:url('import')}?id="+id,
-            data:formdata,
-            /**
-             * 必须false才会避开jQuery对 formdata 的默认处理
-             * XMLHttpRequest会对 formdata 进行正确的处理
-             */
+            url: "{:url('import')}",
+            type: 'POST',
+            cache: false,
+            data: new FormData($('#uploadForm')[0]),
+            dataType:'json',
             processData: false,
-            // 告诉jQuery不要去设置Content-Type请求头
             contentType: false,
-            dataType: "json",
-            beforeSend:function () {
-                alert('正在上传中...')
-            }, //发送请求
-            success: function(data){
-                if(typeof(data.data)!= "undefined"){
-                    //120base里无权限
-                    if(data.data.code==120){
-                        alert(data.msg)
-                        return;
-                    }
+            success:function(json){
+                //清空内容
+                console.log(json);
+                if(json.code == "000"){
+                    alert(json.info)
 
-                }
-                if(data.code=='000'){
-                    $('#pic'+id).val(data.path)
-                    $('#showinfoPic'+id).html('<img class="img-rounded" src="/'+data.path+'" width="100%"/>');
-                    alert('上传成功');
+                    window.location.reload();
+                }else{
+                    alert(json.error);
+                    window.location.reload();
                 }
 
-            },
-            error: function(jqXHR){
-                alert("发生错误：" + jqXHR.status);
-            },
+                //返回提示信息
+                //todo 待处理代码
+            },error:function(){
+                alert('导入失败');
+            }
         });
-
     }
 
 </script>

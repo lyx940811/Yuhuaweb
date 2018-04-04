@@ -183,92 +183,128 @@ class Userprofile extends Base{
         }
     }
 
+    //excel导入
     public function import(){
-        $file =$_FILES;
-        $filename=$file['fileupload']['name'];
+        //引入文件（把扩展文件放入vendor目录下，路径自行修改）
         Loader::import('PHPExcel.PHPExcel');//手动引入PHPExcel.php
         Loader::import('PHPExcel.PHPExcel.IOFactory.PHPExcel_IOFactory');
 
-        $objPHPExcel = new \PHPExcel();
-        //var_dump($file_name);exit;
-        $objReader = \PHPExcel_IOFactory::createReader('Excel5');
-        $objPHPExcel = $objReader->load($filename,$encode='utf-8');
-        $sheet = $objPHPExcel->getSheet(0);
-        $highestRow = $sheet->getHighestRow(); // 取得总行数
-        dump($highestRow);die;
-        $highestColumn = $sheet->getHighestColumn(); // 取得总列数
-        for($i=3;$i<=$highestRow;$i++)
-        {
-            $data['account']= $data['truename'] = $objPHPExcel->getActiveSheet()->getCell("B".$i)->getValue();
-            $sex = $objPHPExcel->getActiveSheet()->getCell("C".$i)->getValue();
-            // $data['res_id']    = $objPHPExcel->getActiveSheet()->getCell("D".$i)->getValue();
-            $data['class'] = $objPHPExcel->getActiveSheet()->getCell("E".$i)->getValue();
-            $data['year'] = $objPHPExcel->getActiveSheet()->getCell("F".$i)->getValue();
-            $data['city']= $objPHPExcel->getActiveSheet()->getCell("G".$i)->getValue();
-            $data['company']= $objPHPExcel->getActiveSheet()->getCell("H".$i)->getValue();
-            $data['zhicheng']= $objPHPExcel->getActiveSheet()->getCell("I".$i)->getValue();
-            $data['zhiwu']= $objPHPExcel->getActiveSheet()->getCell("J".$i)->getValue();
-            $data['jibie']= $objPHPExcel->getActiveSheet()->getCell("K".$i)->getValue();
-            $data['honor']= $objPHPExcel->getActiveSheet()->getCell("L".$i)->getValue();
-            $data['tel']= $objPHPExcel->getActiveSheet()->getCell("M".$i)->getValue();
-            $data['qq']= $objPHPExcel->getActiveSheet()->getCell("N".$i)->getValue();
-            $data['email']= $objPHPExcel->getActiveSheet()->getCell("O".$i)->getValue();
-            $data['remark']= $objPHPExcel->getActiveSheet()->getCell("P".$i)->getValue();
-            $data['sex']=$sex=='男'?1:0;
-            $data['res_id'] =1;
-
-            $data['last_login_time']=0;
-            $data['create_time']=$data['last_login_ip']=$_SERVER['REMOTE_ADDR'];
-            $data['login_count']=0;
-            $data['join']=0;
-            $data['avatar']='';
-            $data['password']=md5('123456');
-            M('Member')->add($data);
-
-        }
-        $this->success('导入成功！');
-
-    }
-
-//    public function import(){
+        //获取表单上传文件
 //        $file =$_FILES;
-//        dump($file);die;
-//        if(empty($file)) {
-//            die('file not exists!');
-//        }
-//        $converter = new PDFConverter();
-//        $objRead = new PHPExcel_Reader_Excel2007();   //建立reader对象
-//        if(!$objRead->canRead($file)){
-//            $objRead = new PHPExcel_Reader_Excel5();
-//            if(!$objRead->canRead($file)){
-//                die('No Excel!');
-//            }
-//        }
-//
-//        $cellName = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ');
-//
-//        $obj = $objRead->load($file);  //建立excel对象
-//        $currSheet = $obj->getSheet(1);   //获取指定的sheet表
-//        $columnH = $currSheet->getHighestColumn();   //取得最大的列号
-//        $columnCnt = array_search($columnH, $cellName);
-//        $rowCnt = $currSheet->getHighestRow();   //获取总行数
-//        dump($rowCnt);die;
-//        $data = array();
-//        for($_row=1; $_row<=$rowCnt; $_row++){  //读取内容
-//            for($_column=0; $_column<=$columnCnt; $_column++){
-//                $cellId = $cellName[$_column].$_row;
-//                $cellValue = $currSheet->getCell($cellId)->getValue();
-//                //$cellValue = $currSheet->getCell($cellId)->getCalculatedValue();  #获取公式计算的值
-//                if($cellValue instanceof PHPExcel_RichText){   //富文本转换字符串
-//                    $cellValue = $cellValue->__toString();
-//                }
-//
-//                $data[$_row][$cellName[$_column]] = $cellValue;
-//            }
-//        }
-//
-//        return $data;
-//    }
+        $file = request()->file('excel');
+        $info = $file->validate(['ext' => 'xlsx,xls'])->move(ROOT_PATH . 'public' . DS . 'upload' . DS . 'TaoBao');
+        //数据为空返回错误
+        if(empty($info)){
+            $output['status'] = false;
+            $output['info'] = '导入数据失败~';
+            $this->ajaxReturn($output);
+        }
+
+        //获取文件名
+        $exclePath = $info->getSaveName();
+        //上传文件的地址
+        $filename = ROOT_PATH . 'public' . DS . 'upload' . DS . 'TaoBao'. DS . $exclePath;
+
+        //判断截取文件
+        $extension = strtolower( pathinfo($filename, PATHINFO_EXTENSION) );
+
+        //区分上传文件格式
+        if($extension == 'xlsx') {
+            $objReader =\PHPExcel_IOFactory::createReader('Excel2007');
+            $objPHPExcel = $objReader->load($filename, $encode = 'utf-8');
+        }else if($extension == 'xls'){
+            $objReader =\PHPExcel_IOFactory::createReader('Excel5');
+            $objPHPExcel = $objReader->load($filename, $encode = 'utf-8');
+        }
+
+        $excel_array = $objPHPExcel->getsheet(0)->toArray();   //转换为数组格式
+        array_shift($excel_array);  //删除第一个数组(标题);
+        $city = [];
+        Db::startTrans();
+        foreach($excel_array as $k=>$v) {
+            if(!empty($v[0]) || !empty($v[1]) || !empty($v[2])){
+                $role_table = Db::name('user_profile');
+                $username=Db::table('user')->where('username',$v[2])->find();
+                if(!empty($username)){
+                    continue;
+                }
+                $data = [
+                    'nickname' => $v[2],
+                    'username'=> $v[2],
+                    'password' => password_hash('123456',PASSWORD_DEFAULT),
+                    'type'=>5,
+                    'title'=>'static/index/images/avatar.png',
+                    'mobile'=>0,
+                    'createUserID'=>session('admin_uid'),
+                    'createdIp'=>request()->ip(),
+                    'createdTime'=>date('Y-m-d H:i:s',time()),
+                ];
+                $ok = Db::table('user')->insert($data);
+
+                if($ok) {
+                    $userid = Db::table('user')->getLastInsID();
+                    //添加学生在校信息
+                    $data2 = [
+                        'sn' => 0,
+                        'userid' => $userid,
+                        'realname' => $v[0],
+                        'sex' => $v[1],
+                        'nation' => empty($v[4]) ? 0 : $v[4],
+                        'cardpic' => 0,
+                        'birthday' => empty($v[3]) ? 0 : $v[3],
+                        'idcard' => $v[2],
+                        'policy' => 0,
+                        'mobile' => 0,
+                        'city' => empty($v[7]) ? 0 : $v[7],
+                        'household' => empty($v[6]) ? 0 : $v[6],
+                        'address' => 0,
+                        'createdTime' => date('Y-m-d H:i:s', time()),
+                    ];
+
+                    $role_table->insert($data2);
+                    $categoryid = Db::table('category')->where('name', $v[10])->value('code');
+                    $classid = Db::table('classroom')->where('title', $v[11])->value('id');
+                    $sdata = [
+                        'userid' => $userid,
+                        'grade' => 0,
+                        'depart' => 0,
+                        'majors' => empty($categoryid) ? 0 : $categoryid,
+                        'class' => empty($classid) ? 0 : $classid,
+                        'culture' => empty($v[5]) ? 0 : 1,
+                        'style' => empty($v[9]) ? 0 : $v[9],
+                        'academic' => empty($v[8]) ? 0 : $v[8] + 1,
+                        'starttime' => date('Y-m-d H:i:s', time()),
+                        'quarter' => 0,
+                        'studentstatus' => 0,
+                        'level' => 0,
+                        'createTime' => date('Y-m-d H:i:s', time()),
+                        'createuserid' => session('admin_uid'),
+
+                    ];
+                    Db::table('student_school')->insert($sdata);
+
+                    Db::table('student_class')->insert(
+                        [
+                            'userid' => $userid,
+                            'classid' => empty($classid) ? 0 : $classid,
+                        ]
+
+                    );
+
+
+                    manage_log('101', '003', '添加学员', serialize($v), 0);
+
+                }else{
+                    Db::rollback();
+                    return ['error'=>'导入失败','code'=>'400'];
+                }
+            }else{
+                break;
+            }
+        }
+        Db::commit();
+        return ['info'=>'导入成功','code'=>'000'];
+    }
     public function edit(){
 
         $info = input('post.');
