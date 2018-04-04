@@ -229,7 +229,7 @@ class Userprofile extends Base{
                     continue;
                 }
                 $data = [
-                    'nickname' => $v[2],
+                    'nickname' => $v[0],
                     'username'=> $v[2],
                     'password' => password_hash('123456',PASSWORD_DEFAULT),
                     'type'=>5,
@@ -238,17 +238,19 @@ class Userprofile extends Base{
                     'createUserID'=>session('admin_uid'),
                     'createdIp'=>request()->ip(),
                     'createdTime'=>date('Y-m-d H:i:s',time()),
+                    'status'=>1,
                 ];
                 $ok = Db::table('user')->insert($data);
 
                 if($ok) {
                     $userid = Db::table('user')->getLastInsID();
                     //添加学生在校信息
+                    $array=['男'=>0,'女'=>1,'保密'=>2];
                     $data2 = [
                         'sn' => 0,
                         'userid' => $userid,
                         'realname' => $v[0],
-                        'sex' => $v[1],
+                        'sex' => $array[$v[1]],
                         'nation' => empty($v[4]) ? 0 : $v[4],
                         'cardpic' => 0,
                         'birthday' => empty($v[3]) ? 0 : $v[3],
