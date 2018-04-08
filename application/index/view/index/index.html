@@ -108,7 +108,7 @@
                       <div class="col-lg-3 col-md-4 col-xs-6">
                           <div class="course-item">
                               <div class="course-img">
-                                  <a href="{:url('index/course/catalogue',array('course'=>$course['id']))}">
+                                  <a href="{:url('index/course/summary',array('course'=>$course['id']))}">
                                       {if condition="$course['serializeMode'] eq 'finished'"}
                                       <span class="tags"><span class="tag-finished"></span></span>
                                       {/if}
@@ -121,7 +121,7 @@
                               </div>
                               <div class="course-info">
                                   <div class="title">
-                                      <a class="link-dark" href="{:url('index/course/catalogue',array('course'=>$course['id']))}" target="_blank">
+                                      <a class="link-dark" href="{:url('index/course/summary',array('course'=>$course['id']))}" target="_blank">
                                           {$course.title}
                                       </a>
                                   </div>

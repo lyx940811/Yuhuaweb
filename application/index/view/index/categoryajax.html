@@ -2,7 +2,7 @@
 <div class="col-lg-3 col-md-4 col-xs-6">
     <div class="course-item">
         <div class="course-img">
-            <a href="{:url('index/course/catalogue',array('course'=>$course['id']))}">
+            <a href="{:url('index/course/summary',array('course'=>$course['id']))}">
                 {notempty name="course.smallPicture"}
                 <img src="/{$course.smallPicture}" alt="化学基础" class="img-responsive">
                 {else /}
@@ -12,7 +12,7 @@
         </div>
         <div class="course-info">
             <div class="title">
-                <a class="link-dark" href="{:url('index/course/catalogue',array('course'=>$course['id']))}" target="_blank">
+                <a class="link-dark" href="{:url('index/course/summary',array('course'=>$course['id']))}" target="_blank">
                     {$course.title}
                 </a>
             </div>

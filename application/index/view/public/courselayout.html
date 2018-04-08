@@ -207,12 +207,12 @@
                 <section class="es-section">
                     <div class="nav-btn-tab">
                         <ul class="nav nav-tabs " role="tablist">
+                            <li role="presentation" id="summary" class=""><a href="{:url('index/course/summary',array('course'=>$course['id']))}">介绍</a></li>
                             <li role="presentation" id="tasks" class=""><a href="{:url('index/course/catalogue',array('course'=>$course['id']))}">目录</a></li>
                             <li role="presentation" id="threads" class=""><a href="{:url('index/course/discussion',array('course'=>$course['id']))}">讨论区<small>({$course->ask()->count()})</small></a></li>
                             <li role="presentation" id="notes" class=""><a href="{:url('index/course/note',array('course'=>$course['id']))}">笔记<small>{present name="user"}({$course->note()->where('userid',$user['id'])->count()}){/present}</small></a></li>
                             <li role="presentation" id="material" class=""><a href="{:url('index/course/material',array('course'=>$course['id']))}">资料区<small>({$course->file()->count()})</small></a></li>
                             <li role="presentation" id="reviews" class=""><a href="{:url('index/course/evaluate',array('course'=>$course['id']))}">评价<small></small></a></li>
-                            <li role="presentation" id="summary" class=""><a href="{:url('index/course/summary',array('course'=>$course['id']))}">介绍</a></li>
                             <li role="presentation" id="notice" class=""><a href="{:url('index/course/notice',array('course'=>$course['id']))}">公告</a></li>
                             <!--<li class="highlight" style="left: 0px; width: 92px;"></li>-->
                         </ul>
