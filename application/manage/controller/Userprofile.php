@@ -265,13 +265,14 @@ class Userprofile extends Base{
                     ];
 
                     $role_table->insert($data2);
-                    $categoryid = Db::table('category')->where('name', $v[10])->value('code');
+                    $categoryid = Db::table('category')->where('name', $v[10])->find();
                     $classid = Db::table('classroom')->where('title', $v[11])->value('id');
+                    $departcode=Db::table('category')->where('code',$categoryid['parentcode'])->value('code');
                     $sdata = [
                         'userid' => $userid,
                         'grade' => 0,
-                        'depart' => 0,
-                        'majors' => empty($categoryid) ? 0 : $categoryid,
+                        'depart' => empty($departcode) ? 0 : $departcode,
+                        'majors' => empty($categoryid['code']) ? 0 : $categoryid['code'],
                         'class' => empty($classid) ? 0 : $classid,
                         'culture' => empty($v[5]) ? 0 : 1,
                         'style' => empty($v[9]) ? 0 : $v[9],
