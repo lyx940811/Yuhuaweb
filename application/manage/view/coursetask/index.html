@@ -362,7 +362,12 @@
                 $('#uploadmodel').hide();
                 $('#uploadmodel1').hide();
                 $('#prossa').css({'width':0,'height':'0px'}).text(0+'%');
+            }).on('uploadError', function (file, reason) {
+                alert('上传错误,查看文件类型与文件名格式是否正确');
+                $('#uploadmodel').hide();
+                $('#uploadmodel1').hide();
             }).on('uploadProgress',function (file,percentage) {
+                console.log(percentage)
                 var nums = parseInt(percentage*100);
                 $('#prossa').css({'width':percentage*400,'height':'30px'}).text(nums+'%');
             });

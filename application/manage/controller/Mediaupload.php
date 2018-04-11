@@ -104,8 +104,8 @@ class Mediaupload extends Controller
 //            break;
         }
 
-        $oFInfo    = finfo_open();
-        $sMimeType = finfo_file($oFInfo, $p_sTmpName, FILEINFO_MIME_TYPE);
+        $oFInfo    = finfo_open(FILEINFO_MIME);
+        $sMimeType = finfo_file($oFInfo, $p_sTmpName);
 
         finfo_close($oFInfo);
 
@@ -160,7 +160,6 @@ class Mediaupload extends Controller
             if(!file_exists($path2)){
                 mkdir(iconv("utf-8","gb2312",$path2),0777,true);
             }
-
             //以下if为判断不是分片上传的话直接挪缓存文件，但是没有删除
             if($iChunks==0){
                 move_uploaded_file($p_sTmpName, iconv("utf-8","gb2312",$sDestFile));
