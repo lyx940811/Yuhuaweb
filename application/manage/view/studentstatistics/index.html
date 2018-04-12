@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 {include file="manage/header" /}
+<link href="__MANAGE_CSS__model.min.css" rel="stylesheet">
 <body>
 <div class="container-fluid">
     {php}
@@ -110,10 +111,35 @@
     </ul>
 
 </div>
+</div>
+<div class="spinner" id="uploadmodel" style="display:none"><!--style="display:none"-->
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+</div>
+<div class="modal-background" id="uploadmodel1" style="display:none"></div>
+
 {include file='manage/bottom'}
 <script type="text/javascript">
-
-
+    function excel() {
+        $('#uploadmodel1').show();
+        $('#uploadmodel').show();
+        $.ajax({
+            url: "{:url('excel')}?"+Math.random(),
+            type:"get",
+            success:function(data){
+                alert("导出成功");
+                $('#uploadmodel1').hide();
+                $('#uploadmodel').hide();
+            },
+            error:function(e){
+                alert("导出失败，请重新导出");
+                window.location.reload();
+            }
+        });
+    }
 </script>
 </body>
 </html>

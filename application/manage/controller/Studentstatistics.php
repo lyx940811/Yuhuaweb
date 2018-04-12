@@ -75,30 +75,31 @@ class Studentstatistics extends Base{
             $logintime=Db::table('user_login_log')->where('userid',$value['userid'])->sum('loginAllTime');
             $info[$key]['logintime']=round($logintime/60/60,2);
             //学习时长
-            $studytime=DB::table('study_result_log srl')
-                ->where('userid',$value['userid'])
-                ->sum('TIMESTAMPDIFF(SECOND,starttime,endtime)');
-//            $studytime=DB::table('study_result_v13_log srl')
+//            $studytime=DB::table('study_result_log_v13 srl')
 //                ->where('userid',$value['userid'])
-//                ->sum('watchTime');
+//                ->sum('TIMESTAMPDIFF(SECOND,starttime,endtime)');
+            $studytime=DB::table('study_result_v13_log srl')
+                ->where('userid',$value['userid'])
+                ->sum('watchTime');
             $info[$key]['studytime']=round($studytime/60/60,1);
             //学习进度
             $majors=$value['majors'];
             $mycourse=Db::table('course_task')
                 ->where('courseId','IN',function($query)use($majors){
-                    $query->table('categorycourse')
-                        ->where('categoryID',$majors)
-                        ->where('Flag',1)->field('courseID');
+                    $query->table('course')
+                        ->where('categoryId',$majors)
+                        ->where('status',1)->field('id');
                 })->count();
-            $mystudy=Db::table('study_result_v13')->where('userid',$value['userid'])->where('ratio',100)->column('taskid');
+            $countcourse=Db::table('study_result_v13')->where('userid',$value['userid'])->sum('ratio');
             $courseporgress='0%';
-            $countcourse=count($mystudy);
+//            $countcourse=count($mystudy);
             if($countcourse>0 && $mycourse>0){
-                $courseporgress=round($countcourse/$mycourse*100,2).'%';
+                $courseporgress=round($countcourse/($mycourse*100)*100,2).'%';
             }
             $info[$key]['courseporgress']=$courseporgress;
             //学分
             $info[$key]['score']=0;
+            $mystudy=Db::table('study_result_v13')->where('userid',$value['userid'])->where('ratio',100)->column('taskid');
             if(!empty($mystudy)){
                 $info[$key]['score']=DB::table('course_task')->where('id','in',$mystudy)->sum('point');
             }
