@@ -631,7 +631,7 @@ class Course extends Home
         if($task['type']!='url'&&!in_array($task['type'],['pdf','doc','docx','ppt','pptx','xls','xlsx'])){
             $task['mediaSource'] = $this->request->domain()."/".$task['mediaSource'];
         }
-        if(in_array($task['type'],['doc','docx','ppt','pptx','xls','xlsx'])){
+        if(in_array($task['type'],['doc','docx','ppt','pptx','xls','xlsx','pdf'])){
             $mediaSource = explode('.',$task['mediaSource']);
             if(!empty($mediaSource)){
                 $task['mediaSource'] = $this->request->domain()."/".$mediaSource[0].".pdf";
