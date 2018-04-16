@@ -49,7 +49,6 @@ function check($uid,$url='')
         $flag = false;
 
         if(is_string($url) && strlen($url)>0){
-
             foreach ($funcs as $k=>$v){
 
                 if($url==$v['url']){//如果当前路由在允许的表里
@@ -62,7 +61,6 @@ function check($uid,$url='')
             return $flag;
 
         }elseif(is_array($url)){
-
             $urls = [];
             foreach ($funcs as $k=>$v){
 
@@ -88,9 +86,12 @@ function check($uid,$url='')
             return $urls2;
 
         }else{
-
             $current_url = url('','',false);//当前路由
+            $isnoturl = Db::name('function')->where('url',$current_url)->find();
 
+            if(empty($isnoturl)){
+                return true;
+            }
             foreach ($funcs as $k=>$v){
                 if($current_url==$v['url']){//如果当前路由在允许的表里
 
