@@ -183,21 +183,23 @@
                                             <span class="select2 select2-container select2-container--default select2-container--below" dir="ltr" data-select2-id="1" style="width:100%;">
                                                 <span class="selection">
                                                     <span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1">
-                                                        <ul class="select2-selection__rendered" id="categorys{$vo.id}">
+                                                        <ul class="select2-selection__rendered categoryss" id="categorys{$vo.id}">
+                                                            {volist name="$vo.categorysname" id="categorysname"}
                                                             <li class="select2-selection__choice" title="数学科学学院" data-select2-id="50">
-                                                                <span class="select2-selection__choice__remove" role="presentation"></span>{$vo.categoryname}
-                                                                <input type="hidden" name="categoryId" value="{$vo.categoryId}"/>
+                                                                <span class="select2-selection__choice__remove closed"  role="presentation">×</span>{$categorysname}
+                                                                <input type="hidden" name="categoryId[]" value="{$vo['categorysid'][$key]}"/>
                                                             </li>
+                                                            {/volist}
                                                         </ul>
                                                     </span>
                                                 </span>
                                                 <span class="dropdown-wrapper" aria-hidden="true"></span>
                                             </span>
-                                            <!--<ul class="list">-->
-                                                <!--{volist name="category" id="c"}-->
-                                                <!--<li onclick="categorys({$vo.id},'{$c.code}','{$c.name}')">{php} echo str_repeat('&nbsp;',$c['grade']*4).'|_'{/php}{$c.name}</li>-->
-                                                <!--{/volist}-->
-                                            <!--</ul>-->
+                                            <ul class="list">
+                                                {volist name="category" id="c"}
+                                                <li onclick="categorys({$vo.id},'{$c.code}','{$c.name}')">{php} echo str_repeat('&nbsp;',$c['grade']*4).'|_'{/php}{$c.name}</li>
+                                                {/volist}
+                                            </ul>
                                             <!--<select name="categoryId" class="form-control">-->
                                                 <!--{volist name="category" id="c"}-->
                                                 <!--<option value="{$c.code}"  {if condition="$vo['categoryId'] eq $c['code']"}selected{/if}>{php} echo str_repeat('&nbsp;',$c['grade']*4).'|_'{/php}{$c.name}</option>-->
@@ -319,7 +321,7 @@
                                 <span class="select2 select2-container select2-container--default select2-container--below" dir="ltr" data-select2-id="1" style="width:100%;">
                                     <span class="selection">
                                         <span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1">
-                                            <ul class="select2-selection__rendered" id="categorys0">
+                                            <ul class="select2-selection__rendered categoryss" id="categorys0">
 
                                             </ul>
                                         </span>
@@ -407,17 +409,27 @@
 {include file='manage/bottom'}
 <script type="text/javascript">
     function categorys(id,code,name){
-        var html='<li class="select2-selection__choice" id="delremove'+id+'" title="数学科学学院" data-select2-id="50">' +
-            '<span class="select2-selection__choice__remove" onclick="del('+id+')" role="presentation">×</span>'+name+'<input type="hidden" name="categoryId[]" value="'+code+'"/></li>'
+        var html='<li class="select2-selection__choice" id="delremove'+code+'" data-select2-id="50">' +
+            '<span class="select2-selection__choice__remove closed" role="presentation">×</span>'+name+'<input type="hidden" name="categoryId[]" value="'+code+'"/></li>'
         $('#categorys'+id).append(html);
     }
-    function del(id){
-        $('#delremove'+id).remove();
-    }
+    // function del(id){
+    //     $('#delremove'+id).remove();
+    // }
     
     // $("#categorys0").on("click","span",function () {
     //     var that = $(this);
     //     that.parent("li").remove();
+    // });
+    $(".categoryss").on("click","span",function () {
+        var that = $(this);
+        that.parent("li").remove();
+    });
+    // $(document).ready(function(){
+    //     $(".closed").on('click',function(){
+    //         var that=$(this);
+    //         that.parent("li").remove();
+    //     })
     // })
 </script>
 <script type="text/javascript">

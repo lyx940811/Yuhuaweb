@@ -56,8 +56,9 @@ class Course extends Base{
                 }
                 $allstudent = Db::table('student_school')->where($where)->count();
             }
-            $newlist[$k]['categoryname']=DB::table('category')->where('code',$v['categoryId'])->value('name');
-
+            $categoryids=explode(',',$v['categoryId']);
+            $newlist[$k]['categorysname']=DB::table('category')->where('code','in',$categoryids)->column('name');
+            $newlist[$k]['categorysid']=$categoryids;
             $newlist[$k]['studentsystem']=[];
             $newlist[$k]['system']='';
             if(!empty($v['school_system'])){
@@ -130,25 +131,23 @@ class Course extends Base{
         if(!empty($info['schoolsystem'])){
             $schoolsystem=implode(',',$info['schoolsystem']);
         }
-        $categorys=array_unique($info['categoryId']);
-        foreach($categorys as $v) {
-            $data = [
-                'title' => $info['title'],
-                'subtitle' => $info['subtitle'],
-                'tags' => $info['tags'],
-                'categoryId' => $v,
-                'serializeMode' => $info['serializeMode'],
-                'status' => $info['status'],
-                'smallPicture' => $info['pic'],
-                'userid' => session('admin_uid'),
-                'school_system' => $schoolsystem,
-                'about' => $info['about'],
-                'teachingplan' => htmlspecialchars_decode($info['teachingplan']),
-                'createdTime' => date('Y-m-d H:i:s', time()),
-            ];
+        $categoryId=implode(',',array_unique($info['categoryId']));
+        $data = [
+            'title'         => $info['title'],
+            'subtitle'      => $info['subtitle'],
+            'tags'          => $info['tags'],
+            'categoryId'    => $categoryId,
+            'serializeMode' => $info['serializeMode'],
+            'status'=>$info['status'],
+            'smallPicture'  => $info['pic'],
+            'userid'        => session('admin_uid'),
+            'school_system' =>$schoolsystem,
+            'about'        => $info['about'],
+            'teachingplan' => htmlspecialchars_decode($info['teachingplan']),
+            'createdTime'   =>date('Y-m-d H:i:s',time()),
+        ];
 
-            $ok = $role_table->insert($data);
-        }
+        $ok = $role_table->insert($data);
 
         if($ok){
             manage_log('108','003','添加课程',serialize($data),0);
@@ -200,18 +199,19 @@ class Course extends Base{
         if(!empty($info['schoolsystem'])){
             $schoolsystem=implode(',',$info['schoolsystem']);
         }
+        $categoryId=implode(',',array_unique($info['categoryId']));
         $data = [
-            'title' => $info['title'],
-            'subtitle' => $info['subtitle'],
-            'tags' => $info['tags'],
-            'categoryId' => $info['categoryId'],
+            'title'         => $info['title'],
+            'subtitle'      => $info['subtitle'],
+            'tags'          => $info['tags'],
+            'categoryId'    => $categoryId,
             'serializeMode' => $info['serializeMode'],
-            'userid' => session('admin_uid'),
-            'school_system' => $schoolsystem,
-            'about' => $info['about'],
+            'userid'        => session('admin_uid'),
+            'school_system' =>$schoolsystem,
+            'about'        => $info['about'],
             'teachingplan' => htmlspecialchars_decode($info['teachingplan']),
-            'status' => $info['status'],
-            'smallPicture' => $pic,
+            'status'       =>$info['status'],
+            'smallPicture'=>$pic,
 //            'createdTime'   =>date('Y-m-d H:i:s',time()),
         ];
 
