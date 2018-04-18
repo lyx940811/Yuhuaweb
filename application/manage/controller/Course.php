@@ -200,23 +200,20 @@ class Course extends Base{
         if(!empty($info['schoolsystem'])){
             $schoolsystem=implode(',',$info['schoolsystem']);
         }
-        $categorys=array_unique($info['categoryId']);
-        foreach($categorys as $v) {
-            $data = [
-                'title' => $info['title'],
-                'subtitle' => $info['subtitle'],
-                'tags' => $info['tags'],
-                'categoryId' => $v,
-                'serializeMode' => $info['serializeMode'],
-                'userid' => session('admin_uid'),
-                'school_system' => $schoolsystem,
-                'about' => $info['about'],
-                'teachingplan' => htmlspecialchars_decode($info['teachingplan']),
-                'status' => $info['status'],
-                'smallPicture' => $pic,
+        $data = [
+            'title' => $info['title'],
+            'subtitle' => $info['subtitle'],
+            'tags' => $info['tags'],
+            'categoryId' => $info['categoryId'],
+            'serializeMode' => $info['serializeMode'],
+            'userid' => session('admin_uid'),
+            'school_system' => $schoolsystem,
+            'about' => $info['about'],
+            'teachingplan' => htmlspecialchars_decode($info['teachingplan']),
+            'status' => $info['status'],
+            'smallPicture' => $pic,
 //            'createdTime'   =>date('Y-m-d H:i:s',time()),
-            ];
-        }
+        ];
 
         $ok = $role_table->where('id',$id)->update($data);
 
