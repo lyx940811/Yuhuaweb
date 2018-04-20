@@ -83,11 +83,11 @@ class Studentstatistics extends Base{
                 ->sum('watchTime');
             $info[$key]['studytime']=round($studytime/60/60,1);
             //学习进度
-            $majors=$value['majors'];
+            $majors=explode(',',$value['majors']);
             $mycourse=Db::table('course_task')
                 ->where('courseId','IN',function($query)use($majors){
                     $query->table('course')
-                        ->where('categoryId',$majors)
+                        ->where('categoryId','in',$majors)
                         ->where('status',1)->field('id');
                 })->count();
             $countcourse=Db::table('study_result_v13')->where('userid',$value['userid'])->sum('ratio');

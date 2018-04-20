@@ -79,18 +79,25 @@ class Teacherstatistics extends  Base{
 //                ->join('course b','a.courseId=b.id','LEFT')->where('b.teacherIds',$v['id'])
 //                ->value('count(a.id) as num');
             //资源上传数量
-            $array=['test','exam','plan'];
+            $array=['test',  'exam','plan'];
             $newarr[$k]['medianum'] = Db::table('course_task')->where('createdUserId', $v['userid'])->where('type','not in',$array)->count();
             $newarr[$k]['resource']='--';
             $newarr[$k]['checknum'] = Db::table('testpaper_result')->where('checkTeacherId', $v['userid'])->value('count(id) as num');
             $newarr[$k]['answernum'] = Db::table('ask_answer')->where('answerUserId', $v['userid'])->value('count(id) as num');
             $newarr[$k]['asknum'] = Db::table('asklist')->where('userID', $v['userid'])->value('count(id) as num');
             //在教学生数量
-            $medianum = Db::table('course')->where('teacherIds', $v['userid'])->column('id');
-            $majorsid = Db::name('course')->where('id', 'in', $medianum)->value('categoryId');
-            $newarr[$k]['student'] = DB::name('student_school')->where('majors', 'in', $majorsid)->count();
+            $medianum = Db::table('course')->where('teacherIds', $v['userid'])->column('categoryId');
+            $majorsid=[];
+            foreach($medianum as $key=>$val){
+                $info=explode(',',$val);
+                foreach($info as $ks=>$vs){
+                    $majorsid[]=$vs;
+                }
+            }
+//            $majorsid = Db::name('course')->where('id', 'in', $medianum)->value('categoryId');
+            $newarr[$k]['student'] = DB::name('student_school')->where('majors', 'in', array_unique($majorsid))->count();
         }
-            return $newarr;
+        return $newarr;
     }
 
     //导出

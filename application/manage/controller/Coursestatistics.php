@@ -69,13 +69,12 @@ class Coursestatistics extends Base{
             $info[$key]['replies']=Db::table('ask_answer')->where('askid','in',$postnum)->count();
 
             //学习进度
-//            $majorsid=DB::table('categorycourse')->where('courseid',$value['id'])->value('categoryID');  这一句在正式上没有对应到数据，表没有新数据添入
             $majorsid = Db::name('course')->where('id',$value['id'])->find();
             $allstudent=0;
             $courseporgress ='0%';
             $where=[];
             if($majorsid) {
-                $where['majors'] = $majorsid['categoryId'];
+                $where['majors'] =array('in',explode(',',$majorsid['categoryId']));
                 if (!empty($majorsid['school_system'])) {
                     $aa = explode(',', $majorsid['school_system']);
                     $where['academic'] = array('in', $majorsid['school_system']);
@@ -159,7 +158,8 @@ class Coursestatistics extends Base{
         $coursename=Db::table('course')->where('id',$courseid)->value('title');
         //查询所有学习这门课程的学生的userid，根据专业查询
         $categoryId = Db::name('course')->where('id',$courseid)->value('categoryId');//在正式环境上categorycourse没有数据，换了一种方式拿categoryid
-        $alluserid=DB::table('student_school')->where('majors','in',$categoryId)->column('userid');
+        $categorysid=explode(',',$categoryId);
+        $alluserid=DB::table('student_school')->where('majors','in',$categorysid)->column('userid');
         $search1=[
             'class'=>'',
             'name'=>'',
@@ -199,7 +199,8 @@ class Coursestatistics extends Base{
         $courseid=$this->request->param('courseid');
         $coursename=Db::table('course')->where('id',$courseid)->value('title');
         $categoryId = Db::name('course')->where('id',$courseid)->value('categoryId');//在正式环境上categorycourse没有数据，换了一种方式拿categoryid
-        $alluserid=DB::table('student_school')->where('majors','in',$categoryId)->column('userid');
+        $categorysid=explode(',',$categoryId);
+        $alluserid=DB::table('student_school')->where('majors','in',$categorysid)->column('userid');
 
         $where['up.userid']=array('in',$alluserid);
         $data=DB::table('user_profile up')
