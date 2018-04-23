@@ -71,15 +71,19 @@ class Index extends Home
 //        }
 
         $map['status'] = 1;
+        $majors=0;
         if(!empty($this->user)){
-            $map['categoryId'] = $this->user->stuclass->majors;
+            $majors= $this->user->stuclass->majors;
             if(!empty($this->user->stuclass->academic)&&$this->user->stuclass->academic!=0){
                 $map[]=['exp','FIND_IN_SET('.$this->user->stuclass->academic.',school_system)'];
             }
         }
-
+        $majors1=','.$majors.',';
         $course = Db::name('course')
             ->where($map)
+            ->where(function ($query)use($majors,$majors1) {
+                $query->where('categoryId','like','%'.$majors1.'%')->whereor('categoryID',$majors);
+            })
             ->field('id,title,smallPicture,price')
             ->order('createdTime desc')
             ->page($page,6)
@@ -141,12 +145,17 @@ class Index extends Home
         !empty($this->data['page'])?$page = $this->data['page']:$page = 1;
         $orderby="CONVERT( title USING gbk ) COLLATE gbk_chinese_ci ASC";
         $map['status'] = 1;
+        $majors=0;
         if(!empty($this->user)){
-            $map['categoryId'] = $this->user->stuclass->majors;
+            $majors = $this->user->stuclass->majors;
         }
+        $majors1=','.$majors.',';
         $course = Db::name('course')
             ->where('title','like','%'.$keywords.'%')
             ->where($map)
+            ->where(function ($query)use($majors,$majors1) {
+                $query->where('categoryId','like','%'.$majors1.'%')->whereor('categoryID',$majors);
+            })
             ->field('id,title,smallPicture,price')
             ->order($orderby)
             ->page($page,6)
