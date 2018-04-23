@@ -74,7 +74,7 @@ class Coursestatistics extends Base{
             $courseporgress ='0%';
             $where=[];
             if($majorsid) {
-                $where['majors'] =array('in',explode(',',$majorsid['categoryId']));
+                $where['majors'] =array('in',explode(',',ltrim(rtrim($majorsid['categoryId'],","))));
                 if (!empty($majorsid['school_system'])) {
                     $aa = explode(',', $majorsid['school_system']);
                     $where['academic'] = array('in', $majorsid['school_system']);
@@ -158,7 +158,7 @@ class Coursestatistics extends Base{
         $coursename=Db::table('course')->where('id',$courseid)->value('title');
         //查询所有学习这门课程的学生的userid，根据专业查询
         $categoryId = Db::name('course')->where('id',$courseid)->value('categoryId');//在正式环境上categorycourse没有数据，换了一种方式拿categoryid
-        $categorysid=explode(',',$categoryId);
+        $categorysid=explode(',',ltrim(rtrim($categoryId,",")));
         $alluserid=DB::table('student_school')->where('majors','in',$categorysid)->column('userid');
         $search1=[
             'class'=>'',
@@ -199,7 +199,7 @@ class Coursestatistics extends Base{
         $courseid=$this->request->param('courseid');
         $coursename=Db::table('course')->where('id',$courseid)->value('title');
         $categoryId = Db::name('course')->where('id',$courseid)->value('categoryId');//在正式环境上categorycourse没有数据，换了一种方式拿categoryid
-        $categorysid=explode(',',$categoryId);
+        $categorysid=explode(',',ltrim(rtrim($categoryId,",")));
         $alluserid=DB::table('student_school')->where('majors','in',$categorysid)->column('userid');
 
         $where['up.userid']=array('in',$alluserid);

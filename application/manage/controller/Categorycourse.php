@@ -22,10 +22,7 @@ class Categorycourse extends Base{
         $data['type']='';
         $data['name']='';
         $where = [];
-        if(!empty($info['category'])){
-            $data['category']=$info['category'];
-            $where['c.categoryId'] = ['eq',$info['category']];
-        }
+
         if(!empty($info['type'])){
             $data['type']=$info['type'];
             $where['c.type'] = ['eq',$info['type']-1];//由于0判断的特殊性，页面如果是0会默认选择，判断条件无效果。所以搜索时传过来的值比实际表里存的状态多加了1.
@@ -46,10 +43,25 @@ class Categorycourse extends Base{
         $list=Db::table('course c')
                 ->join('category cg','c.categoryId=cg.code','LEFT')
                 ->join('teacher_info t','c.teacherIds = t.id','LEFT')
-                ->field('c.id,c.title,cg.name,c.type,cg.studyTimes,cg.point,cg.code,t.realname')
-                ->where($where)
-                ->paginate(20,false,['query'=>request()->get()]);
-
+                ->field('c.id,c.categoryId,c.title,c.type,cg.studyTimes,cg.point,cg.code,t.realname')
+                ->where($where);
+        if(!empty($info['category'])){
+            $data['category']=$info['category'];
+            $majors=$info['category'];
+            $majors1=','.$majors.',';
+            $list=$list->where(function ($query)use($majors,$majors1) {
+                $query->where('categoryId','like','%'.$majors1.'%')->whereor('categoryID',$majors);
+            });
+//            $where['c.categoryId'] = ['eq',$info['category']];
+        }
+        $list=$list ->paginate(20,false,['query'=>request()->get()]);
+        $newlist=[];
+        foreach($list  as $k=>$v){
+            $newlist[$k]=$v;
+            $categoryname=explode(',',ltrim(rtrim($v['categoryId'],",")));
+            $category = Db::table('category')->where('code','in',$categoryname)->column('name');
+            $newlist[$k]['categoryname']=implode($category,',');
+        }
         $category = Db::table('category')->field('code,parentcode,name')->where('Flag','eq',1)->select();
 
         $categorylist = tree($category);
@@ -58,7 +70,7 @@ class Categorycourse extends Base{
         $course = Db::table('course')->field('id,title')->where('status','eq',1)->select();
 
         $this->assign('typename','专业课程');
-        $this->assign('list',$list);
+        $this->assign('list',$newlist);
         $this->assign('info',$data);
         $this->assign('categorylist',$categorylist);
         $this->assign('courselist',$course);

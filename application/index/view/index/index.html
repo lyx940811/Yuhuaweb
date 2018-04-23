@@ -55,7 +55,7 @@
               </div>
               <div class="course-filter" id="course-filter">
                   <ul class="nav nav-pills hidden-xs" role="tablist">
-                      <li category="" role="presentation" class="active  js-course-filter" data-url="__COURSE__search?orderBy=latest" data-type="course"><a href="javascript:;">全部课程</a></li>
+                      <li category="" role="presentation" class="active  js-course-filter" data-url="__COURSE__search?orderBy=latest" data-type="course"><a href="{:url('index/index/index')}">全部课程</a></li>
                       {volist name="category" id="ca" key="key"}
                       {if condition="$key lt 5"}
                       <li category="{$ca.code}" role="presentation" class=" js-course-filter" data-url="__COURSE__search?categoryId=36447244&amp;orderBy=latest" data-type="course"><a href="javascript:;">{$ca.name}</a></li>

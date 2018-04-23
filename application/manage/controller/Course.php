@@ -56,7 +56,7 @@ class Course extends Base{
                 }
                 $allstudent = Db::table('student_school')->where($where)->count();
             }
-            $categoryids=explode(',',$v['categoryId']);
+            $categoryids=explode(',',ltrim(rtrim($v['categoryId'],",")));
             $newlist[$k]['categorysname']=DB::table('category')->where('code','in',$categoryids)->column('name');
             $newlist[$k]['categorysid']=$categoryids;
             $newlist[$k]['studentsystem']=[];
@@ -136,7 +136,7 @@ class Course extends Base{
             'title'         => $info['title'],
             'subtitle'      => $info['subtitle'],
             'tags'          => $info['tags'],
-            'categoryId'    => $categoryId,
+            'categoryId'    => ','.$categoryId.',',
             'serializeMode' => $info['serializeMode'],
             'status'=>$info['status'],
             'smallPicture'  => $info['pic'],
@@ -204,7 +204,7 @@ class Course extends Base{
             'title'         => $info['title'],
             'subtitle'      => $info['subtitle'],
             'tags'          => $info['tags'],
-            'categoryId'    => $categoryId,
+            'categoryId'    => ','.$categoryId.',',
             'serializeMode' => $info['serializeMode'],
             'userid'        => session('admin_uid'),
             'school_system' =>$schoolsystem,

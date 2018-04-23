@@ -89,7 +89,7 @@ class Teacherstatistics extends  Base{
             $medianum = Db::table('course')->where('teacherIds', $v['userid'])->column('categoryId');
             $majorsid=[];
             foreach($medianum as $key=>$val){
-                $info=explode(',',$val);
+                $info=explode(',',ltrim(rtrim($val,",")));
                 foreach($info as $ks=>$vs){
                     $majorsid[]=$vs;
                 }

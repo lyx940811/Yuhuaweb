@@ -33,18 +33,25 @@ class Index extends Home
         //最新课程
         $courseModel = new Course();
         $map['status'] = 1;
+        $majors=0;
         if(!empty($this->user)){
             if($this->user->type==3) {
                 if(!empty($this->user->stuclass->majors)){
-                    $map['categoryId'] = $this->user->stuclass->majors;
+                    $majors=$this->user->stuclass->majors;
                     if(!empty($this->user->stuclass->academic)&&$this->user->stuclass->academic!=0){
                         $map[]=['exp','FIND_IN_SET('.$this->user->stuclass->academic.',school_system)'];
                     }
                 }
             }
         }
-        $course = $courseModel->limit(12)->where($map)->order('createdTime desc')->select();
-
+        $course = $courseModel->limit(12)->where($map);
+        if(!empty($majors)){
+            $majors1=','.$this->user->stuclass->majors.',';
+            $course=$course->where(function ($query)use($majors,$majors1) {
+                $query->where('categoryId','like','%'.$majors1.'%')->whereor('categoryID',$majors);
+            });
+        }
+        $course=$course->order('createdTime desc')->select();
         $this->assign('course',$course);
         //分类
 
@@ -68,22 +75,32 @@ class Index extends Home
     public function allcourse()
     {
         $map['status'] = 1;
+        $majors=0;
         if(!empty($this->user)){
             if(!empty($this->user->stuclass->majors)){
-                $map['categoryId'] = $this->user->stuclass->majors;
+                $majors = $this->user->stuclass->majors;
                 if(!empty($this->user->stuclass->academic)&&$this->user->stuclass->academic!=0){
                     $map[]=['exp','FIND_IN_SET('.$this->user->stuclass->academic.',school_system)'];
                 }
             }
         }
         if($this->request->isAjax()){
-
             $cate = $this->request->param('category');
             if(empty($cate)){
-                $course = Course::order('createdTime desc')->where($map)->paginate(20);
+                $majors1=','.$this->user->stuclass->majors.',';
+                $course = Course::order('createdTime desc')->where($map)
+                    ->where(function ($query)use($majors,$majors1) {
+                        $query->where('categoryId','like','%'.$majors1.'%')->whereor('categoryID',$majors);
+                    })
+                    ->paginate(20);
             }
             else{
-                $course = Course::where('categoryId',$cate)->where($map)->order('createdTime desc')->paginate(20);
+                $cate1=','.$cate.',';
+                $course = Course::where('categoryId',$cate)->where($map)
+                    ->where(function ($query)use($cate,$cate1) {
+                        $query->where('categoryId','like','%'.$cate1.'%')->whereor('categoryID',$cate);
+                    })
+                    ->order('createdTime desc')->paginate(20);
             }
 
             $this->assign('course',$course);
@@ -115,7 +132,15 @@ class Index extends Home
                 }
             }
         }
-        $course = $courseModel->where($map)->order('createdTime desc')->paginate(20);
+        $course = $courseModel->limit(12)->where($map);
+        if(!empty($majors)){
+            $majors1=','.$majors.',';
+            $course=$course->where(function ($query)use($majors,$majors1) {
+                $query->where('categoryId','like','%'.$majors1.'%')->whereor('categoryID',$majors);
+            });
+        }
+        $course=$course->order('createdTime desc')->paginate(20);
+//        $course = $courseModel->where($map)->order('createdTime desc')->paginate(20);
 
         $this->assign('course',$course);
         $this->assign('page',$course->render());
@@ -144,23 +169,39 @@ class Index extends Home
     {
         $category = $this->request->param('category');
         $map['status'] = 1;
+        $majors=0;
         if(empty($category)){
             if(!empty($this->user)){
-                $map['categoryId'] = $this->user->stuclass->majors;
+                $majors = $this->user->stuclass->majors;
                 if(!empty($this->user->stuclass->academic)&&$this->user->stuclass->academic!=0){
                     $map[]=['exp','FIND_IN_SET('.$this->user->stuclass->academic.',school_system)'];
                 }
             }
-            $course = Db::name('course')->order('createdTime desc')->where($map)->limit(8)->select();
+            $majors1=','.$majors.',';
+            $course = Db::name('course')
+                ->order('createdTime desc')
+                ->where($map)
+                ->where(function ($query)use($majors,$majors1) {
+                    $query->where('categoryId','like','%'.$majors1.'%')->whereor('categoryID',$majors);
+                })
+                ->limit(8)->select();
+            dump($course);die;
         }
         else{
             if(!empty($this->user)){
-                $map['categoryId'] = $this->user->stuclass->majors;
+//                $map['categoryId'] = $this->user->stuclass->majors;
                 if(!empty($this->user->stuclass->academic)&&$this->user->stuclass->academic!=0){
                     $map[]=['exp','FIND_IN_SET('.$this->user->stuclass->academic.',school_system)'];
                 }
             }
-            $course = Db::name('course')->where('categoryId',$category)->where($map)->order('createdTime desc')->limit(8)->select();
+            $category1=','.$category.',';
+            $course = Db::name('course')
+                ->where($map)
+                ->where(function ($query)use($category,$category1) {
+                    $query->where('categoryId','like','%'.$category1.'%')->whereor('categoryID',$category);
+                })
+                ->order('createdTime desc')
+                ->limit(8)->select();
         }
         $this->assign('course',$course);
         return $this->fetch('categoryajax');
