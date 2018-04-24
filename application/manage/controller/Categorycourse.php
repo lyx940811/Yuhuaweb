@@ -61,6 +61,8 @@ class Categorycourse extends Base{
             $categoryname=explode(',',ltrim(rtrim($v['categoryId'],",")));
             $category = Db::table('category')->where('code','in',$categoryname)->column('name');
             $newlist[$k]['categoryname']=implode($category,',');
+            $newlist[$k]['categorycname']=$category;
+            $newlist[$k]['categorysid']=$categoryname;
         }
         $category = Db::table('category')->field('code,parentcode,name')->where('Flag','eq',1)->select();
 
@@ -134,13 +136,13 @@ class Categorycourse extends Base{
             'rid.require' => '专业课程rid不能为空',
             'code.require' => '课程名称不能为空',
             'code.number' => '课程名称必须为数字',
-            'category.require' => '专业名称不能为空',
+            'categoryId.require' => '专业名称不能为空',
         ];
 
         $validate = new Validate([
             'rid'    => 'require',
             'code'   => 'require|number',
-            'category'   => 'require',
+            'categoryId'   => 'require',
         ],$msg);
 
         $validate->check($info);
@@ -151,9 +153,9 @@ class Categorycourse extends Base{
             return ['error'=>$error,'code'=>'200'];
         }
         $id = $info['rid']+0;
-
+        $categoryId=implode(',',array_unique($info['categoryId']));
         $data = [
-            'categoryId'=>$info['category'],
+            'categoryId'=> ','.$categoryId.',',
         ];
         $ok = Db::name('course')->where('id',$id)->update($data);
 
