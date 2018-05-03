@@ -95,7 +95,7 @@ class Teacherstatistics extends  Base{
                 }
             }
 //            $majorsid = Db::name('course')->where('id', 'in', $medianum)->value('categoryId');
-            $newarr[$k]['student'] = DB::name('student_school')->where('majors', 'in', array_unique($majorsid))->count();
+            $newarr[$k]['student'] = DB::name('student_school')->where('studentstatus',0)->where('majors', 'in', array_unique($majorsid))->count();
         }
         return $newarr;
     }

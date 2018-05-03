@@ -79,6 +79,7 @@ class Coursestatistics extends Base{
                     $aa = explode(',', $majorsid['school_system']);
                     $where['academic'] = array('in', $majorsid['school_system']);
                 }
+                $where['studentstatus']=0;
                 $allstudent = Db::table('student_school')->where($where)->count();
                 if ($allstudent) {
                     $lastchapter = DB::table('course_chapter')->where('courseid', $value['id'])->order('seq desc')->value('id');
@@ -159,7 +160,7 @@ class Coursestatistics extends Base{
         //查询所有学习这门课程的学生的userid，根据专业查询
         $categoryId = Db::name('course')->where('id',$courseid)->value('categoryId');//在正式环境上categorycourse没有数据，换了一种方式拿categoryid
         $categorysid=explode(',',ltrim(rtrim($categoryId,",")));
-        $alluserid=DB::table('student_school')->where('majors','in',$categorysid)->column('userid');
+        $alluserid=DB::table('student_school')->where('studentstatus',0)->where('majors','in',$categorysid)->column('userid');
         $search1=[
             'class'=>'',
             'name'=>'',
@@ -175,6 +176,7 @@ class Coursestatistics extends Base{
         }
         $where['up.userid']=array('in',$alluserid);
         //查询学生信息
+        $where['ss.studentstatus']=0;
         $data=DB::table('user_profile up')
             ->join('student_school ss','up.userid=ss.userid')
             ->join('classroom cr','ss.class=cr.id','LEFT')
@@ -200,9 +202,10 @@ class Coursestatistics extends Base{
         $coursename=Db::table('course')->where('id',$courseid)->value('title');
         $categoryId = Db::name('course')->where('id',$courseid)->value('categoryId');//在正式环境上categorycourse没有数据，换了一种方式拿categoryid
         $categorysid=explode(',',ltrim(rtrim($categoryId,",")));
-        $alluserid=DB::table('student_school')->where('majors','in',$categorysid)->column('userid');
+        $alluserid=DB::table('student_school')->where('studentstatus',0)->where('majors','in',$categorysid)->column('userid');
 
         $where['up.userid']=array('in',$alluserid);
+        $where['ss.studentstatus']=0;
         $data=DB::table('user_profile up')
             ->join('student_school ss','up.userid=ss.userid')
             ->join('classroom cr','ss.class=cr.id','LEFT')

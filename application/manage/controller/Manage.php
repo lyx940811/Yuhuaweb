@@ -93,10 +93,10 @@ class Manage extends Base{
                 ['url'=>'/manage/integral/index','name'=>'积分记录'],
             ]
             ],
-            ['typename'=>'宿舍列表','url'=>'/manage/dormitory/index','children'=>[
-                    ['url'=>'/manage/dormitory/index','name'=>'宿舍管理'],
-                ]
-            ],
+//            ['typename'=>'宿舍列表','url'=>'/manage/dormitory/index','children'=>[
+//                    ['url'=>'/manage/dormitory/index','name'=>'宿舍管理'],
+//                ]
+//            ],
             ['typename'=>'班级管理','url'=>'/manage/classroom/index','children'=>[
                     ['url'=>'/manage/classroom/index','name'=>'班级管理'],
                 ]

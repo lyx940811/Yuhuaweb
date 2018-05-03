@@ -37,7 +37,7 @@ class Classroom extends Base{
         $list = Db::name('classroom a')
             ->join('category b','a.categoryId=b.code','LEFT')
             ->join('teacher_info c','a.teacherIds=c.userid','LEFT')
-            ->field('a.id,a.about,a.title,a.status,a.categoryId,a.teacherIds,a.hitNum,a.studentNum,a.createdTime,c.id as cid,c.realname,b.name,b.code')
+            ->field('a.id,a.graduation,a.about,a.title,a.status,a.categoryId,a.teacherIds,a.hitNum,a.studentNum,a.createdTime,c.id as cid,c.realname,b.name,b.code')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
 
@@ -155,6 +155,25 @@ class Classroom extends Base{
             return ['info'=>'删除成功','code'=>'000'];
         }else{
             return ['error'=>'删除失败','code'=>'200'];
+        }
+    }
+
+    //班级毕业
+    public function graduation(){
+        $id=$this->request->param('rid')+0;
+        $type=$this->request->param('type')+0;
+        $type==1?$status=0:$status=1;
+        Db::startTrans();
+        $ok=Db::table('classroom')->where('id',$id)->update(['graduation'=>$type,'status'=>$status]);
+        if($ok){
+            DB::table('student_school')->where('class',$id)->update(['studentstatus'=>$type]);
+            $usersid=DB::table('student_school')->where('class',$id)->column('userid');
+            Db::table('user')->where('id','in',$usersid)->update(['status'=>$status]);
+            Db::commit();
+            return ['info'=>'设置毕业成功','code'=>'000'];
+        }else{
+            Db::rollback();
+            return ['info'=>'设置毕业失败','code'=>'200'];
         }
     }
 

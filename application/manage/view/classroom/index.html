@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 {include file="manage/header" /}
+<link href="__MANAGE_CSS__model.min.css" rel="stylesheet">
 <body>
 <div class="container-fluid">
     {php}
@@ -54,7 +55,9 @@
             <th>学员数</th>
             <th>创建日期</th>
             <th>状态</th>
+            <th>是否毕业</th>
             <th>操作</th>
+            <th>设置毕业</th>
         </tr>
         </thead>
         <tbody>
@@ -67,6 +70,7 @@
             <td>{$vo.studentNum}</td>
             <td>{$vo.createdTime}</td>
             <td>{$vo.status?'启用':'禁用'}</td>
+            <td>{$vo.graduation?'已毕业':'未毕业'}</td>
             <td>
                 {if condition="check($uid,'/manage/classroom/edit')"}
                     <a href="#" data-toggle="modal" data-target="#myModal_edit{$vo.id}">编辑</a>
@@ -140,6 +144,15 @@
                     </div>
                 </div>
                 <!--修改结束-->
+            </td>
+            <td>
+                {if condition="check($uid,'/manage/classroom/graduation')"}
+                    {if condition="$vo['graduation'] eq 1"}
+                    <a href="#" onclick="graduation({$vo.id},0,'{$vo.title}');">取消</a>
+                    {else}
+                    <a href="#" onclick="graduation({$vo.id},1,'{$vo.title}');">点击毕业</a>
+                    {/if}
+                {/if}
             </td>
         </tr>
         {/volist}
@@ -235,6 +248,14 @@
     </div>
     <!--删除结束-->
 </div>
+<div class="spinner" id="uploadmodel" style="display:none"><!--style="display:none"-->
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+</div>
+<div class="modal-background" id="uploadmodel1" style="display:none"></div>
 {include file='manage/bottom'}
 <script type="text/javascript">
 
@@ -278,6 +299,26 @@
                 }else{
 
                 }
+            });
+        }
+
+    }
+
+    function graduation(id,type,name) {
+        $('#uploadmodel').show();
+        $('#uploadmodel1').show();
+        if(confirm('确定"'+name+'"毕业吗')){
+            $.get("{:url('graduation')}?rid="+id+"&type="+type,function (data) {
+                console.log(data);
+                if(data.code=='000'){
+                    alert(data.info)
+                    $('#uploadmodel').hide();
+                    $('#uploadmodel1').hide();
+
+                }else{
+                    alert('设置毕业失败');
+                }
+                window.location.reload();
             });
         }
 
