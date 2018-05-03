@@ -305,9 +305,9 @@
     }
 
     function graduation(id,type,name) {
-        $('#uploadmodel').show();
-        $('#uploadmodel1').show();
         if(confirm('确定"'+name+'"毕业吗')){
+            $('#uploadmodel').show();
+            $('#uploadmodel1').show();
             $.get("{:url('graduation')}?rid="+id+"&type="+type,function (data) {
                 console.log(data);
                 if(data.code=='000'){
