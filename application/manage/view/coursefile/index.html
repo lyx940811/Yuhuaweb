@@ -8,7 +8,26 @@
     {/php}
     <div class="well clearfix">
         <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
-
+            <div class="form-group">
+                <label>专业</label>
+                <select name="category" class="form-control" onchange="selcourse()">
+                    <option value="">--请选择--</option>
+                    {volist name='category' id='c'}
+                    <option value="{$c.code}" {if condition="$info['category'] eq $c['code']"}selected{/if}>{$c.name}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="form-group" {if condition="empty($course)"}style="display:none"{/if} id="coursetitle">
+                <label>课程</label>
+                <select name="course" class="form-control" id="course">
+                    {if condition="!empty($course)"}
+                    <option value="">--请选择--</option>
+                    {volist name='course' id='co'}
+                    <option value="{$co.id}" {if condition="$info['course'] eq $co['id']"}selected{/if}>{$co.title}</option>
+                    {/volist}
+                    {/if}
+                </select>
+            </div>
             <div class="form-group">
                 <label>文件名称</label>
                 <input type="text" class="form-control" placeholder="文件名称" value="{$info.name}" name="name">
@@ -26,10 +45,10 @@
     <table class="table table-striped table-hover">
         <thead>
         <tr>
+            <th>专业名称</th>
+            <th>课程名称</th>
             <th>文件名称</th>
             <th>文件/上传路径</th>
-            <th>文件大小</th>
-            <th>课程</th>
             <th>类型</th>
         </tr>
         </thead>
@@ -37,10 +56,10 @@
 
         {volist name="list" id="vo"}
             <tr>
-                <td>{$vo.filename}</td>
-                <td>{$vo.filepath}</td>
-                <td>{$vo.filesize}</td>
+                <td>{$vo.categorysname}</td>
+                <td>{$vo.ctitle}</td>
                 <td>{$vo.title}</td>
+                <td>{$vo.mediaSource}</td>
                 <td>{$vo.type}</td>
             </tr>
         {/volist}
@@ -56,7 +75,26 @@
 </div>
 {include file='manage/bottom'}
 <script type="text/javascript">
+    function selcourse(){
+        var categoryid = $('select  option:selected').val();
+        $.get("{:url('coursecategoryid')}?categoryid="+categoryid,function (data) {
+            if(data){
+                html=' <option value="">--请选择--</option>';
+                $.each(data,function(i,v){
+                    html+='<option value="'+v.id+'">'+v.title+'</option>';
+                })
+                console.log(html);
+                $('#coursetitle').show();
+                $('#course').html('');
+                $('#course').append(html);
+            }else{
+                $('#coursetitle').hide();
+                $('#course').html('');
+                alert('本专业下无课程');
+            }
 
+        });
+    }
 
 </script>
 </body>
