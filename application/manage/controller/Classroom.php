@@ -37,7 +37,7 @@ class Classroom extends Base{
         $list = Db::name('classroom a')
             ->join('category b','a.categoryId=b.code','LEFT')
             ->join('teacher_info c','a.teacherIds=c.userid','LEFT')
-            ->field('a.id,a.graduation,a.about,a.title,a.status,a.categoryId,a.teacherIds,a.hitNum,a.studentNum,a.createdTime,c.id as cid,c.realname,b.name,b.code')
+            ->field('a.id,a.graduation,a.about,a.title,a.status,a.categoryId,a.teacherIds,a.hitNum,a.createdTime,c.id as cid,c.realname,b.name,b.code')
             ->where($where)
             ->paginate(20,false,['query'=>request()->get()]);
 
@@ -45,8 +45,11 @@ class Classroom extends Base{
         $categorylist = tree($category);
 
         $teacher = Db::table('teacher_info')->field('id,realname')->select();
-
-        $this->assign('list',$list);
+        foreach($list as $k=>$v){
+            $newlist[$k]=$v;
+            $newlist[$k]['studentNum']=Db::table('student_school')->where('class',$v['id'])->count();
+        }
+        $this->assign('list',$newlist);
         $this->assign('page',$list->render());
         $this->assign('info',$data);
         $this->assign('teacher',$teacher);
