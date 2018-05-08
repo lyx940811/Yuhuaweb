@@ -49,7 +49,8 @@ class Course extends Base{
             $allstudent=0;
             $where=[];
             if($majorsid) {
-                $where['majors']=$majorsid['categoryId'];
+//                $where['majors']=$majorsid['categoryId'];
+                $where['majors'] =array('in',explode(',',ltrim(rtrim($majorsid['categoryId'],","))));
                 if(!empty($majorsid['school_system'])){
                     $aa=explode(',',$majorsid['school_system']);
                     $where['academic']=array('in',$majorsid['school_system']);
