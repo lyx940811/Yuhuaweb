@@ -24,6 +24,7 @@ class Teacherinfo extends Base{
         $data['realname']='';
         $data['sn']='';
         $data['sex']='';
+        $data['depart']='';
         if(!empty($info['realname'])){
             $data['realname']=$info['realname'];
             $where['realname'] = ['like',"%{$info['realname']}%"];
@@ -36,10 +37,15 @@ class Teacherinfo extends Base{
             $data['sex']=$info['sex'];
             $where['a.sex']=$info['sex']-1;
         }
+        if(!empty($info['depart'])){
+            $data['depart']=$info['depart'];
+            $where['tw.depart']=$info['depart'];
+        }
         $list = Db::name('teacher_info a')
             ->join('teacher_level b','a.userid=b.teacherid','LEFT')
+            ->join('teacher_work tw','a.id=tw.teacherid','LEFT')
             ->where($where)
-            ->field('a.*,b.education,b.degree,b.topeducation,b.topdegree')
+            ->field('a.*,b.education,b.degree,b.topeducation,b.topdegree,tw.depart,tw.title')
             ->order('a.id desc')
             ->paginate(20,false,['query'=>request()->get()]);
 
@@ -48,8 +54,9 @@ class Teacherinfo extends Base{
             $newlist[$k] = $v;
             $newlist[$k]['work'] = Db::table('teacher_work')->where('teacherid='.$v['id'])->select();
         }
-
+        $depart=Db::table('teacher_work')->group('depart')->column('depart');
         $this->assign('info',$data);
+        $this->assign('depart',$depart);
         $this->assign('list',$newlist);
         $this->assign('page',$list->render());
         $this->assign('typename','教师管理');
@@ -352,7 +359,63 @@ class Teacherinfo extends Base{
             return ['error'=>'删除失败','code'=>'200'];
         }
     }
+    //批量删除
+    public function deletes(){
 
+        $id = explode(',',rtrim($_GET['rid'],','));
+        $ok = Db::name('teacher_info')->where("id","in",$id)->delete();
+        if(is_numeric($ok)){
+            return ['info'=>'删除成功','code'=>'000'];
+        }else{
+            return ['error'=>'删除失败','code'=>'200'];
+        }
+    }
+    public function processing(){
+        $info = input('get.');
+
+        $where = [];
+        $data['realname']='';
+        $data['sn']='';
+        $data['sex']='';
+        $data['depart']='';
+        if(!empty($info['realname'])){
+            $data['realname']=$info['realname'];
+            $where['realname'] = ['like',"%{$info['realname']}%"];
+        }
+        if(!empty($info['sn'])){
+            $data['sn']=$info['sn'];
+            $where['a.sn']=['like',"%{$info['sn']}%"];
+        }
+        if(!empty($info['sex'])){
+            $data['sex']=$info['sex'];
+            $where['a.sex']=$info['sex']-1;
+        }
+        if(!empty($info['depart'])){
+            $data['depart']=$info['depart'];
+            $where['tw.depart']=$info['depart'];
+        }
+        $list = Db::name('teacher_info a')
+            ->join('teacher_level b','a.userid=b.teacherid','LEFT')
+            ->join('teacher_work tw','a.id=tw.teacherid','LEFT')
+            ->where($where)
+            ->field('a.*,b.education,b.degree,b.topeducation,b.topdegree,tw.depart,tw.title')
+            ->order('a.id desc')
+            ->paginate(20,false,['query'=>request()->get()]);
+
+        $newlist = [];
+        foreach ($list as $k=>$v){
+            $newlist[$k] = $v;
+            $newlist[$k]['work'] = Db::table('teacher_work')->where('teacherid='.$v['id'])->select();
+        }
+        $depart=Db::table('teacher_work')->group('depart')->column('depart');
+        $this->assign('info',$data);
+        $this->assign('depart',$depart);
+        $this->assign('list',$newlist);
+        $this->assign('page',$list->render());
+        $this->assign('typename','教师管理');
+
+        return $this->fetch();
+    }
 
 
 }

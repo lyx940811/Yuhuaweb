@@ -26,6 +26,15 @@
                     <option value="2" {if condition="$info['sex'] eq 2"}selected{/if}>女</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label>部门</label>
+                <select name="depart" class="form-control">
+                    <option value="">--请选择--</option>
+                    {volist name="depart" id="de"}
+                    <option value="{$de}" {if condition="$de eq $info['depart']"} selected {/if}>{$de}</option>
+                    {/volist}
+                </select>
+            </div>
             <button type="submit" class="btn btn-primary">搜索</button>
         </form>
     </div>
@@ -35,6 +44,7 @@
     <div class="pull-right">
         {if condition="check($uid,'/manage/teacherinfo/add')"}
            <a class="btn btn-primary" onclick="clearInput()" data-toggle="modal" data-target="#myModal">新增教师</a>
+           <a class="btn btn-primary" href="{:url('processing')}">批量处理</a>
         {/if}
 
     </div>
@@ -58,9 +68,9 @@
             <td>{$vo.sn}</td>
             <td>{$vo.realname}</td>
             <td>{$vo.sex?'女':'男'}</td>
-            <td>{php}echo isset($vo['work'][0])?$vo['work'][0]['depart']:'';{/php}</td>
+            <td>{$vo.depart}</td>
             <td>{$vo.mobile}</td>
-            <td>{php}echo isset($vo['work'][0])?$vo['work'][0]['title']:'';{/php}</td>
+            <td>{$vo.title}</td>
             <td>
                 {if condition="check($uid,'/manage/teacherinfo/edit')"}
                     <a href="#" data-toggle="modal" data-target="#myModal_edit{$vo.id}">编辑</a>
