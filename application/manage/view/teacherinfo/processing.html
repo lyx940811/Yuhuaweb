@@ -7,7 +7,12 @@
     {php}
     $uid = session('admin_uid');
     {/php}
-
+    <div class="well">
+        <ol class="breadcrumb">
+            <li><a href="{:url('index')}">教师列表</a></li>
+            <li class="active">批量处理</li>
+        </ol>
+    </div>
     <div class="well clearfix">
         <form class="navbar-form navbar-left" role="search" action="{:url()}" method="get">
             <div class="form-group">
